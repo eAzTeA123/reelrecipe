@@ -76,7 +76,7 @@ function RecipesContent() {
       const matchPercentage =
         recipe.ingredients.length > 0 ? matchedCount / recipe.ingredients.length : 0;
       return { recipe, matchPercentage, matchedCount, missingIngredients };
-    });
+    }).filter(m => m.matchedCount > 0);
 
     // Nach Match-Prozentsatz sortieren, bei Gleichstand nach absoluter Anzahl Treffer
     matched.sort((a, b) => {

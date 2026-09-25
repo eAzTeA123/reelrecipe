@@ -163,7 +163,6 @@ const ING_EN_TO_DE: Record<string, string> = {
   "red wine": "Rotwein",
   "white wine": "Weißwein",
   "beer": "Bier",
-  "sausage": "Wurst",
   "bacon": "Speck",
   "ham": "Schinken",
   "salmon": "Lachs",
