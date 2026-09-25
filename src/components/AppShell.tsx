@@ -60,11 +60,7 @@ function TopNav() {
     <header className="sticky top-0 z-40 hidden border-b border-line bg-white/80 backdrop-blur-xl md:block">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
         <Link href="/" className="flex items-center gap-2.5 text-[17px] font-bold tracking-tight">
-          <span className="flex h-8 w-8 items-center justify-center rounded-[9px] bg-accent text-white">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-              <path d="M4 15.5h16" /><path d="M5 15.5a7 7 0 0 1 14 0" /><path d="M12 8.5v-.8" />
-            </svg>
-          </span>
+          <img src="/icon.svg" alt="ReelRecipe Logo" width={32} height={32} className="rounded-[9px]" />
           {t("nav.home")}
         </Link>
         <nav aria-label="Hauptnavigation" className="flex items-center gap-1">
