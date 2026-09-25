@@ -30,8 +30,10 @@ export function tokenizeSentences(text: string): string[] {
     // 6. Zeilenumbrüche vor Bullets (z. B. "Sojajoghurt- Saft", "Tomaten- 250g", aber NICHT bei "Zitronen-Minz-Joghurt")
     .replace(/(?<=[a-zA-ZäöüÄÖÜß0-9,])\s*-(?=\s+(?:\d|[A-ZÄÖÜ])|\d)/g, "\n- ")
     .replace(/(?<=\s)[•*–—✳✅👉📍]\uFE0F?\s*|(?<=\s)-+\s+/gu, "\n- ")
-    // 7. Vor Zutaten-Mengen trennen (nur wenn gefolgt von Einheit/Lebensmittel, NIEMALS bei "Minuten"!)
-    .replace(/(?<=[a-zA-ZäöüÄÖÜß:,])\s+(?=(?:\d+(?:[.,]\d+)?(?:[\s-]*1\/\d+)?|\d+[\s-]*\/\s*\d+|½|¼|¾|⅓|⅔|⅛|⅜|⅝|⅞)\s*(?:[a-zA-ZäöüÄÖÜß-]+\s*){0,2}(?:g|kg|ml|l|el|tl|tbsp|tsp|cup|cups|slices|scheiben|stk|stück|st|wraps|tomaten?|zwiebeln?|zehen?|knoblauch|paprika|spitzpaprika|brokkoli|möhren?|karotten?|äpfel|apfel|eier?|kartoffeln?|putenschnitzel|schnitzel|gurke|zucchini|aubergine|pilze|champignons|salat|ajvar|paprikapulver)\b)/gi, "\n")
+    // 6b. Vor beliebigen grafischen Emojis trennen (oft als Aufzählungszeichen genutzt)
+    .replace(/(?<=[a-zA-ZäöüÄÖÜß0-9,:.!?])\s+(?=\p{Emoji_Presentation})/gu, "\n")
+    // 7. Vor Zutaten-Mengen trennen (nur wenn gefolgt von Einheit/Lebensmittel, NIEMALS bei "Minuten" oder nach typischen Präpositionen)
+    .replace(/(?<=[a-zA-ZäöüÄÖÜß:,])(?<!\b(?:in|den|dem|die|das|der|mit|und|oder|zu|im|am|auf|aus|bei|von|für|for|and|with|to)\b)\s+(?=(?:\d+(?:[.,]\d+)?(?:[\s-]*1\/\d+)?|\d+[\s-]*\/\s*\d+|½|¼|¾|⅓|⅔|⅛|⅜|⅝|⅞)\s*(?:[a-zA-ZäöüÄÖÜß-]+\s*){0,2}(?:g|kg|ml|l|el|tl|tbsp|tsp|cup|cups|slices|scheiben|stk|stück|st|wraps|tomaten?|zwiebeln?|zehen?|knoblauch|paprika|spitzpaprika|brokkoli|möhren?|karotten?|äpfel|apfel|eier?|kartoffeln?|putenschnitzel|schnitzel|gurke|zucchini|aubergine|pilze|champignons|salat|ajvar|paprikapulver)\b)/gi, "\n")
     // 7b. Vor typischen Satzanfängen trennen, falls sie direkt (ohne Punkt) auf ein kleingeschriebenes Wort folgen
     .replace(/(?<=[a-zäöüß])\s+(?=(?:Die|Der|Das|Den|Dem|Alles|Dann|Danach|Zuerst|Zum|Zur|Schließlich|Nun|Anschließend|Zubereitung|Für|Mit|Dazu|Hierfür|Dabei|Sobald|Wenn|Während|Dafür|Unter|Auf|In|Aus|Bei)\b)/g, "\n")
     // 8. Vor Schritt-Nummerierungen trennen (z. B. "anbraten. 2. Tomaten schneiden")

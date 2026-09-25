@@ -15,7 +15,7 @@ const WORD_NUMBERS: Record<string, number> = {
 };
 
 export function parseAmountString(raw: string): number | undefined {
-  const s = raw.trim();
+  const s = raw.replace(/^(?:ca\.?|etwa|rund|ungefähr)\s*/i, "").trim();
   const rangeMatch = s.match(RANGE_MATCH_REGEX);
   if (rangeMatch) {
     const a = parseAmountString(rangeMatch[1]);

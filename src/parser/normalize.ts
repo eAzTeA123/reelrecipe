@@ -7,7 +7,7 @@ const UNICODE_FRACTIONS: Record<string, string> = {
   "⅛": "1/8", "⅜": "3/8", "⅝": "5/8", "⅞": "7/8",
 };
 
-const BULLET_RE = /^[\s\-–—•·∙◦▪▫●○*+~›»➡️➜→↳✓✔️☐🔹🔸📌🥄🍴]+/u;
+const BULLET_RE = /^[\s\-–—•·∙◦▪▫●○*+~›»➡️➜→↳✓✔️☐🔹🔸📌🥄🍴\p{Emoji_Presentation}]+/u;
 const HASHTAG_LINE_RE = /^(#\S+\s*)+$/;
 const MENTION_LINE_RE = /^(@\S+\s*)+$/;
 

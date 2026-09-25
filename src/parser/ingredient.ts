@@ -60,6 +60,8 @@ export function parseIngredientLine(line: string): ParsedIngredient | null {
   let unit: string | undefined;
   let uncertain = false;
 
+  rest = rest.replace(/^(?:ca\.?|etwa|rund|ungefähr)\s+/i, "");
+
   // 1) Zahl am Anfang: "500 g Mehl", "2 Eier", "1 1/2 Tassen Reis"
   const amountMatch = rest.match(AMOUNT_REGEX);
   if (amountMatch) {
