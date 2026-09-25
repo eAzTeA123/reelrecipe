@@ -6,6 +6,7 @@ export const dictionaries = {
     "nav.home": "Start",
     "brand.name": "ReelRecipe",
     "nav.recipes": "Rezepte",
+    "nav.planner": "Wochenplan",
     "nav.shopping": "Einkaufsliste",
     "nav.favorites": "Favoriten",
 
@@ -174,6 +175,7 @@ export const dictionaries = {
     "nav.home": "Home",
     "brand.name": "ReelRecipe",
     "nav.recipes": "Recipes",
+    "nav.planner": "Planner",
     "nav.shopping": "Shopping",
     "nav.favorites": "Favorites",
 

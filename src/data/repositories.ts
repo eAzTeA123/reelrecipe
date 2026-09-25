@@ -3,6 +3,7 @@ import type {
   Recipe,
   RecipeInput,
   ShoppingItem,
+  MealPlanEntry,
 } from "@/domain/types";
 
 export interface SearchFilter {
@@ -59,6 +60,19 @@ export interface ShoppingListRepository {
   clearChecked(): Promise<void>;
   clearAll(): Promise<void>;
   importItems(items: ShoppingItem[]): Promise<void>;
+}
+
+export interface MealPlanRepository {
+  list(): Promise<MealPlanEntry[]>;
+  getForDay(dayOfWeek: string): Promise<MealPlanEntry[]>;
+  add(entry: Omit<MealPlanEntry, "id">): Promise<MealPlanEntry>;
+  update(id: string, patch: Partial<Omit<MealPlanEntry, "id">>): Promise<MealPlanEntry>;
+  remove(id: string): Promise<void>;
+  clearAll(): Promise<void>;
+  subscribe(
+    onChange: (entries: MealPlanEntry[]) => void,
+    onError?: (error: unknown) => void,
+  ): () => void;
 }
 
 export interface ImageRepository {

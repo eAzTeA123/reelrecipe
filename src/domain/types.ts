@@ -31,12 +31,22 @@ export interface Recipe {
   ingredients: Ingredient[];
   steps: RecipeStep[];
   category?: string;
+  tags?: string[];
   favorite: boolean;
   createdAt: number;
   updatedAt: number;
 }
 
 export type RecipeInput = Omit<Recipe, "id" | "createdAt" | "updatedAt">;
+
+export type DayOfWeek = "mo" | "tu" | "we" | "th" | "fr" | "sa" | "su";
+
+export interface MealPlanEntry {
+  id: string;
+  dayOfWeek: DayOfWeek;
+  recipeId: string;
+  servings: number;
+}
 
 export interface ShoppingItem {
   id: string;
@@ -78,4 +88,5 @@ export interface ParsedRecipe {
   cookTime?: number;
   ingredients: Ingredient[];
   steps: RecipeStep[];
+  tags?: string[];
 }

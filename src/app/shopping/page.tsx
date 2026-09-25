@@ -15,6 +15,7 @@ import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { Sheet } from "@/components/Sheet";
 import { Field, Input } from "@/components/Input";
 import { IconCart, IconCheck, IconPencil, IconPlus, IconTrash } from "@/components/Icons";
+import { getAisle } from "@/lib/shoppingAisles";
 
 export default function ShoppingPage() {
 
@@ -60,6 +61,19 @@ export default function ShoppingPage() {
   }, [items]);
 
   const checkedCount = items.filter((i) => i.checked).length;
+
+  const groupedItems = items.reduce((acc, item) => {
+    const aisle = getAisle(item.name);
+    if (!acc[aisle]) acc[aisle] = [];
+    acc[aisle].push(item);
+    return acc;
+  }, {} as Record<string, ShoppingItem[]>);
+
+  const sortedAisles = Object.keys(groupedItems).sort((a, b) => {
+    if (a === "Sonstiges") return 1;
+    if (b === "Sonstiges") return -1;
+    return a.localeCompare(b);
+  });
 
   return (
     <>
@@ -114,55 +128,62 @@ export default function ShoppingPage() {
         </div>
       ) : (
         <>
-          <ul className="divide-y divide-line overflow-hidden rounded-card bg-surface shadow-card">
-            {items.map((item) => (
-              <li key={item.id} className="flex items-center gap-3 px-3 py-1.5">
-                <label className="flex min-h-[44px] flex-1 cursor-pointer items-center gap-3">
-                  <input
-                    type="checkbox"
-                    checked={item.checked}
-                    onChange={() => void getShoppingListRepository().toggle(item.id)}
-                    aria-label={`${item.name} abhaken`}
-                    className="peer sr-only"
-                  />
-                  <span
-                    aria-hidden
-                    className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-ink-3/50 text-transparent transition-colors peer-checked:border-accent peer-checked:bg-accent peer-checked:text-white"
-                  >
-                    <IconCheck size={14} />
-                  </span>
-                  <span className={`min-w-0 flex-1 text-[15px] ${item.checked ? "text-ink-3 line-through" : ""}`}>
-                    {formatAmount(item.amount, item.unit) && (
-                      <span className="mr-1.5 font-semibold tabular-nums text-ink-2">
-                        {formatAmount(item.amount, item.unit)}
-                      </span>
-                    )}
-                    {item.name}
-                    {item.recipeIds.length > 0 && recipeTitles[item.recipeIds[0]] && (
-                      <span className="block text-[12px] text-ink-3">
-                        aus „{recipeTitles[item.recipeIds[0]]}“
-                        {item.recipeIds.length > 1 ? ` +${item.recipeIds.length - 1}` : ""}
-                      </span>
-                    )}
-                  </span>
-                </label>
-                <button
-                  aria-label={`${item.name} bearbeiten`}
-                  onClick={() => openEdit(item)}
-                  className="pressable flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-ink-3 hover:text-ink"
-                >
-                  <IconPencil size={17} />
-                </button>
-                <button
-                  aria-label={`${item.name} löschen`}
-                  onClick={() => void getShoppingListRepository().remove(item.id)}
-                  className="pressable flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-ink-3 hover:text-danger"
-                >
-                  <IconTrash size={17} />
-                </button>
-              </li>
+          <div className="flex flex-col gap-6">
+            {sortedAisles.map((aisle) => (
+              <div key={aisle}>
+                <h2 className="mb-2 px-1 text-lg font-semibold text-ink-2">{aisle}</h2>
+                <ul className="divide-y divide-line overflow-hidden rounded-card bg-surface shadow-card">
+                  {groupedItems[aisle].map((item) => (
+                    <li key={item.id} className="flex items-center gap-3 px-3 py-1.5">
+                      <label className="flex min-h-[44px] flex-1 cursor-pointer items-center gap-3">
+                        <input
+                          type="checkbox"
+                          checked={item.checked}
+                          onChange={() => void getShoppingListRepository().toggle(item.id)}
+                          aria-label={`${item.name} abhaken`}
+                          className="peer sr-only"
+                        />
+                        <span
+                          aria-hidden
+                          className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-ink-3/50 text-transparent transition-colors peer-checked:border-accent peer-checked:bg-accent peer-checked:text-white"
+                        >
+                          <IconCheck size={14} />
+                        </span>
+                        <span className={`min-w-0 flex-1 text-[15px] ${item.checked ? "text-ink-3 line-through" : ""}`}>
+                          {formatAmount(item.amount, item.unit) && (
+                            <span className="mr-1.5 font-semibold tabular-nums text-ink-2">
+                              {formatAmount(item.amount, item.unit)}
+                            </span>
+                          )}
+                          {item.name}
+                          {item.recipeIds.length > 0 && recipeTitles[item.recipeIds[0]] && (
+                            <span className="block text-[12px] text-ink-3">
+                              aus „{recipeTitles[item.recipeIds[0]]}“
+                              {item.recipeIds.length > 1 ? ` +${item.recipeIds.length - 1}` : ""}
+                            </span>
+                          )}
+                        </span>
+                      </label>
+                      <button
+                        aria-label={`${item.name} bearbeiten`}
+                        onClick={() => openEdit(item)}
+                        className="pressable flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-ink-3 hover:text-ink"
+                      >
+                        <IconPencil size={17} />
+                      </button>
+                      <button
+                        aria-label={`${item.name} löschen`}
+                        onClick={() => void getShoppingListRepository().remove(item.id)}
+                        className="pressable flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-ink-3 hover:text-danger"
+                      >
+                        <IconTrash size={17} />
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             ))}
-          </ul>
+          </div>
 
           {checkedCount > 0 && (
             <div className="mt-4 flex justify-center">

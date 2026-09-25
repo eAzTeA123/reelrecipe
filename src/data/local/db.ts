@@ -1,5 +1,5 @@
 import Dexie, { type Table } from "dexie";
-import type { LocalImage, Recipe, ShoppingItem } from "@/domain/types";
+import type { LocalImage, Recipe, ShoppingItem, MealPlanEntry } from "@/domain/types";
 
 interface SettingRow {
   key: string;
@@ -11,6 +11,7 @@ export class RecipeDB extends Dexie {
   images!: Table<LocalImage, string>;
   shopping!: Table<ShoppingItem, string>;
   settings!: Table<SettingRow, string>;
+  mealPlan!: Table<MealPlanEntry, string>;
 
   constructor() {
     super("rezept");
@@ -19,6 +20,15 @@ export class RecipeDB extends Dexie {
       images: "id",
       shopping: "id, checked, createdAt",
       settings: "key",
+    });
+
+    this.version(2).stores({
+      recipes: "id, title, category, favorite, createdAt, *tags",
+      mealPlan: "id, dayOfWeek, recipeId",
+    }).upgrade(tx => {
+      return tx.table("recipes").toCollection().modify(recipe => {
+        if (!recipe.tags) recipe.tags = [];
+      });
     });
   }
 }

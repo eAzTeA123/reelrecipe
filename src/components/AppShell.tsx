@@ -4,11 +4,12 @@ import { useI18n } from "@/lib/i18n/context";
 import Link from "next/link";
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { IconCart, IconGrid, IconHeart, IconHeartFill, IconHome } from "./Icons";
+import { IconCart, IconGrid, IconHeart, IconHeartFill, IconHome, IconCalendar } from "./Icons";
 
 const getNavItems = (t: (key: import("@/lib/i18n/dictionaries").TranslationKey) => string) => [
   { href: "/", label: t("nav.home"), icon: IconHome },
   { href: "/recipes", label: t("nav.recipes"), icon: IconGrid },
+  { href: "/planner", label: t("nav.planner"), icon: IconCalendar },
   { href: "/shopping", label: t("nav.shopping"), icon: IconCart },
   { href: "/favorites", label: t("nav.favorites"), icon: IconHeart },
 ];
@@ -27,7 +28,7 @@ function BottomNav() {
       className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-white/85 backdrop-blur-xl md:hidden"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
-      <div className="mx-auto grid max-w-lg grid-cols-4">
+      <div className="mx-auto grid max-w-lg grid-cols-5">
         {getNavItems(t).map(({ href, label, icon: Icon }) => {
           const active = isActive(pathname, href);
           return (

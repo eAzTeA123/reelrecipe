@@ -8,7 +8,8 @@ import { formatAmount, scaleAmount } from "@/lib/scale";
 import { Button } from "@/components/Button";
 import { ErrorState } from "@/components/ErrorState";
 import { Spinner } from "@/components/Spinner";
-import { IconBack, IconCheck } from "@/components/Icons";
+import { IconBack, IconCheck, IconClock, IconX } from "@/components/Icons";
+import { StepTextWithTimers } from "./StepTextWithTimers";
 
 interface WakeLockSentinelLike {
   release: () => Promise<void>;
@@ -28,6 +29,31 @@ export default function CookModePage({ params }: { params: Promise<{ id: string 
   const [checked, setChecked] = useState<Set<string>>(new Set());
   const [wakeLockOn, setWakeLockOn] = useState(false);
   const wakeLock = useRef<WakeLockSentinelLike | null>(null);
+  
+  // Timer state
+  const [timers, setTimers] = useState<{ id: string; label: string; endTime: number }[]>([]);
+  const [now, setNow] = useState(() => Date.now());
+
+  useEffect(() => {
+    if (timers.length === 0) return;
+    const interval = setInterval(() => {
+      setNow(Date.now());
+      setTimers(prev => {
+        let changed = false;
+        const next = prev.filter(t => {
+          if (Date.now() >= t.endTime) {
+            alert(`Timer abgelaufen: ${t.label}`);
+            changed = true;
+            return false;
+          }
+          return true;
+        });
+        return changed ? next : prev;
+      });
+    }, 500);
+    return () => clearInterval(interval);
+  }, [timers.length]);
+
   const steps = useMemo(
     () => recipe?.steps.slice().sort((a, b) => a.order - b.order) ?? [],
     [recipe],
@@ -55,28 +81,41 @@ export default function CookModePage({ params }: { params: Promise<{ id: string 
   }, [steps.length]);
 
   useEffect(() => {
-    return () => {
-      void wakeLock.current?.release().catch(() => {});
-      wakeLock.current = null;
-    };
-  }, []);
-
-  async function toggleWakeLock() {
     const nav = navigator as unknown as WakeLockNavigator;
-    if (!nav.wakeLock) return;
-    try {
+    const requestWakeLock = async () => {
+      if (!nav.wakeLock) return;
+      try {
+        if (!wakeLock.current) {
+          wakeLock.current = await nav.wakeLock.request("screen");
+          setWakeLockOn(true);
+        }
+      } catch (e) {
+        console.error("wake lock failed", e);
+      }
+    };
+    const releaseWakeLock = () => {
       if (wakeLock.current) {
-        await wakeLock.current.release();
+        wakeLock.current.release().catch(() => {});
         wakeLock.current = null;
         setWakeLockOn(false);
-        return;
       }
-      wakeLock.current = await nav.wakeLock.request("screen");
-      setWakeLockOn(true);
-    } catch (e) {
-      console.error("wake lock failed", e);
-    }
-  }
+    };
+
+    requestWakeLock();
+    
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        requestWakeLock();
+      } else {
+        releaseWakeLock();
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      releaseWakeLock();
+    };
+  }, []);
 
   if (error) return <ErrorState message={error} onRetry={retry} />;
   if (loading) {
@@ -93,10 +132,8 @@ export default function CookModePage({ params }: { params: Promise<{ id: string 
         >
           <IconBack size={20} /> Beenden
         </Link>
-        {wakeLockSupported && (
-          <Button variant="secondary" size="sm" onClick={() => void toggleWakeLock()}>
-            Bildschirm {wakeLockOn ? "freigeben" : "wach halten"}
-          </Button>
+        {wakeLockSupported && wakeLockOn && (
+          <span className="text-xs text-ink-3">Bildschirm aktiv</span>
         )}
       </div>
 
@@ -159,9 +196,12 @@ export default function CookModePage({ params }: { params: Promise<{ id: string 
           </div>
         </div>
         {step ? (
-          <p className="flex-1 text-[24px] font-semibold leading-snug tracking-[-0.01em] md:text-[32px]">
-            {step.instruction}
-          </p>
+          <div className="flex-1 text-[24px] font-semibold leading-snug tracking-[-0.01em] md:text-[32px]">
+            <StepTextWithTimers 
+              text={step.instruction} 
+              onStartTimer={(sec, lbl) => setTimers(t => [...t, { id: Math.random().toString(), label: lbl, endTime: Date.now() + sec * 1000 }])} 
+            />
+          </div>
         ) : (
           <p className="flex-1 text-[20px] text-ink-2">Keine Zubereitungsschritte vorhanden.</p>
         )}
@@ -192,6 +232,37 @@ export default function CookModePage({ params }: { params: Promise<{ id: string 
           )}
         </div>
       </section>
+      {timers.length > 0 && (
+        <div className="fixed bottom-4 left-4 right-4 z-50 flex flex-col gap-2 pointer-events-none">
+          {timers.map((t) => {
+            const remaining = Math.max(0, Math.ceil((t.endTime - now) / 1000));
+            const m = Math.floor(remaining / 60);
+            const s = remaining % 60;
+            return (
+              <div
+                key={t.id}
+                className="bg-surface border border-line shadow-lg rounded-xl p-3 flex items-center justify-between pointer-events-auto"
+              >
+                <div className="flex items-center gap-3">
+                  <IconClock size={22} className="text-accent animate-pulse" />
+                  <span className="text-[17px] font-semibold tabular-nums">
+                    {m}:{s.toString().padStart(2, "0")}
+                  </span>
+                  <span className="text-[14px] text-ink-2 truncate max-w-[150px]">
+                    {t.label}
+                  </span>
+                </div>
+                <button
+                  onClick={() => setTimers((prev) => prev.filter((x) => x.id !== t.id))}
+                  className="text-ink-3 hover:text-ink-1 p-2"
+                >
+                  <IconX size={20} />
+                </button>
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
