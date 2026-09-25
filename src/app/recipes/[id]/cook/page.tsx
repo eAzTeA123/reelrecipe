@@ -10,6 +10,7 @@ import { ErrorState } from "@/components/ErrorState";
 import { Spinner } from "@/components/Spinner";
 import { IconBack, IconCheck, IconClock, IconX } from "@/components/Icons";
 import { StepTextWithTimers } from "./StepTextWithTimers";
+import { convertRecipeToMetric } from "@/lib/unitConverter";
 
 interface WakeLockSentinelLike {
   release: () => Promise<void>;
@@ -22,7 +23,9 @@ export default function CookModePage({ params }: { params: Promise<{ id: string 
   const { id } = use(params);
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { recipe, loading, error, retry } = useRecipe(id);
+  const { recipe: rawRecipe, loading, error, retry } = useRecipe(id);
+  const [isEu, setIsEu] = useState(false);
+  const recipe = isEu && rawRecipe ? convertRecipeToMetric(rawRecipe) : rawRecipe;
   const servingsParam = searchParams.get("servings");
   const targetServings = servingsParam ? parseInt(servingsParam, 10) : undefined;
   const [index, setIndex] = useState(0);
@@ -144,7 +147,15 @@ export default function CookModePage({ params }: { params: Promise<{ id: string 
 
       <section className="mt-6 rounded-card border border-line/70 bg-surface p-5 shadow-card">
         <div className="mb-4 flex items-center justify-between gap-3">
-          <h2 className="text-[17px] font-bold">Zutaten</h2>
+          <div className="flex items-center gap-3">
+            <h2 className="text-[17px] font-bold">Zutaten</h2>
+            <button
+              onClick={() => setIsEu(!isEu)}
+              className="pressable rounded-full border border-line bg-surface px-2 py-0.5 text-[12px] font-medium text-ink-2 shadow-sm"
+            >
+              {isEu ? "🇪🇺 EU" : "🇺🇸 US"}
+            </button>
+          </div>
           <span className="text-[13px] font-medium text-ink-3">
             {checked.size}/{recipe.ingredients.length} bereit
           </span>

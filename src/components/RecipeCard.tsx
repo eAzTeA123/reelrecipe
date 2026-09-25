@@ -11,7 +11,15 @@ function totalTime(r: Recipe): number | undefined {
   return t > 0 ? t : undefined;
 }
 
-export function RecipeCard({ recipe }: { recipe: Recipe }) {
+export function RecipeCard({
+  recipe,
+  matchPercentage,
+  missingIngredients,
+}: {
+  recipe: Recipe;
+  matchPercentage?: number;
+  missingIngredients?: string[];
+}) {
   const time = totalTime(recipe);
   return (
     <article className="group relative block border-b-2 border-line pb-8 mb-8 last:border-b-0">
@@ -35,6 +43,47 @@ export function RecipeCard({ recipe }: { recipe: Recipe }) {
           <h3 className="text-[28px] font-extrabold leading-none tracking-tight group-hover:text-accent transition-colors">
             {recipe.title}
           </h3>
+          
+          {matchPercentage !== undefined && (
+            <div className="mt-3 flex flex-col gap-1.5 rounded-xl border border-line bg-surface p-2.5 text-[13px]">
+              <div className="flex items-center justify-between">
+                <span
+                  className={`inline-flex items-center gap-1.5 font-bold ${
+                    matchPercentage >= 0.8
+                      ? "text-emerald-600"
+                      : matchPercentage >= 0.5
+                      ? "text-amber-600"
+                      : "text-ink-2"
+                  }`}
+                >
+                  <span
+                    className={`h-2 w-2 rounded-full ${
+                      matchPercentage >= 0.8
+                        ? "bg-emerald-500"
+                        : matchPercentage >= 0.5
+                        ? "bg-amber-500"
+                        : "bg-ink-3"
+                    }`}
+                  />
+                  {Math.round(matchPercentage * 100)}% Match
+                  {matchPercentage >= 1 && " • Alles da!"}
+                </span>
+                {missingIngredients && (
+                  <span className="text-[12px] text-ink-3">
+                    {recipe.ingredients.length - missingIngredients.length}/{recipe.ingredients.length} Zutaten
+                  </span>
+                )}
+              </div>
+              {missingIngredients && missingIngredients.length > 0 && (
+                <p className="text-[12px] text-ink-2 line-clamp-1">
+                  <span className="font-semibold text-ink">Fehlt noch:</span>{" "}
+                  {missingIngredients.slice(0, 3).join(", ")}
+                  {missingIngredients.length > 3 ? ` (+${missingIngredients.length - 3})` : ""}
+                </p>
+              )}
+            </div>
+          )}
+
           {(time !== undefined || recipe.servings !== undefined) && (
             <div className="mt-2 flex items-center gap-6 text-[15px] font-medium text-ink-2">
               {time !== undefined && (

@@ -24,6 +24,23 @@ export default function manifest(): MetadataRoute.Manifest {
         text: "text",
         url: "url",
       },
-    } as any,
+    },
+    shortcuts: [
+      {
+        name: "Neues Rezept scannen",
+        url: "/import?ref=shortcut",
+        icons: [{ src: "/icon-192.png", sizes: "192x192", type: "image/png" }],
+      },
+      {
+        name: "Einkaufsliste",
+        url: "/shopping?ref=shortcut",
+        icons: [{ src: "/icon-192.png", sizes: "192x192", type: "image/png" }],
+      },
+      {
+        name: "Wochenplan",
+        url: "/planner?ref=shortcut",
+        icons: [{ src: "/icon-192.png", sizes: "192x192", type: "image/png" }],
+      },
+    ],
   };
 }

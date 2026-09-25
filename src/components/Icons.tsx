@@ -111,3 +111,12 @@ export const IconCalendar = (p: P) => (
     <path d="M3 10h18" />
   </svg>
 );
+
+export const IconFridge = (p: P) => (
+  <svg {...base(p)}>
+    <rect x="5" y="2" width="14" height="20" rx="2" />
+    <path d="M5 10h14" />
+    <path d="M9 5v2" />
+    <path d="M9 13v3" />
+  </svg>
+);

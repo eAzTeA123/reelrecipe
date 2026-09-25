@@ -12,6 +12,7 @@ import { Button } from "@/components/Button";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { Spinner } from "@/components/Spinner";
 import { ErrorState } from "@/components/ErrorState";
+import { convertRecipeToMetric } from "@/lib/unitConverter";
 import { useToast } from "@/components/Toast";
 import {
   IconBack, IconCart, IconClock, IconHeart, IconHeartFill,
@@ -32,11 +33,14 @@ export default function RecipeDetailPage({ params }: { params: Promise<{ id: str
   const { t } = useI18n();
   const { id } = use(params);
   const router = useRouter();
-  const { recipe, loading, error, retry } = useRecipe(id);
+  const { recipe: rawRecipe, loading, error, retry } = useRecipe(id);
   const toast = useToast();
   const [servings, setServings] = useState<number | null>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [isEu, setIsEu] = useState(false);
+  
+  const recipe = isEu && rawRecipe ? convertRecipeToMetric(rawRecipe) : rawRecipe;
 
   if (error) {
     return <ErrorState message={error} onRetry={retry} />;
@@ -287,7 +291,15 @@ export default function RecipeDetailPage({ params }: { params: Promise<{ id: str
       <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(18rem,0.82fr)_minmax(0,1.18fr)] lg:items-start">
       {/* Zutaten */}
       <section aria-labelledby="ing-heading">
-        <h2 id="ing-heading" className="mb-3 text-[19px] font-bold">{t("shopping.ingredientPlural")}</h2>
+        <div className="mb-3 flex items-center justify-between">
+          <h2 id="ing-heading" className="text-[19px] font-bold">{t("shopping.ingredientPlural")}</h2>
+          <button
+            onClick={() => setIsEu(!isEu)}
+            className="pressable rounded-full border border-line bg-surface px-3 py-1 text-[13px] font-medium text-ink-2 shadow-sm"
+          >
+            {isEu ? "🇪🇺 EU" : "🇺🇸 US"}
+          </button>
+        </div>
         {recipe.ingredients.length === 0 ? (
           <p className="text-[15px] text-ink-3">{t("recipe.ingredientsEmpty")}</p>
         ) : (

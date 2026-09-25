@@ -10,7 +10,7 @@ import { EmptyState } from "@/components/EmptyState";
 import { ErrorState } from "@/components/ErrorState";
 import { Button } from "@/components/Button";
 import { Input } from "@/components/Input";
-import { IconClipboard, IconLink, IconSettings } from "@/components/Icons";
+import { IconClipboard, IconFridge, IconLink, IconSettings } from "@/components/Icons";
 import { extractSocialUrlFromText, parseSocialUrl } from "@/lib/socialSource";
 import { useToast } from "@/components/Toast";
 import { useI18n } from "@/lib/i18n/context";
@@ -201,6 +201,26 @@ export default function HomePage() {
             {urlError}
           </p>
         )}
+      </section>
+
+      {/* Kühlschrank Reste-Verwertung Teaser */}
+      <section className="mb-14 rounded-2xl border border-line bg-surface p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 shadow-card">
+        <div className="flex items-center gap-3.5">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-accent-soft text-accent">
+            <IconFridge size={24} />
+          </div>
+          <div>
+            <h3 className="font-bold text-[17px] text-ink">Was ist im Kühlschrank?</h3>
+            <p className="text-[14px] text-ink-2">Finde blitzschnell Rezepte für Zutaten, die du noch zu Hause hast.</p>
+          </div>
+        </div>
+        <Link
+          href="/recipes?mode=fridge"
+          className="pressable inline-flex items-center justify-center gap-2 rounded-xl bg-ink px-5 py-2.5 text-[14px] font-bold text-surface hover:bg-accent hover:text-white transition-colors shrink-0"
+        >
+          <span>Reste verwerten</span>
+          <span>→</span>
+        </Link>
       </section>
 
       <section id="tour-recipes" aria-labelledby="recent-heading">
