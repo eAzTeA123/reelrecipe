@@ -1,0 +1,1 @@
+import { parseAmountString } from './parser/quantity'; import { normalizeCaption } from './parser/normalize'; console.log('TEST 1:', parseAmountString(normalizeCaption('250'))); console.log('TEST 2:', parseAmountString('250'));

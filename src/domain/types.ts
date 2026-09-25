@@ -1,0 +1,81 @@
+export interface Ingredient {
+  id: string;
+  amount?: number;
+  unit?: string;
+  name: string;
+  notes?: string;
+  /** true, wenn der Parser die Zeile nicht eindeutig zuordnen konnte */
+  uncertain?: boolean;
+}
+
+export interface RecipeStep {
+  id: string;
+  order: number;
+  instruction: string;
+}
+
+export interface Recipe {
+  id: string;
+  title: string;
+  description?: string;
+  /** Bild-Referenz: "local-image:<id>" (Blob in IndexedDB) oder externe URL */
+  image?: string;
+  sourceUrl?: string;
+  /** Originale Caption, aus der das Rezept erkannt wurde */
+  sourceCaption?: string;
+  servings?: number;
+  /** Vorbereitungszeit in Minuten */
+  prepTime?: number;
+  /** Koch-/Backzeit in Minuten */
+  cookTime?: number;
+  ingredients: Ingredient[];
+  steps: RecipeStep[];
+  category?: string;
+  favorite: boolean;
+  createdAt: number;
+  updatedAt: number;
+}
+
+export type RecipeInput = Omit<Recipe, "id" | "createdAt" | "updatedAt">;
+
+export interface ShoppingItem {
+  id: string;
+  name: string;
+  amount?: number;
+  unit?: string;
+  checked: boolean;
+  /** Rezepte, aus denen die Zutat stammt */
+  recipeIds: string[];
+  createdAt: number;
+}
+
+export interface LocalImage {
+  id: string;
+  blob: Blob;
+  mime: string;
+  createdAt: number;
+}
+
+export interface BackupImage {
+  id: string;
+  mime: string;
+  dataBase64: string;
+}
+
+export interface BackupFile {
+  app: "rezept";
+  version: 1;
+  exportedAt: number;
+  recipes: Recipe[];
+  images: BackupImage[];
+  shopping: ShoppingItem[];
+}
+
+export interface ParsedRecipe {
+  title: string;
+  servings?: number;
+  prepTime?: number;
+  cookTime?: number;
+  ingredients: Ingredient[];
+  steps: RecipeStep[];
+}

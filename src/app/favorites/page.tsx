@@ -1,0 +1,50 @@
+"use client";
+
+import Link from "next/link";
+import { useRecipes } from "@/hooks/useRecipes";
+import { PageHeader } from "@/components/PageHeader";
+import { RecipeCard } from "@/components/RecipeCard";
+import { EmptyState } from "@/components/EmptyState";
+import { ErrorState } from "@/components/ErrorState";
+import { Button } from "@/components/Button";
+import { IconHeart } from "@/components/Icons";
+
+export default function FavoritesPage() {
+
+  
+  const { recipes, loading, error, retry } = useRecipes({ favoritesOnly: true });
+
+  return (
+    <>
+      <PageHeader title="Meine Favoriten" />
+      {error ? (
+        <ErrorState message={error} onRetry={retry} />
+      ) : loading ? (
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {[0, 1].map((i) => (
+            <div key={i} className="pulse-soft aspect-[4/3] rounded-card bg-black/[0.04]" />
+          ))}
+        </div>
+      ) : recipes.length === 0 ? (
+        <div className="rounded-card bg-surface shadow-card">
+          <EmptyState
+            icon={<IconHeart size={40} />}
+            title="Noch keine Favoriten"
+            subtitle="Markiere Rezepte mit dem Herz, um sie hier zu sehen."
+            action={
+              <Link href="/recipes">
+                <Button variant="secondary" size="lg">Rezepte ansehen</Button>
+              </Link>
+            }
+          />
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+          {recipes.map((r) => (
+            <RecipeCard key={r.id} recipe={r} />
+          ))}
+        </div>
+      )}
+    </>
+  );
+}
