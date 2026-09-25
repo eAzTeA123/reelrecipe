@@ -5,7 +5,9 @@ import type { ParserStrategy, RawParseResult } from "./types";
 
 const vocab = getAllVocab();
 
-type State = "TITEL" | "ZUTATEN" | "ZUBEREITUNG" | "SONSTIGES";
+type State = "TITEL" | "PREAMBLE" | "ZUTATEN" | "ZUBEREITUNG" | "SONSTIGES";
+
+const SERVINGS_HEADER_RE = /^(?:für|for|serves?|yields?|ergibt)\s*(?:ca\.?\s*|about\s*)?\d{1,2}\s*(?:portionen?|pers(?:onen)?\.?|servings?|people|persons|stücke?|tacos?|portion|stück|person)\s*:?$/i;
 
 /** Prüft, ob die Zeile eine Sub-Kategorie für Zutaten ist (z. B. "Für die Soße:") */
 function isSubIngredientHeader(line: string): boolean {
@@ -83,16 +85,46 @@ export const lineStateMachineStrategy: ParserStrategy = {
         continue;
       }
 
-      // 2. Zustandsübergänge (NUR VORWÄRTS: TITEL -> ZUTATEN -> ZUBEREITUNG -> SONSTIGES)
+      // 2. Zustandsübergänge (NUR VORWÄRTS: TITEL -> PREAMBLE -> ZUTATEN -> ZUBEREITUNG -> SONSTIGES)
       if (state === "TITEL") {
         if (!result.title) {
           result.title = line.replace(/^[#*•\-\s]+/, "").trim();
-          state = "ZUTATEN";
+          state = "PREAMBLE";
           continue;
         }
       }
 
+      if (state === "PREAMBLE") {
+        // Expliziter Zutaten-Marker oder Portions-Header leitet Zutaten ein
+        if (
+          vocab.ingredientMarkers.some((m) => line.toLowerCase().includes(m)) ||
+          vocab.ingredientEmojis.some((e) => line.includes(e)) ||
+          SERVINGS_HEADER_RE.test(line)
+        ) {
+          state = "ZUTATEN";
+          result.other.push(line);
+          continue;
+        }
+
+        // Wenn die Zeile wie eine Zutat aussieht (z.B. mit Mengenangabe / Bullets)
+        if (looksLikeIngredient(line) >= 2 || /^[-•*]\s*\d/.test(line)) {
+          state = "ZUTATEN";
+          result.ingredients.push(line);
+          continue;
+        }
+
+        // Sonst ist es ein Marketing-Hook / Beschreibungstext
+        result.other.push(line);
+        continue;
+      }
+
       if (state === "ZUTATEN") {
+        // Portionszeilen (z. B. "Für 4 Stück:") gehören nicht in die Zutatenliste
+        if (SERVINGS_HEADER_RE.test(line)) {
+          result.other.push(line);
+          continue;
+        }
+
         // Schütze Sub-Abschnitte (z.B. "Für die Soße:")
         if (isSubIngredientHeader(line)) {
           result.ingredients.push(line);

@@ -1,15 +1,15 @@
 import type { RecipeStep } from "@/domain/types";
 import { newId } from "@/lib/text";
 
-const STEP_PREFIX = /^(?:schritt|step)\s*\d{1,2}\s*[.)\]:\-–—]?\s*|^\d{1,2}\s*[.)\]]\s+/i;
-const INLINE_STEP = /(?:^|\s)(?:schritt\s+)?\d{1,2}\s*[.)\]]\s+/gi;
+const STEP_PREFIX = /^(?:schritt|step)\s*\d{1,2}\s*[.)\]:\-–—]?\s*|^\d{1,2}\s*[.)\]]\s*|^[0-9]️⃣\s*/iu;
+const INLINE_STEP = /(?:^|\s)(?:(?:schritt\s+)?\d{1,2}\s*[.)\]]|[0-9]️⃣)\s+/giu;
 
 export function cleanStepText(line: string): string {
   return line.replace(STEP_PREFIX, "").trim();
 }
 
 export function lineLooksLikeStep(line: string): boolean {
-  return /^(?:schritt\s+)?\d{1,2}\s*[.)\]]\s+\S+/i.test(line);
+  return /^(?:schritt\s+)?\d{1,2}\s*[.)\]]\s+\S+/i.test(line) || /^[0-9]️⃣\s*\S+/u.test(line);
 }
 
 /** Zerlegt eine Zeile in mehrere Schritte, wenn sie Nummern enthält ("1. ... 2. ..."). */

@@ -197,4 +197,24 @@ describe("Parser Benchmark & Strategy Evaluation", () => {
     const ensembleStats = results["ensemble"];
     expect(ensembleStats.correct / ensembleStats.total).toBeGreaterThanOrEqual(0.75);
   });
+
+  it("correctly parses Harissa Linsen Tacos without false positive ingredients", () => {
+    const rawCaption = `Harissa Linsen Feta Tacos mit Hummus & Zitronen-Minz-Joghurt 😍High Protein Mittagessen in unter 10 Minuten ⭐️Für 4 Stück: - 4 Protein Wraps - 250g gekochte Linsen aus der Dose, angeschüttet und abgespült - 1 TL Harissa-Paste- 1 EL Tomatenmarkt- 250g Cherry Tomaten, geviertelt- 200g Feta (geht auch vegan) - 4 EL HummusFür den Zitronen-Minz-Joghurt:- 200g Sojajoghurt- Saft 1 Zitrone- 1 kleine Handvoll frische Minze, gehackt - Salz & Pfeffer 1️⃣ In einer Pfanne die Linsen mit der Harissa-Paste, dem Tomatenmark, den Kirschtomaten und dem zerbröseltem Feta vermengen und 2 Minuten anbraten. 2️⃣ Hummus auf die Wraps streichen, die Linsenmischung auf eine Hälfte geben und die Tacos zusammenklappen. 3️⃣ Joghurt mit Zitronensaft, gehackter Minze und einer Prise Salz zu einem Dip verrühren. 4️⃣ Etwas Olivenöl in einer Pfanne erhitzen und die Tacos von beiden Seiten goldbraun und knusprig braten. 5️⃣ Die Tacos heiß mit dem Minzjoghurt servieren. [#gesunderezepte](https://www.instagram.com/explore/tags/gesunderezepte/) [#veganerezepte](https://www.instagram.com/explore/tags/veganerezepte/) [#schnellerezepte](https://www.instagram.com/explore/tags/schnellerezepte/) [#einfacherezepte](https://www.instagram.com/explore/tags/einfacherezepte/)`;
+
+    const parsed = ensembleStrategy.parse(rawCaption);
+
+    // Weder "High Protein Mittagessen in unter 10 Minuten" noch "Für 4 Stück" dürfen Zutaten sein!
+    const names = parsed.ingredients.map((i) => i.toLowerCase());
+    expect(names.some((n) => n.includes("mittagessen") || n.includes("unter 10"))).toBe(false);
+    expect(names.some((n) => n.includes("für 4 stück") || n.includes("für 4"))).toBe(false);
+
+    // Echte Zutaten müssen enthalten sein
+    expect(parsed.ingredients.length).toBeGreaterThanOrEqual(7);
+    expect(names.some((n) => n.includes("wraps"))).toBe(true);
+    expect(names.some((n) => n.includes("linsen"))).toBe(true);
+    expect(names.some((n) => n.includes("feta"))).toBe(true);
+
+    // Schritte müssen erkannt werden (1️⃣ bis 5️⃣)
+    expect(parsed.steps.length).toBe(5);
+  });
 });
