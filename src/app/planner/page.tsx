@@ -6,9 +6,10 @@ import { useMealPlan } from "@/hooks/useMealPlan";
 import { useRecipes } from "@/hooks/useRecipes";
 import { getMealPlanRepository, getShoppingListRepository, getRecipeRepository } from "@/data";
 import { PageHeader } from "@/components/PageHeader";
-import { IconTrash, IconCart } from "@/components/Icons";
+import { IconTrash, IconCart, IconPlus, IconMinus } from "@/components/Icons";
+import { RecipeImage } from "@/components/RecipeImage";
 import { scaleAmount } from "@/lib/scale";
-import type { DayOfWeek, MealPlanEntry, Recipe } from "@/domain/types";
+import type { DayOfWeek } from "@/domain/types";
 
 const DAYS: { key: DayOfWeek; label: string }[] = [
   { key: "mo", label: "Montag" },
@@ -46,10 +47,11 @@ export default function PlannerPage() {
     await repo.remove(id);
   };
 
-  const updateServings = async (id: string, servings: number) => {
-    if (servings < 1) return;
+  const updateServings = async (id: string, currentServings: number, delta: number) => {
+    const newServings = currentServings + delta;
+    if (newServings < 1) return;
     const repo = getMealPlanRepository();
-    await repo.update(id, { servings });
+    await repo.update(id, { servings: newServings });
   };
 
   const generateShoppingList = async () => {
@@ -79,77 +81,106 @@ export default function PlannerPage() {
   };
 
   return (
-    <div className="flex flex-col gap-6">
-      <PageHeader title="Wochenplan" />
-
-      <div className="flex justify-between items-center mb-2">
-        <p className="text-ink-2 text-sm">
-          Plane deine Mahlzeiten für die Woche.
-        </p>
+    <div className="flex flex-col gap-4">
+      {/* Mobile-friendly header with an inline button underneath on small screens, or in action slot on larger screens */}
+      <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+        <PageHeader title="Wochenplan" subtitle="Plane deine Mahlzeiten für die Woche." />
         <button
           onClick={generateShoppingList}
           disabled={loading || entries.length === 0}
-          className="flex items-center gap-2 rounded-full bg-accent px-4 py-2 text-sm font-medium text-white pressable disabled:opacity-50"
+          className="flex items-center justify-center gap-2 rounded-full bg-brand-gradient px-5 py-3 font-semibold text-white shadow-card transition-transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none md:mt-1 shrink-0"
         >
-          <IconCart size={18} />
+          <IconCart size={20} />
           Woche einkaufen
         </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 mt-2">
         {DAYS.map((day) => {
           const dayEntries = getEntriesForDay(day.key);
           return (
-            <div key={day.key} className="rounded-2xl border border-line bg-surface p-4">
-              <h3 className="mb-3 font-semibold text-lg">{day.label}</h3>
+            <section key={day.key} className="flex flex-col rounded-card bg-surface p-4 shadow-card">
+              <h3 className="mb-4 font-bold text-lg text-ink-1">{day.label}</h3>
               
-              <div className="flex flex-col gap-3 mb-3">
+              <div className="flex flex-col gap-3 flex-1">
                 {dayEntries.map((entry) => {
                   const recipe = recipes.find((r) => r.id === entry.recipeId);
+                  
                   return (
-                    <div key={entry.id} className="flex items-center justify-between gap-2 rounded-lg bg-white p-2 border border-line shadow-sm">
-                      <span className="flex-1 truncate text-sm font-medium">
-                        {recipe ? recipe.title : "Rezept gelöscht"}
-                      </span>
+                    <div key={entry.id} className="group relative flex gap-3 rounded-2xl bg-white p-3 shadow-sm border border-line items-center">
+                      {recipe ? (
+                        <div className="h-14 w-14 shrink-0 overflow-hidden rounded-xl bg-surface">
+                          <RecipeImage imageRef={recipe.image} alt={recipe.title} className="h-full w-full object-cover" />
+                        </div>
+                      ) : (
+                        <div className="h-14 w-14 shrink-0 rounded-xl bg-surface flex items-center justify-center text-ink-3">
+                          ?
+                        </div>
+                      )}
                       
-                      <div className="flex items-center gap-2">
-                        <input
-                          type="number"
-                          min="1"
-                          value={entry.servings}
-                          onChange={(e) => updateServings(entry.id, parseInt(e.target.value) || 1)}
-                          className="w-16 rounded-md border border-line px-2 py-1 text-sm"
-                          aria-label="Portionen"
-                        />
-                        <button
-                          onClick={() => removeEntry(entry.id)}
-                          className="text-ink-3 hover:text-red-500 p-1"
-                          aria-label="Entfernen"
-                        >
-                          <IconTrash size={18} />
-                        </button>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="truncate font-semibold text-ink-1 text-[15px]">
+                          {recipe ? recipe.title : "Rezept gelöscht"}
+                        </h4>
+                        <div className="mt-1.5 flex items-center gap-1 text-ink-3">
+                          <div className="flex items-center gap-1 rounded-full bg-surface px-1.5 py-0.5 border border-line/50">
+                            <button 
+                              onClick={() => updateServings(entry.id, entry.servings, -1)}
+                              className="p-1 hover:text-ink-1 transition-colors"
+                              aria-label="Portion reduzieren"
+                            >
+                              <IconMinus size={14} />
+                            </button>
+                            <span className="w-4 text-center text-sm font-semibold text-ink-1">{entry.servings}</span>
+                            <button 
+                              onClick={() => updateServings(entry.id, entry.servings, 1)}
+                              className="p-1 hover:text-ink-1 transition-colors"
+                              aria-label="Portion erhöhen"
+                            >
+                              <IconPlus size={14} />
+                            </button>
+                          </div>
+                        </div>
                       </div>
+
+                      <button
+                        onClick={() => removeEntry(entry.id)}
+                        className="h-10 w-10 shrink-0 flex items-center justify-center rounded-full text-ink-3 hover:bg-red-50 hover:text-red-500 transition-colors"
+                        aria-label="Aus Plan entfernen"
+                      >
+                        <IconTrash size={20} />
+                      </button>
                     </div>
                   );
                 })}
-              </div>
 
-              <select
-                className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm text-ink-2 outline-none focus:border-accent"
-                onChange={(e) => {
-                  addRecipe(day.key, e.target.value);
-                  e.target.value = "";
-                }}
-                defaultValue=""
-              >
-                <option value="" disabled>+ Rezept hinzufügen...</option>
-                {recipes.map((r) => (
-                  <option key={r.id} value={r.id}>
-                    {r.title}
-                  </option>
-                ))}
-              </select>
-            </div>
+                {/* Spacer to push the add button to the bottom if list is short */}
+                <div className="flex-1" />
+
+                {/* Add Button with Native Select Overlay */}
+                <div className="relative mt-2">
+                  <button className="flex w-full items-center justify-center gap-2 rounded-xl border border-dashed border-line py-3 text-[15px] font-medium text-ink-3 transition-colors hover:border-accent hover:bg-accent/5 hover:text-accent">
+                    <IconPlus size={18} />
+                    <span>Rezept hinzufügen</span>
+                  </button>
+                  <select
+                    className="absolute inset-0 h-full w-full opacity-0 cursor-pointer"
+                    onChange={(e) => {
+                      addRecipe(day.key, e.target.value);
+                      e.target.value = "";
+                    }}
+                    value=""
+                  >
+                    <option value="" disabled>Rezept für {day.label} wählen...</option>
+                    {recipes.map((r) => (
+                      <option key={r.id} value={r.id}>
+                        {r.title}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            </section>
           );
         })}
       </div>

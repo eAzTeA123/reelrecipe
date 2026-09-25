@@ -78,8 +78,8 @@ export const lineStateMachineStrategy: ParserStrategy = {
       const line = lines[i].trim();
       if (!line) continue;
 
-      // 1. Outro Check (kann immer nach SONSTIGES wechseln)
-      if (isOutroLine(line)) {
+      // 1. Outro Check (nur wenn wir schon tief im Rezept sind)
+      if (isOutroLine(line) && (state === "ZUBEREITUNG" || state === "ZUTATEN" || state === "SONSTIGES")) {
         state = "SONSTIGES";
         result.other.push(line);
         continue;

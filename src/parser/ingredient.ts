@@ -149,12 +149,19 @@ export function parseIngredientLine(line: string): ParsedIngredient | null {
 export function looksLikeIngredient(line: string): number {
   let score = 0;
   if (AMOUNT_REGEX.test(line)) score += 3;
-  if (UNIT_REGEX.test(line)) score += 3;
+  if (UNIT_REGEX.test(line)) {
+    if (AMOUNT_REGEX.test(line)) score += 3;
+    else score += 1;
+  }
   if (line.length <= 60) score += 1;
   if (line.length > 100) score -= 2;
   if (/\d+\s*(min|minuten|minutes|h|stunden)\b/i.test(line)) score -= 2;
   if (STEP_VERB_HINTS.test(line) && !AMOUNT_REGEX.test(line)) score -= 2;
-  if (line.split(" ").length > 10 && !UNIT_REGEX.test(line)) score -= 2;
+  
+  const wordCount = line.split(" ").length;
+  if (wordCount > 10 && !UNIT_REGEX.test(line)) score -= 2;
+  if (wordCount > 6 && !AMOUNT_REGEX.test(line)) score -= 3;
+  
   return score;
 }
 

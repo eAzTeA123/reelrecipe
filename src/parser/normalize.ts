@@ -40,5 +40,7 @@ export function cleanLine(line: string): string {
   l = l.replace(/(\s[#@]\S+)+\s*$/, "");
   l = l.replace(/\s+/g, " ").trim();
   if (HASHTAG_LINE_RE.test(l) || MENTION_LINE_RE.test(l)) return "";
+  // Ignore lines with no letters or numbers
+  if (!/[\p{L}\d]/u.test(l)) return "";
   return l;
 }

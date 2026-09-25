@@ -15,5 +15,15 @@ export default function manifest(): MetadataRoute.Manifest {
       { src: "/icon-512-maskable.png", sizes: "512x512", type: "image/png", purpose: "maskable" },
       { src: "/icon-1024.png", sizes: "1024x1024", type: "image/png" },
     ],
+    // Share Target API (funktioniert super auf Android / ChromeOS)
+    share_target: {
+      action: "/import",
+      method: "GET",
+      params: {
+        title: "title",
+        text: "text",
+        url: "url",
+      },
+    } as any,
   };
 }

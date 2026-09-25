@@ -135,7 +135,7 @@ function ImportFlow() {
 
   // ?url= Parameter → direkt starten
   useEffect(() => {
-    const q = params.get("url");
+    const qUrl = params.get("url"); const qText = params.get("text"); const combined = [qUrl, qText].filter(Boolean).join(" "); const extracted = extractSocialUrlFromText(combined); const q = extracted ? extracted.normalized : (qUrl || qText);
     if (!q) return;
     const parsed = parseSocialUrl(q);
     // Defer to avoid synchronous setState during effect
