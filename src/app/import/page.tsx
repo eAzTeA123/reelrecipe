@@ -110,6 +110,10 @@ function ImportFlow() {
 
   // Entwurf aus sessionStorage wiederherstellen
   useEffect(() => {
+    if (params.get("url")) {
+      sessionStorage.removeItem(STORAGE_KEY);
+      return;
+    }
     const saved = loadDraft();
     if (!saved) return;
     const t = setTimeout(() => {
@@ -120,7 +124,7 @@ function ImportFlow() {
       if (saved.caption) setStep("caption");
     }, 0);
     return () => clearTimeout(t);
-  }, [analyze]);
+  }, [params]);
 
   useEffect(() => {
     if (step === "caption" || step === "loading") {
