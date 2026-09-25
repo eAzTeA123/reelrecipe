@@ -61,7 +61,7 @@ function TopNav() {
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
         <Link href="/" className="flex items-center gap-2.5 text-[17px] font-bold tracking-tight">
           <img src="/icon.svg" alt="ReelRecipe Logo" width={32} height={32} className="rounded-[9px]" />
-          {t("nav.home")}
+          {t("brand.name")}
         </Link>
         <nav aria-label="Hauptnavigation" className="flex items-center gap-1">
           {getNavItems(t).map(({ href, label }) => {

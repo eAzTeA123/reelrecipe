@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useRecipes } from "@/hooks/useRecipes";
+import { useI18n } from "@/lib/i18n/context";
 import { PageHeader } from "@/components/PageHeader";
 import { RecipeCard } from "@/components/RecipeCard";
 import { EmptyState } from "@/components/EmptyState";
@@ -10,13 +11,12 @@ import { Button } from "@/components/Button";
 import { IconHeart } from "@/components/Icons";
 
 export default function FavoritesPage() {
-
-  
+  const { t } = useI18n();
   const { recipes, loading, error, retry } = useRecipes({ favoritesOnly: true });
 
   return (
     <>
-      <PageHeader title="Meine Favoriten" />
+      <PageHeader title={t("favorites.title")} />
       {error ? (
         <ErrorState message={error} onRetry={retry} />
       ) : loading ? (
@@ -29,11 +29,11 @@ export default function FavoritesPage() {
         <div className="rounded-card bg-surface shadow-card">
           <EmptyState
             icon={<IconHeart size={40} />}
-            title="Noch keine Favoriten"
-            subtitle="Markiere Rezepte mit dem Herz, um sie hier zu sehen."
+            title={t("favorites.emptyTitle")}
+            subtitle={t("favorites.emptySubtitle")}
             action={
               <Link href="/recipes">
-                <Button variant="secondary" size="lg">Rezepte ansehen</Button>
+                <Button variant="secondary" size="lg">{t("favorites.emptyAction")}</Button>
               </Link>
             }
           />

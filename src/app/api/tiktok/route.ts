@@ -37,7 +37,7 @@ async function resolveTikTokUrl(initialUrl: string): Promise<string> {
     if (res.status >= 300 && res.status < 400 && location) {
       const nextUrl = new URL(location, currentUrl);
       // Sicherheit: Host muss tiktok.com sein
-      if (!nextUrl.hostname.includes("tiktok.com")) {
+      if (nextUrl.hostname !== "tiktok.com" && !nextUrl.hostname.endsWith(".tiktok.com")) {
         throw new Error("Unerlaubtes Weiterleitungsziel");
       }
       currentUrl = nextUrl.toString();

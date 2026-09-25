@@ -32,6 +32,12 @@ export interface RecipeRepository {
     onChange: (recipes: Recipe[]) => void,
     onError?: (error: unknown) => void,
   ): () => void;
+  /** Live-Update für ein einzelnes Rezept */
+  subscribeOne(
+    id: string,
+    onChange: (recipe: Recipe | undefined) => void,
+    onError?: (error: unknown) => void,
+  ): () => void;
   importRecipes(recipes: Recipe[], mode: "skip" | "replace"): Promise<{ added: number; skipped: number }>;
   clearAll(): Promise<void>;
 }

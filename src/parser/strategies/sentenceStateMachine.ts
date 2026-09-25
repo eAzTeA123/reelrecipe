@@ -6,7 +6,7 @@ import type { ParserStrategy, RawParseResult } from "./types";
  * Berücksichtigt Emojis, Bulletpoints, Nummerierungen und Satzzeichen.
  */
 export function tokenizeSentences(text: string): string[] {
-  let normalized = text
+  const normalized = text
     // 1. Zuerst Keycap Emojis (1️⃣ 2️⃣ 3️⃣...) sauber in standardisierte Schritte umwandeln
     .replace(/1(?:\uFE0F)?\u20E3/g, "\n1. ")
     .replace(/2(?:\uFE0F)?\u20E3/g, "\n2. ")
@@ -25,10 +25,10 @@ export function tokenizeSentences(text: string): string[] {
     .replace(/((?:Für\s*(?:den|die|das|diese|alle)|\bFor\s*(?:the|this))\s+[a-zA-ZäöüÄÖÜß\-]+(?:\s+[a-zA-ZäöüÄÖÜß\-]+)?:?)/gi, "\n$1\n")
     // 4. Abschnitte trennen
     .replace(/(Zutaten|Ingredients|Zubereitung|Instructions|Directions|Schritte|Anleitung)[:\s]/gi, "\n$1:\n")
-    // 5. Emojis trennen
-    .replace(/([🛒🥣🥕🥑🧀🥩🥔🥚👩‍🍳👨‍🍳🍳🔪🥘🔥🍲📝])/gu, "\n$1\n")
-    // 6. Zeilenumbrüche vor Bullets (auch wenn ohne Leerzeichen an vorheriges Wort geklebt wie "Sojajoghurt- Saft")
-    .replace(/(?<=[a-zA-ZäöüÄÖÜß0-9,])\s*-(?=\s*(?:\d|[A-ZÄÖÜ]))/g, "\n- ")
+    // 5. Section-Emojis trennen
+    .replace(/([🛒🥣🥗👩‍🍳👨‍🍳📝])/gu, "\n$1\n")
+    // 6. Zeilenumbrüche vor Bullets (z. B. "Sojajoghurt- Saft", "Tomaten- 250g", aber NICHT bei "Zitronen-Minz-Joghurt")
+    .replace(/(?<=[a-zA-ZäöüÄÖÜß0-9,])\s*-(?=\s+(?:\d|[A-ZÄÖÜ])|\d)/g, "\n- ")
     .replace(/(?<=\s)[•*–—]\s*|(?<=\s)-+\s+/g, "\n- ")
     // 7. Vor Zutaten-Mengen trennen (nur wenn gefolgt von Einheit/Lebensmittel, NIEMALS bei "Minuten"!)
     .replace(/(?<=[a-zA-ZäöüÄÖÜß])\s+(?=\d+\s*(?:g|kg|ml|l|el|tl|tbsp|tsp|cup|cups|slices|scheiben|stk|stück|wraps|tomaten)\b)/gi, "\n")

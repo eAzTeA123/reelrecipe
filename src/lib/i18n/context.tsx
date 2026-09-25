@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import { createContext, useContext, useEffect, useState, useCallback, useMemo, ReactNode } from "react";
 import { dictionaries, Language, TranslationKey } from "./dictionaries";
 
 interface I18nContextType {
@@ -16,23 +16,26 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    let initialLang: Language = "de";
     try {
       const saved = localStorage.getItem("ReelRecipe-lang");
       if (saved === "en" || saved === "de") {
+        initialLang = saved;
         // eslint-disable-next-line react-hooks/set-state-in-effect
         setLangState(saved);
       } else {
         const browserLang = navigator.language.startsWith("de") ? "de" : "en";
-        // eslint-disable-next-line react-hooks/set-state-in-effect
+        initialLang = browserLang;
         setLangState(browserLang);
       }
     } catch {
       // Ignore
     }
+    document.documentElement.lang = initialLang;
     setMounted(true);
   }, []);
 
-  const setLang = (newLang: Language) => {
+  const setLang = useCallback((newLang: Language) => {
     setLangState(newLang);
     try {
       localStorage.setItem("ReelRecipe-lang", newLang);
@@ -40,18 +43,18 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     } catch {
       // Ignore
     }
-  };
+  }, []);
 
-  const t = (key: TranslationKey): string => {
-    return dictionaries[lang][key] || dictionaries.de[key] || key;
-  };
+  const t = useCallback(
+    (key: TranslationKey): string => {
+      return dictionaries[lang][key] || dictionaries.de[key] || key;
+    },
+    [lang],
+  );
 
-  // Prevent hydration mismatch by rendering children without context first if needed, 
-  // but since we want to translate text, returning children immediately is fine, 
-  // but it might flash German if SSG. We accept the small flash for a local MVP.
-  
+  const contextValue = useMemo(() => ({ lang, setLang, t }), [lang, setLang, t]);
+
   if (!mounted) {
-    // Return children directly to maintain identical DOM structure for hydration
     return (
       <I18nContext.Provider value={{ lang: "de", setLang, t: (k) => dictionaries.de[k] || k }}>
         {children}
@@ -60,7 +63,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <I18nContext.Provider value={{ lang, setLang, t }}>
+    <I18nContext.Provider value={contextValue}>
       {children}
     </I18nContext.Provider>
   );

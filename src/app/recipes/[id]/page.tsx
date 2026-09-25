@@ -160,11 +160,17 @@ export default function RecipeDetailPage({ params }: { params: Promise<{ id: str
     <article className="mx-auto max-w-5xl">
       <div className="no-print mb-4 flex items-center justify-between">
         <button
-          onClick={() => router.back()}
+          onClick={() => {
+            if (window.history.length > 1) {
+              router.back();
+            } else {
+              router.push("/recipes");
+            }
+          }}
           aria-label={t("general.back")}
           className="pressable inline-flex items-center gap-1 rounded-full py-2 pl-1 pr-3 text-[15px] font-medium text-ink-2"
         >
-          <IconBack size={20} /> Zurück
+          <IconBack size={20} /> {t("general.back")}
         </button>
         <div className="flex gap-1">
           <button

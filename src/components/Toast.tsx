@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useCallback, useContext, useRef, useState } from "react";
-import { IconCheck } from "./Icons";
+import { IconCheck, IconX } from "./Icons";
 
 interface ToastData {
   id: number;
@@ -29,7 +29,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
     <ToastContext.Provider value={show}>
       {children}
       <div
-        aria-live="polite"
+        aria-live={toasts.some((t) => t.type === "error") ? "assertive" : "polite"}
         className="pointer-events-none fixed inset-x-0 bottom-28 z-50 flex flex-col items-center gap-2 px-4 md:bottom-10"
       >
         {toasts.map((t) => (
@@ -39,7 +39,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
               t.type === "error" ? "bg-danger" : "bg-ink"
             }`}
           >
-            <IconCheck size={16} />
+            {t.type === "error" ? <IconX size={16} /> : <IconCheck size={16} />}
             {t.message}
           </div>
         ))}

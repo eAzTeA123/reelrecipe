@@ -2,7 +2,7 @@
 
 import { use, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useRecipe } from "@/hooks/useRecipe";
 import { formatAmount, scaleAmount } from "@/lib/scale";
 import { Button } from "@/components/Button";
@@ -19,6 +19,7 @@ type WakeLockNavigator = Navigator & {
 
 export default function CookModePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
+  const router = useRouter();
   const searchParams = useSearchParams();
   const { recipe, loading, error, retry } = useRecipe(id);
   const servingsParam = searchParams.get("servings");
@@ -39,6 +40,13 @@ export default function CookModePage({ params }: { params: Promise<{ id: string 
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
+      if (
+        e.target instanceof HTMLInputElement ||
+        e.target instanceof HTMLTextAreaElement ||
+        (e.target as HTMLElement)?.isContentEditable
+      ) {
+        return;
+      }
       if (e.key === "ArrowRight") setIndex((i) => Math.min(steps.length - 1, i + 1));
       if (e.key === "ArrowLeft") setIndex((i) => Math.max(0, i - 1));
     }
@@ -166,14 +174,22 @@ export default function CookModePage({ params }: { params: Promise<{ id: string 
           >
             Zurück
           </Button>
-          <Button
-            size="lg"
-            onClick={() => setIndex((i) => Math.min(steps.length - 1, i + 1))}
-            disabled={currentIndex >= steps.length - 1}
-          >
-            {currentIndex >= steps.length - 1 ? <IconCheck size={20} /> : null}
-            Weiter
-          </Button>
+          {currentIndex >= steps.length - 1 ? (
+            <Button
+              size="lg"
+              onClick={() => router.push(`/recipes/${recipe?.id ?? id}`)}
+            >
+              <IconCheck size={20} />
+              Fertig
+            </Button>
+          ) : (
+            <Button
+              size="lg"
+              onClick={() => setIndex((i) => Math.min(steps.length - 1, i + 1))}
+            >
+              Weiter
+            </Button>
+          )}
         </div>
       </section>
     </div>

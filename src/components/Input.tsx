@@ -2,7 +2,7 @@ import { forwardRef, type InputHTMLAttributes, type TextareaHTMLAttributes } fro
 
 const baseClass =
   "w-full rounded-ctl border border-line bg-surface px-4 text-[16px] text-ink " +
-  "placeholder:text-ink-3 focus:border-accent focus:outline-none transition-colors " +
+  "placeholder:text-ink-3 focus:border-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/20 transition-colors " +
   "disabled:opacity-50";
 
 export const Input = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLInputElement>>(

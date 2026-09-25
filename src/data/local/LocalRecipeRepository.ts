@@ -159,15 +159,19 @@ export class LocalRecipeRepository implements RecipeRepository {
         createdAt: now,
         updatedAt: now,
       };
+      copy.ingredients = source.ingredients.map(i => ({ ...i, id: newId() }));
+      copy.steps = source.steps.map(s => ({ ...s, id: newId() }));
       await this.db.recipes.add(copy);
       return copy;
     });
   }
 
   async toggleFavorite(id: string): Promise<void> {
-    const recipe = await this.db.recipes.get(id);
-    if (!recipe) return;
-    await this.db.recipes.update(id, { favorite: !recipe.favorite, updatedAt: Date.now() });
+    await this.db.transaction("rw", this.db.recipes, async () => {
+      const recipe = await this.db.recipes.get(id);
+      if (!recipe) return;
+      await this.db.recipes.update(id, { favorite: !recipe.favorite, updatedAt: Date.now() });
+    });
   }
 
   subscribe(
@@ -179,6 +183,21 @@ export class LocalRecipeRepository implements RecipeRepository {
       next: (all) => onChange(sortByCreatedDesc(applyFilter(all, filter))),
       error: (err) => {
         console.error("recipe subscription failed", err);
+        onError?.(err);
+      },
+    });
+    return () => sub.unsubscribe();
+  }
+
+  subscribeOne(
+    id: string,
+    onChange: (recipe: Recipe | undefined) => void,
+    onError?: (error: unknown) => void,
+  ): () => void {
+    const sub = liveQuery(() => this.db.recipes.get(id)).subscribe({
+      next: (recipe) => onChange(recipe),
+      error: (err) => {
+        console.error("single recipe subscription failed", err);
         onError?.(err);
       },
     });

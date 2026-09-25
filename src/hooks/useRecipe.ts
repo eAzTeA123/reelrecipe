@@ -22,10 +22,9 @@ export function useRecipe(id: string): {
 
   useEffect(() => {
     try {
-      const unsub = getRecipeRepository().subscribe(
-        undefined,
-        (all) =>
-          setState({ id, recipe: all.find((r) => r.id === id), loading: false }),
+      const unsub = getRecipeRepository().subscribeOne(
+        id,
+        (recipe) => setState({ id, recipe, loading: false }),
         (err) => {
           console.error("recipe load failed", err);
           setState((s) => ({ ...s, id, loading: false, error: LOAD_ERROR }));

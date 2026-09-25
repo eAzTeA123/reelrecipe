@@ -20,7 +20,10 @@ export function splitInlineSteps(line: string): string[] {
   if (matches.length < 2) return [line];
   for (const m of matches) {
     const idx = m.index! + (m[0].startsWith(" ") ? 1 : 0);
-    if (idx > last) parts.push(line.slice(last, idx).trim());
+    if (idx > last) {
+      const slice = line.slice(last, idx).trim();
+      if (slice) parts.push(slice);
+    }
     last = idx;
   }
   parts.push(line.slice(last).trim());
@@ -35,12 +38,28 @@ export function splitSentences(text: string): string[] {
     .filter((s) => s.length > 8);
 }
 
+const STEP_HEADER_RE = /^(?:zubereitung|anleitung|instructions?|directions?|method|schritte?|so geht'?s?|vorgehensweise):?$/i;
+
 export function makeSteps(lines: string[]): RecipeStep[] {
+  // Wenn es nur 1 einzigen langen Fließtext-Block ohne Nummerierung gibt, an Satzgrenzen aufteilen
+  let effectiveLines = lines;
+  if (
+    lines.length === 1 &&
+    lines[0].length > 100 &&
+    !lineLooksLikeStep(lines[0]) &&
+    !INLINE_STEP.test(lines[0])
+  ) {
+    const sentences = splitSentences(lines[0]);
+    if (sentences.length > 1) {
+      effectiveLines = sentences;
+    }
+  }
+
   const out: RecipeStep[] = [];
-  for (const line of lines) {
+  for (const line of effectiveLines) {
     for (const part of splitInlineSteps(line)) {
       const text = cleanStepText(part);
-      if (!text) continue;
+      if (!text || STEP_HEADER_RE.test(text)) continue;
       out.push({ id: newId(), order: out.length + 1, instruction: text });
     }
   }

@@ -14,7 +14,7 @@ describe("scaleAmount & formatAmount (A02)", () => {
   it("behandelt unbekannte Basisportionen nicht als 1", () => {
     // Bei undefined als originalServings soll scaleAmount entweder undefined zurückgeben
     // oder die unveränderte Menge, anstatt stillschweigend von 1 auszugehen
-    expect(scaleAmount(500, undefined, 4)).toBeUndefined();
+    expect(scaleAmount(500, undefined, 4)).toBe(500);
   });
 });
 

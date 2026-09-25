@@ -87,7 +87,14 @@ export const lineStateMachineStrategy: ParserStrategy = {
 
       // 2. Zustandsübergänge (NUR VORWÄRTS: TITEL -> PREAMBLE -> ZUTATEN -> ZUBEREITUNG -> SONSTIGES)
       if (state === "TITEL") {
-        if (!result.title) {
+        const clean = line.toLowerCase().replace(/[:\-_#*]/g, "").trim();
+        const isHeader =
+          vocab.ingredientMarkers.some((m) => clean === m || clean.startsWith(m)) ||
+          vocab.stepMarkers.some((m) => clean === m || clean.startsWith(m));
+        if (isHeader) {
+          state = "PREAMBLE";
+          // Nicht als Titel setzen, in PREAMBLE weiterverarbeiten
+        } else if (!result.title) {
           result.title = line.replace(/^[#*•\-\s]+/, "").trim();
           state = "PREAMBLE";
           continue;
@@ -95,6 +102,13 @@ export const lineStateMachineStrategy: ParserStrategy = {
       }
 
       if (state === "PREAMBLE") {
+        // Expliziter Zubereitungs-Marker leitet direkt Zubereitung ein
+        const cleanLower = line.toLowerCase().replace(/[:\-_#*]/g, "").trim();
+        if (vocab.stepMarkers.some((m) => cleanLower === m || cleanLower.startsWith(m))) {
+          state = "ZUBEREITUNG";
+          continue;
+        }
+
         // Expliziter Zutaten-Marker oder Portions-Header leitet Zutaten ein
         if (
           vocab.ingredientMarkers.some((m) => line.toLowerCase().includes(m)) ||
@@ -119,6 +133,17 @@ export const lineStateMachineStrategy: ParserStrategy = {
       }
 
       if (state === "ZUTATEN") {
+        // Expliziter Zubereitungs-Marker (z.B. "Zubereitung:", "Anleitung:", 👩‍🍳)
+        const cleanLower = line.toLowerCase().replace(/[:\-_#*]/g, "").trim();
+        const isExplicitStepMarker =
+          vocab.stepMarkers.some((m) => cleanLower === m || cleanLower.startsWith(m)) ||
+          (vocab.stepEmojis.some((e) => line.includes(e)) && line.length < 25 && !/\d/.test(line));
+
+        if (isExplicitStepMarker) {
+          state = "ZUBEREITUNG";
+          continue;
+        }
+
         // Portionszeilen (z. B. "Für 4 Stück:") gehören nicht in die Zutatenliste
         if (SERVINGS_HEADER_RE.test(line)) {
           result.other.push(line);

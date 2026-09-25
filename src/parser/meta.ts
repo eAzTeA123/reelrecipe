@@ -1,13 +1,13 @@
 const SERVINGS_RES = [
-  /(?:serves?|servings?|yields?|ergibt)\s*(?:about\s*|ca\.?\s*)?(\d{1,2})/i,
-  /(?:für|for)\s*(?:ca\.?\s*|about\s*|approximately\s*)?(\d{1,2})\s*(?:portionen?|pers(?:onen)?\.?|servings?|people|persons|stücke?|tacos?)\b/i,
+  /(?:serves?|servings?|yields?|ergibt|portionen?|portion)\s*[:=-]?\s*(?:about\s*|ca\.?\s*)?(\d{1,2})/i,
+  /(?:für|for)\s*(?:ca\.?\s*|about\s*|approximately\s*)?(\d{1,2})\s*(?:portionen?|pers(?:onen)?\.?|servings?|people|persons|stücke?|tacos?|portion|stück|person)\b/i,
   /(\d{1,2})\s*(?:portionen?|pers(?:onen)?\.?|servings?|people|persons)\b/i,
 ];
 
 const HOUR_MIN = /(?<![\p{L}])(\d{1,3})\s*(?:h|std\.?|stunden?|hours?|hrs?)(?![\p{L}])(?:\s*(\d{1,2})\s*(?:min\.?|minuten?|minutes?)(?![\p{L}]))?/iu;
 const MIN_ONLY = /(?<![\p{L}])(\d{1,3})\s*(?:min\.?|minuten?|minutes?)(?![\p{L}])/iu;
 const TIME_LABEL = /(zeit|time|dauer|prep(?:aration)?\s*time|vorbereitungs?zeit|cook\s*time|kochzeit|backzeit|bake\s*time|gesamt|total|⏱)/i;
-const PREP_LABEL = /(prep(?:aration)?\s*time|vorbereitungs?zeit|vorbereitung)/i;
+const PREP_LABEL = /(prep(?:aration)?\s*time|vorbereitungs?zeit|vorbereitung|arbeitszeit)/i;
 
 export function parseServings(lines: string[]): number | undefined {
   for (const line of lines) {

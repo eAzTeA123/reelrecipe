@@ -6,18 +6,17 @@ import { Sheet } from "./Sheet";
 
 export function PwaInstallPrompt() {
   const { t } = useI18n();
-  const [mounted, setMounted] = useState(false);
   const [showPrompt, setShowPrompt] = useState(false);
   const [isStandalone, setIsStandalone] = useState(true); // default true to avoid flash
   const [hasPulsed, setHasPulsed] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
     // Check if already installed (PWA standalone mode)
     const standalone =
       window.matchMedia("(display-mode: standalone)").matches ||
-      ("standalone" in window.navigator && (window.navigator as any).standalone === true);
+      ("standalone" in window.navigator && (window.navigator as Navigator & { standalone?: boolean }).standalone === true);
     
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsStandalone(standalone);
 
     if (!standalone) {
@@ -36,7 +35,7 @@ export function PwaInstallPrompt() {
     }
   }, []);
 
-  if (!mounted || isStandalone) return null;
+  if (isStandalone) return null;
 
   return (
     <>

@@ -102,7 +102,6 @@ export default function SettingsPage() {
       toast(
         `Backup importiert: ${result.addedRecipes} Rezepte, ${result.skippedRecipes} übersprungen`,
       );
-      toast("Backup importiert");
       router.refresh();
     } catch (e) {
       console.error("import failed", e);
@@ -138,7 +137,7 @@ export default function SettingsPage() {
       <section className="mb-6 rounded-card bg-surface p-5 shadow-card" aria-labelledby="storage-h">
         <h2 id="storage-h" className="mb-1 text-[17px] font-bold">Lokale Daten</h2>
         <p className="mb-4 text-[14px] leading-relaxed text-ink-2">
-          {recipes.length} {recipes.length === 1 ? t("nav.home") : t("nav.recipes")} werden aktuell nur in
+          {recipes.length} {recipes.length === 1 ? t("recipes.countSingular") : t("recipes.countPlural")} werden aktuell nur in
           diesem Browser gespeichert (IndexedDB). Exportiere regelmäßig ein Backup, damit nichts
           verloren geht.
         </p>

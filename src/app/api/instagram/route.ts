@@ -39,8 +39,20 @@ function decodeEntities(s: string): string {
     .replace(/&amp;/g, "&")
     .replace(/&lt;/g, "<")
     .replace(/&gt;/g, ">")
-    .replace(/&#(\d+);/g, (_, n) => String.fromCodePoint(parseInt(n, 10)))
-    .replace(/&#x([0-9a-f]+);/gi, (_, n) => String.fromCodePoint(parseInt(n, 16)));
+    .replace(/&#(\d+);/g, (_, n) => {
+      try {
+        return String.fromCodePoint(parseInt(n, 10));
+      } catch {
+        return _;
+      }
+    })
+    .replace(/&#x([0-9a-f]+);/gi, (_, n) => {
+      try {
+        return String.fromCodePoint(parseInt(n, 16));
+      } catch {
+        return _;
+      }
+    });
 }
 
 /**
@@ -59,9 +71,10 @@ function extractCaption(og: string): string | undefined {
 
 interface Result {
   ok: boolean;
-  caption?: string;
+  caption?: string | null;
   image?: string;
   source: "meta-tags" | "oembed";
+  error?: string;
 }
 
 async function fetchWithTimeout(url: string, init: RequestInit): Promise<Response> {
@@ -115,6 +128,9 @@ async function viaMetaTags(url: URL): Promise<Result> {
     if (!res.ok) return { ok: false, source: "meta-tags" };
     const html = await res.text();
     const ogDesc = extractMeta(html, "og:description");
+    if (res.url.includes("/accounts/login") || (ogDesc && ogDesc.includes("Instagram"))) {
+      return { ok: false, error: "login-wall", caption: null, source: "meta-tags" };
+    }
     const ogImage = extractMeta(html, "og:image");
     if (!ogDesc) return { ok: false, source: "meta-tags", image: ogImage };
     const caption = extractCaption(ogDesc) ?? ogDesc;

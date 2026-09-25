@@ -5,6 +5,7 @@ import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { extractSocialUrlFromText, parseSocialUrl } from "@/lib/socialSource";
 import { parseRecipe } from "@/parser";
+import { translateParsedRecipe } from "@/lib/i18n/recipeTranslation";
 import { getRecipeRepository } from "@/data";
 import { compressImage } from "@/lib/image";
 import type { RecipeInput } from "@/domain/types";
@@ -137,13 +138,16 @@ function ImportFlow() {
     const q = params.get("url");
     if (!q) return;
     const parsed = parseSocialUrl(q);
-    if (parsed) {
-      setUrl(parsed.normalized);
-      void fetchCaption(parsed.normalized);
-    } else {
-      setStep("caption");
-      setAutoFailed(true);
-    }
+    // Defer to avoid synchronous setState during effect
+    queueMicrotask(() => {
+      if (parsed) {
+        setUrl(parsed.normalized);
+        void fetchCaption(parsed.normalized);
+      } else {
+        setStep("caption");
+        setAutoFailed(true);
+      }
+    });
   }, [params, fetchCaption]);
 
   function submitUrl(e: React.FormEvent) {
@@ -200,13 +204,14 @@ function ImportFlow() {
     setParseError(undefined);
     setAnalyzing(true);
     try {
-      const parsed = parseRecipe(trimmed);
-      if (!parsed || (parsed.ingredients.length === 0 && parsed.steps.length === 0)) {
+      const rawParsed = parseRecipe(trimmed);
+      if (!rawParsed || (rawParsed.ingredients.length === 0 && rawParsed.steps.length === 0)) {
         setParseError(t("import.parseErrorFailed"),
         );
         setStep("caption");
         return;
       }
+      const parsed = translateParsedRecipe(rawParsed, lang);
       let pendingImage: Blob | undefined;
       if (useOgImage && imgToUse) {
         try {

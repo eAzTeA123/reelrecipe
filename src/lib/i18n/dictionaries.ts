@@ -3,7 +3,8 @@ export type Language = "de" | "en";
 export const dictionaries = {
   de: {
     // Nav
-    "nav.home": "ReelRecipe",
+    "nav.home": "Start",
+    "brand.name": "ReelRecipe",
     "nav.recipes": "Rezepte",
     "nav.shopping": "Einkaufsliste",
     "nav.favorites": "Favoriten",
@@ -56,6 +57,8 @@ export const dictionaries = {
     "recipes.all": "Alle",
     "recipes.emptyTitle": "Keine Rezepte gefunden",
     "recipes.emptySubtitle": "Versuche einen anderen Suchbegriff.",
+    "recipes.countSingular": "Rezept",
+    "recipes.countPlural": "Rezepte",
     
     // Recipe Detail
     "recipe.notFound": "Rezept nicht gefunden",
@@ -78,6 +81,26 @@ export const dictionaries = {
     "recipe.uncertain": "nicht eindeutig",
     "recipe.originalTiktok": "TikTok-Original",
     "recipe.originalSource": "Originalquelle",
+    "recipe.editTitle": "Rezept bearbeiten",
+    "recipe.saveChanges": "Änderungen speichern",
+
+    // Favorites
+    "favorites.title": "Meine Favoriten",
+    "favorites.emptyTitle": "Noch keine Favoriten",
+    "favorites.emptySubtitle": "Markiere Rezepte mit dem Herz, um sie hier zu sehen.",
+    "favorites.emptyAction": "Rezepte ansehen",
+
+    // Cook Mode
+    "cook.title": "Kochmodus",
+    "cook.step": "Schritt",
+    "cook.of": "von",
+    "cook.ready": "bereit",
+    "cook.ingredients": "Zutaten",
+    "cook.noSteps": "Keine Zubereitungsschritte vorhanden.",
+    "cook.finish": "Fertig",
+    "cook.next": "Weiter",
+    "cook.back": "Zurück",
+    "cook.wakeLock": "Bildschirm wachhalten",
 
     // Shopping
     "shopping.title": "Einkaufsliste",
@@ -148,7 +171,8 @@ export const dictionaries = {
   },
   en: {
     // Nav
-    "nav.home": "ReelRecipe",
+    "nav.home": "Home",
+    "brand.name": "ReelRecipe",
     "nav.recipes": "Recipes",
     "nav.shopping": "Shopping",
     "nav.favorites": "Favorites",
@@ -201,6 +225,8 @@ export const dictionaries = {
     "recipes.all": "All",
     "recipes.emptyTitle": "No recipes found",
     "recipes.emptySubtitle": "Try another search term.",
+    "recipes.countSingular": "recipe",
+    "recipes.countPlural": "recipes",
     
     // Recipe Detail
     "recipe.notFound": "Recipe not found",
@@ -223,6 +249,26 @@ export const dictionaries = {
     "recipe.uncertain": "ambiguous",
     "recipe.originalTiktok": "TikTok Original",
     "recipe.originalSource": "Original Source",
+    "recipe.editTitle": "Edit Recipe",
+    "recipe.saveChanges": "Save changes",
+
+    // Favorites
+    "favorites.title": "My Favorites",
+    "favorites.emptyTitle": "No favorites yet",
+    "favorites.emptySubtitle": "Mark recipes with the heart icon to see them here.",
+    "favorites.emptyAction": "Browse recipes",
+
+    // Cook Mode
+    "cook.title": "Cook Mode",
+    "cook.step": "Step",
+    "cook.of": "of",
+    "cook.ready": "ready",
+    "cook.ingredients": "Ingredients",
+    "cook.noSteps": "No instructions available.",
+    "cook.finish": "Finish",
+    "cook.next": "Next",
+    "cook.back": "Back",
+    "cook.wakeLock": "Keep screen awake",
 
     // Shopping
     "shopping.title": "Shopping List",

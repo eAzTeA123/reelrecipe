@@ -8,8 +8,8 @@ function isMarker(line: string, markers: string[], emojis: string[]): boolean {
   const clean = line.trim().toLowerCase().replace(/[:\-_#*]/g, "").trim();
   if (markers.some((m) => clean === m || clean.startsWith(m))) return true;
   if (emojis.some((e) => line.includes(e))) {
-    // Wenn ein Emoji vorkommt und die Zeile kurz ist (< 30 Zeichen)
-    if (line.trim().length < 30) return true;
+    // Wenn ein Emoji vorkommt, die Zeile kurz ist und KEINE Ziffern enthält (keine Zutat wie "2 Eier")
+    if (line.trim().length < 25 && !/\d/.test(line)) return true;
   }
   return false;
 }

@@ -31,12 +31,15 @@ function splitNameAndNotes(rest: string): { name: string; notes?: string } {
       r = r.slice(0, comma).trim();
     }
   }
-  r = r.replace(/^[–\-:;,\s]+/, "").replace(/[\s.,;]+$/, "");
+  r = r.replace(/^[–\-:;,\s.]+/, "").replace(/[\s.,;]+$/, "");
   return { name: r, notes: notes.length ? notes.join(", ") : undefined };
 }
 
 const SERVINGS_HEADER_RE = /^(?:für|for|serves?|yields?|ergibt)\s*(?:ca\.?\s*|about\s*)?\d{1,2}\s*(?:portionen?|pers(?:onen)?\.?|servings?|people|persons|stücke?|tacos?|portion|stück|person)\s*:?$/i;
 const TIME_DESC_RE = /(?:\bunter\s*\d+\s*min|\b\d+\s*(?:minuten?|minutes?|stunden?|hours?|std\.?)\b|\bhigh\s*protein\b|\bkalorienarm\b)/i;
+
+const COMPACT_REGEX = new RegExp(`^(\\d+[.,]?\\d*(?:\\s+\\d+\\/\\d+|\\/\\d+)?)\\s*(${UNIT_REGEX.source})(?:\\s+(.+))?$`, "iu");
+const TRAILING_REGEX = new RegExp(`^(.{2,80}?)\\s+(\\d+[.,]?\\d*(?:\\s+\\d+\\/\\d+|\\/\\d+)?)\\s*(${UNIT_REGEX.source})$`, "iu");
 
 /** Parst eine Zeile zu einer Zutat. Gibt null zurück, wenn unmöglich. */
 export function parseIngredientLine(line: string): ParsedIngredient | null {
@@ -66,9 +69,7 @@ export function parseIngredientLine(line: string): ParsedIngredient | null {
     }
   } else {
     // 1b) Kompakte Zahl+Einheit am Anfang ohne Leerzeichen: "500g Mehl", "250ml Milch"
-    const compactMatch = rest.match(
-      new RegExp(`^(\\d+[.,]?\\d*(?:\\s+\\d+\\/\\d+|\\/\\d+)?)\\s*(${UNIT_REGEX.source})(?:\\s+(.+))?$`, "iu"),
-    );
+    const compactMatch = rest.match(COMPACT_REGEX);
     if (compactMatch && compactMatch[3]) {
       amount = parseAmountString(compactMatch[1]);
       unit = canonicalUnit(compactMatch[2]);
@@ -103,9 +104,7 @@ export function parseIngredientLine(line: string): ParsedIngredient | null {
 
   // 4) Trailing-Menge: "Mehl 500 g", "Hähnchenbrust 400g"
   if (amount === undefined) {
-    const trailing = rest.match(
-      new RegExp(`^(.{2,80}?)\\s+(\\d+[.,]?\\d*(?:\\s+\\d+\\/\\d+|\\/\\d+)?)\\s*(${UNIT_REGEX.source})$`, "iu"),
-    );
+    const trailing = rest.match(TRAILING_REGEX);
     if (trailing) {
       rest = trailing[1].trim();
       amount = parseAmountString(trailing[2]);

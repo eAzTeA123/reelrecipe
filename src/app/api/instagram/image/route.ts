@@ -20,17 +20,49 @@ export async function GET(req: NextRequest) {
   const t = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
   try {
     const res = await fetch(url.toString(), { signal: ctrl.signal });
-    if (!res.ok || !res.headers.get("content-type")?.startsWith("image/")) {
+    const contentType = res.headers.get("content-type") || "";
+    if (!res.ok || !contentType.startsWith("image/")) {
       return NextResponse.json({ error: "not-an-image" }, { status: 502 });
     }
-    const buf = await res.arrayBuffer();
-    if (buf.byteLength > MAX_BYTES) {
+    if (contentType.includes("svg")) {
+      return NextResponse.json({ error: "svg-not-allowed" }, { status: 400 });
+    }
+    const contentLength = res.headers.get("content-length");
+    if (contentLength && parseInt(contentLength, 10) > MAX_BYTES) {
       return NextResponse.json({ error: "too-large" }, { status: 502 });
     }
+    if (!res.body) {
+      return NextResponse.json({ error: "empty-body" }, { status: 502 });
+    }
+
+    const reader = res.body.getReader();
+    const chunks: Uint8Array[] = [];
+    let bytesRead = 0;
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      if (value) {
+        bytesRead += value.byteLength;
+        if (bytesRead > MAX_BYTES) {
+          return NextResponse.json({ error: "too-large" }, { status: 502 });
+        }
+        chunks.push(value);
+      }
+    }
+
+    const totalLength = chunks.reduce((acc, chunk) => acc + chunk.byteLength, 0);
+    const buf = new Uint8Array(totalLength);
+    let offset = 0;
+    for (const chunk of chunks) {
+      buf.set(chunk, offset);
+      offset += chunk.byteLength;
+    }
+
     return new NextResponse(buf, {
       headers: {
-        "content-type": res.headers.get("content-type")!,
+        "content-type": contentType,
         "cache-control": "private, max-age=300",
+        "content-security-policy": "default-src 'none'",
       },
     });
   } catch {

@@ -1,8 +1,10 @@
 "use client";
 
 import { use } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRecipe } from "@/hooks/useRecipe";
+import { useI18n } from "@/lib/i18n/context";
 import { getRecipeRepository } from "@/data";
 import type { RecipeInput } from "@/domain/types";
 import {
@@ -13,10 +15,12 @@ import {
 import { PageHeader } from "@/components/PageHeader";
 import { Spinner } from "@/components/Spinner";
 import { ErrorState } from "@/components/ErrorState";
+import { Button } from "@/components/Button";
 
 export default function EditRecipePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const router = useRouter();
+  const { t } = useI18n();
   const { recipe, loading, error, retry } = useRecipe(id);
 
   if (error) {
@@ -34,7 +38,10 @@ export default function EditRecipePage({ params }: { params: Promise<{ id: strin
   if (!recipe) {
     return (
       <div className="flex flex-col items-center gap-4 py-20 text-center">
-        <p className="text-[19px] font-bold">Rezept nicht gefunden</p>
+        <p className="text-[19px] font-bold">{t("recipe.notFound")}</p>
+        <Link href="/recipes">
+          <Button variant="secondary">{t("recipe.toOverview")}</Button>
+        </Link>
       </div>
     );
   }
@@ -60,8 +67,8 @@ export default function EditRecipePage({ params }: { params: Promise<{ id: strin
 
   return (
     <>
-      <PageHeader title="Rezept bearbeiten" />
-      <RecipeForm key={recipe.id} initial={draft} onSubmit={save} submitLabel="Änderungen speichern" />
+      <PageHeader title={t("recipe.editTitle")} />
+      <RecipeForm key={recipe.id} initial={draft} onSubmit={save} submitLabel={t("recipe.saveChanges")} />
     </>
   );
 }

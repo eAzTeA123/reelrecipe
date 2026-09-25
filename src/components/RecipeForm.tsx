@@ -342,7 +342,7 @@ export function RecipeForm({
                 value={ing.amountText}
                 onChange={(e) => setIng(ing.id, { amountText: e.target.value })}
                 placeholder={t("shopping.editAmount")}
-                className="h-11 min-w-0 rounded-lg border border-line bg-white px-2 text-center text-[15px] focus:border-accent focus:outline-none sm:order-1"
+                className="col-start-1 row-start-1 h-11 min-w-0 rounded-lg border border-line bg-white px-2 text-center text-[15px] focus:border-accent focus:outline-none"
               />
               <label className="sr-only" htmlFor={`ing-unit-${ing.id}`}>Einheit {i + 1}</label>
               <input
@@ -351,7 +351,15 @@ export function RecipeForm({
                 value={ing.unit}
                 onChange={(e) => setIng(ing.id, { unit: e.target.value })}
                 placeholder={t("shopping.editUnit")}
-                className="h-11 min-w-0 rounded-lg border border-line bg-white px-2 text-[15px] focus:border-accent focus:outline-none sm:order-2"
+                className="col-start-2 row-start-1 h-11 min-w-0 rounded-lg border border-line bg-white px-2 text-[15px] focus:border-accent focus:outline-none"
+              />
+              <label className="sr-only" htmlFor={`ing-name-${ing.id}`}>Zutat {i + 1}</label>
+              <input
+                id={`ing-name-${ing.id}`}
+                value={ing.name}
+                onChange={(e) => setIng(ing.id, { name: e.target.value })}
+                placeholder={t("shopping.ingredientSingular")}
+                className="col-span-3 col-start-1 row-start-2 h-11 min-w-0 rounded-lg border border-line bg-white px-3 text-[15px] focus:border-accent focus:outline-none sm:col-span-1 sm:col-start-3 sm:row-start-1"
               />
               <button
                 type="button"
@@ -359,18 +367,10 @@ export function RecipeForm({
                 onClick={() =>
                   setDraft((d) => ({ ...d, ingredients: d.ingredients.filter((x) => x.id !== ing.id) }))
                 }
-                className="pressable flex h-11 w-11 items-center justify-center rounded-lg text-ink-3 hover:text-danger sm:order-4"
+                className="pressable col-start-3 row-start-1 flex h-11 w-11 items-center justify-center rounded-lg text-ink-3 hover:text-danger sm:col-start-4 sm:row-start-1"
               >
                 <IconTrash size={18} />
               </button>
-              <label className="sr-only" htmlFor={`ing-name-${ing.id}`}>Zutat {i + 1}</label>
-              <input
-                id={`ing-name-${ing.id}`}
-                value={ing.name}
-                onChange={(e) => setIng(ing.id, { name: e.target.value })}
-                placeholder={t("shopping.ingredientSingular")}
-                className="col-span-3 h-11 min-w-0 rounded-lg border border-line bg-white px-3 text-[15px] focus:border-accent focus:outline-none sm:col-span-1 sm:order-3"
-              />
             </div>
           </div>
         ))}

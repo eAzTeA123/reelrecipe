@@ -1,6 +1,8 @@
 export function normalizeForSearch(s: string): string {
+  if (!s) return "";
   return s
     .toLowerCase()
+    .replace(/ß/g, "ss")
     .normalize("NFD")
     .replace(/[̀-ͯ]/g, "")
     .trim();

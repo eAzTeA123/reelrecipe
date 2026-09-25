@@ -38,7 +38,7 @@ export default function RecipesPage() {
     <>
       <PageHeader
         title={t("nav.recipes")}
-        subtitle={`${recipes.length} ${recipes.length === 1 ? t("nav.home") : t("nav.recipes")}`}
+        subtitle={`${recipes.length} ${recipes.length === 1 ? t("recipes.countSingular") : t("recipes.countPlural")}`}
         action={
           <Link
             href="/recipes/new"

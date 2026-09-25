@@ -24,6 +24,19 @@ export {
   ALL_STRATEGIES,
 };
 
+import { getAllVocab } from "./vocabulary";
+
+const vocab = getAllVocab();
+function isSectionHeader(l: string): boolean {
+  const clean = l.toLowerCase().replace(/[:\-_#*]/g, "").trim();
+  return (
+    vocab.ingredientMarkers.some((m) => clean === m || clean.startsWith(m)) ||
+    vocab.stepMarkers.some((m) => clean === m || clean.startsWith(m)) ||
+    (vocab.ingredientEmojis.some((e) => l.includes(e)) && !/\d/.test(l)) ||
+    (vocab.stepEmojis.some((e) => l.includes(e)) && !/\d/.test(l))
+  );
+}
+
 export function parseRecipe(caption: string): ParsedRecipe | null {
   const lines = splitLines(caption);
   if (lines.length === 0) return null;
@@ -45,9 +58,9 @@ export function parseRecipe(caption: string): ParsedRecipe | null {
 
   const meta = parseTimes(lines);
   const rawTitle =
-    raw.title && raw.title.length > 2
+    raw.title && raw.title.length > 2 && !isSectionHeader(raw.title)
       ? raw.title
-      : pickTitle(lines, () => false) ?? "Neues Rezept";
+      : pickTitle(lines, isSectionHeader) ?? "Neues Rezept";
 
   const title = rawTitle
     .replace(/(?:[\p{Extended_Pictographic}\u{FE0F}\u{200D}]+|\s)+$/u, "")

@@ -10,7 +10,7 @@ import { EmptyState } from "@/components/EmptyState";
 import { ErrorState } from "@/components/ErrorState";
 import { Button } from "@/components/Button";
 import { Input } from "@/components/Input";
-import { IconClipboard, IconLink, IconSettings, IconSparkle } from "@/components/Icons";
+import { IconClipboard, IconLink, IconSettings } from "@/components/Icons";
 import { extractSocialUrlFromText, parseSocialUrl } from "@/lib/socialSource";
 import { useToast } from "@/components/Toast";
 import { useI18n } from "@/lib/i18n/context";

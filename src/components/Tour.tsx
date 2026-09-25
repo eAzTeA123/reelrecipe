@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { driver } from "driver.js";
 import "driver.js/dist/driver.css";
 import { useI18n } from "@/lib/i18n/context";
