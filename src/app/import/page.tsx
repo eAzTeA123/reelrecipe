@@ -135,19 +135,15 @@ function ImportFlow() {
   // ?url= Parameter → direkt starten
   useEffect(() => {
     const q = params.get("url");
-    if (!q || started.current) return;
-    started.current = true;
-    const t = setTimeout(() => {
-      const parsed = parseSocialUrl(q);
-      if (parsed) {
-        setUrl(parsed.normalized);
-        void fetchCaption(parsed.normalized);
-      } else {
-        setStep("caption");
-        setAutoFailed(true);
-      }
-    }, 0);
-    return () => clearTimeout(t);
+    if (!q) return;
+    const parsed = parseSocialUrl(q);
+    if (parsed) {
+      setUrl(parsed.normalized);
+      void fetchCaption(parsed.normalized);
+    } else {
+      setStep("caption");
+      setAutoFailed(true);
+    }
   }, [params, fetchCaption]);
 
   function submitUrl(e: React.FormEvent) {

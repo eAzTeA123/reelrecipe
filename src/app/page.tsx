@@ -14,6 +14,12 @@ import { IconClipboard, IconLink, IconSettings, IconSparkle } from "@/components
 import { extractSocialUrlFromText, parseSocialUrl } from "@/lib/socialSource";
 import { useToast } from "@/components/Toast";
 import { useI18n } from "@/lib/i18n/context";
+import { Tour } from "@/components/Tour";
+import { parseRecipe } from "@/parser";
+import { getRecipeRepository } from "@/data";
+import { compressImage } from "@/lib/image";
+import { Spinner } from "@/components/Spinner";
+import type { RecipeInput } from "@/domain/types";
 
 export default function HomePage() {
   const router = useRouter();
@@ -21,22 +27,76 @@ export default function HomePage() {
   const { recipes, loading, error, retry } = useRecipes();
   const [url, setUrl] = useState("");
   const [urlError, setUrlError] = useState<string>();
+  const [importing, setImporting] = useState(false);
   const { t } = useI18n();
 
-  function submit(e: React.FormEvent) {
+  async function submit(e: React.FormEvent) {
     e.preventDefault();
     const trimmed = url.trim();
     if (!trimmed) {
-      router.push("/import");
+      setUrlError(t("import.linkError") || "Bitte füge einen TikTok- oder Instagram-Link ein.");
       return;
     }
     const parsed = parseSocialUrl(trimmed);
     if (!parsed) {
-      setUrlError(t("import.linkError"));
+      setUrlError(t("import.linkError") || "Ungültiger Social-Media-Link.");
       return;
     }
     setUrlError(undefined);
-    router.push(`/import?url=${encodeURIComponent(parsed.normalized)}`);
+    setImporting(true);
+
+    try {
+      const endpoint = parsed.platform === "tiktok" ? "/api/tiktok" : "/api/instagram";
+      const res = await fetch(`${endpoint}?url=${encodeURIComponent(parsed.normalized)}`);
+      const data = (await res.json()) as {
+        ok?: boolean;
+        caption?: string;
+        image?: string;
+        resolvedUrl?: string;
+      };
+
+      if (data.ok && data.caption && data.caption.trim().length >= 15) {
+        const recipeData = parseRecipe(data.caption.trim());
+        if (recipeData && (recipeData.ingredients.length > 0 || recipeData.steps.length > 0)) {
+          let pendingImage: Blob | undefined;
+          if (data.image) {
+            try {
+              const imgRes = await fetch(`/api/instagram/image?url=${encodeURIComponent(data.image)}`);
+              if (imgRes.ok) {
+                pendingImage = await compressImage(await imgRes.blob());
+              }
+            } catch (err) {
+              console.error("image compress error", err);
+            }
+          }
+
+          const recipeInput: RecipeInput = {
+            title: recipeData.title || "Neues Rezept",
+            ingredients: recipeData.ingredients,
+            steps: recipeData.steps,
+            servings: recipeData.servings,
+            prepTime: recipeData.prepTime,
+            cookTime: recipeData.cookTime,
+            sourceUrl: data.resolvedUrl || parsed.normalized,
+            sourceCaption: data.caption.trim(),
+            favorite: false,
+          };
+
+          const saved = await getRecipeRepository().saveWithImage(undefined, recipeInput, pendingImage);
+          toast(t("toast.recipeSaved") || "Rezept erfolgreich importiert!");
+          router.push(`/recipes/${saved.id}`);
+          return;
+        }
+      }
+
+      // Falls die automatische Erkennung nicht alle Felder gefunden hat:
+      router.push(`/import?url=${encodeURIComponent(parsed.normalized)}`);
+    } catch (err) {
+      console.error("direct import error", err);
+      router.push(`/import?url=${encodeURIComponent(parsed.normalized)}`);
+    } finally {
+      setImporting(false);
+    }
   }
 
   async function pasteFromClipboard() {
@@ -65,6 +125,7 @@ export default function HomePage() {
 
   return (
     <>
+      <Tour />
       <PageHeader
         title={t("home.title")}
         action={
@@ -80,24 +141,24 @@ export default function HomePage() {
 
       <section
         aria-labelledby="import-heading"
-        className="mb-9 rounded-card bg-surface p-5 shadow-card"
+        className="mb-16 mt-8"
       >
-        <h2 id="import-heading" className="mb-1 flex items-center gap-2 text-[19px] font-bold">
-          <IconSparkle size={19} className="text-accent" />
-          {t("home.importTitle")}
+        <h2 id="import-heading" className="mb-2 text-[32px] md:text-[48px] font-extrabold leading-tight tracking-tighter text-ink">
+          Rezept-Link <br/><span className="text-brand-gradient">einfügen & kochen.</span>
         </h2>
-        <p className="mb-4 text-[14px] text-ink-2">
+        <p className="mb-6 text-[16px] text-ink-2 font-medium">
           {t("home.importSubtitle")}
         </p>
-        <form onSubmit={submit} className="flex flex-col gap-2.5 sm:flex-row" noValidate>
+        <form id="tour-import" onSubmit={submit} className="flex flex-col gap-3 sm:flex-row" noValidate>
           <div className="relative flex-1">
-            <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-3">
-              <IconLink size={17} />
+            <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-ink-3">
+              <IconLink size={20} />
             </span>
             <Input
               type="url"
               inputMode="url"
               autoComplete="url"
+              disabled={importing}
               aria-label={t("home.importPlaceholder")}
               aria-invalid={!!urlError}
               aria-describedby={urlError ? "url-error" : undefined}
@@ -107,30 +168,42 @@ export default function HomePage() {
                 if (urlError) setUrlError(undefined);
               }}
               placeholder={t("home.importPlaceholder")}
-              className="pl-10 pr-28"
+              className="h-14 pl-12 pr-28 text-[17px] bg-surface border border-line rounded-none focus:border-ink transition-colors disabled:opacity-50"
             />
             <button
               type="button"
+              disabled={importing}
               onClick={() => void pasteFromClipboard()}
-              className="pressable absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1.5 rounded-lg bg-surface-2 px-2.5 py-1.5 text-[13px] font-semibold text-ink-2 hover:text-ink border border-line"
+              className="pressable absolute right-2 top-2 bottom-2 flex items-center justify-center gap-1.5 bg-surface-2 px-3 text-[12px] font-bold uppercase tracking-wider text-ink hover:bg-line transition-colors disabled:opacity-50"
               aria-label={t("home.paste")}
             >
               <IconClipboard size={14} />
               {t("home.paste")}
             </button>
           </div>
-          <Button type="submit" size="lg" className="sm:w-auto">
-            {t("home.importButton")}
+          <Button
+            type="submit"
+            disabled={importing}
+            className="h-14 sm:w-auto rounded-none bg-brand-gradient text-[16px] font-extrabold uppercase tracking-widest px-8 flex items-center justify-center gap-2.5"
+          >
+            {importing ? (
+              <>
+                <Spinner size={18} />
+                <span>Importiere...</span>
+              </>
+            ) : (
+              t("home.importButton")
+            )}
           </Button>
         </form>
         {urlError && (
-          <p id="url-error" role="alert" className="mt-2 text-[14px] text-danger">
+          <p id="url-error" role="alert" className="mt-3 text-[15px] font-medium text-danger">
             {urlError}
           </p>
         )}
       </section>
 
-      <section aria-labelledby="recent-heading">
+      <section id="tour-recipes" aria-labelledby="recent-heading">
         <h2 id="recent-heading" className="mb-4 text-[21px] font-bold">
           {t("home.recent")}
         </h2>

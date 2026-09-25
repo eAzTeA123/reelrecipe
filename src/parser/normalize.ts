@@ -37,9 +37,6 @@ export function splitLines(caption: string): string[] {
 export function cleanLine(line: string): string {
   let l = line.trim();
   l = l.replace(BULLET_RE, "").trim();
-  // reine Emoji-Bullets am Anfang (BULLET_RE deckt nicht alle Emoji ab)
-  l = l.replace(/^(?:\p{Extended_Pictographic}|\u{FE0F}|\u{200D})+\s*/u, "").trim();
-  l = l.replace(EMOJI_RE, "");
   // trailing Hashtags/Mentions am Zeilenende entfernen
   l = l.replace(/(\s[#@]\S+)+\s*$/, "");
   l = l.replace(/\s+/g, " ").trim();

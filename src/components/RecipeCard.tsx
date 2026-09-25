@@ -14,48 +14,37 @@ function totalTime(r: Recipe): number | undefined {
 export function RecipeCard({ recipe }: { recipe: Recipe }) {
   const time = totalTime(recipe);
   return (
-    <article className="card-hover group relative overflow-hidden rounded-card border border-line/70 bg-surface shadow-card">
-      <Link href={`/recipes/${recipe.id}`} className="block" aria-label={recipe.title}>
+    <article className="group relative block border-b-2 border-line pb-8 mb-8 last:border-b-0">
+      <Link href={`/recipes/${recipe.id}`} className="block pressable" aria-label={recipe.title}>
         {recipe.image && (
-          <div className="relative aspect-[16/9] w-full">
+          <div className="relative aspect-[4/5] w-full overflow-hidden mb-4">
             <RecipeImage
               imageRef={recipe.image}
               alt=""
-              className="absolute inset-0 h-full w-full"
+              className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
             />
           </div>
         )}
-        <div className="flex min-h-24 flex-col justify-between gap-4 p-4">
-          <div>
-            <div className="mb-2 flex min-h-7 items-start justify-between gap-10">
-              {recipe.category ? (
-                <span className="max-w-full truncate rounded-full bg-accent-soft px-2.5 py-1 text-[12px] font-semibold text-accent">
-                  {recipe.category}
-                </span>
-              ) : (
-                <span />
-              )}
-            </div>
-            <h3 className="line-clamp-2 text-[19px] font-semibold leading-snug tracking-[-0.01em]">
-              {recipe.title}
-            </h3>
-            {recipe.description && (
-              <p className="mt-1.5 line-clamp-2 text-[14px] leading-relaxed text-ink-2">
-                {recipe.description}
-              </p>
-            )}
-          </div>
+        <div className="flex flex-col gap-2">
+          {recipe.category && (
+            <span className="text-[14px] font-bold uppercase tracking-widest text-accent">
+              {recipe.category}
+            </span>
+          )}
+          <h3 className="text-[28px] font-extrabold leading-none tracking-tight group-hover:text-accent transition-colors">
+            {recipe.title}
+          </h3>
           {(time !== undefined || recipe.servings !== undefined) && (
-            <div className="flex items-center gap-4 text-[13px] font-medium text-ink-2">
+            <div className="mt-2 flex items-center gap-6 text-[15px] font-medium text-ink-2">
               {time !== undefined && (
-                <span className="inline-flex items-center gap-1.5">
-                  <IconClock size={15} /> {time} Min
+                <span className="inline-flex items-center gap-2">
+                  <IconClock size={18} /> {time} Min
                 </span>
               )}
               {recipe.servings !== undefined && (
-                <span className="inline-flex items-center gap-1.5">
-                  <IconUsers size={15} /> {recipe.servings} Portionen
+                <span className="inline-flex items-center gap-2">
+                  <IconUsers size={18} /> {recipe.servings}
                 </span>
               )}
             </div>
@@ -67,11 +56,11 @@ export function RecipeCard({ recipe }: { recipe: Recipe }) {
         onClick={() => void getRecipeRepository().toggleFavorite(recipe.id)}
         aria-label={recipe.favorite ? "Aus Favoriten entfernen" : "Zu Favoriten hinzufügen"}
         aria-pressed={recipe.favorite}
-        className={`pressable absolute right-3 top-3 flex h-11 w-11 items-center justify-center rounded-full bg-white/90 backdrop-blur ${
-          recipe.favorite ? "text-accent" : "text-ink-2"
-        }`}
+        className={`pressable absolute right-2 top-2 flex h-14 w-14 items-center justify-center bg-surface ${
+          recipe.favorite ? "text-accent" : "text-ink"
+        } hover:bg-line transition-colors`}
       >
-        {recipe.favorite ? <IconHeartFill size={18} /> : <IconHeart size={18} />}
+        {recipe.favorite ? <IconHeartFill size={24} /> : <IconHeart size={24} />}
       </button>
     </article>
   );

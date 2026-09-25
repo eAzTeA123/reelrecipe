@@ -22,11 +22,17 @@ export const viewport: Viewport = {
 
 import { I18nProvider } from "@/lib/i18n/context";
 import { PwaInstallPrompt } from "@/components/PwaInstallPrompt";
+import { Manrope } from "next/font/google";
+
+const manrope = Manrope({
+  subsets: ["latin"],
+  variable: "--font-sans",
+});
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="de">
-      <body>
+    <html lang="de" suppressHydrationWarning className={manrope.variable}>
+      <body suppressHydrationWarning>
         <I18nProvider>
           <ToastProvider>
             <AppShell>{children}</AppShell>

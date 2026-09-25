@@ -51,10 +51,10 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   // but it might flash German if SSG. We accept the small flash for a local MVP.
   
   if (!mounted) {
-    // Avoid hydration mismatch on first render
+    // Return children directly to maintain identical DOM structure for hydration
     return (
-      <I18nContext.Provider value={{ lang, setLang, t }}>
-        <div style={{ visibility: "hidden" }}>{children}</div>
+      <I18nContext.Provider value={{ lang: "de", setLang, t: (k) => dictionaries.de[k] || k }}>
+        {children}
       </I18nContext.Provider>
     );
   }

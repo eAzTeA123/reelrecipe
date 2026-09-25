@@ -137,6 +137,14 @@ export const dictionaries = {
     "pwa.androidStep2": "Tippe auf das ⋮ Menü",
     "pwa.androidStep3": "Wähle „Zum Startbildschirm zufügen“",
     "pwa.androidStep4": "Bestätigen",
+
+    // Tour
+    "tour.importTitle": "Willkommen bei ReelRecipe! 🎉",
+    "tour.importDesc": "Füge hier einfach einen Link zu einem Kochvideo (z.B. von TikTok oder Instagram) ein. Wir extrahieren das Rezept automatisch für dich!",
+    "tour.recipesTitle": "Deine Sammlung 📚",
+    "tour.recipesDesc": "Alle deine gespeicherten Rezepte landen hier. Du kannst sie filtern, durchsuchen und anpassen. Alles bleibt 100% lokal auf deinem Gerät!",
+    "tour.pwaTitle": "Als App speichern 📲",
+    "tour.pwaDesc": "Speichere ReelRecipe direkt auf deinem Home-Bildschirm. Tippe hier, um zu erfahren, wie das geht. Viel Spaß beim Kochen!",
   },
   en: {
     // Nav
@@ -274,6 +282,14 @@ export const dictionaries = {
     "pwa.androidStep2": "Tap the ⋮ menu",
     "pwa.androidStep3": "Select 'Add to Home screen' or 'Install app'",
     "pwa.androidStep4": "Confirm",
+
+    // Tour
+    "tour.importTitle": "Welcome to ReelRecipe! 🎉",
+    "tour.importDesc": "Simply paste a link to a cooking video (e.g. from TikTok or Instagram) here. We will extract the recipe automatically for you!",
+    "tour.recipesTitle": "Your Collection 📚",
+    "tour.recipesDesc": "All your saved recipes end up here. You can filter, search, and adjust them. Everything stays 100% locally on your device!",
+    "tour.pwaTitle": "Save as App 📲",
+    "tour.pwaDesc": "Save ReelRecipe directly to your home screen. Tap here to learn how. Happy cooking!",
   }
 };
 
