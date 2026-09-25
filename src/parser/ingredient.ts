@@ -36,7 +36,7 @@ function splitNameAndNotes(rest: string): { name: string; notes?: string } {
 }
 
 const SERVINGS_HEADER_RE = /^(?:(?:für|for|serves?|yields?|ergibt)\s*)?(?:ca\.?\s*|about\s*)?\d{1,2}\s*(?:portionen?|pers(?:onen)?\.?|servings?|people|persons|stücke?|tacos?|portion|stück|person)\s*:?$/i;
-const TIME_DESC_RE = /(?:\bunter\s*\d+\s*min|\b\d+\s*(?:minuten?|minutes?|stunden?|hours?|std\.?)\b|\bhigh\s*protein\b|\bkalorienarm\b)/i;
+const TIME_DESC_RE = /(?:\bunter\s*\d+\s*min|\b\d+\s*(?:minuten?|minutes?|min\.?|stunden?|hours?|std\.?)\b|\b\d+\s*(?:°C|grad|celsius|f|fahrenheit)\b|\bhigh\s*protein\b|\bkalorienarm\b)/i;
 
 const COMPACT_REGEX = new RegExp(`^(\\d+[.,]?\\d*(?:\\s+\\d+\\/\\d+|\\/\\d+)?)\\s*(${UNIT_REGEX.source})(?:\\s+(.+))?$`, "iu");
 const TRAILING_REGEX = new RegExp(`^(.{2,80}?)\\s+(\\d+[.,]?\\d*(?:\\s+\\d+\\/\\d+|\\/\\d+)?)\\s*(${UNIT_REGEX.source})$`, "iu");

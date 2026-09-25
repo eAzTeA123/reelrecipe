@@ -27,8 +27,8 @@ export function tokenizeSentences(text: string): string[] {
     .replace(/(Zutaten|Ingredients|Zubereitung|Instructions|Directions|Schritte|Anleitung)[:\s]/gi, "\n$1:\n")
     // 5. Section-Emojis trennen
     .replace(/(🛒|🥣|🥗|👩‍🍳|👨‍🍳|📝)/gu, "\n$1\n")
-    // 6. Zeilenumbrüche vor Bullets (z. B. "Sojajoghurt- Saft", "Tomaten- 250g", aber NICHT bei "Zitronen-Minz-Joghurt")
-    .replace(/(?<=[a-zA-ZäöüÄÖÜß0-9,])\s*-(?=\s+(?:\d|[A-ZÄÖÜ])|\d)/g, "\n- ")
+    // 6. Zeilenumbrüche vor Bullets (z. B. "Sojajoghurt- Saft", "Tomaten- 250g", aber NICHT bei "Zitronen-Minz-Joghurt" oder "45-50")
+    .replace(/(?<=[a-zA-ZäöüÄÖÜß0-9,])\s+-(?=\s*(?:\d|[A-ZÄÖÜ]))|(?<=[a-zA-ZäöüÄÖÜß,])-(?=\s*(?:\d|[A-ZÄÖÜ]))/g, "\n- ")
     .replace(/(?<=\s)[•*–—✳✅👉📍]\uFE0F?\s*|(?<=\s)-+\s+/gu, "\n- ")
     // 6b. Vor beliebigen grafischen Emojis trennen (oft als Aufzählungszeichen genutzt)
     .replace(/(?<=[a-zA-ZäöüÄÖÜß0-9,:.!?])\s+(?=\p{Emoji_Presentation})/gu, "\n")
