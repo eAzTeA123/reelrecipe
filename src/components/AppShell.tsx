@@ -35,6 +35,7 @@ function BottomNav() {
             <Link
               key={href}
               href={href}
+              data-tour={href.replace("/", "") || "home"}
               aria-current={active ? "page" : undefined}
               className={`flex min-h-[52px] flex-col items-center justify-center gap-0.5 py-1.5 text-[11px] font-medium transition-colors ${
                 active ? "text-accent" : "text-ink-3"
@@ -71,6 +72,7 @@ function TopNav() {
               <Link
                 key={href}
                 href={href}
+                data-tour={href.replace("/", "") || "home"}
                 aria-current={active ? "page" : undefined}
                 className={`pressable rounded-full px-4 py-2 text-[15px] font-medium ${
                   active ? "bg-accent-soft text-accent" : "text-ink-2 hover:text-ink"

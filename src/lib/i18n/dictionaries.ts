@@ -163,12 +163,20 @@ export const dictionaries = {
     "pwa.androidStep4": "Bestätigen",
 
     // Tour
-    "tour.importTitle": "Willkommen bei ReelRecipe! 🎉",
-    "tour.importDesc": "Füge hier einfach einen Link zu einem Kochvideo (z.B. von TikTok oder Instagram) ein. Wir extrahieren das Rezept automatisch für dich!",
-    "tour.recipesTitle": "Deine Sammlung 📚",
-    "tour.recipesDesc": "Alle deine gespeicherten Rezepte landen hier. Du kannst sie filtern, durchsuchen und anpassen. Alles bleibt 100% lokal auf deinem Gerät!",
-    "tour.pwaTitle": "Als App speichern 📲",
-    "tour.pwaDesc": "Speichere ReelRecipe direkt auf deinem Home-Bildschirm. Tippe hier, um zu erfahren, wie das geht. Viel Spaß beim Kochen!",
+    "tour.importTitle": "Video rein, Rezept raus! 🪄",
+    "tour.importDesc": "Füge hier einfach einen TikTok- oder Instagram-Link ein. Wir erkennen Zutaten, Mengen und Zubereitungsschritte automatisch – 100% lokal ohne Cloud oder KI.",
+    "tour.fridgeTitle": "Was ist im Kühlschrank? 🧊",
+    "tour.fridgeDesc": "Reste verwerten leicht gemacht: Gib deine vorhandenen Zutaten ein und ReelRecipe zeigt dir sofort, was du daraus kochen kannst – sortiert nach bestem Match!",
+    "tour.plannerTitle": "Wochenplaner & Meal Prep 📅",
+    "tour.plannerDesc": "Plane deine Mahlzeiten für Mo–So, passe Portionen flexibel an und generiere mit einem Klick deine gesamte Wochen-Einkaufsliste.",
+    "tour.shoppingTitle": "Smarte Einkaufsliste 🛒",
+    "tour.shoppingDesc": "Zutaten aus deinen Rezepten werden automatisch zusammengeführt und intelligent nach Supermarkt-Regalen (Gemüse, Kühlregal, Gewürze) sortiert.",
+    "tour.recipesTitle": "Deine Rezeptsammlung 📚",
+    "tour.recipesDesc": "Alle Rezepte auf einen Blick. Inklusive smartem Cook Mode (Display bleibt an, Klick-Timer) und Einheiten-Umrechner (Cups ➔ Gramm).",
+    "tour.pwaTitle": "Als App installieren 📲",
+    "tour.pwaDesc": "Installiere ReelRecipe direkt auf deinem Homescreen für Haptic-Touch Quick Actions und echtes App-Feeling!",
+    "tour.restart": "Tutorial erneut ansehen",
+    "tour.restartDesc": "Erfahre in einer kurzen interaktiven Tour, wie du alle Funktionen optimal nutzt.",
   },
   en: {
     // Nav
@@ -332,12 +340,20 @@ export const dictionaries = {
     "pwa.androidStep4": "Confirm",
 
     // Tour
-    "tour.importTitle": "Welcome to ReelRecipe! 🎉",
-    "tour.importDesc": "Simply paste a link to a cooking video (e.g. from TikTok or Instagram) here. We will extract the recipe automatically for you!",
-    "tour.recipesTitle": "Your Collection 📚",
-    "tour.recipesDesc": "All your saved recipes end up here. You can filter, search, and adjust them. Everything stays 100% locally on your device!",
-    "tour.pwaTitle": "Save as App 📲",
-    "tour.pwaDesc": "Save ReelRecipe directly to your home screen. Tap here to learn how. Happy cooking!",
+    "tour.importTitle": "Video in, recipe out! 🪄",
+    "tour.importDesc": "Simply paste a TikTok or Instagram link here. We automatically detect ingredients, amounts, and steps – 100% locally with no cloud or AI.",
+    "tour.fridgeTitle": "What's in the Fridge? 🧊",
+    "tour.fridgeDesc": "Easy pantry cooking: enter ingredients you have at home and ReelRecipe instantly matches recipes you can cook right away!",
+    "tour.plannerTitle": "Meal Planner 📅",
+    "tour.plannerDesc": "Schedule your meals from Monday to Sunday, adjust servings, and generate your consolidated weekly shopping list with a single click.",
+    "tour.shoppingTitle": "Smart Shopping List 🛒",
+    "tour.shoppingDesc": "Ingredients are merged automatically and organized by supermarket aisle (Produce, Dairy, Spices, etc.).",
+    "tour.recipesTitle": "Your Recipe Library 📚",
+    "tour.recipesDesc": "All your recipes in one place. Features our smart Cook Mode (Screen Wake-Lock, clickable timers) and US/EU unit converter (Cups ➔ Grams).",
+    "tour.pwaTitle": "Install as App 📲",
+    "tour.pwaDesc": "Add ReelRecipe to your home screen for Haptic-Touch quick actions and a native app feeling!",
+    "tour.restart": "Replay Tutorial",
+    "tour.restartDesc": "Take a quick interactive tour to discover all features of ReelRecipe.",
   }
 };
 

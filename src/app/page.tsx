@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRecipes } from "@/hooks/useRecipes";
@@ -125,7 +125,9 @@ export default function HomePage() {
 
   return (
     <>
-      <Tour />
+      <Suspense fallback={null}>
+        <Tour />
+      </Suspense>
       <PageHeader
         title={t("home.title")}
         action={
@@ -204,7 +206,7 @@ export default function HomePage() {
       </section>
 
       {/* Kühlschrank Reste-Verwertung Teaser */}
-      <section className="mb-14 rounded-2xl border border-line bg-surface p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 shadow-card">
+      <section id="tour-fridge" className="mb-14 rounded-2xl border border-line bg-surface p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 shadow-card">
         <div className="flex items-center gap-3.5">
           <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-accent-soft text-accent">
             <IconFridge size={24} />

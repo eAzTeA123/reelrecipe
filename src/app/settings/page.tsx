@@ -174,6 +174,22 @@ export default function SettingsPage() {
         )}
       </section>
 
+      <section className="mb-6 rounded-card bg-surface p-5 shadow-card" aria-labelledby="tour-h">
+        <h2 id="tour-h" className="mb-1 text-[17px] font-bold">{t("tour.restart")}</h2>
+        <p className="mb-4 text-[14px] leading-relaxed text-ink-2">
+          {t("tour.restartDesc")}
+        </p>
+        <Button
+          variant="secondary"
+          onClick={() => {
+            localStorage.removeItem("tourSeen");
+            router.push("/?tour=1");
+          }}
+        >
+          {t("tour.restart")}
+        </Button>
+      </section>
+
       <section className="rounded-card bg-surface p-5 shadow-card" aria-labelledby="about-h">
         <h2 id="about-h" className="mb-1 text-[17px] font-bold">{t("settings.about")}</h2>
         <p className="text-[14px] leading-relaxed text-ink-2">
