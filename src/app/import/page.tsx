@@ -135,8 +135,10 @@ function ImportFlow() {
 
   // ?url= Parameter → direkt starten
   useEffect(() => {
+    if (started.current) return;
     const qUrl = params.get("url"); const qText = params.get("text"); const combined = [qUrl, qText].filter(Boolean).join(" "); const extracted = extractSocialUrlFromText(combined); const q = extracted ? extracted.normalized : (qUrl || qText);
     if (!q) return;
+    started.current = true;
     const parsed = parseSocialUrl(q);
     // Defer to avoid synchronous setState during effect
     queueMicrotask(() => {
@@ -206,8 +208,7 @@ function ImportFlow() {
     try {
       const rawParsed = parseRecipe(trimmed);
       if (!rawParsed || (rawParsed.ingredients.length === 0 && rawParsed.steps.length === 0)) {
-        setParseError(t("import.parseErrorFailed"),
-        );
+        setParseError(t("import.parseErrorFailed"));
         setStep("caption");
         return;
       }
@@ -233,6 +234,10 @@ function ImportFlow() {
         ...draftFromIngredients(parsed.ingredients, parsed.steps),
       });
       setStep("review");
+    } catch (err) {
+      console.error("analyze crashed:", err);
+      setParseError("Ein Fehler ist beim Analysieren aufgetreten. Bitte manuell eingeben.");
+      setStep("caption");
     } finally {
       setAnalyzing(false);
     }

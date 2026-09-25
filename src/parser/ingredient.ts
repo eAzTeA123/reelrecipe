@@ -35,11 +35,12 @@ function splitNameAndNotes(rest: string): { name: string; notes?: string } {
   return { name: r, notes: notes.length ? notes.join(", ") : undefined };
 }
 
-const SERVINGS_HEADER_RE = /^(?:für|for|serves?|yields?|ergibt)\s*(?:ca\.?\s*|about\s*)?\d{1,2}\s*(?:portionen?|pers(?:onen)?\.?|servings?|people|persons|stücke?|tacos?|portion|stück|person)\s*:?$/i;
+const SERVINGS_HEADER_RE = /^(?:(?:für|for|serves?|yields?|ergibt)\s*)?(?:ca\.?\s*|about\s*)?\d{1,2}\s*(?:portionen?|pers(?:onen)?\.?|servings?|people|persons|stücke?|tacos?|portion|stück|person)\s*:?$/i;
 const TIME_DESC_RE = /(?:\bunter\s*\d+\s*min|\b\d+\s*(?:minuten?|minutes?|stunden?|hours?|std\.?)\b|\bhigh\s*protein\b|\bkalorienarm\b)/i;
 
 const COMPACT_REGEX = new RegExp(`^(\\d+[.,]?\\d*(?:\\s+\\d+\\/\\d+|\\/\\d+)?)\\s*(${UNIT_REGEX.source})(?:\\s+(.+))?$`, "iu");
 const TRAILING_REGEX = new RegExp(`^(.{2,80}?)\\s+(\\d+[.,]?\\d*(?:\\s+\\d+\\/\\d+|\\/\\d+)?)\\s*(${UNIT_REGEX.source})$`, "iu");
+const NUTRITION_RE = /\b(?:kcal|kalorien|kohlenhydrate|carbs)\b|^(?:eiweiß|protein|fett|fat|zucker|sugar)\s*(?:ca\.?|approx\.?|:|-)?\s*\d+\s*g\b|\b\d+\s*g\s*(?:eiweiß|protein|fett|fat|zucker|sugar)\b/i;
 
 /** Parst eine Zeile zu einer Zutat. Gibt null zurück, wenn unmöglich. */
 export function parseIngredientLine(line: string): ParsedIngredient | null {
@@ -51,6 +52,9 @@ export function parseIngredientLine(line: string): ParsedIngredient | null {
 
   // Reine Zeit- oder Werbebeschreibungen ohne Zutateneigenschaften verwerfen
   if (!AMOUNT_REGEX.test(rest) && TIME_DESC_RE.test(rest)) return null;
+
+  // Nährwertangaben verwerfen
+  if (NUTRITION_RE.test(rest)) return null;
 
   let amount: number | undefined;
   let unit: string | undefined;
@@ -157,6 +161,7 @@ export function looksLikeIngredient(line: string): number {
   if (line.length > 100) score -= 2;
   if (/\d+\s*(min|minuten|minutes|h|stunden)\b/i.test(line)) score -= 2;
   if (STEP_VERB_HINTS.test(line) && !AMOUNT_REGEX.test(line)) score -= 2;
+  if (NUTRITION_RE.test(line)) score -= 5;
   
   const wordCount = line.split(" ").length;
   if (wordCount > 10 && !UNIT_REGEX.test(line)) score -= 2;

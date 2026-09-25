@@ -18,20 +18,22 @@ export function tokenizeSentences(text: string): string[] {
     .replace(/8(?:\uFE0F)?\u20E3/g, "\n8. ")
     .replace(/9(?:\uFE0F)?\u20E3/g, "\n9. ")
     // 2. Trennung bei markanten Deko-Emojis (z.B. 😍 ⭐️ 🔥)
-    .replace(/([😍⭐️✨🌮🍕])/gu, "\n")
+    .replace(/(😍|⭐️|✨|🌮|🍕)/gu, "\n")
     // 3. "Für X Stück:" oder "Für X Portionen:" als eigenständigen Header isolieren
     .replace(/(Für\s*\d+\s*(?:Stück|Portionen?|Personen?):?)/gi, "\n$1\n")
-    // 3b. "Für den/die/das..." Sub-Header isolieren (auch wenn an Text angeklebt)
-    .replace(/((?:Für\s*(?:den|die|das|diese|alle)|\bFor\s*(?:the|this))\s+[a-zA-ZäöüÄÖÜß\-]+(?:\s+[a-zA-ZäöüÄÖÜß\-]+)?:?)/gi, "\n$1\n")
+    // 3b. "Für den/die/das..." Sub-Header isolieren (ohne zu weit zu matchen)
+    .replace(/(\b(?:Für\s*(?:den|die|das|diese|alle)|\bFor\s*(?:the|this))\s+[a-zA-ZäöüÄÖÜß\-]+)(?=[\s:])/gi, "\n$1:\n")
     // 4. Abschnitte trennen
     .replace(/(Zutaten|Ingredients|Zubereitung|Instructions|Directions|Schritte|Anleitung)[:\s]/gi, "\n$1:\n")
     // 5. Section-Emojis trennen
-    .replace(/([🛒🥣🥗👩‍🍳👨‍🍳📝])/gu, "\n$1\n")
+    .replace(/(🛒|🥣|🥗|👩‍🍳|👨‍🍳|📝)/gu, "\n$1\n")
     // 6. Zeilenumbrüche vor Bullets (z. B. "Sojajoghurt- Saft", "Tomaten- 250g", aber NICHT bei "Zitronen-Minz-Joghurt")
     .replace(/(?<=[a-zA-ZäöüÄÖÜß0-9,])\s*-(?=\s+(?:\d|[A-ZÄÖÜ])|\d)/g, "\n- ")
-    .replace(/(?<=\s)[•*–—]\s*|(?<=\s)-+\s+/g, "\n- ")
+    .replace(/(?<=\s)[•*–—✳✅👉📍]\uFE0F?\s*|(?<=\s)-+\s+/gu, "\n- ")
     // 7. Vor Zutaten-Mengen trennen (nur wenn gefolgt von Einheit/Lebensmittel, NIEMALS bei "Minuten"!)
-    .replace(/(?<=[a-zA-ZäöüÄÖÜß])\s+(?=\d+\s*(?:g|kg|ml|l|el|tl|tbsp|tsp|cup|cups|slices|scheiben|stk|stück|wraps|tomaten)\b)/gi, "\n")
+    .replace(/(?<=[a-zA-ZäöüÄÖÜß:,])\s+(?=(?:\d+(?:[.,]\d+)?(?:[\s-]*1\/\d+)?|\d+[\s-]*\/\s*\d+|½|¼|¾|⅓|⅔|⅛|⅜|⅝|⅞)\s*(?:[a-zA-ZäöüÄÖÜß-]+\s*){0,2}(?:g|kg|ml|l|el|tl|tbsp|tsp|cup|cups|slices|scheiben|stk|stück|st|wraps|tomaten?|zwiebeln?|zehen?|knoblauch|paprika|spitzpaprika|brokkoli|möhren?|karotten?|äpfel|apfel|eier?|kartoffeln?|putenschnitzel|schnitzel|gurke|zucchini|aubergine|pilze|champignons|salat|ajvar|paprikapulver)\b)/gi, "\n")
+    // 7b. Vor typischen Satzanfängen trennen, falls sie direkt (ohne Punkt) auf ein kleingeschriebenes Wort folgen
+    .replace(/(?<=[a-zäöüß])\s+(?=(?:Die|Der|Das|Den|Dem|Alles|Dann|Danach|Zuerst|Zum|Zur|Schließlich|Nun|Anschließend|Zubereitung|Für|Mit|Dazu|Hierfür|Dabei|Sobald|Wenn|Während|Dafür|Unter|Auf|In|Aus|Bei)\b)/g, "\n")
     // 8. Vor Schritt-Nummerierungen trennen (z. B. "anbraten. 2. Tomaten schneiden")
     .replace(/(?<=[a-zA-ZäöüÄÖÜß.!?])\s*(\d+[.)]\s+)/g, "\n$1");
 
