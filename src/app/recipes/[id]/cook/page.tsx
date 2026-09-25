@@ -9,8 +9,10 @@ import { Button } from "@/components/Button";
 import { ErrorState } from "@/components/ErrorState";
 import { Spinner } from "@/components/Spinner";
 import { IconBack, IconCheck, IconClock, IconX } from "@/components/Icons";
+import { useI18n } from "@/lib/i18n/context";
 import { StepTextWithTimers } from "./StepTextWithTimers";
-import { convertRecipeToMetric } from "@/lib/unitConverter";
+import { convertRecipeToMetric, convertRecipeToImperial } from "@/lib/unitConverter";
+import { UnitToggle } from "@/components/UnitToggle";
 
 interface WakeLockSentinelLike {
   release: () => Promise<void>;
@@ -20,12 +22,18 @@ type WakeLockNavigator = Navigator & {
 };
 
 export default function CookModePage({ params }: { params: Promise<{ id: string }> }) {
+  const { lang } = useI18n();
   const { id } = use(params);
   const router = useRouter();
   const searchParams = useSearchParams();
   const { recipe: rawRecipe, loading, error, retry } = useRecipe(id);
-  const [isEu, setIsEu] = useState(false);
-  const recipe = isEu && rawRecipe ? convertRecipeToMetric(rawRecipe) : rawRecipe;
+  const [unitSystem, setUnitSystem] = useState<"eu" | "us">(lang === "de" ? "eu" : "us");
+  const recipe = useMemo(() => {
+    if (!rawRecipe) return rawRecipe;
+    return unitSystem === "eu"
+      ? convertRecipeToMetric(rawRecipe)
+      : convertRecipeToImperial(rawRecipe);
+  }, [rawRecipe, unitSystem]);
   const servingsParam = searchParams.get("servings");
   const targetServings = servingsParam ? parseInt(servingsParam, 10) : undefined;
   const [index, setIndex] = useState(0);
@@ -146,15 +154,10 @@ export default function CookModePage({ params }: { params: Promise<{ id: string 
       <h1 className="text-[30px] font-bold leading-tight tracking-[-0.02em]">{recipe.title}</h1>
 
       <section className="mt-6 rounded-card border border-line/70 bg-surface p-5 shadow-card">
-        <div className="mb-4 flex items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex flex-wrap items-center gap-3">
             <h2 className="text-[17px] font-bold">Zutaten</h2>
-            <button
-              onClick={() => setIsEu(!isEu)}
-              className="pressable rounded-full border border-line bg-surface px-2 py-0.5 text-[12px] font-medium text-ink-2 shadow-sm"
-            >
-              {isEu ? "🇪🇺 EU" : "🇺🇸 US"}
-            </button>
+            <UnitToggle value={unitSystem} onChange={setUnitSystem} />
           </div>
           <span className="text-[13px] font-medium text-ink-3">
             {checked.size}/{recipe.ingredients.length} bereit

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRecipes } from "@/hooks/useRecipes";
@@ -10,7 +10,7 @@ import { EmptyState } from "@/components/EmptyState";
 import { ErrorState } from "@/components/ErrorState";
 import { Button } from "@/components/Button";
 import { Input } from "@/components/Input";
-import { IconClipboard, IconFridge, IconLink, IconSettings } from "@/components/Icons";
+import { IconClipboard, IconFridge, IconLink, IconSettings, IconX } from "@/components/Icons";
 import { extractSocialUrlFromText, parseSocialUrl } from "@/lib/socialSource";
 import { useToast } from "@/components/Toast";
 import { useI18n } from "@/lib/i18n/context";
@@ -28,7 +28,23 @@ export default function HomePage() {
   const [url, setUrl] = useState("");
   const [urlError, setUrlError] = useState<string>();
   const [importing, setImporting] = useState(false);
+  const [showFridgeBanner, setShowFridgeBanner] = useState(false);
   const { t } = useI18n();
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const dismissed = localStorage.getItem("fridgeBannerDismissed") === "true";
+      if (!dismissed) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setShowFridgeBanner(true);
+      }
+    }
+  }, []);
+
+  function dismissFridgeBanner() {
+    setShowFridgeBanner(false);
+    localStorage.setItem("fridgeBannerDismissed", "true");
+  }
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -205,25 +221,48 @@ export default function HomePage() {
         )}
       </section>
 
-      {/* Kühlschrank Reste-Verwertung Teaser */}
-      <section id="tour-fridge" className="mb-14 rounded-2xl border border-line bg-surface p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 shadow-card">
-        <div className="flex items-center gap-3.5">
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-accent-soft text-accent">
-            <IconFridge size={24} />
-          </div>
-          <div>
-            <h3 className="font-bold text-[17px] text-ink">Was ist im Kühlschrank?</h3>
-            <p className="text-[14px] text-ink-2">Finde blitzschnell Rezepte für Zutaten, die du noch zu Hause hast.</p>
-          </div>
-        </div>
-        <Link
-          href="/recipes?mode=fridge"
-          className="pressable inline-flex items-center justify-center gap-2 rounded-xl bg-ink px-5 py-2.5 text-[14px] font-bold text-surface hover:bg-accent hover:text-white transition-colors shrink-0"
+      {/* Kühlschrank Reste-Verwertung Update-Banner (einmalig, schließbar) */}
+      {showFridgeBanner && (
+        <section
+          id="tour-fridge"
+          className="relative mb-12 rounded-2xl border border-line bg-surface p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 shadow-card"
         >
-          <span>Reste verwerten</span>
-          <span>→</span>
-        </Link>
-      </section>
+          <div className="flex items-start sm:items-center gap-3.5 pr-8 sm:pr-0">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-accent-soft text-accent">
+              <IconFridge size={24} />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="rounded-full bg-accent/15 px-2 py-0.5 text-[11px] font-extrabold uppercase tracking-wider text-accent">
+                  Neu
+                </span>
+                <h3 className="font-bold text-[17px] text-ink">Was ist im Kühlschrank?</h3>
+              </div>
+              <p className="mt-0.5 text-[14px] text-ink-2">
+                Finde blitzschnell Rezepte für Zutaten, die du noch zu Hause hast.
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
+            <Link
+              href="/recipes?mode=fridge"
+              onClick={dismissFridgeBanner}
+              className="pressable inline-flex items-center justify-center gap-1.5 rounded-xl bg-ink px-4 py-2.5 text-[14px] font-bold text-surface hover:bg-accent hover:text-white transition-colors"
+            >
+              <span>Reste verwerten</span>
+              <span>→</span>
+            </Link>
+            <button
+              type="button"
+              onClick={dismissFridgeBanner}
+              aria-label="Hinweis schließen"
+              className="pressable absolute right-3 top-3 sm:static flex h-8 w-8 items-center justify-center rounded-full text-ink-3 hover:bg-surface-2 hover:text-ink transition-colors"
+            >
+              <IconX size={16} />
+            </button>
+          </div>
+        </section>
+      )}
 
       <section id="tour-recipes" aria-labelledby="recent-heading">
         <h2 id="recent-heading" className="mb-4 text-[21px] font-bold">
