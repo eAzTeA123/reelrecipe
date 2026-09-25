@@ -23,8 +23,8 @@ export function tokenizeSentences(text: string): string[] {
     .replace(/(Für\s*\d+\s*(?:Stück|Portionen?|Personen?):?)/gi, "\n$1\n")
     // 3b. "Für den/die/das..." Sub-Header isolieren (ohne zu weit zu matchen)
     .replace(/(\b(?:Für\s*(?:den|die|das|diese|alle)|\bFor\s*(?:the|this))\s+[a-zA-ZäöüÄÖÜß\-]+)(?=[\s:])/gi, "\n$1:\n")
-    // 4. Abschnitte trennen
-    .replace(/(Zutaten|Ingredients|Zubereitung|Instructions|Directions|Schritte|Anleitung)[:\s]/gi, "\n$1:\n")
+    // 4. Abschnitte trennen (inklusiver typischer TikTok/Insta-Redewendungen)
+    .replace(/(Zutaten|Ingredients|Zubereitung|Instructions|Directions|Schritte|Anleitung|So geht'?s|So wird'?s gemacht|Wir brauchen|Du brauchst|Das brauchst du|Dafür brauchst du|Was (?:du|ihr) braucht)[:\s]/gi, "\n$1:\n")
     // 5. Section-Emojis trennen
     .replace(/(🛒|🥣|🥗|👩‍🍳|👨‍🍳|📝)/gu, "\n$1\n")
     // 6. Zeilenumbrüche vor Bullets (z. B. "Sojajoghurt- Saft", "Tomaten- 250g", aber NICHT bei "Zitronen-Minz-Joghurt" oder "45-50")

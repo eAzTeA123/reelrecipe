@@ -30,7 +30,13 @@ function isOutroLine(line: string): boolean {
 
 /** Signal 1: Beginnt mit Verb/Sequenzwort ODER enthält Kochverb */
 function hasVerbOrSequenceStart(line: string): boolean {
-  const words = line.toLowerCase().replace(/^[0-9.\-•*):]+\s*/, "").trim().split(/\s+/);
+  const words = line
+    .toLowerCase()
+    .replace(/^[0-9.\-•*):]+\s*/, "")
+    .replace(/[.,!?]+$/, "")
+    .trim()
+    .split(/\s+/)
+    .map((w) => w.replace(/[.,!?]$/, ""));
   const firstWord = words[0] || "";
   const firstTwoWords = `${words[0] || ""} ${words[1] || ""}`.trim();
 
