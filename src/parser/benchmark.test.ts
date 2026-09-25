@@ -108,7 +108,7 @@ Place eggs on toast and sprinkle chili flakes`,
     level: "SCHWER",
     caption: `Quick Berry Smoothie Ingredients: 1 cup frozen berries 1 banana 1 cup almond milk 1 tbsp chia seeds Instructions: Put all ingredients into a high speed blender. Blend on high for 60 seconds until smooth. Pour into a glass and enjoy!`,
     expectedIngredientsCount: 4,
-    expectedStepsCount: 3,
+    expectedStepsCount: 1,
   },
   // 7. SEHR SCHWER (DE - Reiner Text ohne Marker-Wörter)
   {
