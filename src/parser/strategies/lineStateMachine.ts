@@ -240,19 +240,22 @@ export const lineStateMachineStrategy: ParserStrategy = {
       }
 
       if (state === "ZUBEREITUNG") {
-        // Wenn ein neuer Rezept-Block beginnt (z.B. englische Übersetzung), abbrechen
-        const cleanLower = line.toLowerCase().replace(/[:\-_#*]/g, "").replace(/[\p{Emoji_Presentation}\p{Extended_Pictographic}]/gu, "").trim();
-        const isNewRecipe = vocab.ingredientMarkers.some((m) => cleanLower === m || cleanLower.startsWith(m));
-        if (isNewRecipe && result.steps.length > 1) {
-          state = "SONSTIGES";
-          result.other.push(line);
-          continue;
-        }
-
-        // Falls wir eine Sub-Überschrift finden, geht's wieder in die Zutaten!
+        // Falls wir eine Sub-Überschrift finden (z.B. Zubereitung Füllung), geht's wieder in die Zutaten!
         if (isSubIngredientHeader(line)) {
           state = "ZUTATEN";
           result.ingredients.push(line);
+          continue;
+        }
+
+        // Wenn ein neuer Rezept-Block beginnt (z.B. englische Übersetzung), abbrechen
+        const cleanLower = line.toLowerCase().replace(/[:\-_#*]/g, "").replace(/[\p{Emoji_Presentation}\p{Extended_Pictographic}]/gu, "").trim();
+        const isNewRecipe = 
+          vocab.ingredientMarkers.some((m) => cleanLower === m || cleanLower === m + " english" || cleanLower === m + " deutsch") ||
+          vocab.stepMarkers.some((m) => cleanLower === m || cleanLower === m + " english" || cleanLower === m + " deutsch");
+        
+        if (isNewRecipe && result.steps.length > 1) {
+          state = "SONSTIGES";
+          result.other.push(line);
           continue;
         }
 
