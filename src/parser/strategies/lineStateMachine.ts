@@ -151,6 +151,11 @@ export const lineStateMachineStrategy: ParserStrategy = {
           continue;
         }
 
+        const isExactIngredientMarker = vocab.ingredientMarkers.some((m) => cleanLower === m);
+        if (isExactIngredientMarker) {
+          continue;
+        }
+
         // Portionszeilen (z. B. "Für 4 Stück:") gehören nicht in die Zutatenliste
         if (SERVINGS_HEADER_RE.test(line)) {
           result.other.push(line);
@@ -220,6 +225,15 @@ export const lineStateMachineStrategy: ParserStrategy = {
       }
 
       if (state === "ZUBEREITUNG") {
+        // Wenn ein neuer Rezept-Block beginnt (z.B. englische Übersetzung), abbrechen
+        const cleanLower = line.toLowerCase().replace(/[:\-_#*]/g, "").trim();
+        const isNewRecipe = vocab.ingredientMarkers.some((m) => cleanLower === m || cleanLower.startsWith(m));
+        if (isNewRecipe && result.steps.length > 1) {
+          state = "SONSTIGES";
+          result.other.push(line);
+          continue;
+        }
+
         // Einmal in ZUBEREITUNG, bleibt alles ZUBEREITUNG bis SONSTIGES
         result.steps.push(line);
         continue;

@@ -88,6 +88,11 @@ export const markerBasedStrategy: ParserStrategy = {
       result.confidence = 0.1;
     }
 
+    // Heuristic: If we have very long run-on steps, marker_based is probably bad at splitting them.
+    if (result.steps.some(s => s.length > 250)) {
+      result.confidence -= 0.5;
+    }
+
     return result;
   },
 };

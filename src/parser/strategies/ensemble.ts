@@ -16,7 +16,7 @@ export const ensembleStrategy: ParserStrategy = {
 
     // 1. Probiere den Fast-Path (Marker-Based)
     const markerRes = markerBasedStrategy.parse(caption);
-    if (markerRes.confidence >= 0.9) {
+    if (hasManyLines && markerRes.confidence >= 0.9) {
       return {
         ...markerRes,
         strategy: "ensemble (fast-path: marker_based)",

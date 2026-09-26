@@ -60,6 +60,7 @@ export function parseIngredientLine(line: string): ParsedIngredient | null {
   let unit: string | undefined;
   let uncertain = false;
 
+  rest = rest.replace(/^[\s\-•·▪️▫️🔸🔹.👇'%✅]+\s*/u, "");
   rest = rest.replace(/^(?:ca\.?|etwa|rund|ungefähr)\s+/i, "");
 
   // 1) Zahl am Anfang: "500 g Mehl", "2 Eier", "1 1/2 Tassen Reis"
@@ -153,21 +154,22 @@ export function parseIngredientLine(line: string): ParsedIngredient | null {
 
 /** Heuristik: sieht eine Zeile wie eine Zutat aus? (für Captions ohne Überschriften) */
 export function looksLikeIngredient(line: string): number {
+  let l = line.trim().replace(/^[\s\-•·▪️▫️🔸🔹.👇'%✅]+\s*/u, "");
   let score = 0;
-  if (AMOUNT_REGEX.test(line)) score += 3;
-  if (UNIT_REGEX.test(line)) {
-    if (AMOUNT_REGEX.test(line)) score += 3;
+  if (AMOUNT_REGEX.test(l)) score += 3;
+  if (UNIT_REGEX.test(l)) {
+    if (AMOUNT_REGEX.test(l)) score += 3;
     else score += 1;
   }
-  if (line.length <= 60) score += 1;
-  if (line.length > 100) score -= 2;
-  if (/\d+\s*(min|minuten|minutes|h|stunden)\b/i.test(line)) score -= 2;
-  if (STEP_VERB_HINTS.test(line) && !AMOUNT_REGEX.test(line)) score -= 2;
-  if (NUTRITION_RE.test(line)) score -= 5;
+  if (l.length <= 60) score += 1;
+  if (l.length > 100) score -= 2;
+  if (/\d+\s*(min|minuten|minutes|h|stunden)\b/i.test(l)) score -= 2;
+  if (STEP_VERB_HINTS.test(l) && !AMOUNT_REGEX.test(l)) score -= 2;
+  if (NUTRITION_RE.test(l)) score -= 5;
   
-  const wordCount = line.split(" ").length;
-  if (wordCount > 10 && !UNIT_REGEX.test(line)) score -= 2;
-  if (wordCount > 6 && !AMOUNT_REGEX.test(line)) score -= 3;
+  const wordCount = l.split(" ").length;
+  if (wordCount > 10 && !UNIT_REGEX.test(l)) score -= 2;
+  if (wordCount > 6 && !AMOUNT_REGEX.test(l)) score -= 3;
   
   return score;
 }

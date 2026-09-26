@@ -62,10 +62,12 @@ export function makeSteps(lines: string[]): RecipeStep[] {
       if (!text || STEP_HEADER_RE.test(text)) continue;
       
       let cleanSt = text.replace(/(?:#\w+\s*)+$/i, "").trim();
+      cleanSt = cleanSt.replace(/^[\s\-•·▪️▫️🔸🔹.👇'%✅]+/u, ""); // Strip leading bullets
       cleanSt = cleanSt.replace(/^[\p{Emoji_Presentation}\p{Extended_Pictographic}\s]+/gu, "").replace(/[\p{Emoji_Presentation}\p{Extended_Pictographic}\s]+$/gu, "").trim();
       if (/^(?:was|welche|welches|welchen|wie|warum|wo|wer|habt|schreibt|lasst)\b.*\?$/i.test(cleanSt)) continue;
 
-      out.push({ id: newId(), order: out.length + 1, instruction: text });
+      if (!cleanSt) continue;
+      out.push({ id: newId(), order: out.length + 1, instruction: cleanSt });
     }
   }
   return out;

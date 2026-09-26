@@ -19,7 +19,10 @@ export function normalizeCaption(caption: string): string {
   }
   
   // Break lines around common section markers if they are buried in text
-  text = text.replace(/([.?!,])?\s*(du brauchst|zutaten|zubereitung|so gehts|so geht's|anleitung)[\s:]+/gi, "$1\n$2:\n");
+  text = text.replace(/([.?!,])?\s*(du brauchst|zutaten|zubereitung|so gehts|so geht's|anleitung|ingredients|instructions|directions|method)[\s:]+/gi, "$1\n$2:\n");
+  
+  // Break lines before inline bullets (* or •)
+  text = text.replace(/([^\n])\s+([*•])\s+/g, "$1\n$2 ");
   
   return text;
 }
@@ -39,7 +42,6 @@ export function splitLines(caption: string): string[] {
 
 export function cleanLine(line: string): string {
   let l = line.trim();
-  l = l.replace(BULLET_RE, "").trim();
   // trailing Hashtags/Mentions am Zeilenende entfernen
   l = l.replace(/(\s[#@]\S+)+\s*$/, "");
   l = l.replace(/\s+/g, " ").trim();
