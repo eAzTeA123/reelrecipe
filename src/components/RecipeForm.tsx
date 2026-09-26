@@ -140,10 +140,18 @@ export function RecipeForm({
   const [hasDraft, setHasDraft] = useState<RecipeDraft | null>(null);
   const isFirstRender = useRef(true);
   const fileRef = useRef<HTMLInputElement>(null);
-  const pendingUrl = useMemo(
-    () => (draft.pendingImage ? URL.createObjectURL(draft.pendingImage) : undefined),
-    [draft.pendingImage],
-  );
+  const [pendingUrl, setPendingUrl] = useState<string>();
+
+  useEffect(() => {
+    if (draft.pendingImage) {
+      const url = URL.createObjectURL(draft.pendingImage);
+      setPendingUrl(url);
+      return () => URL.revokeObjectURL(url);
+    } else {
+      setPendingUrl(undefined);
+    }
+  }, [draft.pendingImage]);
+
   const existingUrl = useImageUrl(draft.pendingImage ? undefined : draft.imageRef);
 
   useEffect(() => {
@@ -165,12 +173,6 @@ export function RecipeForm({
       localStorage.setItem("reelrecipe_draft", JSON.stringify({ ...draft, pendingImage: undefined }));
     } catch {}
   }, [draft]);
-
-  useEffect(() => {
-    return () => {
-      if (pendingUrl) URL.revokeObjectURL(pendingUrl);
-    };
-  }, [pendingUrl]);
 
   const set = <K extends keyof RecipeDraft>(k: K, v: RecipeDraft[K]) =>
     setDraft((d) => ({ ...d, [k]: v }));

@@ -12,6 +12,8 @@ export async function extractDominantColor(blob: Blob): Promise<string | undefin
     const imageData = ctx.getImageData(0, 0, 50, 50);
     const data = imageData.data;
     
+    bitmap.close();
+
     let r = 0, g = 0, b = 0;
     let count = 0;
     

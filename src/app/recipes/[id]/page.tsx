@@ -170,14 +170,15 @@ export default function RecipeDetailPage({ params }: { params: Promise<{ id: str
   }
 
   return (
-    <article className="mx-auto max-w-5xl relative">
+    <>
       {recipe.color && (
         <div
-          className="absolute left-1/2 top-[-2rem] -z-10 h-[30rem] w-[100vw] -translate-x-1/2 pointer-events-none"
+          className="absolute left-0 right-0 top-0 -z-10 h-[30rem] pointer-events-none"
           style={{ backgroundImage: `linear-gradient(to bottom, ${recipe.color}40, transparent)` }}
         />
       )}
-      <div className="no-print mb-4 flex items-center justify-between">
+      <article className="mx-auto max-w-5xl relative">
+        <div className="no-print mb-4 flex items-center justify-between">
         <button
           onClick={() => {
             if (window.history.length > 1) {
@@ -388,6 +389,7 @@ export default function RecipeDetailPage({ params }: { params: Promise<{ id: str
         onConfirm={() => void doDelete()}
         onCancel={() => setConfirmDelete(false)}
       />
-    </article>
+      </article>
+    </>
   );
 }
