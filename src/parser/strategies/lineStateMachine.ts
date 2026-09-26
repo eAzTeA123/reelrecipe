@@ -43,8 +43,9 @@ function hasVerbOrSequenceStart(line: string): boolean {
   const isVerbStart = vocab.stepVerbs.some((v) => firstWord === v || firstTwoWords === v);
   const isSeq = vocab.sequenceWords.some((s) => firstWord === s || firstTwoWords === s);
   const containsVerb = vocab.stepVerbs.some((v) => words.includes(v));
+  const hasOvenOrTemp = /\b(?:backofen|umluft|ober-\/unterhitze|o\/u-hitze|grad|°c|minuten?|stunden?|min\.)\b/i.test(line);
 
-  return isVerbStart || isSeq || containsVerb;
+  return isVerbStart || isSeq || containsVerb || hasOvenOrTemp;
 }
 
 /** Signal 2: Strukturwechsel (langer Satz, wenig wie Zutat geformt) */
@@ -173,6 +174,29 @@ export const lineStateMachineStrategy: ParserStrategy = {
           // Übergang zu ZUBEREITUNG ausgelöst!
           state = "ZUBEREITUNG";
           result.steps.push(line);
+          continue;
+        }
+
+        // Check if it's a continuation line (short, no bullet or number at start)
+        if (
+          !/^[-•*]|\d/.test(line) &&
+          line.length < 40 &&
+          result.ingredients.length > 0 &&
+          !isSubIngredientHeader(line)
+        ) {
+          result.ingredients[result.ingredients.length - 1] += ", " + line;
+          continue;
+        }
+
+        // Check if it's a continuation line (starts with lowercase, no bullet)
+        if (
+          !/^[-•*]|\d/.test(line) &&
+          /^[a-zäöü]/.test(line) &&
+          line.length < 50 &&
+          result.ingredients.length > 0 &&
+          !isSubIngredientHeader(line)
+        ) {
+          result.ingredients[result.ingredients.length - 1] += ", " + line;
           continue;
         }
 

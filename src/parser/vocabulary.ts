@@ -24,7 +24,7 @@ export interface LanguageVocab {
 export const VOCABULARY: Record<"de" | "en", LanguageVocab> = {
   de: {
     ingredientMarkers: [
-      "zutaten",
+      "zutaten","mengenangaben",
       "zutat",
       "wir brauchen",
       "du brauchst",

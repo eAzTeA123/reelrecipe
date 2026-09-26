@@ -42,5 +42,10 @@ export function cleanLine(line: string): string {
   if (HASHTAG_LINE_RE.test(l) || MENTION_LINE_RE.test(l)) return "";
   // Ignore lines with no letters or numbers
   if (!/[\p{L}\d]/u.test(l)) return "";
+  
+  // Ignore nutritional values
+  if (/nährwerte|kalorien|nutritional info/i.test(l)) return "";
+  if (/^\d+\s*kcal/i.test(l) || /(?:kcal|protein|kohlenhydrate|fett)\s*[:=]?/i.test(l)) return "";
+  
   return l;
 }
