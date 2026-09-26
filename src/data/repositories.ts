@@ -40,6 +40,7 @@ export interface RecipeRepository {
     onError?: (error: unknown) => void,
   ): () => void;
   importRecipes(recipes: Recipe[], mode: "skip" | "replace"): Promise<{ added: number; skipped: number }>;
+  findBySourceUrl(sourceUrl: string): Promise<Recipe | undefined>;
   clearAll(): Promise<void>;
 }
 

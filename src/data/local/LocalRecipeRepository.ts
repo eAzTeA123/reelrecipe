@@ -3,6 +3,7 @@ import type { Recipe, RecipeInput } from "@/domain/types";
 import type { RecipeRepository, SearchFilter } from "../repositories";
 import { getDB } from "./db";
 import { newId, normalizeForSearch } from "@/lib/text";
+import { parseSocialUrl } from "@/lib/socialSource";
 
 function applyFilter(recipes: Recipe[], filter?: SearchFilter): Recipe[] {
   if (!filter) return recipes;
@@ -219,6 +220,22 @@ export class LocalRecipeRepository implements RecipeRepository {
       }
     });
     return { added, skipped };
+  }
+
+  async findBySourceUrl(sourceUrl: string): Promise<Recipe | undefined> {
+    const parsed = parseSocialUrl(sourceUrl);
+    
+    if (parsed) {
+      // Find recipe with same platform and ID
+      return this.db.recipes.filter(r => {
+        if (!r.sourceUrl) return false;
+        const p = parseSocialUrl(r.sourceUrl);
+        return p?.platform === parsed.platform && p?.id === parsed.id;
+      }).first();
+    }
+    
+    // Fallback for non-social URLs
+    return this.db.recipes.filter(r => r.sourceUrl === sourceUrl).first();
   }
 
   async clearAll(): Promise<void> {

@@ -212,3 +212,25 @@ describe("parseRecipe – Grenzfälle", () => {
     expect(r.ingredients[0].uncertain).toBe(true);
   });
 });
+
+import { pickTitle } from "./meta";
+
+describe("Titel-Extraktion", () => {
+  it("entfernt 'Hier steht das Rezept' Intro", () => {
+    expect(pickTitle(["Hier steht das Rezept 👇 noch mehr bei IG: User"], () => false))
+      .toBe(undefined); // Komplett Intro, kein Titel
+  });
+
+  it("entfernt 'Zum Rezept' Intro und extrahiert echten Titel", () => {
+    expect(pickTitle([
+      "Zum Rezept ⬇️ Mehr Rezepte bei IG: User",
+      "Cremige Tomatensuppe"
+    ], () => false)).toBe("Cremige Tomatensuppe");
+  });
+
+  it("bewahrt echte Titel mit Emoji", () => {
+    expect(pickTitle(["Cheeseburger Tacos 🧀🍔"], () => false))
+      .toBe("Cheeseburger Tacos");
+  });
+});
+

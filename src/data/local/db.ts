@@ -30,6 +30,15 @@ export class RecipeDB extends Dexie {
         if (!recipe.tags) recipe.tags = [];
       });
     });
+    this.version(3).stores({
+      recipes: "id, title, category, favorite, createdAt, *tags, sourceUrl",
+    }).upgrade(tx => {
+      return tx.table("recipes").toCollection().modify(recipe => {
+        if (recipe.parserVersion === undefined) {
+          recipe.parserVersion = 0; // Markiert als "vor dem neuen Parser"
+        }
+      });
+    });
   }
 }
 

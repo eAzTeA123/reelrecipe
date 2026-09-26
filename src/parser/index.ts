@@ -6,7 +6,7 @@ import {
   expandIngredientLine,
 } from "./ingredient";
 import { makeSteps } from "./steps";
-import { parseServings, parseTimes, pickTitle } from "./meta";
+import { parseServings, parseTimes, pickTitle, cleanTitle } from "./meta";
 import { ensembleStrategy, ALL_STRATEGIES } from "./strategies/ensemble";
 import { markerBasedStrategy } from "./strategies/markerBased";
 import { lineStateMachineStrategy } from "./strategies/lineStateMachine";
@@ -23,6 +23,9 @@ export {
   sentenceStateMachineStrategy,
   ALL_STRATEGIES,
 };
+
+/** Inkrement bei jeder wesentlichen Parser-Änderung */
+export const PARSER_VERSION = 1;
 
 import { getAllVocab } from "./vocabulary";
 
@@ -62,9 +65,7 @@ export function parseRecipe(caption: string): ParsedRecipe | null {
       ? raw.title
       : pickTitle(lines, isSectionHeader) ?? "Neues Rezept";
 
-  const title = rawTitle
-    .replace(/(?:[\p{Extended_Pictographic}\u{FE0F}\u{200D}]+|\s)+$/u, "")
-    .trim();
+  const title = cleanTitle(rawTitle) || "Neues Rezept";
 
   return {
     title: title || "Neues Rezept",

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useMealPlan } from "@/hooks/useMealPlan";
 import { useRecipes } from "@/hooks/useRecipes";
@@ -8,6 +8,7 @@ import { getMealPlanRepository, getShoppingListRepository, getRecipeRepository }
 import { PageHeader } from "@/components/PageHeader";
 import { IconTrash, IconCart, IconPlus, IconMinus } from "@/components/Icons";
 import { RecipeImage } from "@/components/RecipeImage";
+import { DragHandle } from "@/components/DragHandle";
 import { scaleAmount } from "@/lib/scale";
 import type { DayOfWeek } from "@/domain/types";
 
@@ -26,6 +27,31 @@ export default function PlannerPage() {
   const { entries } = useMealPlan();
   const { recipes } = useRecipes();
   const [loading, setLoading] = useState(false);
+
+  const [draggedEntryId, setDraggedEntryId] = useState<string | null>(null);
+  const [dropTargetDay, setDropTargetDay] = useState<DayOfWeek | null>(null);
+  const [pointerPos, setPointerPos] = useState({ x: 0, y: 0 });
+  const longPressTimer = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    if (!draggedEntryId) return;
+    
+    document.body.style.touchAction = 'none'; // Prevent scrolling while dragging
+
+    const handleMove = (e: PointerEvent) => setPointerPos({ x: e.clientX, y: e.clientY });
+    const handleUp = () => {
+      setDraggedEntryId(null);
+      setDropTargetDay(null);
+    };
+    
+    window.addEventListener("pointermove", handleMove);
+    window.addEventListener("pointerup", handleUp);
+    return () => {
+      document.body.style.touchAction = '';
+      window.removeEventListener("pointermove", handleMove);
+      window.removeEventListener("pointerup", handleUp);
+    };
+  }, [draggedEntryId]);
 
   const getEntriesForDay = (day: DayOfWeek) => entries.filter((e) => e.dayOfWeek === day);
 
@@ -80,8 +106,66 @@ export default function PlannerPage() {
     }
   };
 
+  const handleDragStart = (entryId: string, clientX?: number, clientY?: number) => {
+    setDraggedEntryId(entryId);
+    if (clientX !== undefined && clientY !== undefined) {
+      setPointerPos({ x: clientX, y: clientY });
+    }
+    if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(50);
+  };
+
+  const handlePointerDown = (entryId: string, e: React.PointerEvent) => {
+    const x = e.clientX;
+    const y = e.clientY;
+    longPressTimer.current = setTimeout(() => {
+      handleDragStart(entryId, x, y);
+    }, 300);
+  };
+
+  const handlePointerMove = () => {
+    if (longPressTimer.current) {
+      clearTimeout(longPressTimer.current);
+      longPressTimer.current = null;
+    }
+  };
+
+  const handlePointerUp = () => {
+    if (longPressTimer.current) {
+      clearTimeout(longPressTimer.current);
+      longPressTimer.current = null;
+    }
+  };
+
+  const handleDrop = async (targetDay: DayOfWeek) => {
+    if (!draggedEntryId) return;
+    
+    const entry = entries.find(e => e.id === draggedEntryId);
+    if (!entry || entry.dayOfWeek === targetDay) {
+      setDraggedEntryId(null);
+      setDropTargetDay(null);
+      return;
+    }
+
+    const repo = getMealPlanRepository();
+    await repo.update(draggedEntryId, { dayOfWeek: targetDay });
+    
+    setDraggedEntryId(null);
+    setDropTargetDay(null);
+  };
+
   return (
-    <div className="flex flex-col gap-4">
+    <>
+      {draggedEntryId && (
+        <div
+          className="fixed pointer-events-none z-50 bg-surface shadow-2xl rounded-xl p-3 opacity-90 rotate-2 scale-105 flex gap-3 items-center"
+          style={{ left: pointerPos.x - 50, top: pointerPos.y - 20 }}
+        >
+          <p className="text-sm font-semibold truncate max-w-[200px]">
+            {recipes.find(r => r.id === entries.find(e => e.id === draggedEntryId)?.recipeId)?.title ?? "Rezept"}
+          </p>
+        </div>
+      )}
+      <div className="flex flex-col gap-4">
       {/* Mobile-friendly header with an inline button underneath on small screens, or in action slot on larger screens */}
       <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
         <PageHeader title="Wochenplan" subtitle="Plane deine Mahlzeiten für die Woche." />
@@ -99,7 +183,16 @@ export default function PlannerPage() {
         {DAYS.map((day) => {
           const dayEntries = getEntriesForDay(day.key);
           return (
-            <section key={day.key} className="flex flex-col rounded-card bg-surface p-4 shadow-card">
+            <section
+              key={day.key}
+              className={`flex flex-col rounded-card p-4 shadow-card transition-colors ${
+                dropTargetDay === day.key
+                  ? "border-2 border-accent bg-accent/5"
+                  : "border-2 border-transparent bg-surface"
+              }`}
+              onPointerEnter={() => draggedEntryId && setDropTargetDay(day.key)}
+              onPointerUp={() => draggedEntryId && handleDrop(day.key)}
+            >
               <h3 className="mb-4 font-bold text-lg text-ink-1">{day.label}</h3>
               
               <div className="flex flex-col gap-3 flex-1">
@@ -107,7 +200,17 @@ export default function PlannerPage() {
                   const recipe = recipes.find((r) => r.id === entry.recipeId);
                   
                   return (
-                    <div key={entry.id} className="group relative flex gap-3 rounded-2xl bg-white p-3 shadow-sm border border-line items-center">
+                    <div
+                      key={entry.id}
+                      className={`group relative flex gap-3 rounded-2xl bg-white p-3 shadow-sm border border-line items-center transition-all ${
+                        draggedEntryId === entry.id ? "opacity-50 scale-95" : ""
+                      }`}
+                      onPointerDown={(e) => handlePointerDown(entry.id, e)}
+                      onPointerMove={handlePointerMove}
+                      onPointerUp={handlePointerUp}
+                      onPointerCancel={handlePointerUp}
+                    >
+                      <DragHandle entryId={entry.id} onDragStart={handleDragStart} />
                       {recipe ? (
                         <div className="h-14 w-14 shrink-0 overflow-hidden rounded-xl bg-surface">
                           <RecipeImage imageRef={recipe.image} alt={recipe.title} className="h-full w-full object-cover" />
@@ -185,5 +288,6 @@ export default function PlannerPage() {
         })}
       </div>
     </div>
+    </>
   );
 }

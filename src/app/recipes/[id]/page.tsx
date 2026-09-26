@@ -29,12 +29,15 @@ function formatMinutes(min?: number): string | undefined {
   return m ? `${h} Std ${m} Min` : `${h} Std`;
 }
 
+import { useImageUrlWithCache } from "@/hooks/useImageUrlWithCache";
+
 export default function RecipeDetailPage({ params }: { params: Promise<{ id: string }> }) {
 
   const { t, lang } = useI18n();
   const { id } = use(params);
   const router = useRouter();
   const { recipe: rawRecipe, loading, error, retry } = useRecipe(id);
+  const cachedImageUrl = useImageUrlWithCache(rawRecipe?.image, rawRecipe?.id);
   const toast = useToast();
   const [servings, setServings] = useState<number | null>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -231,7 +234,7 @@ export default function RecipeDetailPage({ params }: { params: Promise<{ id: str
 
       {recipe.image && (
         <div className="mb-6 aspect-[4/3] w-full overflow-hidden rounded-card border border-line/60 shadow-card md:aspect-[21/9]">
-          <RecipeImage imageRef={recipe.image} alt={recipe.title} className="h-full w-full" />
+          <RecipeImage imageRef={cachedImageUrl ?? recipe.image} alt={recipe.title} className="h-full w-full" />
         </div>
       )}
 

@@ -51,6 +51,10 @@ export const dictionaries = {
     "import.clipErrorNoLink": "Kein Link in der Zwischenablage gefunden.",
     "import.clipErrorInvalid": "Kein unterstützter Instagram- oder TikTok-Link in der Zwischenablage.",
     "import.clipErrorDenied": "Zugriff auf die Zwischenablage verweigert. Bitte füge den Link manuell ein.",
+    "import.duplicateTitle": "Rezept existiert bereits",
+    "import.duplicateDesc": "„{title}“ wurde bereits importiert. Möchtest du es mit den neuen Daten überschreiben?",
+    "import.duplicateCancel": "Abbrechen",
+    "import.duplicateOverwrite": "Überschreiben",
 
     // Recipe List
     "recipes.title": "Alle Rezepte",
@@ -146,6 +150,7 @@ export const dictionaries = {
     "toast.importSuccess": "Rezepte importiert",
     "toast.importError": "Fehler beim Importieren",
     "toast.deleteSuccess": "Alle Daten gelöscht",
+    "toast.recipeExists": "Rezept existiert bereits in deiner Bibliothek",
 
     // PWA Install Prompt
     "pwa.saveMe": "Als App 👋",
@@ -228,6 +233,10 @@ export const dictionaries = {
     "import.clipErrorNoLink": "No link found in clipboard.",
     "import.clipErrorInvalid": "No supported Instagram or TikTok link in clipboard.",
     "import.clipErrorDenied": "Clipboard access denied. Please paste the link manually.",
+    "import.duplicateTitle": "Recipe already exists",
+    "import.duplicateDesc": "„{title}“ was already imported. Do you want to overwrite it with the new data?",
+    "import.duplicateCancel": "Cancel",
+    "import.duplicateOverwrite": "Overwrite",
 
     // Recipe List
     "recipes.title": "All Recipes",
@@ -323,6 +332,7 @@ export const dictionaries = {
     "toast.importSuccess": "Recipes imported",
     "toast.importError": "Error importing",
     "toast.deleteSuccess": "All data deleted",
+    "toast.recipeExists": "Recipe already exists in your library",
 
     // PWA Install Prompt
     "pwa.saveMe": "Save Me 👋",

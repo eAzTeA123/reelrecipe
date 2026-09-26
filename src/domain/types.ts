@@ -35,6 +35,8 @@ export interface Recipe {
   favorite: boolean;
   createdAt: number;
   updatedAt: number;
+  /** Version des Parsers, mit der dieses Rezept zuletzt geparst wurde */
+  parserVersion?: number;
 }
 
 export type RecipeInput = Omit<Recipe, "id" | "createdAt" | "updatedAt">;

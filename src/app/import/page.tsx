@@ -4,11 +4,11 @@ import { useI18n } from "@/lib/i18n/context";
 import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { extractSocialUrlFromText, parseSocialUrl } from "@/lib/socialSource";
-import { parseRecipe } from "@/parser";
+import { parseRecipe, PARSER_VERSION } from "@/parser";
 import { translateParsedRecipe } from "@/lib/i18n/recipeTranslation";
 import { getRecipeRepository } from "@/data";
 import { compressImage } from "@/lib/image";
-import type { RecipeInput } from "@/domain/types";
+import type { Recipe, RecipeInput } from "@/domain/types";
 import {
   emptyDraft,
   draftFromIngredients,
@@ -65,6 +65,13 @@ function ImportFlow() {
   const [parseError, setParseError] = useState<string>();
   const [analyzing, setAnalyzing] = useState(false);
   const [draft, setDraft] = useState<RecipeDraft | null>(null);
+  const [existingRecipe, setExistingRecipe] = useState<Recipe | null>(null);
+  const [showDuplicateDialog, setShowDuplicateDialog] = useState(false);
+  const [pendingSaveArgs, setPendingSaveArgs] = useState<{
+    input: RecipeInput;
+    pendingImage?: Blob;
+    previousImageRef?: string;
+  } | null>(null);
   const started = useRef(false);
   const abortRef = useRef<AbortController | null>(null);
 
@@ -214,7 +221,7 @@ function ImportFlow() {
       }
       const parsed = translateParsedRecipe(rawParsed, lang);
       let pendingImage: Blob | undefined;
-      if (useOgImage && imgToUse) {
+      if (imgToUse) {
         try {
           const res = await fetch(`/api/instagram/image?url=${encodeURIComponent(imgToUse)}`);
           if (res.ok) pendingImage = await compressImage(await res.blob());
@@ -253,13 +260,31 @@ function ImportFlow() {
     setStep("review");
   }
 
-  async function save(input: RecipeInput, pendingImage?: Blob, previousImageRef?: string) {
+  async function save(input: RecipeInput, pendingImage?: Blob, previousImageRef?: string, forceOverwrite = false) {
+    if (input.sourceUrl && !forceOverwrite) {
+      const existing = await getRecipeRepository().findBySourceUrl(input.sourceUrl);
+      if (existing) {
+        setExistingRecipe(existing);
+        setPendingSaveArgs({ input, pendingImage, previousImageRef });
+        setShowDuplicateDialog(true);
+        return false;
+      }
+    }
+
+    input.parserVersion = PARSER_VERSION;
+
+    const targetId = existingRecipe?.id ?? undefined;
     const recipe = await getRecipeRepository().saveWithImage(
-      undefined,
+      targetId,
       input,
       pendingImage,
       previousImageRef,
     );
+    
+    setExistingRecipe(null);
+    setShowDuplicateDialog(false);
+    setPendingSaveArgs(null);
+    
     try {
       sessionStorage.removeItem(STORAGE_KEY);
     } catch {
@@ -285,6 +310,48 @@ function ImportFlow() {
           }
         />
         <RecipeForm initial={draft} onSubmit={save} submitLabel={t("import.save")} />
+        
+        {showDuplicateDialog && existingRecipe && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+            <div className="bg-surface rounded-2xl p-6 max-w-sm w-full shadow-xl space-y-4">
+              <h3 className="text-[18px] font-bold text-ink">
+                {t("import.duplicateTitle")}
+              </h3>
+              <p className="text-sm text-ink/70">
+                {t("import.duplicateDesc").replace("{title}", existingRecipe.title)}
+              </p>
+              <div className="flex gap-3">
+                <Button
+                  variant="secondary"
+                  className="flex-1"
+                  onClick={() => {
+                    setShowDuplicateDialog(false);
+                    setExistingRecipe(null);
+                    setPendingSaveArgs(null);
+                  }}
+                >
+                  {t("import.duplicateCancel")}
+                </Button>
+                <Button
+                  variant="primary"
+                  className="flex-1"
+                  onClick={() => {
+                    if (pendingSaveArgs) {
+                      void save(
+                        pendingSaveArgs.input,
+                        pendingSaveArgs.pendingImage,
+                        pendingSaveArgs.previousImageRef,
+                        true // forceOverwrite
+                      );
+                    }
+                  }}
+                >
+                  {t("import.duplicateOverwrite")}
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
       </>
     );
   }

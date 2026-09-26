@@ -123,7 +123,7 @@ export function RecipeForm({
     input: RecipeInput,
     pendingImage?: Blob,
     previousImageRef?: string,
-  ) => Promise<void>;
+  ) => Promise<boolean | void>;
   submitLabel?: string;
   onImagePicked?: (blob: Blob) => void;
 }) {
@@ -183,8 +183,12 @@ export function RecipeForm({
     setError(undefined);
     setStatus("saving");
     try {
-      await onSubmit(toInput(draft), draft.pendingImage, initial.imageRef);
-      setStatus("saved");
+      const result = await onSubmit(toInput(draft), draft.pendingImage, initial.imageRef);
+      if (result === false) {
+        setStatus("idle");
+      } else {
+        setStatus("saved");
+      }
     } catch (e) {
       console.error("save failed", e);
       setStatus("error");
@@ -196,6 +200,48 @@ export function RecipeForm({
 
   return (
     <div className="flex flex-col gap-7">
+      {initial.sourceCaption && (
+        <div className="flex flex-col gap-4">
+          <div className="rounded-xl bg-blue-50 dark:bg-blue-950/30 p-3 text-sm text-blue-800 dark:text-blue-200">
+            <p className="font-semibold">📋 Vorschau – Bitte prüfen</p>
+            <p className="mt-1 text-blue-700/80 dark:text-blue-300/80">
+              Der Parser hat dieses Rezept aus dem Social-Media-Text erkannt.
+              Zutaten mit <span className="inline-flex items-center bg-amber-400 text-white rounded-full w-4 h-4 text-[10px] justify-center font-bold mx-0.5">?</span> waren unklar – bitte prüfen und ggf. korrigieren.
+            </p>
+          </div>
+          
+          <div className="flex gap-2">
+            <button
+              type="button"
+              className="text-xs px-3 py-1.5 rounded-full bg-red-50 text-red-600 dark:bg-red-950/30 dark:text-red-400 font-medium"
+              onClick={() => {
+                setDraft(prev => ({ ...prev, ingredients: prev.ingredients.filter(i => !i.uncertain) }));
+              }}
+            >
+              ⚠️ Unsichere entfernen
+            </button>
+            <button
+              type="button"
+              className="text-xs px-3 py-1.5 rounded-full bg-green-50 text-green-600 dark:bg-green-950/30 dark:text-green-400 font-medium"
+              onClick={() => {
+                setDraft(prev => ({ ...prev, ingredients: prev.ingredients.map(i => ({ ...i, uncertain: false })) }));
+              }}
+            >
+              ✓ Alle bestätigen
+            </button>
+          </div>
+
+          <details className="rounded-xl bg-gray-50 dark:bg-gray-900/30 p-3">
+            <summary className="cursor-pointer text-sm font-medium text-ink/60">
+              Original-Text anzeigen
+            </summary>
+            <pre className="mt-2 text-xs text-ink/50 whitespace-pre-wrap font-mono leading-relaxed max-h-48 overflow-y-auto">
+              {initial.sourceCaption}
+            </pre>
+          </details>
+        </div>
+      )}
+
       {status === "saved" && typeof document !== "undefined" && createPortal(
         <div className="overlay-in fixed inset-0 z-50 flex items-center justify-center bg-white/70 backdrop-blur-sm">
           <div className="check-pop flex flex-col items-center gap-3">
@@ -325,13 +371,16 @@ export function RecipeForm({
         {draft.ingredients.map((ing, i) => (
           <div
             key={ing.id}
-            className={`rounded-ctl border p-2.5 ${
+            className={`relative rounded-ctl border p-2.5 ${
               ing.uncertain ? "border-[#e8b48a] bg-[#fdf6ef]" : "border-line bg-surface"
             }`}
           >
             {ing.uncertain && (
-              <span className="mb-2 inline-flex rounded-full bg-[#f4e2d2] px-2 py-0.5 text-[11px] font-medium text-[#8a4d1c]">
-                Nicht eindeutig erkannt
+              <span
+                className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-amber-400 flex items-center justify-center text-[10px] text-white font-bold"
+                title="Parser war sich unsicher – bitte prüfen"
+              >
+                ?
               </span>
             )}
             <div className="grid grid-cols-[minmax(4.5rem,0.8fr)_minmax(5rem,0.9fr)_2.75rem] gap-2 sm:grid-cols-[5.5rem_7rem_minmax(0,1fr)_2.75rem]">

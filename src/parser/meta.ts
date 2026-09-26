@@ -51,6 +51,41 @@ export function parseTimes(lines: string[]): { prepTime?: number; cookTime?: num
 
 const TITLE_BAD = /^(rezept|recipe|hier ist|das hier|dieses|heute|neu)/i;
 
+/** Phrasen, die NICHT als Titel taugen (TikTok/Insta Intro-Boilerplate) */
+const TITLE_STRIP_PHRASES = [
+  // DE Intro-Phrasen
+  /^(?:hier\s+(?:steht|ist|kommt)\s+(?:das\s+)?rezept)\s*/i,
+  /^(?:zum\s+rezept)\s*/i,
+  /^(?:das\s+(?:komplette\s+)?rezept\s+(?:für\s+euch|steht\s+hier))\s*/i,
+  /^(?:hier\s+(?:ist|für)\s+(?:euch|dich))\s*/i,
+  
+  // EN Intro-Phrasen
+  /^(?:here(?:'s|\s+is)\s+(?:the\s+)?recipe)\s*/i,
+  /^(?:recipe\s+(?:below|here))\s*/i,
+  /^(?:full\s+recipe)\s*/i,
+  
+  // Social CTAs (am Ende)
+  /\s*(?:(?:noch\s+)?mehr\s+(?:rezepte?\s+)?(?:bei|auf|gibts?|findest?\s+du)\s+(?:ig|insta(?:gram)?|tiktok)\s*[:\s]*\S+)\s*$/i,
+  /\s*(?:follow\s+(?:me\s+)?(?:on|@)\s*\S+)\s*$/i,
+  /\s*(?:folg[te]?\s+(?:mir|uns)\s+(?:auf|bei|@)\s*\S+)\s*$/i,
+  
+  // Pfeil-Emojis und "nach unten"-Hinweise
+  /\s*[⬇️👇⤵️↓🔽]\uFE0F?\s*/gu,
+];
+
+/** Bereinigt einen Titel-Kandidaten von Intro-Boilerplate */
+export function cleanTitle(raw: string): string {
+  let t = raw;
+  for (const re of TITLE_STRIP_PHRASES) {
+    t = t.replace(re, "").trim();
+  }
+  // Trailing Emojis entfernen
+  t = t.replace(/[\p{Extended_Pictographic}\u{FE0F}\u{200D}\s]+$/u, "").trim();
+  // Leading Emojis entfernen (wenn nur noch Emojis + kurzer Text übrig)
+  t = t.replace(/^[\p{Emoji_Presentation}\p{Extended_Pictographic}\s]+/gu, "").trim();
+  return t;
+}
+
 /** Erste sinnvolle Zeile als Titel: keine Überschrift, keine Zutat, 2–80 Zeichen. */
 export function pickTitle(
   preambleLines: string[],
@@ -61,8 +96,14 @@ export function pickTitle(
     if (l.length < 3 || l.length > 80) continue;
     if (isSectionHeader(l)) continue;
     if (/^\d/.test(l)) continue;
-    if (TITLE_BAD.test(l) && l.length < 20) continue;
-    return l.replace(/[🍽️🥘🍳🧑‍🍳👩‍🍳]/gu, "").replace(/\s{2,}/g, " ").trim();
+    
+    const cleaned = cleanTitle(l);
+    // Nach dem Bereinigen zu kurz? → Nächste Zeile versuchen
+    if (cleaned.length < 3) continue;
+    // Nur Intro-Text, kein richtiger Titel? → Skip
+    if (TITLE_BAD.test(cleaned) && cleaned.length < 20) continue;
+    
+    return cleaned;
   }
   return undefined;
 }

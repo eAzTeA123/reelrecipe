@@ -86,6 +86,16 @@ export default function HomePage() {
             }
           }
 
+          const finalUrl = data.resolvedUrl || parsed.normalized;
+          
+          // DUPLIKAT-CHECK FÜR DIE HOMEPAGE
+          const existing = await getRecipeRepository().findBySourceUrl(finalUrl);
+          if (existing) {
+            toast(t("toast.recipeExists") || "Rezept existiert bereits in deiner Bibliothek.");
+            router.push(`/recipes/${existing.id}`);
+            return;
+          }
+
           const recipeInput: RecipeInput = {
             title: recipeData.title || "Neues Rezept",
             ingredients: recipeData.ingredients,
@@ -93,7 +103,7 @@ export default function HomePage() {
             servings: recipeData.servings,
             prepTime: recipeData.prepTime,
             cookTime: recipeData.cookTime,
-            sourceUrl: data.resolvedUrl || parsed.normalized,
+            sourceUrl: finalUrl,
             sourceCaption: data.caption.trim(),
             favorite: false,
           };
