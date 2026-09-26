@@ -50,6 +50,8 @@ function saveDraft(d: DraftState) {
   }
 }
 
+import { extractDominantColor } from "@/lib/color";
+
 function ImportFlow() {
   const { t, lang, setLang } = useI18n();
   const router = useRouter();
@@ -221,10 +223,14 @@ function ImportFlow() {
       }
       const parsed = translateParsedRecipe(rawParsed, lang);
       let pendingImage: Blob | undefined;
+      let color: string | undefined;
       if (imgToUse) {
         try {
           const res = await fetch(`/api/instagram/image?url=${encodeURIComponent(imgToUse)}`);
-          if (res.ok) pendingImage = await compressImage(await res.blob());
+          if (res.ok) {
+            pendingImage = await compressImage(await res.blob());
+            color = await extractDominantColor(pendingImage);
+          }
         } catch (e) {
           console.error("og image fetch failed", e);
         }
@@ -238,6 +244,7 @@ function ImportFlow() {
         sourceUrl: parseSocialUrl(urlToUse)?.normalized ?? urlToUse.trim(),
         sourceCaption: trimmed,
         pendingImage,
+        color,
         ...draftFromIngredients(parsed.ingredients, parsed.steps),
       });
       setStep("review");

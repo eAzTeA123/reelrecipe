@@ -25,7 +25,16 @@ export function RecipeCard({
     <article className="group relative block border-b-2 border-line pb-8 mb-8 last:border-b-0">
       <Link href={`/recipes/${recipe.id}`} className="block pressable" aria-label={recipe.title}>
         {recipe.image && (
-          <div className="relative aspect-[4/5] w-full overflow-hidden mb-4">
+          <div 
+            className="relative aspect-[4/5] w-full overflow-hidden mb-4"
+            style={recipe.color ? { backgroundColor: `${recipe.color}20` } : undefined}
+          >
+            {recipe.color && (
+              <div 
+                className="absolute inset-0 pointer-events-none"
+                style={{ backgroundImage: `linear-gradient(to bottom, ${recipe.color}40, transparent)` }}
+              />
+            )}
             <RecipeImage
               imageRef={recipe.image}
               alt=""

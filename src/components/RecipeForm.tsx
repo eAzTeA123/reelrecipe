@@ -34,6 +34,7 @@ export interface StepDraft {
 export interface RecipeDraft {
   title: string;
   description: string;
+  color?: string;
   servingsText: string;
   prepTimeText: string;
   cookTimeText: string;
@@ -88,6 +89,7 @@ function toInput(draft: RecipeDraft): RecipeInput {
   return {
     title: draft.title.trim(),
     description: draft.description.trim() || undefined,
+    color: draft.color,
     servings: num(draft.servingsText),
     prepTime: num(draft.prepTimeText),
     cookTime: num(draft.cookTimeText),
@@ -112,6 +114,8 @@ function toInput(draft: RecipeDraft): RecipeInput {
   };
 }
 
+import { extractDominantColor } from "@/lib/color";
+
 export function RecipeForm({
   initial,
   onSubmit,
@@ -131,12 +135,34 @@ export function RecipeForm({
   const [draft, setDraft] = useState<RecipeDraft>(initial);
   const [status, setStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
   const [error, setError] = useState<string>();
+  const [hasDraft, setHasDraft] = useState<RecipeDraft | null>(null);
+  const isFirstRender = useRef(true);
   const fileRef = useRef<HTMLInputElement>(null);
   const pendingUrl = useMemo(
     () => (draft.pendingImage ? URL.createObjectURL(draft.pendingImage) : undefined),
     [draft.pendingImage],
   );
   const existingUrl = useImageUrl(draft.pendingImage ? undefined : draft.imageRef);
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("reelrecipe_draft");
+      if (stored) {
+        const parsed = JSON.parse(stored) as RecipeDraft;
+        setHasDraft(parsed);
+      }
+    } catch {}
+  }, []);
+
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    try {
+      localStorage.setItem("reelrecipe_draft", JSON.stringify({ ...draft, pendingImage: undefined }));
+    } catch {}
+  }, [draft]);
 
   useEffect(() => {
     return () => {
@@ -167,7 +193,8 @@ export function RecipeForm({
     if (!file) return;
     try {
       const blob = await compressImage(file);
-      set("pendingImage", blob);
+      const color = await extractDominantColor(blob);
+      setDraft((d) => ({ ...d, pendingImage: blob, color }));
       onImagePicked?.(blob);
     } catch (e) {
       console.error("image compress failed", e);
@@ -188,6 +215,9 @@ export function RecipeForm({
         setStatus("idle");
       } else {
         setStatus("saved");
+        try {
+          localStorage.removeItem("reelrecipe_draft");
+        } catch {}
       }
     } catch (e) {
       console.error("save failed", e);
@@ -200,6 +230,37 @@ export function RecipeForm({
 
   return (
     <div className="flex flex-col gap-7">
+      {hasDraft && (
+        <div className="rounded-xl bg-blue-50 dark:bg-blue-950/30 p-4 border border-blue-100 dark:border-blue-900/50">
+          <p className="font-semibold text-blue-900 dark:text-blue-100 mb-3 text-[15px]">
+            Du hast einen ungespeicherten Rezept-Entwurf.
+          </p>
+          <div className="flex gap-2">
+            <Button
+              size="sm"
+              onClick={() => {
+                setDraft(hasDraft);
+                setHasDraft(null);
+              }}
+            >
+              Wiederherstellen
+            </Button>
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() => {
+                setHasDraft(null);
+                try {
+                  localStorage.removeItem("reelrecipe_draft");
+                } catch {}
+              }}
+            >
+              Verwerfen
+            </Button>
+          </div>
+        </div>
+      )}
+
       {initial.sourceCaption && (
         <div className="flex flex-col gap-4">
           <div className="rounded-xl bg-blue-50 dark:bg-blue-950/30 p-3 text-sm text-blue-800 dark:text-blue-200">

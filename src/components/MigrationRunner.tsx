@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { useI18n } from "@/lib/i18n/context";
-import { runParserMigration, migrateExternalImages } from "@/data/local/migrationService";
+import { runParserMigration, migrateExternalImages, backfillColors } from "@/data/local/migrationService";
 import { useToast } from "@/components/Toast";
 
 export function MigrationRunner() {
@@ -19,8 +19,10 @@ export function MigrationRunner() {
         toast(`${result.updated} Rezept(e) aktualisiert`, "success");
       }
       // Trigger lazy caching of external images
-      migrateExternalImages().catch(err => {
-        console.error("External images migration failed:", err);
+      migrateExternalImages().then(() => {
+        return backfillColors();
+      }).catch(err => {
+        console.error("External images migration/color backfill failed:", err);
       });
     }).catch(err => {
       console.error("Parser migration failed:", err);

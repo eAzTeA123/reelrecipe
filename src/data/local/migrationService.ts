@@ -84,3 +84,35 @@ export async function migrateExternalImages(): Promise<number> {
   }
   return cached;
 }
+
+import { extractDominantColor } from "@/lib/color";
+
+export async function backfillColors(): Promise<number> {
+  const db = getDB();
+  const recipes = await db.recipes.filter(r => !r.color && !!r.image).toArray();
+  const imageRepo = getImageRepository();
+  
+  let updated = 0;
+  for (const recipe of recipes) {
+    try {
+      let blob: Blob | undefined;
+      if (recipe.image!.startsWith("local-image:")) {
+        const id = recipe.image!.replace("local-image:", "");
+        const localImg = await imageRepo.get(id);
+        if (localImg) blob = localImg.blob;
+      } else {
+        const res = await fetch(`/api/instagram/image?url=${encodeURIComponent(recipe.image!)}`);
+        if (res.ok) blob = await res.blob();
+      }
+      
+      if (blob) {
+        const color = await extractDominantColor(blob);
+        if (color) {
+          await db.recipes.update(recipe.id, { color });
+          updated++;
+        }
+      }
+    } catch { /* skip */ }
+  }
+  return updated;
+}

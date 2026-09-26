@@ -18,6 +18,7 @@ export interface Recipe {
   id: string;
   title: string;
   description?: string;
+  color?: string;
   /** Bild-Referenz: "local-image:<id>" (Blob in IndexedDB) oder externe URL */
   image?: string;
   sourceUrl?: string;

@@ -170,7 +170,13 @@ export default function RecipeDetailPage({ params }: { params: Promise<{ id: str
   }
 
   return (
-    <article className="mx-auto max-w-5xl">
+    <article className="mx-auto max-w-5xl relative">
+      {recipe.color && (
+        <div
+          className="absolute left-1/2 top-[-2rem] -z-10 h-[30rem] w-[100vw] -translate-x-1/2 pointer-events-none"
+          style={{ backgroundImage: `linear-gradient(to bottom, ${recipe.color}40, transparent)` }}
+        />
+      )}
       <div className="no-print mb-4 flex items-center justify-between">
         <button
           onClick={() => {
