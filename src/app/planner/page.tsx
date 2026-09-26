@@ -38,8 +38,33 @@ export default function PlannerPage() {
     
     document.body.style.touchAction = 'none'; // Prevent scrolling while dragging
 
-    const handleMove = (e: PointerEvent) => setPointerPos({ x: e.clientX, y: e.clientY });
-    const handleUp = () => {
+    const handleMove = (e: PointerEvent) => {
+      setPointerPos({ x: e.clientX, y: e.clientY });
+      
+      // Manually find the drop target under the pointer
+      const el = document.elementFromPoint(e.clientX, e.clientY);
+      const section = el?.closest('[data-day]');
+      if (section) {
+        const day = section.getAttribute('data-day') as DayOfWeek;
+        setDropTargetDay(day);
+      } else {
+        setDropTargetDay(null);
+      }
+    };
+    
+    const handleUp = async (e: PointerEvent) => {
+      const el = document.elementFromPoint(e.clientX, e.clientY);
+      const section = el?.closest('[data-day]');
+      if (section) {
+        const day = section.getAttribute('data-day') as DayOfWeek;
+        
+        // Handle drop logic directly here!
+        const repo = getMealPlanRepository();
+        const entry = entries.find(en => en.id === draggedEntryId);
+        if (entry && entry.dayOfWeek !== day) {
+           await repo.update(draggedEntryId, { dayOfWeek: day });
+        }
+      }
       setDraggedEntryId(null);
       setDropTargetDay(null);
     };
@@ -185,13 +210,12 @@ export default function PlannerPage() {
           return (
             <section
               key={day.key}
+              data-day={day.key}
               className={`flex flex-col rounded-card p-4 shadow-card transition-colors ${
                 dropTargetDay === day.key
                   ? "border-2 border-accent bg-accent/5"
                   : "border-2 border-transparent bg-surface"
               }`}
-              onPointerEnter={() => draggedEntryId && setDropTargetDay(day.key)}
-              onPointerUp={() => draggedEntryId && handleDrop(day.key)}
             >
               <h3 className="mb-4 font-bold text-lg text-ink-1">{day.label}</h3>
               

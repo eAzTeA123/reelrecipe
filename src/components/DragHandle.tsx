@@ -4,7 +4,7 @@ import type { PointerEvent } from "react";
 
 interface DragHandleProps {
   entryId: string;
-  onDragStart: (entryId: string) => void;
+  onDragStart: (entryId: string, clientX?: number, clientY?: number) => void;
 }
 
 export function DragHandle({ entryId, onDragStart }: DragHandleProps) {
@@ -13,7 +13,7 @@ export function DragHandle({ entryId, onDragStart }: DragHandleProps) {
       className="touch-none cursor-grab active:cursor-grabbing p-1 text-ink/30 hover:text-ink/60 transition-colors shrink-0"
       onPointerDown={(e: PointerEvent) => {
         e.preventDefault();
-        onDragStart(entryId);
+        onDragStart(entryId, e.clientX, e.clientY);
       }}
       aria-label="Rezept verschieben"
     >
