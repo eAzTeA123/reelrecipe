@@ -11,7 +11,7 @@ import { EmptyState } from "@/components/EmptyState";
 import { ErrorState } from "@/components/ErrorState";
 import { Button } from "@/components/Button";
 import { Input } from "@/components/Input";
-import { IconClipboard, IconFridge, IconLink, IconSettings, IconX } from "@/components/Icons";
+import { IconClipboard, IconDice, IconFridge, IconLink, IconSettings, IconX } from "@/components/Icons";
 import { extractSocialUrlFromText, parseSocialUrl } from "@/lib/socialSource";
 import { useToast } from "@/components/Toast";
 import { useI18n } from "@/lib/i18n/context";
@@ -29,22 +29,22 @@ export default function HomePage() {
   const [url, setUrl] = useState("");
   const [urlError, setUrlError] = useState<string>();
   const [importing, setImporting] = useState(false);
-  const [showFridgeBanner, setShowFridgeBanner] = useState(false);
+  const [showBingoBanner, setshowBingoBanner] = useState(false);
   const { t } = useI18n();
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const dismissed = localStorage.getItem("fridgeBannerDismissed") === "true";
+      const dismissed = localStorage.getItem("bingoBannerDismissed") === "true";
       if (!dismissed) {
         // eslint-disable-next-line react-hooks/set-state-in-effect
-        setShowFridgeBanner(true);
+        setshowBingoBanner(true);
       }
     }
   }, []);
 
-  function dismissFridgeBanner() {
-    setShowFridgeBanner(false);
-    localStorage.setItem("fridgeBannerDismissed", "true");
+  function dismissBingoBanner() {
+    setshowBingoBanner(false);
+    localStorage.setItem("bingoBannerDismissed", "true");
   }
 
   async function submit(e: React.FormEvent) {
@@ -233,14 +233,14 @@ export default function HomePage() {
       </section>
 
       {/* Kühlschrank Reste-Verwertung Update-Banner (einmalig, schließbar) */}
-      {showFridgeBanner && (
+      {showBingoBanner && (
         <section
           id="tour-fridge"
           className="relative mb-12 rounded-2xl border border-line bg-surface p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 shadow-card"
         >
           <div className="flex items-start sm:items-center gap-3.5 pr-8 sm:pr-0">
             <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-accent-soft text-accent">
-              <IconFridge size={24} />
+              <IconDice size={24} />
             </div>
             <div>
               <div className="flex items-center gap-2">
@@ -256,16 +256,16 @@ export default function HomePage() {
           </div>
           <div className="flex items-center gap-2 shrink-0">
             <Link
-              href="/recipes?mode=fridge"
-              onClick={dismissFridgeBanner}
+              href="/bingo"
+              onClick={dismissBingoBanner}
               className="pressable inline-flex items-center justify-center gap-1.5 rounded-xl bg-ink px-4 py-2.5 text-[14px] font-bold text-surface hover:bg-accent hover:text-white transition-colors"
             >
-              <span>Reste verwerten</span>
+              <span>Bingo spielen</span>
               <span>→</span>
             </Link>
             <button
               type="button"
-              onClick={dismissFridgeBanner}
+              onClick={dismissBingoBanner}
               aria-label="Hinweis schließen"
               className="pressable absolute right-3 top-3 sm:static flex h-8 w-8 items-center justify-center rounded-full text-ink-3 hover:bg-surface-2 hover:text-ink transition-colors"
             >
