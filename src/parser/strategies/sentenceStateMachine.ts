@@ -37,7 +37,7 @@ export function tokenizeSentences(text: string): string[] {
     // 7. Vor Zutaten-Mengen trennen (nur wenn gefolgt von Einheit/Lebensmittel, NIEMALS bei "Minuten" oder nach typischen Präpositionen)
     .replace(/(?<=[a-zA-ZäöüÄÖÜß:,])(?<!\b(?:in|den|dem|die|das|der|mit|und|oder|zu|im|am|auf|aus|bei|von|für|for|and|with|to|etwa|ca)\b)\s+(?=(?:\d+(?:[.,]\d+)?(?:[\s-]*1\/\d+)?|\d+[\s-]*\/\s*\d+|½|¼|¾|⅓|⅔|⅛|⅜|⅝|⅞)\s*(?:[a-zA-ZäöüÄÖÜß-]+\s*){0,2}(?:g|kg|ml|l|el|tl|tbsp|tsp|cup|cups|slices|scheiben|stk|stück|st|wraps|block|packung|pck|dose|glas|zehe|zehen|tomaten?|zwiebeln?|zehen?|knoblauch|paprika|spitzpaprika|brokkoli|möhren?|karotten?|äpfel|apfel|eier?|kartoffeln?|putenschnitzel|schnitzel|gurke|zucchini|aubergine|pilze|champignons|salat|ajvar|paprikapulver)\b)/gi, "\n")
     // 7b. Vor typischen Satzanfängen trennen, falls sie direkt (ohne Punkt) auf ein kleingeschriebenes Wort folgen
-    .replace(/(?<=[a-zäöüß])\s+(?=(?:Die|Der|Das|Den|Dem|Alles|Dann|Danach|Zuerst|Zum|Zur|Schließlich|Nun|Anschließend|Zubereitung|Für|Mit|Dazu|Hierfür|Dabei|Sobald|Wenn|Während|Dafür|Unter|Auf|In|Aus|Bei)\b)/g, "\n")
+    .replace(/(?<=[a-zäöüßy])\s+(?=(?:Die|Der|Das|Den|Dem|Alles|Dann|Danach|Zuerst|Zum|Zur|Schließlich|Nun|Anschließend|Zubereitung|Für|Mit|Dazu|Hierfür|Dabei|Sobald|Wenn|Während|Dafür|Unter|Auf|In|Aus|Bei|Preheat|Bake|Place|Add|Stir|Flake|Season|Mix|Pour|Cook|Heat)\b)/g, "\n")
     // 8. Echte Satzgrenzen trennen (Punkt/Ausrufezeichen/Fragezeichen gefolgt von Großbuchstaben)
     // ABER NICHT nach "ca.", "z.B.", "bzw." etc.
     .replace(/(?<!\b(?:ca|bzw|inkl|max|min|usw)\.)(?<=[.!?])\s+(?=[A-ZÄÖÜ])/g, "\n")
