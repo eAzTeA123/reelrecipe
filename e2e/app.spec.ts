@@ -16,7 +16,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 test("leere App: Startseite mit Empty State", async ({ page }) => {
-  await expect(page.getByRole("heading", { name: "Meine Rezepte" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "ReelRecipe" })).toBeVisible();
   await expect(page.getByText("Du hast noch keine Rezepte")).toBeVisible();
   await expect(page.getByRole("link", { name: "Rezept importieren" })).toBeVisible();
 });

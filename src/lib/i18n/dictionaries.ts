@@ -20,7 +20,7 @@ export const dictionaries = {
     "general.continueWithoutLink": "Ohne Link fortfahren",
 
     // Start Page
-    "home.title": "Meine Rezepte",
+    "home.title": "ReelRecipe",
     "home.importTitle": "Rezept importieren",
     "home.importSubtitle": "Instagram- oder TikTok-Link einfügen – wir erkennen Zutaten und Schritte automatisch.",
     "home.importPlaceholder": "Instagram- oder TikTok-Link einfügen",
@@ -202,7 +202,7 @@ export const dictionaries = {
     "general.continueWithoutLink": "Continue without link",
 
     // Start Page
-    "home.title": "My Recipes",
+    "home.title": "ReelRecipe",
     "home.importTitle": "Import Recipe",
     "home.importSubtitle": "Paste an Instagram or TikTok link – we automatically detect ingredients and steps.",
     "home.importPlaceholder": "Paste Instagram or TikTok link",
