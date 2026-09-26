@@ -24,9 +24,9 @@ export function tokenizeSentences(text: string): string[] {
     // 3b. "Für den/die/das..." Sub-Header isolieren (nur wenn Doppelpunkt oder Zutaten-Anfang folgt)
     .replace(/(\b(?:Für\s*(?:den|die|das|diese|alle)|\bFor\s*(?:the|this))\s+[a-zA-ZäöüÄÖÜß\-]+)(?=:|\s+(?=-|•|\*|\d|ca|etwa))/gi, "\n$1:\n")
     // 3c. Typische Sub-Header ohne "Für" isolieren (z.B. "Helle Sauce:")
-    .replace(/((?:Helle|Dunkle|Süße|Saure|Vegane|Frische|Warme|Kalte)?\s*(?:Sauce|Soße|Teig|Dip|Topping|Creme|Füllung|Garnitur|Boden|Dressing))\s*:/gi, "\n$1:\n")
+    .replace(/(?<!\b(?:den|die|das|diese|alle|zubereitung|zutaten)\s+)\b([a-zA-ZäöüßÄÖÜ\-]*(?:Sauce|Soße|Teig|Dip|Topping|Creme|Füllung|Garnitur|Boden|Dressing))\s*:/gi, "\n$1:\n")
     // 4. Abschnitte trennen (inklusiver typischer TikTok/Insta-Redewendungen)
-    .replace(/(Zutaten|Ingredients|Zubereitung|Instructions|Directions|Schritte|Anleitung|So geht'?s|So wird'?s gemacht|Wir brauchen|Du brauchst|Das brauchst du|Dafür brauchst du|Was (?:du|ihr) braucht)(?::|\s+(?=-|•|\*|\d|[\p{Emoji_Presentation}\p{Extended_Pictographic}]))/giu, "\n$1:\n")
+    .replace(/(Zutaten|Ingredients|Zubereitung|Instructions|Directions|Schritte|Anleitung|So geht'?s|So wird'?s gemacht|Wir brauchen|Du brauchst|Das brauchst du|Dafür brauchst du|Was (?:du|ihr) braucht)(?:\s+[a-zA-ZäöüßÄÖÜ\-]+)?(?::|\s+(?=-|•|\*|\d|[\p{Emoji_Presentation}\p{Extended_Pictographic}]))/giu, "\n$&\n")
     // 5. Section-Emojis trennen
     .replace(/(🛒|🥣|🥗|👩‍🍳|👨‍🍳|📝)/gu, "\n$1\n")
     // 6. Zeilenumbrüche vor Bullets (z. B. "Sojajoghurt- Saft", "Tomaten- 250g", aber NICHT bei "Zitronen-Minz-Joghurt" oder "45-50")

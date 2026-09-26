@@ -11,6 +11,8 @@ const SERVINGS_HEADER_RE = /^(?:für|for|serves?|yields?|ergibt)\s*(?:ca\.?\s*|a
 
 /** Prüft, ob die Zeile eine Sub-Kategorie für Zutaten ist (z. B. "Für die Soße:") */
 function isSubIngredientHeader(line: string): boolean {
+  if (line.length > 40) return false;
+  if (/^(?:für|for)\s+(?:den|die|das|diesen|diese)/i.test(line)) return true;
   const lower = line.toLowerCase().trim();
   return vocab.subIngredientPrefixes.some((p) => lower.startsWith(p) || lower.includes(p));
 }
@@ -141,7 +143,7 @@ export const lineStateMachineStrategy: ParserStrategy = {
 
       if (state === "ZUTATEN") {
         // Expliziter Zubereitungs-Marker (z.B. "Zubereitung:", "Anleitung:", 👩‍🍳)
-        const cleanLower = line.toLowerCase().replace(/[:\-_#*]/g, "").trim();
+        const cleanLower = line.toLowerCase().replace(/[:\-_#*]/g, "").replace(/[\p{Emoji_Presentation}\p{Extended_Pictographic}]/gu, "").trim();
         const isExplicitStepMarker =
           vocab.stepMarkers.some((m) => cleanLower === m || cleanLower.startsWith(m)) ||
           (vocab.stepEmojis.some((e) => line.includes(e)) && line.length < 25 && !/\d/.test(line));
@@ -226,11 +228,18 @@ export const lineStateMachineStrategy: ParserStrategy = {
 
       if (state === "ZUBEREITUNG") {
         // Wenn ein neuer Rezept-Block beginnt (z.B. englische Übersetzung), abbrechen
-        const cleanLower = line.toLowerCase().replace(/[:\-_#*]/g, "").trim();
+        const cleanLower = line.toLowerCase().replace(/[:\-_#*]/g, "").replace(/[\p{Emoji_Presentation}\p{Extended_Pictographic}]/gu, "").trim();
         const isNewRecipe = vocab.ingredientMarkers.some((m) => cleanLower === m || cleanLower.startsWith(m));
         if (isNewRecipe && result.steps.length > 1) {
           state = "SONSTIGES";
           result.other.push(line);
+          continue;
+        }
+
+        // Falls wir eine Sub-Überschrift finden, geht's wieder in die Zutaten!
+        if (isSubIngredientHeader(line)) {
+          state = "ZUTATEN";
+          result.ingredients.push(line);
           continue;
         }
 

@@ -19,7 +19,11 @@ export function normalizeCaption(caption: string): string {
   }
   
   // Break lines around common section markers if they are buried in text
-  text = text.replace(/([.?!,])?\s*(du brauchst|zutaten|zubereitung|so gehts|so geht's|anleitung|ingredients|instructions|directions|method)[\s:]+/gi, "$1\n$2:\n");
+  const R_COLON = /\b(du brauchst|zutaten|zubereitung|so gehts|so geht's|anleitung|ingredients|instructions|directions|method)(?:\s+[a-zA-ZäöüßÄÖÜ\-]+)?\s*:/giu;
+  const R_NO_COLON = /(^|[.?!,]\s*|[\p{Emoji_Presentation}\p{Extended_Pictographic}]\s*)(du brauchst|zutaten|zubereitung|so gehts|so geht's|anleitung|ingredients|instructions|directions|method)\s+(?=\d|[•\-\*]|[\p{Emoji_Presentation}\p{Extended_Pictographic}])/giu;
+
+  text = text.replace(R_COLON, "\n$&\n");
+  text = text.replace(R_NO_COLON, "$1\n$2:\n");
   
   // Break lines before inline bullets (* or •)
   text = text.replace(/([^\n])\s+([*•])\s+/g, "$1\n$2 ");
