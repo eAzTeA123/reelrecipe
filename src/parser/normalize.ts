@@ -17,6 +17,10 @@ export function normalizeCaption(caption: string): string {
     text = text.replace(new RegExp(`(\\d)${frac}`, "g"), `$1 ${ascii}`);
     text = text.split(frac).join(ascii);
   }
+  
+  // Break lines around common section markers if they are buried in text
+  text = text.replace(/([.?!,])?\s*(du brauchst|zutaten|zubereitung|so gehts|so geht's|anleitung)[\s:]+/gi, "$1\n$2:\n");
+  
   return text;
 }
 
@@ -43,9 +47,30 @@ export function cleanLine(line: string): string {
   // Ignore lines with no letters or numbers
   if (!/[\p{L}\d]/u.test(l)) return "";
   
+  // Ignore specific trash phrases
+  const trashPhrases = [
+    /folg(e|t) mir/i,
+    /f[üu]r mehr.*rezepte/i,
+    /link in.*bio/i,
+    /das ist so+ gut/i,
+    /jeden abend/i,
+    /abnehmrezepte/i,
+    /digitale kochb[üu]cher/i,
+    /du hast direkt/i,
+    /speichern nicht vergessen/i,
+    /klick auf/i,
+    /lass ein abo da/i,
+    /speicher.*rezept/i
+  ];
+  if (trashPhrases.some(re => re.test(l))) return "";
+
   // Ignore nutritional values
   if (/nährwerte|kalorien|nutritional info/i.test(l)) return "";
-  if (/^\d+\s*kcal/i.test(l) || /(?:kcal|protein|kohlenhydrate|fett)\s*[:=]?/i.test(l)) return "";
+  if (/^\d+\s*kcal/i.test(l)) return "";
+  if (/\|\s*\b(?:kh|f|e|eiweiß|protein|fett|kohlenhydrate|kcal)\b\s*[:=]?/i.test(l)) return "";
+  if (/^\b(?:kh|f|e|eiweiß|protein|fett|kohlenhydrate|kcal)\b\s*[:=]\s*\d/i.test(l)) return "";
+  if (/^\d+\s*(?:g|ml)\s*\|?\s*\b(?:kh|f|e|eiweiß|protein|fett|kohlenhydrate|kcal)\b/i.test(l)) return "";
+  if (/\b(?:kh|f|e|eiweiß|protein|fett|kohlenhydrate|kcal)\b\s*[:=]\s*\d+\s*(?:g|ml)/i.test(l)) return "";
   
   return l;
 }

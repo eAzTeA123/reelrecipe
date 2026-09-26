@@ -180,6 +180,7 @@ export const lineStateMachineStrategy: ParserStrategy = {
         // Check if it's a continuation line (short, no bullet or number at start)
         if (
           !/^[-•*]|\d/.test(line) &&
+          !line.endsWith(":") &&
           line.length < 40 &&
           result.ingredients.length > 0 &&
           !isSubIngredientHeader(line)
@@ -192,6 +193,7 @@ export const lineStateMachineStrategy: ParserStrategy = {
         if (
           !/^[-•*]|\d/.test(line) &&
           /^[a-zäöü]/.test(line) &&
+          !line.endsWith(":") &&
           line.length < 50 &&
           result.ingredients.length > 0 &&
           !isSubIngredientHeader(line)
