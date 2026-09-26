@@ -11,7 +11,7 @@ import { EmptyState } from "@/components/EmptyState";
 import { ErrorState } from "@/components/ErrorState";
 import { Button } from "@/components/Button";
 import { Input } from "@/components/Input";
-import { IconClipboard, IconDice, IconFridge, IconLink, IconSettings, IconX } from "@/components/Icons";
+import { IconClipboard, IconFridge, IconLink, IconSettings, IconX, IconDice } from "@/components/Icons";
 import { extractSocialUrlFromText, parseSocialUrl } from "@/lib/socialSource";
 import { useToast } from "@/components/Toast";
 import { useI18n } from "@/lib/i18n/context";
@@ -29,7 +29,7 @@ export default function HomePage() {
   const [url, setUrl] = useState("");
   const [urlError, setUrlError] = useState<string>();
   const [importing, setImporting] = useState(false);
-  const [showBingoBanner, setshowBingoBanner] = useState(false);
+  const [showBingoBanner, setShowBingoBanner] = useState(false);
   const { t } = useI18n();
 
   useEffect(() => {
@@ -37,13 +37,13 @@ export default function HomePage() {
       const dismissed = localStorage.getItem("bingoBannerDismissed") === "true";
       if (!dismissed) {
         // eslint-disable-next-line react-hooks/set-state-in-effect
-        setshowBingoBanner(true);
+        setShowBingoBanner(true);
       }
     }
   }, []);
 
   function dismissBingoBanner() {
-    setshowBingoBanner(false);
+    setShowBingoBanner(false);
     localStorage.setItem("bingoBannerDismissed", "true");
   }
 
@@ -232,7 +232,7 @@ export default function HomePage() {
         )}
       </section>
 
-      {/* Kühlschrank Reste-Verwertung Update-Banner (einmalig, schließbar) */}
+      {/* Bingo Update-Banner (einmalig, schließbar) */}
       {showBingoBanner && (
         <section
           id="tour-fridge"
@@ -247,10 +247,10 @@ export default function HomePage() {
                 <span className="rounded-full bg-accent/15 px-2 py-0.5 text-[11px] font-extrabold uppercase tracking-wider text-accent">
                   Neu
                 </span>
-                <h3 className="font-bold text-[17px] text-ink">Was ist im Kühlschrank?</h3>
+                <h3 className="font-bold text-[17px] text-ink">Keine Idee, was du kochen sollst?</h3>
               </div>
               <p className="mt-0.5 text-[14px] text-ink-2">
-                Finde blitzschnell Rezepte für Zutaten, die du noch zu Hause hast.
+                Lass den Zufall entscheiden: Spiel eine Runde Rezept-Bingo!
               </p>
             </div>
           </div>
