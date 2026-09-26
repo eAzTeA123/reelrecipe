@@ -100,6 +100,13 @@ function RecipesContent() {
         action={
           <div className="flex gap-2">
             <Link
+              href="/bingo"
+              aria-label="Rezept-Bingo spielen"
+              className="pressable inline-flex h-11 w-11 items-center justify-center rounded-full bg-surface-2 text-ink"
+            >
+              <IconDice size={20} />
+            </Link>
+            <Link
               href="/recipes/new"
               aria-label="Rezept manuell anlegen"
               className="pressable inline-flex h-11 w-11 items-center justify-center rounded-full bg-accent text-accent-ink"
@@ -135,7 +142,7 @@ function RecipesContent() {
         >
           <IconFridge size={18} />
           <span>Kühlschrank-Suche</span>
-          {fridgeIngredients.length === 0 && (<Link href="/bingo" className="flex items-center gap-4 rounded-xl border border-line bg-surface p-4 shadow-sm hover:border-accent transition-colors"><div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-accent-soft text-accent"><IconDice size={24} /></div><div><h3 className="font-bold text-ink">Keine Idee, was du kochen sollst?</h3><p className="text-[13px] text-ink-2">Lass den Zufall entscheiden: Rezept-Bingo!</p></div></Link>)}{fridgeIngredients.length > 0 && (
+          {fridgeIngredients.length > 0 && (
             <span className="flex h-5 w-5 items-center justify-center rounded-full bg-accent text-[11px] font-bold text-accent-ink">
               {fridgeIngredients.length}
             </span>
@@ -173,7 +180,7 @@ function RecipesContent() {
             ingredients={fridgeIngredients}
             onChange={setFridgeIngredients}
           />
-          {fridgeIngredients.length === 0 && (<Link href="/bingo" className="flex items-center gap-4 rounded-xl border border-line bg-surface p-4 shadow-sm hover:border-accent transition-colors"><div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-accent-soft text-accent"><IconDice size={24} /></div><div><h3 className="font-bold text-ink">Keine Idee, was du kochen sollst?</h3><p className="text-[13px] text-ink-2">Lass den Zufall entscheiden: Rezept-Bingo!</p></div></Link>)}{fridgeIngredients.length > 0 && (
+          {fridgeIngredients.length > 0 && (
             <div className="flex items-center justify-between px-1">
               <span className="text-[14px] font-bold text-ink-2">
                 {processedRecipes.filter((r) => (r.matchPercentage ?? 0) > 0).length} passende Rezepte gefunden
