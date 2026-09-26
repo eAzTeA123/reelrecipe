@@ -60,7 +60,9 @@ export function cleanLine(line: string): string {
     /speichern nicht vergessen/i,
     /klick auf/i,
     /lass ein abo da/i,
-    /speicher.*rezept/i
+    /speicher.*rezept/i,
+    /^pro portion/i,
+    /bei \d+ portion/i
   ];
   if (trashPhrases.some(re => re.test(l))) return "";
 

@@ -185,7 +185,13 @@ export const lineStateMachineStrategy: ParserStrategy = {
           result.ingredients.length > 0 &&
           !isSubIngredientHeader(line)
         ) {
-          result.ingredients[result.ingredients.length - 1] += ", " + line;
+          const lastIdx = result.ingredients.length - 1;
+          const lastStr = result.ingredients[lastIdx].trim();
+          if (lastStr.endsWith("-")) {
+            result.ingredients[lastIdx] = lastStr + line.trim();
+          } else {
+            result.ingredients[lastIdx] += " " + line.trim();
+          }
           continue;
         }
 
@@ -198,7 +204,13 @@ export const lineStateMachineStrategy: ParserStrategy = {
           result.ingredients.length > 0 &&
           !isSubIngredientHeader(line)
         ) {
-          result.ingredients[result.ingredients.length - 1] += ", " + line;
+          const lastIdx = result.ingredients.length - 1;
+          const lastStr = result.ingredients[lastIdx].trim();
+          if (lastStr.endsWith("-")) {
+            result.ingredients[lastIdx] = lastStr + line.trim();
+          } else {
+            result.ingredients[lastIdx] += " " + line.trim();
+          }
           continue;
         }
 
