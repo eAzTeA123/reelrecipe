@@ -11,6 +11,7 @@ import { RecipeImage } from "@/components/RecipeImage";
 import { DragHandle } from "@/components/DragHandle";
 import { scaleAmount } from "@/lib/scale";
 import type { DayOfWeek } from "@/domain/types";
+import { useHaptic } from "@/hooks/useHaptic";
 
 const DAYS: { key: DayOfWeek; label: string }[] = [
   { key: "mo", label: "Montag" },
@@ -24,6 +25,7 @@ const DAYS: { key: DayOfWeek; label: string }[] = [
 
 export default function PlannerPage() {
   const router = useRouter();
+  const haptic = useHaptic();
   const { entries } = useMealPlan();
   const { recipes } = useRecipes();
   const [loading, setLoading] = useState(false);
@@ -63,6 +65,7 @@ export default function PlannerPage() {
         const entry = entries.find(en => en.id === draggedEntryId);
         if (entry && entry.dayOfWeek !== day) {
            await repo.update(draggedEntryId, { dayOfWeek: day });
+           haptic('success');
         }
       }
       setDraggedEntryId(null);
@@ -136,7 +139,7 @@ export default function PlannerPage() {
     if (clientX !== undefined && clientY !== undefined) {
       setPointerPos({ x: clientX, y: clientY });
     }
-    if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(50);
+    haptic('medium');
   };
 
   const handlePointerDown = (entryId: string, e: React.PointerEvent) => {

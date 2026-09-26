@@ -3,6 +3,7 @@ import { useI18n } from "@/lib/i18n/context";
 
 import { useEffect, useState } from "react";
 import { useShoppingList } from "@/hooks/useShoppingList";
+import { useHaptic } from "@/hooks/useHaptic";
 import type { ShoppingItem } from "@/domain/types";
 import { getRecipeRepository, getShoppingListRepository } from "@/data";
 import { formatAmount } from "@/lib/scale";
@@ -20,6 +21,7 @@ import { getAisle } from "@/lib/shoppingAisles";
 export default function ShoppingPage() {
 
   const { t } = useI18n();
+  const haptic = useHaptic();
   const { items, loading, error, retry } = useShoppingList();
   const [recipeTitles, setRecipeTitles] = useState<Record<string, string>>({});
   const [confirmClear, setConfirmClear] = useState(false);
@@ -139,7 +141,10 @@ export default function ShoppingPage() {
                         <input
                           type="checkbox"
                           checked={item.checked}
-                          onChange={() => void getShoppingListRepository().toggle(item.id)}
+                          onChange={() => {
+                            haptic('light');
+                            void getShoppingListRepository().toggle(item.id);
+                          }}
                           aria-label={`${item.name} abhaken`}
                           className="peer sr-only"
                         />

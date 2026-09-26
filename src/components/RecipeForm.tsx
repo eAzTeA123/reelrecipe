@@ -16,6 +16,7 @@ import { CategoryChips } from "./CategoryPicker";
 import { IconArrowDown, IconArrowUp, IconCamera, IconCheck, IconPlus, IconTrash, IconX } from "./Icons";
 import { Spinner } from "./Spinner";
 import { useImageUrl } from "@/hooks/useImageUrl";
+import { useHaptic } from "@/hooks/useHaptic";
 
 export interface IngredientDraft {
   id: string;
@@ -132,6 +133,7 @@ export function RecipeForm({
   onImagePicked?: (blob: Blob) => void;
 }) {
   const { t } = useI18n();
+  const haptic = useHaptic();
   const [draft, setDraft] = useState<RecipeDraft>(initial);
   const [status, setStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
   const [error, setError] = useState<string>();
@@ -214,6 +216,7 @@ export function RecipeForm({
       if (result === false) {
         setStatus("idle");
       } else {
+        haptic('success');
         setStatus("saved");
         try {
           localStorage.removeItem("reelrecipe_draft");

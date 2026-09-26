@@ -13,6 +13,8 @@ import { useI18n } from "@/lib/i18n/context";
 import { StepTextWithTimers } from "./StepTextWithTimers";
 import { convertRecipeToMetric, convertRecipeToImperial } from "@/lib/unitConverter";
 import { UnitToggle } from "@/components/UnitToggle";
+import confetti from "canvas-confetti";
+import { useHaptic } from "@/hooks/useHaptic";
 
 interface WakeLockSentinelLike {
   release: () => Promise<void>;
@@ -38,6 +40,8 @@ export default function CookModePage({ params }: { params: Promise<{ id: string 
   const targetServings = servingsParam ? parseInt(servingsParam, 10) : undefined;
   const [index, setIndex] = useState(0);
   const [checked, setChecked] = useState<Set<string>>(new Set());
+  const [checkedSteps, setCheckedSteps] = useState<Set<string>>(new Set());
+  const haptic = useHaptic();
   const [wakeLockOn, setWakeLockOn] = useState(false);
   const wakeLock = useRef<WakeLockSentinelLike | null>(null);
   
@@ -210,11 +214,33 @@ export default function CookModePage({ params }: { params: Promise<{ id: string 
           </div>
         </div>
         {step ? (
-          <div className="flex-1 text-[24px] font-semibold leading-snug tracking-[-0.01em] md:text-[32px]">
-            <StepTextWithTimers 
-              text={step.instruction} 
-              onStartTimer={(sec, lbl) => setTimers(t => [...t, { id: Math.random().toString(), label: lbl, endTime: Date.now() + sec * 1000 }])} 
-            />
+          <div 
+            onClick={() => {
+              setCheckedSteps(prev => {
+                const next = new Set(prev);
+                if (next.has(step.id)) {
+                  next.delete(step.id);
+                } else {
+                  next.add(step.id);
+                  if (currentIndex === steps.length - 1) {
+                    confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+                    haptic('success');
+                  }
+                }
+                return next;
+              });
+            }}
+            className={`flex-1 flex items-start gap-4 text-[24px] font-semibold leading-snug tracking-[-0.01em] md:text-[32px] cursor-pointer transition-opacity ${checkedSteps.has(step.id) ? 'line-through opacity-50' : ''}`}
+          >
+            <div className={`mt-1.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 transition-colors ${checkedSteps.has(step.id) ? 'border-accent bg-accent text-accent-ink' : 'border-ink-3'}`}>
+              {checkedSteps.has(step.id) && <IconCheck size={18} />}
+            </div>
+            <div className="flex-1">
+              <StepTextWithTimers 
+                text={step.instruction} 
+                onStartTimer={(sec, lbl) => setTimers(t => [...t, { id: Math.random().toString(), label: lbl, endTime: Date.now() + sec * 1000 }])} 
+              />
+            </div>
           </div>
         ) : (
           <p className="flex-1 text-[20px] text-ink-2">Keine Zubereitungsschritte vorhanden.</p>

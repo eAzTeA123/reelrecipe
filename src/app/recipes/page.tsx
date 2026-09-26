@@ -7,12 +7,13 @@ import { useSearchParams } from "next/navigation";
 import { useRecipes } from "@/hooks/useRecipes";
 import { PageHeader } from "@/components/PageHeader";
 import { RecipeCard } from "@/components/RecipeCard";
+import { RecipeCardSkeleton } from "@/components/RecipeCardSkeleton";
 import { EmptyState } from "@/components/EmptyState";
 import { ErrorState } from "@/components/ErrorState";
 import { SearchField } from "@/components/SearchField";
 import { CategoryChips } from "@/components/CategoryPicker";
 import { Button } from "@/components/Button";
-import { IconPlus, IconFridge, IconGrid } from "@/components/Icons";
+import { IconPlus, IconFridge, IconGrid, IconDice } from "@/components/Icons";
 import { normalizeForSearch } from "@/lib/text";
 import { FridgeSearch } from "@/components/FridgeSearch";
 
@@ -97,13 +98,15 @@ function RecipesContent() {
           recipes.length === 1 ? t("recipes.countSingular") : t("recipes.countPlural")
         }`}
         action={
-          <Link
-            href="/recipes/new"
-            aria-label="Rezept manuell anlegen"
-            className="pressable inline-flex h-11 w-11 items-center justify-center rounded-full bg-accent text-accent-ink"
-          >
-            <IconPlus size={20} />
-          </Link>
+          <div className="flex gap-2">
+            <Link
+              href="/recipes/new"
+              aria-label="Rezept manuell anlegen"
+              className="pressable inline-flex h-11 w-11 items-center justify-center rounded-full bg-accent text-accent-ink"
+            >
+              <IconPlus size={20} />
+            </Link>
+          </div>
         }
       />
 
@@ -132,7 +135,7 @@ function RecipesContent() {
         >
           <IconFridge size={18} />
           <span>Kühlschrank-Suche</span>
-          {fridgeIngredients.length > 0 && (
+          {fridgeIngredients.length === 0 && (<Link href="/bingo" className="flex items-center gap-4 rounded-xl border border-line bg-surface p-4 shadow-sm hover:border-accent transition-colors"><div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-accent-soft text-accent"><IconDice size={24} /></div><div><h3 className="font-bold text-ink">Keine Idee, was du kochen sollst?</h3><p className="text-[13px] text-ink-2">Lass den Zufall entscheiden: Rezept-Bingo!</p></div></Link>)}{fridgeIngredients.length > 0 && (
             <span className="flex h-5 w-5 items-center justify-center rounded-full bg-accent text-[11px] font-bold text-accent-ink">
               {fridgeIngredients.length}
             </span>
@@ -170,7 +173,7 @@ function RecipesContent() {
             ingredients={fridgeIngredients}
             onChange={setFridgeIngredients}
           />
-          {fridgeIngredients.length > 0 && (
+          {fridgeIngredients.length === 0 && (<Link href="/bingo" className="flex items-center gap-4 rounded-xl border border-line bg-surface p-4 shadow-sm hover:border-accent transition-colors"><div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-accent-soft text-accent"><IconDice size={24} /></div><div><h3 className="font-bold text-ink">Keine Idee, was du kochen sollst?</h3><p className="text-[13px] text-ink-2">Lass den Zufall entscheiden: Rezept-Bingo!</p></div></Link>)}{fridgeIngredients.length > 0 && (
             <div className="flex items-center justify-between px-1">
               <span className="text-[14px] font-bold text-ink-2">
                 {processedRecipes.filter((r) => (r.matchPercentage ?? 0) > 0).length} passende Rezepte gefunden
@@ -188,7 +191,7 @@ function RecipesContent() {
       ) : loading ? (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
           {[0, 1, 2, 3].map((i) => (
-            <div key={i} className="pulse-soft aspect-[4/3] rounded-card bg-black/[0.04]" />
+            <RecipeCardSkeleton key={i} />
           ))}
         </div>
       ) : mode === "fridge" && fridgeIngredients.length === 0 ? (

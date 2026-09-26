@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useRecipes } from "@/hooks/useRecipes";
 import { PageHeader } from "@/components/PageHeader";
 import { RecipeCard } from "@/components/RecipeCard";
+import { RecipeCardSkeleton } from "@/components/RecipeCardSkeleton";
 import { EmptyState } from "@/components/EmptyState";
 import { ErrorState } from "@/components/ErrorState";
 import { Button } from "@/components/Button";
@@ -282,8 +283,8 @@ export default function HomePage() {
           <ErrorState message={error} onRetry={retry} />
         ) : loading ? (
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {[0, 1, 2].map((i) => (
-              <div key={i} className="pulse-soft aspect-[4/3] rounded-card bg-black/[0.04]" />
+            {[0, 1, 2, 3].map((i) => (
+              <RecipeCardSkeleton key={i} />
             ))}
           </div>
         ) : recipes.length === 0 ? (
