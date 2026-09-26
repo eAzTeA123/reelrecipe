@@ -19,8 +19,8 @@ export function tokenizeSentences(text: string): string[] {
     .replace(/9(?:\uFE0F)?\u20E3/g, "\n9. ")
     // 2. Trennung bei markanten Deko-Emojis (z.B. 😍 ⭐️ 🔥)
     .replace(/(😍|⭐️|✨|🌮|🍕)/gu, "\n")
-    // 3. "Für X Stück:" oder "Für X Portionen:" als eigenständigen Header isolieren
-    .replace(/(Für\s*\d+\s*(?:Stück|Portionen?|Personen?):?)/gi, "\n$1\n")
+    // 3. "Für X Stück:" oder "Pro Portion:" als eigenständigen Header isolieren
+    .replace(/((?:Für|Ergibt|Reicht für|Bei|Pro|Du hast direkt)\s*(?:ca\.\s*)?(?:\d+\s+)?(?:Stück|Portion(?:en)?|Person(?:en)?|Tacos?|Pancakes?):?)/gi, "\n$1\n")
     // 3b. "Für den/die/das..." Sub-Header isolieren (nur wenn Doppelpunkt oder Zutaten-Anfang folgt)
     .replace(/(\b(?:Für\s*(?:den|die|das|diese|alle)|\bFor\s*(?:the|this))\s+[a-zA-ZäöüÄÖÜß\-]+)(?=:|\s+(?=-|•|\*|\d|ca|etwa))/gi, "\n$1:\n")
     // 3c. Typische Sub-Header ohne "Für" isolieren (z.B. "Helle Sauce:")
@@ -30,7 +30,7 @@ export function tokenizeSentences(text: string): string[] {
     // 5. Section-Emojis trennen
     .replace(/(🛒|🥣|🥗|👩‍🍳|👨‍🍳|📝)/gu, "\n$1\n")
     // 6. Zeilenumbrüche vor Bullets (z. B. "Sojajoghurt- Saft", "Tomaten- 250g", aber NICHT bei "Zitronen-Minz-Joghurt" oder "45-50")
-    .replace(/(?<=[a-zA-ZäöüÄÖÜß0-9,])\s+-(?=\s*(?:\d|[A-ZÄÖÜ]))|(?<=[a-zA-ZäöüÄÖÜß,])-(?=\s*(?:\d|[A-ZÄÖÜ]))/g, "\n- ")
+    .replace(/(?<=[a-zA-ZäöüÄÖÜß0-9,])\s+-(?=\s*(?:\d|[A-ZÄÖÜ]))|(?<=[a-zA-ZäöüÄÖÜß,])-(?=\s*\d)/g, "\n- ")
     .replace(/(?<=\s)[•*–—✳✅👉📍]\uFE0F?\s*|(?<=\s)-+\s+/gu, "\n- ")
     // 6b. Vor beliebigen grafischen Emojis trennen, aber NUR wenn sie als Aufzählung dienen (gefolgt von Zahl oder großem Buchstabe)
     .replace(/(?<=[a-zA-ZäöüÄÖÜß0-9,:.!?])\s+(?=\p{Emoji_Presentation}\s*(?:\d|[A-ZÄÖÜ]|ca\.?\s*\d))/gu, "\n")

@@ -7,7 +7,7 @@ const vocab = getAllVocab();
 
 type State = "TITEL" | "PREAMBLE" | "ZUTATEN" | "ZUBEREITUNG" | "SONSTIGES";
 
-const SERVINGS_HEADER_RE = /^(?:für|for|serves?|yields?|ergibt)\s*(?:ca\.?\s*|about\s*)?\d{1,2}\s*(?:portionen?|pers(?:onen)?\.?|servings?|people|persons|stücke?|tacos?|portion|stück|person)\s*:?$/i;
+const SERVINGS_HEADER_RE = /^(?:für|for|serves?|yields?|ergibt|bei|pro)\s*(?:ca\.?\s*|about\s*)?(?:\d{1,2})?\s*(?:portionen?|pers(?:onen)?\.?|servings?|people|persons|stücke?|tacos?|portion|stück|person)\s*:?$/i;
 
 /** Prüft, ob die Zeile eine Sub-Kategorie für Zutaten ist (z. B. "Für die Soße:") */
 function isSubIngredientHeader(line: string): boolean {
@@ -66,6 +66,14 @@ function hasStepNumbering(line: string): boolean {
   );
 }
 
+function isNutritionLine(line: string): boolean {
+  if (line.length > 80) return false;
+  const lower = line.toLowerCase();
+  if (/\b(?:kcal|kalorien|protein|kohlenhydrate|fett|eiweiß|kh|ew)\b\s*:/i.test(lower)) return true;
+  if (/\|\s*(?:kh|ew|f|kcal|protein|fett)\b/i.test(lower)) return true;
+  return false;
+}
+
 export const lineStateMachineStrategy: ParserStrategy = {
   name: "line_state_machine",
   parse(caption: string): RawParseResult {
@@ -86,6 +94,11 @@ export const lineStateMachineStrategy: ParserStrategy = {
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i].trim();
       if (!line) continue;
+
+      if (isNutritionLine(line)) {
+        result.other.push(line);
+        continue;
+      }
 
       // 1. Outro Check (nur wenn wir schon tief im Rezept sind)
       if (isOutroLine(line) && (state === "ZUBEREITUNG" || state === "ZUTATEN" || state === "SONSTIGES")) {
