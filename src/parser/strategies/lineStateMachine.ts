@@ -12,9 +12,17 @@ const SERVINGS_HEADER_RE = /^(?:für|for|serves?|yields?|ergibt|bei|pro)\s*(?:ca
 /** Prüft, ob die Zeile eine Sub-Kategorie für Zutaten ist (z. B. "Für die Soße:") */
 function isSubIngredientHeader(line: string): boolean {
   if (line.length > 40) return false;
-  if (/^(?:für|for)\s+(?:den|die|das|diesen|diese)/i.test(line)) return true;
-  const lower = line.toLowerCase().trim();
-  return vocab.subIngredientPrefixes.some((p) => lower.startsWith(p) || lower.includes(p));
+  if (/^(?:für|for)\s+(?:den|die|das|diesen|diese|der)/i.test(line)) return true;
+  const lower = line.toLowerCase().replace(/[:\-_#*]/g, "").trim();
+  
+  if (vocab.ingredientMarkers.some(m => lower.startsWith(m + " "))) {
+    if (!lower.endsWith(" english") && !lower.endsWith(" deutsch")) return true;
+  }
+
+  const exactMatch = vocab.subIngredientPrefixes.some(p => lower === p || lower === p + "s"); 
+  if (exactMatch) return true;
+
+  return false;
 }
 
 /** Prüft, ob die Zeile wie Outro / Social Media CTA / Hashtags aussieht */
@@ -67,10 +75,20 @@ function hasStepNumbering(line: string): boolean {
 }
 
 function isNutritionLine(line: string): boolean {
-  if (line.length > 80) return false;
+  if (line.length > 50) return false;
   const lower = line.toLowerCase();
-  if (/\b(?:kcal|kalorien|protein|kohlenhydrate|fett|eiweiß|kh|ew)\b\s*:/i.test(lower)) return true;
-  if (/\|\s*(?:kh|ew|f|kcal|protein|fett)\b/i.test(lower)) return true;
+  
+  if (lower.includes("kcal") || lower.includes("kalorien")) return true;
+  if (/k\w?cal/i.test(line)) return true;
+  
+  const words = lower.split(/[\s,;|:]+/);
+  const nutritionWords = ["kh", "kohlenhydrate", "protein", "eiweiß", "fett", "f", "ew", "carbs", "fat"];
+  const macroCount = words.filter(w => nutritionWords.includes(w)).length;
+  if (macroCount >= 2) return true;
+
+  if (/(?:kh|ew|f|p|eiweiß|fett|protein|kohlenhydrate|carbs|fat)\s*:\s*\d+/i.test(line)) return true;
+  if (/\d+\s*(?:g|%)\s+(?:kh|ew|f|p|eiweiß|fett|protein|kohlenhydrate|carbs|fat)(?:\s|$)/i.test(line)) return true;
+
   return false;
 }
 

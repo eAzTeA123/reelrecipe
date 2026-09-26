@@ -9,7 +9,7 @@ export interface ParsedSocialUrl {
 
 const IG_PATH = /^\/(?:[A-Za-z0-9_.-]+\/)?(reel|reels|p|tv)\/([A-Za-z0-9_-]{5,30})\/?/;
 const TIKTOK_VIDEO_PATH = /^\/@([^/]+)\/(?:video|photo)\/(\d{15,25})\/?/;
-const TIKTOK_SHORT_PATH = /^\/(t\/[A-Za-z0-9_-]{5,25}|[A-Za-z0-9_-]{5,25})\/?/;
+const TIKTOK_SHORT_PATH = /^\/t\/([A-Za-z0-9_-]{5,25})\/?/;
 
 /**
  * Validiert und normalisiert Instagram- oder TikTok-Links.
@@ -49,7 +49,7 @@ export function parseSocialUrl(input: string): ParsedSocialUrl | null {
       return {
         platform: "tiktok",
         normalized: `https://www.tiktok.com/@${videoMatch[1]}/video/${videoMatch[2]}`,
-        id: videoMatch[2],
+        id: videoMatch[3],
       };
     }
     const shortMatch = url.pathname.match(TIKTOK_SHORT_PATH);
