@@ -120,6 +120,28 @@ export function parseIngredientLine(line: string): ParsedIngredient | null {
     }
   }
 
+  // 4b) Category Prefix: "Gewürze: je 1 TL Salz" -> name "Salz", amount 1
+  if (amount === undefined) {
+    const prefixMatch = rest.match(/^(?:[a-zA-ZäöüÄÖÜß\s]{3,25}:\s*)?(?:je|jeweils)?\s*(\d+[.,]?\d*(?:\s+\d+\/\d+|\/\d+)?)\s*(.*)$/i);
+    if (prefixMatch) {
+       const potentialAmount = parseAmountString(prefixMatch[1]);
+       let potentialRest = prefixMatch[2].trim();
+       let potentialUnit;
+       const unitMatch = potentialRest.match(UNIT_START_REGEX);
+       if (unitMatch) {
+         potentialUnit = canonicalUnit(unitMatch[1]);
+         potentialRest = potentialRest.slice(unitMatch[0].length).trim();
+         potentialRest = potentialRest.replace(/^(of|von)\s+/i, "");
+       }
+       if (potentialRest.length >= 2) {
+         amount = potentialAmount;
+         unit = potentialUnit;
+         rest = potentialRest;
+         uncertain = false;
+       }
+    }
+  }
+
   // 5) "Juice of 1/2 lime" → name "Juice of lime", amount 0.5
   if (amount === undefined) {
     const ofMatch = rest.match(
@@ -155,6 +177,9 @@ export function parseIngredientLine(line: string): ParsedIngredient | null {
 /** Heuristik: sieht eine Zeile wie eine Zutat aus? (für Captions ohne Überschriften) */
 export function looksLikeIngredient(line: string): number {
   let l = line.trim().replace(/^[\s\-•·▪️▫️🔸🔹.👇'%✅]+\s*/u, "");
+  l = l.replace(/^(?:[a-zA-ZäöüÄÖÜß\s]{3,25}:\s*)?(?:je|jeweils)\s+/i, "");
+  l = l.replace(/^[a-zA-ZäöüÄÖÜß\s]{3,25}:\s*(?=\d)/i, "");
+  
   let score = 0;
   if (AMOUNT_REGEX.test(l)) score += 3;
   if (UNIT_REGEX.test(l)) {

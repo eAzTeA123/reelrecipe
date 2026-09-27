@@ -25,7 +25,7 @@ export {
 };
 
 /** Inkrement bei jeder wesentlichen Parser-Änderung */
-export const PARSER_VERSION = 4;
+export const PARSER_VERSION = 5;
 
 import { getAllVocab } from "./vocabulary";
 
