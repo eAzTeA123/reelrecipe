@@ -18,7 +18,6 @@ export function Tour() {
           title: t("tour.importTitle"),
           description: t("tour.importDesc"),
           side: "bottom" as const,
-          align: "start" as const,
         },
       },
       {
@@ -26,8 +25,7 @@ export function Tour() {
         popover: {
           title: t("tour.fridgeTitle"),
           description: t("tour.fridgeDesc"),
-          side: "bottom" as const,
-          align: "start" as const,
+          side: "top" as const,
         },
       },
       {
@@ -36,7 +34,6 @@ export function Tour() {
           title: t("tour.plannerTitle"),
           description: t("tour.plannerDesc"),
           side: "top" as const,
-          align: "center" as const,
         },
       },
       {
@@ -45,16 +42,14 @@ export function Tour() {
           title: t("tour.shoppingTitle"),
           description: t("tour.shoppingDesc"),
           side: "top" as const,
-          align: "center" as const,
         },
       },
       {
-        element: "#tour-recipes",
+        element: '[data-tour="recipes"]',
         popover: {
           title: t("tour.recipesTitle"),
           description: t("tour.recipesDesc"),
           side: "top" as const,
-          align: "start" as const,
         },
       },
       {
@@ -62,8 +57,7 @@ export function Tour() {
         popover: {
           title: t("tour.pwaTitle"),
           description: t("tour.pwaDesc"),
-          side: "left" as const,
-          align: "end" as const,
+          side: "bottom" as const,
         },
       },
     ];
