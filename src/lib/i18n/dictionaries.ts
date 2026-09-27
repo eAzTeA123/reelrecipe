@@ -182,6 +182,49 @@ export const dictionaries = {
     "tour.pwaDesc": "Installiere ReelRecipe direkt auf deinem Homescreen für Haptic-Touch Quick Actions und echtes App-Feeling!",
     "tour.restart": "Tutorial erneut ansehen",
     "tour.restartDesc": "Erfahre in einer kurzen interaktiven Tour, wie du alle Funktionen optimal nutzt.",
+    // Bingo
+    "bingo.title": "Rezept-Bingo",
+    "bingo.subtitle": "Finde zufällig dein nächstes Gericht",
+    "bingo.description": "Gib ein paar Zutaten ein, die du verwenden möchtest, und wir ziehen ein zufälliges Rezept für dich!",
+    "bingo.placeholder": "z.B. Tomate, Feta",
+    "bingo.button": "Bingo spielen!",
+    "bingo.emptyTitle": "Bereit für Bingo?",
+    "bingo.emptySubtitle": "Gib Zutaten ein und starte das Spiel, um ein passendes Rezept zu finden.",
+    "bingo.winner": "Gewinner!",
+    "bingo.toRecipe": "Zum Rezept",
+    "bingo.toastEmpty": "Bitte Zutaten eingeben!",
+    "bingo.toastNoMatch": "Keine passenden Rezepte gefunden",
+
+    // Timers
+    "timers.active": "Bildschirm aktiv",
+
+    // Form
+    "form.title": "Titel",
+    "form.description": "Beschreibung",
+    "form.prepTime": "Vorbereitung",
+    "form.cookTime": "Kochzeit",
+    "form.category": "Kategorie",
+    "form.minutes": "in Minuten",
+    "form.imageAria": "Rezeptbild auswählen",
+    "form.imageAlt": "Rezeptbild",
+    "form.imageRemove": "Bild entfernen",
+    "form.imageChange": "Ändern",
+    "form.draftFound": "Ungespeicherter Entwurf gefunden",
+    "form.draftRestore": "Wiederherstellen",
+    "form.draftDiscard": "Verwerfen",
+    "form.previewBanner": "Vorschau-Modus",
+    "form.previewBannerHint": "Die Zutaten wurden automatisch erkannt. Bitte prüfe sie und passe sie an.",
+    "form.previewOriginal": "Originaltext anzeigen",
+    "form.previewUncertainRemove": "⚠️ Unsichere entfernen",
+    "form.previewUncertainAccept": "✓ Alle bestätigen",
+    "form.ingredients": "Zutaten",
+    "form.addIngredient": "Zutat hinzufügen",
+    "form.steps": "Zubereitungsschritte",
+    "form.stepPlaceholder": "Schritt beschreiben",
+    "form.addStep": "Schritt hinzufügen",
+    "form.servings": "Portionen",
+    "form.servingsAria": "Anzahl Portionen",
+
   },
   en: {
     // Nav
@@ -364,7 +407,50 @@ export const dictionaries = {
     "tour.pwaDesc": "Add ReelRecipe to your home screen for Haptic-Touch quick actions and a native app feeling!",
     "tour.restart": "Replay Tutorial",
     "tour.restartDesc": "Take a quick interactive tour to discover all features of ReelRecipe.",
-  }
+  
+    // Bingo
+    "bingo.title": "Recipe Bingo",
+    "bingo.subtitle": "Find your next meal randomly",
+    "bingo.description": "Enter a few ingredients you want to use, and we'll pick a random recipe for you!",
+    "bingo.placeholder": "e.g. Tomato, Feta",
+    "bingo.button": "Play Bingo!",
+    "bingo.emptyTitle": "Ready for Bingo?",
+    "bingo.emptySubtitle": "Enter ingredients and start the game to find a matching recipe.",
+    "bingo.winner": "Winner!",
+    "bingo.toRecipe": "Go to Recipe",
+    "bingo.toastEmpty": "Please enter ingredients!",
+    "bingo.toastNoMatch": "No matching recipes found",
+
+    // Timers
+    "timers.active": "Screen awake",
+
+    // Form
+    "form.title": "Title",
+    "form.description": "Description",
+    "form.prepTime": "Prep time",
+    "form.cookTime": "Cook time",
+    "form.category": "Category",
+    "form.minutes": "in minutes",
+    "form.imageAria": "Select recipe image",
+    "form.imageAlt": "Recipe image",
+    "form.imageRemove": "Remove image",
+    "form.imageChange": "Change",
+    "form.draftFound": "Unsaved draft found",
+    "form.draftRestore": "Restore",
+    "form.draftDiscard": "Discard",
+    "form.previewBanner": "Preview Mode",
+    "form.previewBannerHint": "Ingredients were detected automatically. Please review and adjust them.",
+    "form.previewOriginal": "Show original text",
+    "form.previewUncertainRemove": "⚠️ Remove uncertain",
+    "form.previewUncertainAccept": "✓ Accept all",
+    "form.ingredients": "Ingredients",
+    "form.addIngredient": "Add ingredient",
+    "form.steps": "Instructions",
+    "form.stepPlaceholder": "Describe step",
+    "form.addStep": "Add instruction",
+    "form.servings": "Servings",
+    "form.servingsAria": "Number of servings",
+}
 };
 
 export type TranslationKey = keyof typeof dictionaries.de;

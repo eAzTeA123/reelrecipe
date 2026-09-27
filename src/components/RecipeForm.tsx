@@ -249,9 +249,7 @@ export function RecipeForm({
                 setDraft(hasDraft);
                 setHasDraft(null);
               }}
-            >
-              Wiederherstellen
-            </Button>
+            >{t("form.draftRestore")}</Button>
             <Button
               variant="secondary"
               size="sm"
@@ -259,9 +257,7 @@ export function RecipeForm({
                 setHasDraft(null);
                 getDB().drafts.delete("default").catch(() => {});
               }}
-            >
-              Verwerfen
-            </Button>
+            >{t("form.draftDiscard")}</Button>
           </div>
         </div>
       )}
@@ -269,11 +265,8 @@ export function RecipeForm({
       {initial.sourceCaption && (
         <div className="flex flex-col gap-4">
           <div className="rounded-xl bg-blue-50 dark:bg-blue-950/30 p-3 text-sm text-blue-800 dark:text-blue-200">
-            <p className="font-semibold">📋 Vorschau – Bitte prüfen</p>
-            <p className="mt-1 text-blue-700/80 dark:text-blue-300/80">
-              Der Parser hat dieses Rezept aus dem Social-Media-Text erkannt.
-              Zutaten mit <span className="inline-flex items-center bg-amber-400 text-white rounded-full w-4 h-4 text-[10px] justify-center font-bold mx-0.5">?</span> waren unklar – bitte prüfen und ggf. korrigieren.
-            </p>
+            <p className="font-semibold">{t("form.previewBanner")}</p>
+            <p className="mt-1 text-blue-700/80 dark:text-blue-300/80">{t("form.previewBannerHint")}</p>
           </div>
           
           <div className="flex gap-2">
@@ -283,24 +276,18 @@ export function RecipeForm({
               onClick={() => {
                 setDraft(prev => ({ ...prev, ingredients: prev.ingredients.filter(i => !i.uncertain) }));
               }}
-            >
-              ⚠️ Unsichere entfernen
-            </button>
+            >{t("form.previewUncertainRemove")}</button>
             <button
               type="button"
               className="text-xs px-3 py-1.5 rounded-full bg-green-50 text-green-600 dark:bg-green-950/30 dark:text-green-400 font-medium"
               onClick={() => {
                 setDraft(prev => ({ ...prev, ingredients: prev.ingredients.map(i => ({ ...i, uncertain: false })) }));
               }}
-            >
-              ✓ Alle bestätigen
-            </button>
+            >{t("form.previewUncertainAccept")}</button>
           </div>
 
           <details className="rounded-xl bg-gray-50 dark:bg-gray-900/30 p-3">
-            <summary className="cursor-pointer text-sm font-medium text-ink/60">
-              Original-Text anzeigen
-            </summary>
+            <summary className="cursor-pointer text-sm font-medium text-ink/60">{t("form.previewOriginal")}</summary>
             <pre className="mt-2 text-xs text-ink/50 whitespace-pre-wrap font-mono leading-relaxed max-h-48 overflow-y-auto">
               {initial.sourceCaption}
             </pre>
@@ -327,7 +314,7 @@ export function RecipeForm({
           type="file"
           accept="image/*"
           className="hidden"
-          aria-label="Rezeptbild auswählen"
+          aria-label={t("form.imageAria")}
           onChange={(e) => {
             void pickImage(e.target.files?.[0]);
             e.target.value = "";
@@ -336,7 +323,7 @@ export function RecipeForm({
         {imageUrl ? (
           <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl border border-line/70 shadow-card md:aspect-[16/9]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={imageUrl} alt="Rezeptbild" className="h-full w-full object-cover" />
+            <img src={imageUrl} alt={t("form.imageAlt")} className="h-full w-full object-cover" />
             <div className="absolute bottom-3 right-3 flex gap-2">
               <Button
                 variant="secondary"
@@ -350,7 +337,7 @@ export function RecipeForm({
               <Button
                 variant="secondary"
                 size="sm"
-                aria-label="Bild entfernen"
+                aria-label={t("form.imageRemove")}
                 onClick={() =>
                   setDraft((d) => ({ ...d, imageRef: undefined, pendingImage: undefined }))
                 }
@@ -372,7 +359,7 @@ export function RecipeForm({
         )}
       </div>
 
-      <Field label="Titel" htmlFor="recipe-title">
+      <Field label={t("form.title")} htmlFor="recipe-title">
         <Input
           id="recipe-title"
           value={draft.title}
@@ -382,7 +369,7 @@ export function RecipeForm({
         />
       </Field>
 
-      <Field label="Beschreibung" htmlFor="recipe-desc">
+      <Field label={t("form.description")} htmlFor="recipe-desc">
         <Textarea
           id="recipe-desc"
           value={draft.description}
@@ -402,7 +389,7 @@ export function RecipeForm({
             placeholder="2"
           />
         </Field>
-        <Field label="Vorbereitung" htmlFor="recipe-prep" hint="in Minuten">
+        <Field label={t("form.prepTime")} htmlFor="recipe-prep" hint={t("form.minutes")}>
           <Input
             id="recipe-prep"
             inputMode="numeric"
@@ -411,7 +398,7 @@ export function RecipeForm({
             placeholder="15"
           />
         </Field>
-        <Field label="Kochzeit" htmlFor="recipe-cook" hint="in Minuten">
+        <Field label={t("form.cookTime")} htmlFor="recipe-cook" hint={t("form.minutes")}>
           <Input
             id="recipe-cook"
             inputMode="numeric"
@@ -422,7 +409,7 @@ export function RecipeForm({
         </Field>
       </div>
 
-      <Field label="Kategorie">
+      <Field label={t("form.category")}>
         <CategoryChips value={draft.category} onChange={(v) => set("category", v)} />
       </Field>
 
@@ -498,8 +485,7 @@ export function RecipeForm({
             }))
           }
         >
-          <IconPlus size={17} /> Zutat hinzufügen
-        </Button>
+          <IconPlus size={17} />{t("form.addIngredient")}</Button>
       </fieldset>
 
       {/* Schritte */}
@@ -522,7 +508,7 @@ export function RecipeForm({
                   ),
                 }))
               }
-              placeholder="Schritt beschreiben"
+              placeholder={t("form.stepPlaceholder")}
               rows={Math.min(4, Math.max(2, Math.ceil(step.instruction.length / 45)))}
               className="min-w-0 flex-1 resize-none rounded-xl border border-line bg-surface px-3 py-2.5 text-[15px] focus:border-accent focus:outline-none"
             />
@@ -564,8 +550,7 @@ export function RecipeForm({
             setDraft((d) => ({ ...d, steps: [...d.steps, { id: newId(), instruction: "" }] }))
           }
         >
-          <IconPlus size={17} /> Schritt hinzufügen
-        </Button>
+          <IconPlus size={17} />{t("form.addStep")}</Button>
       </fieldset>
 
       {error && (

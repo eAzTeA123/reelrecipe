@@ -24,7 +24,7 @@ type WakeLockNavigator = Navigator & {
 };
 
 export default function CookModePage({ params }: { params: Promise<{ id: string }> }) {
-  const { lang } = useI18n();
+  const { lang, t } = useI18n();
   const { id } = use(params);
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -114,7 +114,7 @@ export default function CookModePage({ params }: { params: Promise<{ id: string 
   if (loading) {
     return <div className="flex justify-center py-24"><Spinner size={30} className="text-accent" /></div>;
   }
-  if (!recipe) return <ErrorState title="Rezept nicht gefunden" message="Es wurde möglicherweise gelöscht." />;
+  if (!recipe) return <ErrorState title={t("recipe.notFound")} message={t("recipe.notFoundSub")} />;
 
   return (
     <div className="mx-auto flex min-h-[calc(100dvh-11rem)] max-w-3xl flex-col">
@@ -123,22 +123,20 @@ export default function CookModePage({ params }: { params: Promise<{ id: string 
           href={`/recipes/${id}`}
           className="pressable inline-flex min-h-11 items-center gap-1 rounded-full pr-3 text-[15px] font-medium text-ink-2"
         >
-          <IconBack size={20} /> Beenden
+          <IconBack size={20} /> {t("general.back")}
         </Link>
         {wakeLockSupported && wakeLockOn && (
-          <span className="text-xs text-ink-3">Bildschirm aktiv</span>
+          <span className="text-xs text-ink-3">{t("cook.wakeLock")}</span>
         )}
       </div>
 
-      <p className="mb-2 text-[14px] font-semibold uppercase tracking-[0.08em] text-accent">
-        Kochmodus
-      </p>
+      <p className="mb-2 text-[14px] font-semibold uppercase tracking-[0.08em] text-accent">{t("cook.title")}</p>
       <h1 className="text-[30px] font-bold leading-tight tracking-[-0.02em]">{recipe.title}</h1>
 
       <section className="mt-6 rounded-2xl border border-line/70 bg-surface p-5 shadow-card">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <div className="flex flex-wrap items-center gap-3">
-            <h2 className="text-[17px] font-bold">Zutaten</h2>
+            <h2 className="text-[17px] font-bold">{t("cook.ingredients")}</h2>
             <UnitToggle value={unitSystem} onChange={setUnitSystem} />
           </div>
           <span className="text-[13px] font-medium text-ink-3">
@@ -182,7 +180,7 @@ export default function CookModePage({ params }: { params: Promise<{ id: string 
       <section className="mt-5 flex flex-1 flex-col rounded-2xl border border-line/70 bg-surface p-6 shadow-card">
         <div className="mb-5 flex items-center justify-between gap-4">
           <span className="text-[14px] font-semibold text-ink-2">
-            Schritt {Math.min(currentIndex + 1, steps.length)} von {steps.length}
+            {t("cook.step")} {Math.min(currentIndex + 1, steps.length)} {t("cook.of")} {steps.length}
           </span>
           <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-black/[0.06]">
             <div
@@ -221,7 +219,7 @@ export default function CookModePage({ params }: { params: Promise<{ id: string 
             </div>
           </div>
         ) : (
-          <p className="flex-1 text-[20px] text-ink-2">Keine Zubereitungsschritte vorhanden.</p>
+          <p className="flex-1 text-[20px] text-ink-2">{t("cook.noSteps")}</p>
         )}
         <div className="mt-8 grid grid-cols-2 gap-3">
           <Button
@@ -229,24 +227,18 @@ export default function CookModePage({ params }: { params: Promise<{ id: string 
             size="lg"
             onClick={() => setIndex((i) => Math.max(0, i - 1))}
             disabled={currentIndex === 0}
-          >
-            Zurück
-          </Button>
+          >{t("cook.back")}</Button>
           {currentIndex >= steps.length - 1 ? (
             <Button
               size="lg"
               onClick={() => router.push(`/recipes/${recipe?.id ?? id}`)}
             >
-              <IconCheck size={20} />
-              Fertig
-            </Button>
+              <IconCheck size={20} />{t("cook.finish")}</Button>
           ) : (
             <Button
               size="lg"
               onClick={() => setIndex((i) => Math.min(steps.length - 1, i + 1))}
-            >
-              Weiter
-            </Button>
+            >{t("cook.next")}</Button>
           )}
         </div>
       </section>
