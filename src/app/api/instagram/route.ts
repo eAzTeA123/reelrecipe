@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const IG_PATH = /^\/(reel|reels|p|tv)\/([A-Za-z0-9_-]{5,20})\/?/;
+const IG_PATH = /^\/(?:[A-Za-z0-9_.-]+\/)?(reel|reels|p|tv)\/([A-Za-z0-9_-]{5,30})\/?/;
 const TIMEOUT_MS = 6000;
 
 function validInstagramUrl(raw: string): URL | null {
@@ -20,16 +20,16 @@ function validInstagramUrl(raw: string): URL | null {
 
 function extractMeta(html: string, property: string): string | undefined {
   const re = new RegExp(
-    `<meta[^>]+(?:property|name)=["']${property}["'][^>]+content=["']([^"']*)["']`,
+    `<meta[^>]+(?:property|name)=["']${property}["'][^>]+content=(["'])([\\s\\S]*?)\\1`,
     "i",
   );
   const re2 = new RegExp(
-    `<meta[^>]+content=["']([^"']*)["'][^>]+(?:property|name)=["']${property}["']`,
+    `<meta[^>]+content=(["'])([\\s\\S]*?)\\1[^>]+(?:property|name)=["']${property}["']`,
     "i",
   );
   const m = html.match(re) ?? html.match(re2);
   if (!m) return undefined;
-  return decodeEntities(m[1]);
+  return decodeEntities(m[2]);
 }
 
 function decodeEntities(s: string): string {
@@ -128,7 +128,7 @@ async function viaMetaTags(url: URL): Promise<Result> {
     if (!res.ok) return { ok: false, source: "meta-tags" };
     const html = await res.text();
     const ogDesc = extractMeta(html, "og:description");
-    if (res.url.includes("/accounts/login") || (ogDesc && ogDesc.includes("Instagram"))) {
+    if (res.url.includes("/accounts/login") || (ogDesc && ogDesc.includes("Instagram") && !ogDesc.includes(":"))) {
       return { ok: false, error: "login-wall", caption: null, source: "meta-tags" };
     }
     const ogImage = extractMeta(html, "og:image");

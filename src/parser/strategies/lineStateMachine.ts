@@ -277,6 +277,11 @@ export const lineStateMachineStrategy: ParserStrategy = {
           continue;
         }
 
+        // Überspringe explizite Zubereitungs-Überschriften, die fälschlicherweise als Schritt gewertet würden
+        if (vocab.stepMarkers.some((m) => cleanLower === m || cleanLower.startsWith(m)) && line.split(" ").length <= 3) {
+          continue;
+        }
+
         // Einmal in ZUBEREITUNG, bleibt alles ZUBEREITUNG bis SONSTIGES
         result.steps.push(line);
         continue;

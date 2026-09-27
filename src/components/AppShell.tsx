@@ -25,7 +25,7 @@ function BottomNav() {
   return (
     <nav
       aria-label="Hauptnavigation"
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-white/85 backdrop-blur-xl md:hidden"
+      className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-white/85 backdrop-blur-xl md:hidden transform-gpu"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
       <div className="mx-auto grid max-w-lg grid-cols-5">
@@ -97,19 +97,21 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <div className="flex min-h-dvh flex-col">
-      <a href="#main" className="skip-link">Zum Inhalt springen</a>
-      <TopNav />
-      <main
-        className="mx-auto w-full max-w-6xl flex-1 px-4 pb-28 pt-5 md:px-6 md:pb-16 md:pt-8"
-        id="main"
-        tabIndex={-1}
-      >
-        <div key={pathname} className="page-enter">
-          {children}
-        </div>
-      </main>
+    <>
+      <div className="flex min-h-dvh flex-col">
+        <a href="#main" className="skip-link">Zum Inhalt springen</a>
+        <TopNav />
+        <main
+          className="mx-auto w-full max-w-6xl flex-1 px-4 pb-28 pt-5 md:px-6 md:pb-16 md:pt-8"
+          id="main"
+          tabIndex={-1}
+        >
+          <div key={pathname} className="page-enter">
+            {children}
+          </div>
+        </main>
+      </div>
       <BottomNav />
-    </div>
+    </>
   );
 }

@@ -8,7 +8,7 @@ export interface ParsedSocialUrl {
 }
 
 const IG_PATH = /^\/(?:[A-Za-z0-9_.-]+\/)?(reel|reels|p|tv)\/([A-Za-z0-9_-]{5,30})\/?/;
-const TIKTOK_VIDEO_PATH = /^\/@([^/]+)\/(?:video|photo)\/(\d{15,25})\/?/;
+const TIKTOK_VIDEO_PATH = /^\/@([^/]+)\/(video|photo)\/(\d{15,25})\/?/;
 const TIKTOK_SHORT_PATH = /^\/t\/([A-Za-z0-9_-]{5,25})\/?/;
 
 /**
@@ -48,7 +48,7 @@ export function parseSocialUrl(input: string): ParsedSocialUrl | null {
     if (videoMatch) {
       return {
         platform: "tiktok",
-        normalized: `https://www.tiktok.com/@${videoMatch[1]}/video/${videoMatch[2]}`,
+        normalized: `https://www.tiktok.com/@${videoMatch[1]}/${videoMatch[2]}/${videoMatch[3]}`,
         id: videoMatch[3],
       };
     }

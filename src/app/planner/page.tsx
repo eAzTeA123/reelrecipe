@@ -32,7 +32,8 @@ export default function PlannerPage() {
 
   const [draggedEntryId, setDraggedEntryId] = useState<string | null>(null);
   const [dropTargetDay, setDropTargetDay] = useState<DayOfWeek | null>(null);
-  const [pointerPos, setPointerPos] = useState({ x: 0, y: 0 });
+  const pointerPosRef = useRef({ x: 0, y: 0 });
+  const ghostRef = useRef<HTMLDivElement>(null);
   const longPressTimer = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
@@ -41,7 +42,10 @@ export default function PlannerPage() {
     document.body.style.touchAction = 'none'; // Prevent scrolling while dragging
 
     const handleMove = (e: PointerEvent) => {
-      setPointerPos({ x: e.clientX, y: e.clientY });
+      pointerPosRef.current = { x: e.clientX, y: e.clientY };
+      if (ghostRef.current) {
+        ghostRef.current.style.transform = `translate3d(${e.clientX - 50}px, ${e.clientY - 20}px, 0)`;
+      }
       
       // Manually find the drop target under the pointer
       const el = document.elementFromPoint(e.clientX, e.clientY);
@@ -137,7 +141,7 @@ export default function PlannerPage() {
   const handleDragStart = (entryId: string, clientX?: number, clientY?: number) => {
     setDraggedEntryId(entryId);
     if (clientX !== undefined && clientY !== undefined) {
-      setPointerPos({ x: clientX, y: clientY });
+      pointerPosRef.current = { x: clientX, y: clientY };
     }
     haptic('medium');
   };
@@ -185,8 +189,9 @@ export default function PlannerPage() {
     <>
       {draggedEntryId && (
         <div
+          ref={ghostRef}
           className="fixed pointer-events-none z-50 bg-surface shadow-2xl rounded-xl p-3 opacity-90 rotate-2 scale-105 flex gap-3 items-center"
-          style={{ left: pointerPos.x - 50, top: pointerPos.y - 20 }}
+          style={{ transform: `translate3d(${pointerPosRef.current.x - 50}px, ${pointerPosRef.current.y - 20}px, 0)`, top: 0, left: 0 }}
         >
           <p className="text-sm font-semibold truncate max-w-[200px]">
             {recipes.find(r => r.id === entries.find(e => e.id === draggedEntryId)?.recipeId)?.title ?? "Rezept"}

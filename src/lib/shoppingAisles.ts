@@ -156,7 +156,8 @@ export function getAisle(ingredientName: string): string {
   }
   
   for (const [key, aisle] of Object.entries(AISLE_MAPPING)) {
-    if (normalized.includes(key)) {
+    const regex = new RegExp(`(?<![\\p{L}])${key}(?![\\p{L}])`, 'iu');
+    if (regex.test(normalized)) {
       return aisle;
     }
   }

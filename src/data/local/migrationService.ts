@@ -26,27 +26,50 @@ export async function runParserMigration(lang: "de" | "en"): Promise<MigrationRe
     .toArray();
 
   const result: MigrationResult = { total: recipes.length, updated: 0, skipped: 0, failed: 0 };
+  const updates: any[] = [];
 
   for (const recipe of recipes) {
     try {
       const parsed = parseRecipe(recipe.sourceCaption!);
       if (!parsed || (parsed.ingredients.length === 0 && parsed.steps.length === 0)) {
         result.skipped++;
-        // Trotzdem Version hochsetzen, damit wir nicht endlos re-parsen
-        await db.recipes.update(recipe.id, { parserVersion: PARSER_VERSION });
+        updates.push({ ...recipe, parserVersion: PARSER_VERSION });
         continue;
       }
 
       const translated = translateParsedRecipe(parsed, lang);
 
-      // Titel nur updaten, wenn der User ihn NICHT manuell geändert hat
-      // Heuristik: Wenn der alte Titel eine Teilmenge des alten Parse-Ergebnisses ist
+      // Heuristic: If title doesn't match original sourceCaption, user probably edited it
       const titleChanged = !recipe.sourceCaption!.includes(recipe.title);
       
-      await db.recipes.update(recipe.id, {
+      // Preserve manual ingredients
+      const mergedIngredients = translated.ingredients.map((newIng, i) => {
+        // Find existing by name similarity or position
+        const existing = recipe.ingredients.find(e => e.name === newIng.name) || recipe.ingredients[i];
+        if (existing) {
+          // Keep the ID, and if user removed the uncertain flag, keep it removed
+          return { ...newIng, id: existing.id, uncertain: existing.uncertain === false ? false : newIng.uncertain };
+        }
+        return newIng;
+      });
+
+      // Append ingredients that the user added manually (those that don't match any in the new parsed list by ID)
+      const userAddedIngs = recipe.ingredients.filter(oldIng => !mergedIngredients.some(m => m.id === oldIng.id));
+      mergedIngredients.push(...userAddedIngs);
+
+      // Preserve manual steps
+      const mergedSteps = translated.steps.map((newStep, i) => {
+        const existing = recipe.steps[i];
+        return existing ? { ...newStep, id: existing.id } : newStep;
+      });
+      const userAddedSteps = recipe.steps.slice(translated.steps.length);
+      mergedSteps.push(...userAddedSteps);
+
+      updates.push({
+        ...recipe,
         title: titleChanged ? recipe.title : translated.title,
-        ingredients: translated.ingredients,
-        steps: translated.steps,
+        ingredients: mergedIngredients,
+        steps: mergedSteps,
         servings: translated.servings ?? recipe.servings,
         prepTime: translated.prepTime ?? recipe.prepTime,
         cookTime: translated.cookTime ?? recipe.cookTime,
@@ -57,9 +80,12 @@ export async function runParserMigration(lang: "de" | "en"): Promise<MigrationRe
     } catch (e) {
       console.error(`Migration failed for recipe ${recipe.id}:`, e);
       result.failed++;
-      // Version trotzdem hochsetzen
-      await db.recipes.update(recipe.id, { parserVersion: PARSER_VERSION });
+      updates.push({ ...recipe, parserVersion: PARSER_VERSION });
     }
+  }
+
+  if (updates.length > 0) {
+    await db.recipes.bulkPut(updates);
   }
 
   return result;
@@ -67,6 +93,13 @@ export async function runParserMigration(lang: "de" | "en"): Promise<MigrationRe
 
 export async function migrateExternalImages(): Promise<number> {
   const db = getDB();
+
+  // Fix broken prefixes first
+  const brokenImages = await db.recipes.filter(r => !!r.image && r.image.startsWith("local-image:local-image:")).toArray();
+  for (const recipe of brokenImages) {
+    await db.recipes.update(recipe.id, { image: recipe.image!.replace("local-image:local-image:", "local-image:") });
+  }
+
   const recipes = await db.recipes
     .filter(r => !!r.image && !r.image.startsWith("local-image:") && r.image.startsWith("http"))
     .toArray();
@@ -78,7 +111,7 @@ export async function migrateExternalImages(): Promise<number> {
       if (!res.ok) continue;
       const blob = await compressImage(await res.blob());
       const imageRef = await getImageRepository().save(blob);
-      await db.recipes.update(recipe.id, { image: `local-image:${imageRef}` });
+      await db.recipes.update(recipe.id, { image: imageRef });
       cached++;
     } catch { /* skip, retry next time */ }
   }
@@ -97,8 +130,7 @@ export async function backfillColors(): Promise<number> {
     try {
       let blob: Blob | undefined;
       if (recipe.image!.startsWith("local-image:")) {
-        const id = recipe.image!.replace("local-image:", "");
-        const localImg = await imageRepo.get(id);
+        const localImg = await imageRepo.get(recipe.image!);
         if (localImg) blob = localImg.blob;
       } else {
         const res = await fetch(`/api/instagram/image?url=${encodeURIComponent(recipe.image!)}`);

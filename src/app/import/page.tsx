@@ -142,12 +142,62 @@ function ImportFlow() {
     }
   }, [url, caption, ogImage, autoFailed, step]);
 
-  // ?url= Parameter → direkt starten
+  // ?url= oder share= Parameter → direkt starten
   useEffect(() => {
     if (started.current) return;
-    const qUrl = params.get("url"); const qText = params.get("text"); const combined = [qUrl, qText].filter(Boolean).join(" "); const extracted = extractSocialUrlFromText(combined); const q = extracted ? extracted.normalized : (qUrl || qText);
-    if (!q) return;
     started.current = true;
+
+    // Handle share parameter or hash
+    let shareParam = params.get("share");
+    if (!shareParam && typeof window !== "undefined" && window.location.hash.startsWith("#share=")) {
+      shareParam = window.location.hash.slice(7);
+      // Remove hash from URL to keep it clean
+      window.history.replaceState(null, "", window.location.pathname + window.location.search);
+    } else if (!shareParam && typeof window !== "undefined" && window.location.hash.length > 1) {
+      // pcmb.fyi might redirect to /import#<json> if we compress the URL with the payload directly in the hash.
+      // Or if the compressed url expands to /import#share=...
+      // Wait, if pcmb unpacks it, it does location.replace with the unpacked URL.
+      // So if the original URL was /import?share=..., it will be /import?share=...
+    }
+
+    if (shareParam) {
+      try {
+        const payload = JSON.parse(decodeURIComponent(shareParam));
+        setDraft({
+          ...emptyDraft(),
+          title: payload.title || "",
+          description: payload.description || "",
+          servingsText: payload.servings ? String(payload.servings) : "",
+          prepTimeText: payload.prepTime ? String(payload.prepTime) : "",
+          cookTimeText: payload.cookTime ? String(payload.cookTime) : "",
+          color: payload.color,
+          sourceUrl: payload.sourceUrl || "",
+          ingredients: (payload.ingredients || []).map((i: any) => ({
+            id: crypto.randomUUID(),
+            name: i.name || "",
+            amountText: i.amount ? String(i.amount) : "",
+            unit: i.unit || "",
+            notes: i.notes || "",
+            uncertain: false,
+          })),
+          steps: (payload.steps || []).map((s: string) => ({
+            id: crypto.randomUUID(),
+            instruction: s,
+          })),
+        });
+        setStep("review");
+        return;
+      } catch (e) {
+        console.error("Failed to parse share payload", e);
+        toast("Fehler beim Laden des geteilten Rezepts");
+      }
+    }
+
+    const qUrl = params.get("url"); const qText = params.get("text"); const combined = [qUrl, qText].filter(Boolean).join(" "); const extracted = extractSocialUrlFromText(combined); const q = extracted ? extracted.normalized : (qUrl || qText);
+    if (!q) {
+      started.current = false;
+      return;
+    }
     const parsed = parseSocialUrl(q);
     // Defer to avoid synchronous setState during effect
     queueMicrotask(() => {
@@ -159,7 +209,7 @@ function ImportFlow() {
         setAutoFailed(true);
       }
     });
-  }, [params, fetchCaption]);
+  }, [params, fetchCaption, toast]);
 
   function submitUrl(e: React.FormEvent) {
     e.preventDefault();

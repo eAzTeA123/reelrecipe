@@ -164,6 +164,7 @@ export function looksLikeIngredient(line: string): number {
   if (l.length <= 60) score += 1;
   if (l.length > 100) score -= 2;
   if (/\d+\s*(min|minuten|minutes|h|stunden)\b/i.test(l)) score -= 2;
+  if (/(?:ober-\/?unterhitze|umluft|heißluft|backofen|ofen|grad|°c|celsius|fahrenheit)/i.test(l)) score -= 3;
   if (STEP_VERB_HINTS.test(l) && !AMOUNT_REGEX.test(l)) score -= 2;
   if (NUTRITION_RE.test(l)) score -= 5;
   

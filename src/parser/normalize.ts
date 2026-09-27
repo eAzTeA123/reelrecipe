@@ -19,7 +19,7 @@ export function normalizeCaption(caption: string): string {
   }
   
   // Break lines around common section markers if they are buried in text
-  const R_COLON = /\b(du brauchst|zutaten|zubereitung|so gehts|so geht's|anleitung|ingredients|instructions|directions|method)(?:\s+[a-zA-ZäöüßÄÖÜ\-]+)?\s*:/giu;
+  const R_COLON = /(?<![\p{L}])(du brauchst|zutaten|zubereitung|so gehts|so geht's|anleitung|ingredients|instructions|directions|method)(?:\s+[a-zA-ZäöüßÄÖÜ\-]+)?\s*:/giu;
   const R_NO_COLON = /(^|[.?!,]\s*|[\p{Emoji_Presentation}\p{Extended_Pictographic}]\s*)(du brauchst|zutaten|zubereitung|so gehts|so geht's|anleitung|ingredients|instructions|directions|method)\s+(?=\d|[•\-\*]|[\p{Emoji_Presentation}\p{Extended_Pictographic}])/giu;
 
   text = text.replace(R_COLON, "\n$&\n");
@@ -66,19 +66,17 @@ export function cleanLine(line: string): string {
     /speichern nicht vergessen/i,
     /klick auf/i,
     /lass ein abo da/i,
-    /speicher.*rezept/i,
-    /^pro portion/i,
-    /bei \d+ portion/i
+    /speicher.*rezept/i
   ];
   if (trashPhrases.some(re => re.test(l))) return "";
 
   // Ignore nutritional values
   if (/nährwerte|kalorien|nutritional info/i.test(l)) return "";
   if (/^\d+\s*kcal/i.test(l)) return "";
-  if (/\|\s*\b(?:kh|f|e|eiweiß|protein|fett|kohlenhydrate|kcal)\b\s*[:=]?/i.test(l)) return "";
-  if (/^\b(?:kh|f|e|eiweiß|protein|fett|kohlenhydrate|kcal)\b\s*[:=]\s*\d/i.test(l)) return "";
-  if (/^\d+\s*(?:g|ml)\s*\|?\s*\b(?:kh|f|e|eiweiß|protein|fett|kohlenhydrate|kcal)\b/i.test(l)) return "";
-  if (/\b(?:kh|f|e|eiweiß|protein|fett|kohlenhydrate|kcal)\b\s*[:=]\s*\d+\s*(?:g|ml)/i.test(l)) return "";
+  if (/\|\s*(?<![\p{L}])(?:kh|f|e|eiweiß|protein|fett|kohlenhydrate|kcal)(?![\p{L}])\s*[:=]?/iu.test(l)) return "";
+  if (/^(?<![\p{L}])(?:kh|f|e|eiweiß|protein|fett|kohlenhydrate|kcal)(?![\p{L}])\s*[:=]\s*\d/iu.test(l)) return "";
+  if (/^\d+\s*(?:g|ml)\s*\|?\s*(?<![\p{L}])(?:kh|f|e|eiweiß|protein|fett|kohlenhydrate|kcal)(?![\p{L}])/iu.test(l)) return "";
+  if (/(?<![\p{L}])(?:kh|f|e|eiweiß|protein|fett|kohlenhydrate|kcal)(?![\p{L}])\s*[:=]\s*\d+\s*(?:g|ml)/iu.test(l)) return "";
   
   return l;
 }

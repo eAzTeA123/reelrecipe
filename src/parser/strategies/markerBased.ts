@@ -1,5 +1,6 @@
 import { getAllVocab } from "../vocabulary";
 import { splitLines } from "../normalize";
+import { looksLikeIngredient } from "../ingredient";
 import type { ParserStrategy, RawParseResult } from "./types";
 
 const vocab = getAllVocab();
@@ -70,7 +71,11 @@ export const markerBasedStrategy: ParserStrategy = {
           result.other.push(line);
         }
       } else if (currentSection === "ingredients") {
-        result.ingredients.push(line);
+        if (looksLikeIngredient(line) < 0) {
+          result.steps.push(line);
+        } else {
+          result.ingredients.push(line);
+        }
       } else if (currentSection === "steps") {
         result.steps.push(line);
       } else {

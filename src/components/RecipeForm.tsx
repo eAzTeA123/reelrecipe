@@ -36,6 +36,8 @@ export interface RecipeDraft {
   title: string;
   description: string;
   color?: string;
+  tags?: string[];
+  parserVersion?: number;
   servingsText: string;
   prepTimeText: string;
   cookTimeText: string;
@@ -91,6 +93,8 @@ function toInput(draft: RecipeDraft): RecipeInput {
     title: draft.title.trim(),
     description: draft.description.trim() || undefined,
     color: draft.color,
+    tags: draft.tags,
+    parserVersion: draft.parserVersion,
     servings: num(draft.servingsText),
     prepTime: num(draft.prepTimeText),
     cookTime: num(draft.cookTimeText),

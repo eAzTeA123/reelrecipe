@@ -233,6 +233,12 @@ function translateWord(word: string, dict: Record<string, string>): string {
   return word;
 }
 
+const EN_WORDS_SORTED = Object.keys(ING_EN_TO_DE).sort((a, b) => b.length - a.length);
+const DE_WORDS_SORTED = Object.keys(ING_DE_TO_EN).sort((a, b) => b.length - a.length);
+
+const EN_TO_DE_REGEX = new RegExp(`(?<![\\p{L}])(${EN_WORDS_SORTED.join('|')})(?![\\p{L}])`, 'giu');
+const DE_TO_EN_REGEX = new RegExp(`(?<![\\p{L}])(${DE_WORDS_SORTED.join('|')})(?![\\p{L}])`, 'giu');
+
 function translateIngredientName(name: string, targetLang: "en" | "de"): string {
   const dict = targetLang === "de" ? ING_EN_TO_DE : ING_DE_TO_EN;
   
@@ -240,21 +246,15 @@ function translateIngredientName(name: string, targetLang: "en" | "de"): string 
     return translateWord(name, dict);
   }
   
-  let translatedName = name;
-  const words = Object.keys(dict).sort((a, b) => b.length - a.length); 
+  const regex = targetLang === "de" ? EN_TO_DE_REGEX : DE_TO_EN_REGEX;
   
-  for (const word of words) {
-    const regex = new RegExp(`\\b${word}\\b`, 'gi');
-    if (regex.test(translatedName)) {
-      translatedName = translatedName.replace(regex, (match) => {
-        const isCapitalized = match.charAt(0) === match.charAt(0).toUpperCase();
-        const t = dict[word];
-        return isCapitalized ? t.charAt(0).toUpperCase() + t.slice(1) : t;
-      });
-    }
-  }
-  
-  return translatedName;
+  return name.replace(regex, (match) => {
+    const isCapitalized = match.charAt(0) === match.charAt(0).toUpperCase();
+    const lowerMatch = match.toLowerCase();
+    const t = dict[lowerMatch];
+    if (!t) return match;
+    return isCapitalized ? t.charAt(0).toUpperCase() + t.slice(1) : t;
+  });
 }
 
 export function translateParsedRecipe(recipe: ParsedRecipe, targetLang: "de" | "en"): ParsedRecipe {
