@@ -174,19 +174,20 @@ export default function SettingsPage() {
         )}
       </section>
 
-      <section className="mb-6 rounded-2xl bg-surface p-5 shadow-card" aria-labelledby="tour-h">
-        <h2 id="tour-h" className="mb-1 text-[17px] font-bold">{t("tour.restart")}</h2>
+      <section className="mb-6 rounded-2xl bg-surface p-5 shadow-card" aria-labelledby="onboarding-h">
+        <h2 id="onboarding-h" className="mb-1 text-[17px] font-bold">{t("onboarding.restart")}</h2>
         <p className="mb-4 text-[14px] leading-relaxed text-ink-2">
-          {t("tour.restartDesc")}
+          {t("onboarding.restartDesc")}
         </p>
         <Button
           variant="secondary"
           onClick={() => {
+            localStorage.removeItem("onboardingSeen");
             localStorage.removeItem("tourSeen");
-            router.push("/?tour=1");
+            router.push("/?onboarding=1");
           }}
         >
-          {t("tour.restart")}
+          {t("onboarding.restart")}
         </Button>
       </section>
 

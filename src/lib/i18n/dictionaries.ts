@@ -224,6 +224,26 @@ export const dictionaries = {
     "form.addStep": "Schritt hinzufügen",
     "form.servings": "Portionen",
     "form.servingsAria": "Anzahl Portionen",
+    // Onboarding
+    "onboarding.skip": "Überspringen",
+    "onboarding.back": "Zurück",
+    "onboarding.next": "Weiter",
+    "onboarding.finish": "Fertig",
+    "onboarding.step1Title": "Deine Rezepte an einem Ort",
+    "onboarding.step1Subtitle": "Schluss mit unübersichtlichen Bookmarks auf Instagram & TikTok. Speichere all deine Lieblingsrezepte 100% lokal, privat und ohne Account.",
+    "onboarding.step2Title": "1-Klick Magic-Import",
+    "onboarding.step2Subtitle": "Einfach den Link kopieren und einfügen. Unser smarter Parser trennt Zutaten, Mengenangaben und Zubereitungsschritte sekundenschnell.",
+    "onboarding.step3Title": "Smarte Küche & Planung",
+    "onboarding.step3Subtitle": "Plane deine Woche per Drag & Drop, sortiere Einkäufe automatisch nach Supermarkt-Gängen und koche im Vollbild mit Live-Timern.",
+    "onboarding.step4Title": "Bereit für ReelRecipe?",
+    "onboarding.step4Subtitle": "Wie möchtest du starten? Du kannst direkt mit 3 leckeren Beispiel-Rezepten loslegen oder gleich deinen ersten eigenen Link einfügen!",
+    "onboarding.loadSamples": "Mit 3 Beispiel-Rezepten starten 🍳",
+    "onboarding.startEmpty": "Eigenen Link einfügen 🚀",
+    "onboarding.samplesLoaded": "3 leckere Rezepte wurden geladen!",
+    "onboarding.loadingSamples": "Rezepte werden geladen...",
+    "onboarding.restart": "Einführung & Onboarding",
+    "onboarding.restartDesc": "Lerne die wichtigsten Funktionen von ReelRecipe in einer kurzen Einführung kennen.",
+
 
   },
   en: {
@@ -450,6 +470,26 @@ export const dictionaries = {
     "form.addStep": "Add instruction",
     "form.servings": "Servings",
     "form.servingsAria": "Number of servings",
+
+    // Onboarding
+    "onboarding.skip": "Skip",
+    "onboarding.back": "Back",
+    "onboarding.next": "Next",
+    "onboarding.finish": "Done",
+    "onboarding.step1Title": "Your Recipes in One Place",
+    "onboarding.step1Subtitle": "No more chaotic bookmarks on Instagram & TikTok. Save all your favorite recipes 100% locally, privately and without any account.",
+    "onboarding.step2Title": "1-Click Magic Import",
+    "onboarding.step2Subtitle": "Just copy and paste the link. Our smart parser structures ingredients, amounts, and step-by-step instructions in seconds.",
+    "onboarding.step3Title": "Smart Kitchen & Meal Planner",
+    "onboarding.step3Subtitle": "Plan meals via Drag & Drop, let your shopping list organize by supermarket aisles, and cook in fullscreen with live timers.",
+    "onboarding.step4Title": "Ready for ReelRecipe?",
+    "onboarding.step4Subtitle": "How would you like to start? You can kick things off with 3 delicious sample recipes or paste your first own link right away!",
+    "onboarding.loadSamples": "Start with 3 Sample Recipes 🍳",
+    "onboarding.startEmpty": "Paste My Own Link 🚀",
+    "onboarding.samplesLoaded": "3 sample recipes added to your library!",
+    "onboarding.loadingSamples": "Loading recipes...",
+    "onboarding.restart": "Walkthrough & Onboarding",
+    "onboarding.restartDesc": "Explore the key features of ReelRecipe in a quick visual walkthrough.",
 }
 };
 

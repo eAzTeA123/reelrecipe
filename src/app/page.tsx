@@ -15,7 +15,7 @@ import { IconClipboard, IconFridge, IconLink, IconSettings, IconX, IconDice } fr
 import { extractSocialUrlFromText, parseSocialUrl } from "@/lib/socialSource";
 import { useToast } from "@/components/Toast";
 import { useI18n } from "@/lib/i18n/context";
-import { Tour } from "@/components/Tour";
+import { OnboardingModal } from "@/components/OnboardingModal";
 import { parseRecipe } from "@/parser";
 import { getRecipeRepository } from "@/data";
 import { compressImage } from "@/lib/image";
@@ -153,7 +153,7 @@ export default function HomePage() {
   return (
     <>
       <Suspense fallback={null}>
-        <Tour />
+        <OnboardingModal />
       </Suspense>
       <PageHeader
         title={t("home.title")}
