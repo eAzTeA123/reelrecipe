@@ -4,7 +4,7 @@ export function RecipeCardSkeleton() {
   return (
     <article className="relative block border-b-2 border-line pb-8 mb-8 last:border-b-0">
       <div className="block">
-        <Skeleton className="aspect-[4/5] w-full mb-4 rounded-none" />
+        <Skeleton className="aspect-[4/5] w-full mb-4 rounded-2xl" />
         <div className="flex flex-col gap-2">
           {/* Category */}
           <Skeleton className="h-4 w-24 mb-1" />
@@ -20,7 +20,7 @@ export function RecipeCardSkeleton() {
         </div>
       </div>
       {/* Heart button */}
-      <Skeleton className="absolute right-2 top-2 h-14 w-14 rounded-none" />
+      <Skeleton className="absolute right-2 top-2 h-14 w-14 rounded-full" />
     </article>
   );
 }

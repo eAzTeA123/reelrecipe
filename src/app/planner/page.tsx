@@ -219,7 +219,7 @@ export default function PlannerPage() {
             <section
               key={day.key}
               data-day={day.key}
-              className={`flex flex-col rounded-card p-4 shadow-card transition-colors ${
+              className={`flex flex-col rounded-2xl p-4 shadow-card transition-colors ${
                 dropTargetDay === day.key
                   ? "border-2 border-accent bg-accent/5"
                   : "border-2 border-transparent bg-surface"

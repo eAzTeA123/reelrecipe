@@ -117,11 +117,11 @@ export default function ShoppingPage() {
       ) : loading ? (
         <div className="flex flex-col gap-2">
           {[0, 1, 2].map((i) => (
-            <div key={i} className="pulse-soft h-14 rounded-ctl bg-black/[0.04]" />
+            <div key={i} className="pulse-soft h-14 rounded-xl bg-black/[0.04]" />
           ))}
         </div>
       ) : items.length === 0 ? (
-        <div className="rounded-card bg-surface shadow-card">
+        <div className="rounded-2xl bg-surface shadow-card">
           <EmptyState
             icon={<IconCart size={40} />}
             title={t("shopping.emptyTitle")}
@@ -134,7 +134,7 @@ export default function ShoppingPage() {
             {sortedAisles.map((aisle) => (
               <div key={aisle}>
                 <h2 className="mb-2 px-1 text-lg font-semibold text-ink-2">{aisle}</h2>
-                <ul className="divide-y divide-line overflow-hidden rounded-card bg-surface shadow-card">
+                <ul className="divide-y divide-line overflow-hidden rounded-2xl bg-surface shadow-card">
                   {groupedItems[aisle].map((item) => (
                     <li key={item.id} className="flex items-center gap-3 px-3 py-1.5">
                       <label className="flex min-h-[44px] flex-1 cursor-pointer items-center gap-3">
@@ -172,14 +172,14 @@ export default function ShoppingPage() {
                       <button
                         aria-label={`${item.name} bearbeiten`}
                         onClick={() => openEdit(item)}
-                        className="pressable flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-ink-3 hover:text-ink"
+                        className="pressable flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-ink-3 hover:text-ink"
                       >
                         <IconPencil size={17} />
                       </button>
                       <button
                         aria-label={`${item.name} löschen`}
                         onClick={() => void getShoppingListRepository().remove(item.id)}
-                        className="pressable flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-ink-3 hover:text-danger"
+                        className="pressable flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-ink-3 hover:text-danger"
                       >
                         <IconTrash size={17} />
                       </button>

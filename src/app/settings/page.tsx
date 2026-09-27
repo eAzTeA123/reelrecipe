@@ -116,7 +116,7 @@ export default function SettingsPage() {
     <>
       <PageHeader title={t("settings.title")} />
 
-      <section className="mb-6 rounded-card bg-surface p-5 shadow-card" aria-labelledby="lang-h">
+      <section className="mb-6 rounded-2xl bg-surface p-5 shadow-card" aria-labelledby="lang-h">
         <h2 id="lang-h" className="mb-1 text-[17px] font-bold">{t("settings.language")}</h2>
         <div className="flex gap-4 mt-3">
           <Button
@@ -134,7 +134,7 @@ export default function SettingsPage() {
         </div>
       </section>
 
-      <section className="mb-6 rounded-card bg-surface p-5 shadow-card" aria-labelledby="storage-h">
+      <section className="mb-6 rounded-2xl bg-surface p-5 shadow-card" aria-labelledby="storage-h">
         <h2 id="storage-h" className="mb-1 text-[17px] font-bold">Lokale Daten</h2>
         <p className="mb-4 text-[14px] leading-relaxed text-ink-2">
           {recipes.length} {recipes.length === 1 ? t("recipes.countSingular") : t("recipes.countPlural")} werden aktuell nur in
@@ -168,13 +168,13 @@ export default function SettingsPage() {
           />
         </div>
         {importError && (
-          <p role="alert" className="mt-3 rounded-ctl bg-[#fdeeec] px-4 py-3 text-[14px] text-danger">
+          <p role="alert" className="mt-3 rounded-xl bg-[#fdeeec] px-4 py-3 text-[14px] text-danger">
             {importError}
           </p>
         )}
       </section>
 
-      <section className="mb-6 rounded-card bg-surface p-5 shadow-card" aria-labelledby="tour-h">
+      <section className="mb-6 rounded-2xl bg-surface p-5 shadow-card" aria-labelledby="tour-h">
         <h2 id="tour-h" className="mb-1 text-[17px] font-bold">{t("tour.restart")}</h2>
         <p className="mb-4 text-[14px] leading-relaxed text-ink-2">
           {t("tour.restartDesc")}
@@ -190,7 +190,7 @@ export default function SettingsPage() {
         </Button>
       </section>
 
-      <section className="rounded-card bg-surface p-5 shadow-card" aria-labelledby="about-h">
+      <section className="rounded-2xl bg-surface p-5 shadow-card" aria-labelledby="about-h">
         <h2 id="about-h" className="mb-1 text-[17px] font-bold">{t("settings.about")}</h2>
         <p className="text-[14px] leading-relaxed text-ink-2">
           {t("settings.aboutDesc")}

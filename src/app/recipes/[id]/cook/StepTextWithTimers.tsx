@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import { IconClock } from "@/components/Icons";
+import { useTimers } from "@/components/TimerProvider";
 
 const TIME_REGEX = /\b(?:ca\.\s*)?(\d+(?:[,.]\d+)?)(?:\s*(?:-|bis)\s*(\d+(?:[,.]\d+)?))?\s*(minuten?|min\.?|stunden?|std\.?|hours?|hrs?|minutes?|sekunden?|sek\.?|sec\.?|seconds?)\b/gi;
 
@@ -24,11 +25,12 @@ function parseDurationToSeconds(match: RegExpExecArray): number {
 
 export function StepTextWithTimers({ 
   text, 
-  onStartTimer 
+  recipeId
 }: { 
-  text: string, 
-  onStartTimer: (seconds: number, label: string) => void 
+  text: string,
+  recipeId?: string 
 }) {
+  const { addTimer } = useTimers();
   if (!text) return null;
 
   const parts: ReactNode[] = [];
@@ -45,7 +47,15 @@ export function StepTextWithTimers({
     parts.push(
       <span key={match.index} className="inline-flex mx-1 align-middle">
         <button
-          onClick={() => onStartTimer(seconds, original)}
+          onClick={(e) => {
+            e.stopPropagation();
+            addTimer({
+              id: Math.random().toString(),
+              label: original,
+              endTime: Date.now() + seconds * 1000,
+              recipeId
+            });
+          }}
           className="inline-flex items-center gap-1 rounded-md bg-accent/10 px-2 py-0.5 text-accent hover:bg-accent/20 transition-colors font-medium active:scale-95"
           title={`${seconds}s Timer starten`}
         >

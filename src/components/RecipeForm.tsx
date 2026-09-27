@@ -1,4 +1,5 @@
 "use client";
+import { getDB } from "@/data";
 import { useI18n } from "@/lib/i18n/context";
 
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -159,13 +160,11 @@ export function RecipeForm({
   const existingUrl = useImageUrl(draft.pendingImage ? undefined : draft.imageRef);
 
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem("reelrecipe_draft");
-      if (stored) {
-        const parsed = JSON.parse(stored) as RecipeDraft;
-        setHasDraft(parsed);
+    getDB().drafts.get("default").then((row) => {
+      if (row && row.recipe) {
+        setHasDraft({ ...row.recipe, pendingImage: row.imageBlob });
       }
-    } catch {}
+    }).catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -173,9 +172,8 @@ export function RecipeForm({
       isFirstRender.current = false;
       return;
     }
-    try {
-      localStorage.setItem("reelrecipe_draft", JSON.stringify({ ...draft, pendingImage: undefined }));
-    } catch {}
+    const { pendingImage, ...recipeDraft } = draft;
+    getDB().drafts.put({ id: "default", recipe: recipeDraft, imageBlob: pendingImage }).catch(() => {});
   }, [draft]);
 
   const set = <K extends keyof RecipeDraft>(k: K, v: RecipeDraft[K]) =>
@@ -225,7 +223,7 @@ export function RecipeForm({
         haptic('success');
         setStatus("saved");
         try {
-          localStorage.removeItem("reelrecipe_draft");
+          await getDB().drafts.delete("default");
         } catch {}
       }
     } catch (e) {
@@ -259,9 +257,7 @@ export function RecipeForm({
               size="sm"
               onClick={() => {
                 setHasDraft(null);
-                try {
-                  localStorage.removeItem("reelrecipe_draft");
-                } catch {}
+                getDB().drafts.delete("default").catch(() => {});
               }}
             >
               Verwerfen
@@ -338,7 +334,7 @@ export function RecipeForm({
           }}
         />
         {imageUrl ? (
-          <div className="relative aspect-[4/3] w-full overflow-hidden rounded-card border border-line/70 shadow-card md:aspect-[16/9]">
+          <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl border border-line/70 shadow-card md:aspect-[16/9]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={imageUrl} alt="Rezeptbild" className="h-full w-full object-cover" />
             <div className="absolute bottom-3 right-3 flex gap-2">
@@ -368,7 +364,7 @@ export function RecipeForm({
           <button
             type="button"
             onClick={() => fileRef.current?.click()}
-            className="pressable flex min-h-28 w-full flex-col items-center justify-center gap-2 rounded-card border border-dashed border-line bg-surface-2 text-ink-2"
+            className="pressable flex min-h-28 w-full flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-line bg-surface-2 text-ink-2"
           >
             <IconCamera size={22} />
             <span className="text-[15px] font-medium">Bild hinzufügen (optional)</span>
@@ -441,7 +437,7 @@ export function RecipeForm({
         {draft.ingredients.map((ing, i) => (
           <div
             key={ing.id}
-            className={`relative rounded-ctl border p-2.5 ${
+            className={`relative rounded-xl border p-2.5 ${
               ing.uncertain ? "border-[#e8b48a] bg-[#fdf6ef]" : "border-line bg-surface"
             }`}
           >
@@ -461,7 +457,7 @@ export function RecipeForm({
                 value={ing.amountText}
                 onChange={(e) => setIng(ing.id, { amountText: e.target.value })}
                 placeholder={t("shopping.editAmount")}
-                className="col-start-1 row-start-1 h-11 min-w-0 rounded-lg border border-line bg-white px-2 text-center text-[15px] focus:border-accent focus:outline-none"
+                className="col-start-1 row-start-1 h-11 min-w-0 rounded-xl border border-line bg-white px-2 text-center text-[15px] focus:border-accent focus:outline-none"
               />
               <label className="sr-only" htmlFor={`ing-unit-${ing.id}`}>Einheit {i + 1}</label>
               <input
@@ -470,7 +466,7 @@ export function RecipeForm({
                 value={ing.unit}
                 onChange={(e) => setIng(ing.id, { unit: e.target.value })}
                 placeholder={t("shopping.editUnit")}
-                className="col-start-2 row-start-1 h-11 min-w-0 rounded-lg border border-line bg-white px-2 text-[15px] focus:border-accent focus:outline-none"
+                className="col-start-2 row-start-1 h-11 min-w-0 rounded-xl border border-line bg-white px-2 text-[15px] focus:border-accent focus:outline-none"
               />
               <label className="sr-only" htmlFor={`ing-name-${ing.id}`}>Zutat {i + 1}</label>
               <input
@@ -478,7 +474,7 @@ export function RecipeForm({
                 value={ing.name}
                 onChange={(e) => setIng(ing.id, { name: e.target.value })}
                 placeholder={t("shopping.ingredientSingular")}
-                className="col-span-3 col-start-1 row-start-2 h-11 min-w-0 rounded-lg border border-line bg-white px-3 text-[15px] focus:border-accent focus:outline-none sm:col-span-1 sm:col-start-3 sm:row-start-1"
+                className="col-span-3 col-start-1 row-start-2 h-11 min-w-0 rounded-xl border border-line bg-white px-3 text-[15px] focus:border-accent focus:outline-none sm:col-span-1 sm:col-start-3 sm:row-start-1"
               />
               <button
                 type="button"
@@ -486,7 +482,7 @@ export function RecipeForm({
                 onClick={() =>
                   setDraft((d) => ({ ...d, ingredients: d.ingredients.filter((x) => x.id !== ing.id) }))
                 }
-                className="pressable col-start-3 row-start-1 flex h-11 w-11 items-center justify-center rounded-lg text-ink-3 hover:text-danger sm:col-start-4 sm:row-start-1"
+                className="pressable col-start-3 row-start-1 flex h-11 w-11 items-center justify-center rounded-xl text-ink-3 hover:text-danger sm:col-start-4 sm:row-start-1"
               >
                 <IconTrash size={18} />
               </button>
@@ -528,7 +524,7 @@ export function RecipeForm({
               }
               placeholder="Schritt beschreiben"
               rows={Math.min(4, Math.max(2, Math.ceil(step.instruction.length / 45)))}
-              className="min-w-0 flex-1 resize-none rounded-lg border border-line bg-surface px-3 py-2.5 text-[15px] focus:border-accent focus:outline-none"
+              className="min-w-0 flex-1 resize-none rounded-xl border border-line bg-surface px-3 py-2.5 text-[15px] focus:border-accent focus:outline-none"
             />
             <div className="flex shrink-0 flex-col gap-0.5">
               <button
@@ -536,7 +532,7 @@ export function RecipeForm({
                 aria-label={`Schritt ${i + 1} nach oben`}
                 disabled={i === 0}
                 onClick={() => moveStep(step.id, -1)}
-                className="pressable flex h-11 w-11 items-center justify-center rounded-lg text-ink-3 hover:text-ink disabled:opacity-30"
+                className="pressable flex h-11 w-11 items-center justify-center rounded-xl text-ink-3 hover:text-ink disabled:opacity-30"
               >
                 <IconArrowUp size={15} />
               </button>
@@ -545,7 +541,7 @@ export function RecipeForm({
                 aria-label={`Schritt ${i + 1} nach unten`}
                 disabled={i === draft.steps.length - 1}
                 onClick={() => moveStep(step.id, 1)}
-                className="pressable flex h-11 w-11 items-center justify-center rounded-lg text-ink-3 hover:text-ink disabled:opacity-30"
+                className="pressable flex h-11 w-11 items-center justify-center rounded-xl text-ink-3 hover:text-ink disabled:opacity-30"
               >
                 <IconArrowDown size={15} />
               </button>
@@ -555,7 +551,7 @@ export function RecipeForm({
                 onClick={() =>
                   setDraft((d) => ({ ...d, steps: d.steps.filter((x) => x.id !== step.id) }))
                 }
-                className="pressable flex h-11 w-11 items-center justify-center rounded-lg text-ink-3 hover:text-danger"
+                className="pressable flex h-11 w-11 items-center justify-center rounded-xl text-ink-3 hover:text-danger"
               >
                 <IconTrash size={15} />
               </button>
@@ -573,7 +569,7 @@ export function RecipeForm({
       </fieldset>
 
       {error && (
-        <p role="alert" className="rounded-ctl bg-[#fdeeec] px-4 py-3 text-[15px] text-danger">
+        <p role="alert" className="rounded-xl bg-[#fdeeec] px-4 py-3 text-[15px] text-danger">
           {error}
         </p>
       )}

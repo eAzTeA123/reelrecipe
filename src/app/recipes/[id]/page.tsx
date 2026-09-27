@@ -242,7 +242,7 @@ export default function RecipeDetailPage({ params }: { params: Promise<{ id: str
       </div>
 
       {recipe.image && (
-        <div className="mb-6 aspect-[4/3] w-full overflow-hidden rounded-card border border-line/60 shadow-card md:aspect-[21/9]">
+        <div className="mb-6 aspect-[4/3] w-full overflow-hidden rounded-2xl border border-line/60 shadow-card md:aspect-[21/9]">
           <RecipeImage imageRef={cachedImageUrl ?? recipe.image} alt={recipe.title} className="h-full w-full" />
         </div>
       )}
@@ -279,7 +279,7 @@ export default function RecipeDetailPage({ params }: { params: Promise<{ id: str
       </div>
 
       {/* Portionen */}
-      <div className="mt-6 flex max-w-2xl items-center justify-between rounded-card border border-line/70 bg-surface px-4 py-3 shadow-card">
+      <div className="mt-6 flex max-w-2xl items-center justify-between rounded-2xl border border-line/70 bg-surface px-4 py-3 shadow-card">
         <span className="inline-flex items-center gap-2 text-[15px] font-medium">
           <IconUsers size={18} className="text-ink-2" /> Portionen
         </span>
@@ -316,7 +316,7 @@ export default function RecipeDetailPage({ params }: { params: Promise<{ id: str
         {recipe.ingredients.length === 0 ? (
           <p className="text-[15px] text-ink-3">{t("recipe.ingredientsEmpty")}</p>
         ) : (
-          <ul className="divide-y divide-line overflow-hidden rounded-card bg-surface shadow-card">
+          <ul className="divide-y divide-line overflow-hidden rounded-2xl bg-surface shadow-card">
             {recipe.ingredients.map((ing) => {
               const scaled = scaleAmount(ing.amount, recipe.servings, targetServings);
               const qty = formatAmount(scaled, ing.unit);
@@ -352,7 +352,7 @@ export default function RecipeDetailPage({ params }: { params: Promise<{ id: str
               .slice()
               .sort((a, b) => a.order - b.order)
               .map((s, i) => (
-                <li key={s.id} className="flex gap-3.5 rounded-card bg-surface p-4 shadow-card">
+                <li key={s.id} className="flex gap-3.5 rounded-2xl bg-surface p-4 shadow-card">
                   <span
                     className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-accent-soft text-[13px] font-bold text-accent"
                     aria-hidden

@@ -288,7 +288,7 @@ export default function HomePage() {
             ))}
           </div>
         ) : recipes.length === 0 ? (
-          <div className="rounded-card bg-surface shadow-card">
+          <div className="rounded-2xl bg-surface shadow-card">
             <EmptyState
               title={t("home.emptyTitle")}
               subtitle={t("home.emptySubtitle")}

@@ -27,7 +27,7 @@ export default function FavoritesPage() {
           ))}
         </div>
       ) : recipes.length === 0 ? (
-        <div className="rounded-card bg-surface shadow-card">
+        <div className="rounded-2xl bg-surface shadow-card">
           <EmptyState
             icon={<IconHeart size={40} />}
             title={t("favorites.emptyTitle")}

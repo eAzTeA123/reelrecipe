@@ -164,7 +164,7 @@ function RecipesContent() {
               <select
                 value={sort}
                 onChange={(e) => setSort(e.target.value as typeof sort)}
-                className="h-11 rounded-ctl border border-line bg-surface px-3 text-[15px] text-ink focus:border-accent focus:outline-none"
+                className="h-11 rounded-xl border border-line bg-surface px-3 text-[15px] text-ink focus:border-accent focus:outline-none"
               >
                 <option value="newest">Neueste</option>
                 <option value="oldest">Älteste</option>
@@ -212,7 +212,7 @@ function RecipesContent() {
           </p>
         </div>
       ) : processedRecipes.length === 0 ? (
-        <div className="rounded-card bg-surface shadow-card">
+        <div className="rounded-2xl bg-surface shadow-card">
           <EmptyState
             title={query || category || mode === "fridge" ? t("recipes.emptyTitle") : t("home.emptyTitle")}
             subtitle={
@@ -249,7 +249,7 @@ function RecipesContent() {
 
 export default function RecipesPage() {
   return (
-    <Suspense fallback={<div className="pulse-soft h-32 rounded-card bg-black/[0.04]" />}>
+    <Suspense fallback={<div className="pulse-soft h-32 rounded-2xl bg-black/[0.04]" />}>
       <RecipesContent />
     </Suspense>
   );

@@ -12,7 +12,7 @@ export function ErrorState({
   onRetry?: () => void;
 }) {
   return (
-    <div className="rounded-card bg-surface shadow-card" role="alert">
+    <div className="rounded-2xl bg-surface shadow-card" role="alert">
       <EmptyState
         icon={<IconX size={38} />}
         title={title}

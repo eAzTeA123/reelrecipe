@@ -45,29 +45,7 @@ export default function CookModePage({ params }: { params: Promise<{ id: string 
   const [wakeLockOn, setWakeLockOn] = useState(false);
   const wakeLock = useRef<WakeLockSentinelLike | null>(null);
   
-  // Timer state
-  const [timers, setTimers] = useState<{ id: string; label: string; endTime: number }[]>([]);
-  const [now, setNow] = useState(() => Date.now());
-
-  useEffect(() => {
-    if (timers.length === 0) return;
-    const interval = setInterval(() => {
-      setNow(Date.now());
-      setTimers(prev => {
-        let changed = false;
-        const next = prev.filter(t => {
-          if (Date.now() >= t.endTime) {
-            alert(`Timer abgelaufen: ${t.label}`);
-            changed = true;
-            return false;
-          }
-          return true;
-        });
-        return changed ? next : prev;
-      });
-    }, 500);
-    return () => clearInterval(interval);
-  }, [timers.length]);
+  // Local state for index, checked, checkedSteps
 
   const steps = useMemo(
     () => recipe?.steps.slice().sort((a, b) => a.order - b.order) ?? [],
@@ -157,7 +135,7 @@ export default function CookModePage({ params }: { params: Promise<{ id: string 
       </p>
       <h1 className="text-[30px] font-bold leading-tight tracking-[-0.02em]">{recipe.title}</h1>
 
-      <section className="mt-6 rounded-card border border-line/70 bg-surface p-5 shadow-card">
+      <section className="mt-6 rounded-2xl border border-line/70 bg-surface p-5 shadow-card">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <div className="flex flex-wrap items-center gap-3">
             <h2 className="text-[17px] font-bold">Zutaten</h2>
@@ -174,7 +152,7 @@ export default function CookModePage({ params }: { params: Promise<{ id: string 
               : ing.amount;
             return (
               <li key={ing.id}>
-                <label className="flex min-h-11 cursor-pointer items-center gap-2.5 rounded-lg px-2 text-[15px] hover:bg-surface-2">
+                <label className="flex min-h-11 cursor-pointer items-center gap-2.5 rounded-xl px-2 text-[15px] hover:bg-surface-2">
                   <input
                     type="checkbox"
                     checked={checked.has(ing.id)}
@@ -201,7 +179,7 @@ export default function CookModePage({ params }: { params: Promise<{ id: string 
         </ul>
       </section>
 
-      <section className="mt-5 flex flex-1 flex-col rounded-card border border-line/70 bg-surface p-6 shadow-card">
+      <section className="mt-5 flex flex-1 flex-col rounded-2xl border border-line/70 bg-surface p-6 shadow-card">
         <div className="mb-5 flex items-center justify-between gap-4">
           <span className="text-[14px] font-semibold text-ink-2">
             Schritt {Math.min(currentIndex + 1, steps.length)} von {steps.length}
@@ -238,7 +216,7 @@ export default function CookModePage({ params }: { params: Promise<{ id: string 
             <div className="flex-1">
               <StepTextWithTimers 
                 text={step.instruction} 
-                onStartTimer={(sec, lbl) => setTimers(t => [...t, { id: Math.random().toString(), label: lbl, endTime: Date.now() + sec * 1000 }])} 
+                recipeId={recipe.id}
               />
             </div>
           </div>
@@ -272,37 +250,6 @@ export default function CookModePage({ params }: { params: Promise<{ id: string 
           )}
         </div>
       </section>
-      {timers.length > 0 && (
-        <div className="fixed bottom-4 left-4 right-4 z-50 flex flex-col gap-2 pointer-events-none">
-          {timers.map((t) => {
-            const remaining = Math.max(0, Math.ceil((t.endTime - now) / 1000));
-            const m = Math.floor(remaining / 60);
-            const s = remaining % 60;
-            return (
-              <div
-                key={t.id}
-                className="bg-surface border border-line shadow-lg rounded-xl p-3 flex items-center justify-between pointer-events-auto"
-              >
-                <div className="flex items-center gap-3">
-                  <IconClock size={22} className="text-accent animate-pulse" />
-                  <span className="text-[17px] font-semibold tabular-nums">
-                    {m}:{s.toString().padStart(2, "0")}
-                  </span>
-                  <span className="text-[14px] text-ink-2 truncate max-w-[150px]">
-                    {t.label}
-                  </span>
-                </div>
-                <button
-                  onClick={() => setTimers((prev) => prev.filter((x) => x.id !== t.id))}
-                  className="text-ink-3 hover:text-ink-1 p-2"
-                >
-                  <IconX size={20} />
-                </button>
-              </div>
-            );
-          })}
-        </div>
-      )}
     </div>
   );
 }

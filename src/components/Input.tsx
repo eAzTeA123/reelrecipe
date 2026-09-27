@@ -1,7 +1,7 @@
 import { forwardRef, type InputHTMLAttributes, type TextareaHTMLAttributes } from "react";
 
 const baseClass =
-  "w-full rounded-ctl border border-line bg-surface px-4 text-[16px] text-ink " +
+  "w-full rounded-xl border border-line bg-surface px-4 text-[16px] text-ink " +
   "placeholder:text-ink-3 focus:border-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/20 transition-colors " +
   "disabled:opacity-50";
 

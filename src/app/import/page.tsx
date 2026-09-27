@@ -418,7 +418,7 @@ function ImportFlow() {
       <PageHeader title={t("import.title")} />
 
       {step === "link" && (
-        <section className="rounded-card bg-surface p-5 shadow-card">
+        <section className="rounded-2xl bg-surface p-5 shadow-card">
           <form onSubmit={submitUrl} className="flex flex-col gap-3" noValidate>
             <Field label="Instagram- oder TikTok-Link" htmlFor="social-url">
               <div className="relative">
@@ -443,7 +443,7 @@ function ImportFlow() {
                 <button
                   type="button"
                   onClick={() => void pasteFromClipboard()}
-                  className="pressable absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1.5 rounded-lg bg-surface-2 px-2.5 py-1.5 text-[13px] font-semibold text-ink-2 hover:text-ink border border-line"
+                  className="pressable absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1.5 rounded-xl bg-surface-2 px-2.5 py-1.5 text-[13px] font-semibold text-ink-2 hover:text-ink border border-line"
                   aria-label="Link aus Zwischenablage einfügen"
                 >
                   <IconClipboard size={14} />
@@ -472,7 +472,7 @@ function ImportFlow() {
 
       {step === "loading" && (
         <section
-          className="flex flex-col items-center gap-4 rounded-card bg-surface py-16 shadow-card"
+          className="flex flex-col items-center gap-4 rounded-2xl bg-surface py-16 shadow-card"
           aria-live="polite"
         >
           <Spinner size={30} className="text-accent" />
@@ -491,9 +491,9 @@ function ImportFlow() {
       )}
 
       {step === "caption" && (
-        <section className="flex flex-col gap-4 rounded-card bg-surface p-5 shadow-card">
+        <section className="flex flex-col gap-4 rounded-2xl bg-surface p-5 shadow-card">
           {autoFailed && (
-            <p className="rounded-ctl bg-accent-soft px-4 py-3 text-[15px] text-ink" role="status">
+            <p className="rounded-xl bg-accent-soft px-4 py-3 text-[15px] text-ink" role="status">
               Die Beschreibung konnte nicht automatisch abgerufen werden.
               Füge sie bitte manuell ein.
             </p>
@@ -520,7 +520,7 @@ function ImportFlow() {
             </label>
           )}
           {parseError && (
-            <p role="alert" className="rounded-ctl bg-[#fdf6ef] px-4 py-3 text-[15px] text-[#9a5b23]">
+            <p role="alert" className="rounded-xl bg-[#fdf6ef] px-4 py-3 text-[15px] text-[#9a5b23]">
               {parseError}
             </p>
           )}

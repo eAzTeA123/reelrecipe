@@ -6,12 +6,19 @@ interface SettingRow {
   value: unknown;
 }
 
+export interface DraftRow {
+  id: string;
+  recipe: any;
+  imageBlob?: Blob;
+}
+
 export class RecipeDB extends Dexie {
   recipes!: Table<Recipe, string>;
   images!: Table<LocalImage, string>;
   shopping!: Table<ShoppingItem, string>;
   settings!: Table<SettingRow, string>;
   mealPlan!: Table<MealPlanEntry, string>;
+  drafts!: Table<DraftRow, string>;
 
   constructor() {
     super("rezept");
@@ -38,6 +45,9 @@ export class RecipeDB extends Dexie {
           recipe.parserVersion = 0; // Markiert als "vor dem neuen Parser"
         }
       });
+    });
+    this.version(4).stores({
+      drafts: "id",
     });
   }
 }

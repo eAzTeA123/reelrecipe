@@ -121,7 +121,7 @@ export function FridgeSearch({
           {ingredients.map((ing, idx) => (
             <span
               key={idx}
-              className="inline-flex items-center gap-1.5 rounded-full border border-accent/20 bg-accent-soft py-1 pl-3 pr-1.5 text-[14px] font-semibold text-accent"
+              className="inline-flex items-center gap-1.5 rounded-xl border border-accent/20 bg-accent-soft py-1 pl-3 pr-1.5 text-[14px] font-semibold text-accent"
             >
               {ing}
               <button
@@ -152,7 +152,7 @@ export function FridgeSearch({
               key={staple}
               type="button"
               onClick={() => addIngredient(staple)}
-              className="pressable inline-flex items-center gap-1 rounded-full border border-line bg-white px-2.5 py-1 text-[12px] font-medium text-ink-2 hover:border-accent hover:text-accent"
+              className="pressable inline-flex items-center gap-1 rounded-xl border border-line bg-white px-2.5 py-1 text-[12px] font-medium text-ink-2 hover:border-accent hover:text-accent"
             >
               <IconPlus size={12} />
               {staple}

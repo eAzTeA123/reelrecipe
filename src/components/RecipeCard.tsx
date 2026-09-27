@@ -26,7 +26,7 @@ export function RecipeCard({
       <Link href={`/recipes/${recipe.id}`} className="block pressable" aria-label={recipe.title}>
         {recipe.image && (
           <div 
-            className="relative aspect-[4/5] w-full overflow-hidden mb-4"
+            className="relative aspect-[4/5] w-full overflow-hidden mb-4 rounded-2xl"
             style={recipe.color ? { backgroundColor: `${recipe.color}20` } : undefined}
           >
             {recipe.color && (
@@ -114,7 +114,7 @@ export function RecipeCard({
         onClick={() => void getRecipeRepository().toggleFavorite(recipe.id)}
         aria-label={recipe.favorite ? "Aus Favoriten entfernen" : "Zu Favoriten hinzufügen"}
         aria-pressed={recipe.favorite}
-        className={`pressable absolute right-2 top-2 flex h-14 w-14 items-center justify-center bg-surface ${
+        className={`pressable absolute right-2 top-2 flex h-14 w-14 items-center justify-center bg-surface rounded-full ${
           recipe.favorite ? "text-accent" : "text-ink"
         } hover:bg-line transition-colors`}
       >

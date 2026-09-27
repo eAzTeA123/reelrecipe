@@ -25,6 +25,7 @@ import { PwaInstallPrompt } from "@/components/PwaInstallPrompt";
 import { Manrope } from "next/font/google";
 
 import { MigrationRunner } from "@/components/MigrationRunner";
+import { TimerProvider } from "@/components/TimerProvider";
 
 const manrope = Manrope({
   subsets: ["latin"],
@@ -36,11 +37,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="de" suppressHydrationWarning className={manrope.variable}>
       <body suppressHydrationWarning>
         <I18nProvider>
-          <MigrationRunner />
-          <ToastProvider>
-            <AppShell>{children}</AppShell>
-            <PwaInstallPrompt />
-          </ToastProvider>
+          <TimerProvider>
+            <MigrationRunner />
+            <ToastProvider>
+              <AppShell>{children}</AppShell>
+              <PwaInstallPrompt />
+            </ToastProvider>
+          </TimerProvider>
         </I18nProvider>
       </body>
     </html>

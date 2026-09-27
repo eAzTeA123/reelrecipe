@@ -41,3 +41,4 @@ export function getMealPlanRepository(): MealPlanRepository {
 }
 
 export type { ImageRepository, RecipeRepository, SearchFilter, ShoppingListRepository, MealPlanRepository } from "./repositories";
+export { getDB } from './local/db';

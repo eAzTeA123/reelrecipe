@@ -90,7 +90,7 @@ export function Sheet({ open, onClose, title, children }: SheetProps) {
         role="dialog"
         aria-modal="true"
         aria-label={title}
-        className={`relative w-full max-w-lg rounded-t-[28px] bg-surface px-5 pb-8 pt-3 shadow-pop md:rounded-[28px] md:p-6 ${
+        className={`relative w-full max-w-lg rounded-t-2xl bg-surface px-5 pb-8 pt-3 shadow-pop md:rounded-2xl md:p-6 ${
           closing ? "sheet-down" : "sheet-up"
         }`}
         style={{ paddingBottom: "calc(1.5rem + env(safe-area-inset-bottom))" }}
