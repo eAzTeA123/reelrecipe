@@ -56,12 +56,12 @@ const TITLE_STRIP_PHRASES = [
   // DE Intro-Phrasen
   /^(?:hier\s+(?:steht|ist|kommt)\s+(?:das\s+)?rezept)\s*/i,
   /^(?:zum\s+rezept)\s*/i,
-  /^(?:das\s+(?:komplette\s+)?rezept\s+(?:für\s+euch|steht\s+hier))\s*/i,
+  /^(?:das\s+(?:komplette\s+|ganze\s+)?rezept\s*(?::|für\s+euch|steht\s+hier)?)\s*/i,
   /^(?:hier\s+(?:ist|für)\s+(?:euch|dich))\s*/i,
   
   // EN Intro-Phrasen
   /^(?:here(?:'s|\s+is)\s+(?:the\s+)?recipe)\s*/i,
-  /^(?:recipe\s+(?:below|here))\s*/i,
+  /^(?:recipe\s+(?:below|here|in the comments))\s*/i,
   /^(?:full\s+recipe)\s*/i,
   
   // Social CTAs (am Ende)
@@ -73,16 +73,51 @@ const TITLE_STRIP_PHRASES = [
   /\s*[⬇️👇⤵️↓🔽]\uFE0F?\s*/gu,
 ];
 
-/** Bereinigt einen Titel-Kandidaten von Intro-Boilerplate */
+/** Bereinigt einen Titel-Kandidaten von Intro-Boilerplate und kürzt überlange Titel intelligent */
 export function cleanTitle(raw: string): string {
   let t = raw;
-  for (const re of TITLE_STRIP_PHRASES) {
-    t = t.replace(re, "").trim();
+  let changed = true;
+  while (changed) {
+    changed = false;
+    for (const re of TITLE_STRIP_PHRASES) {
+      const match = t.match(re);
+      if (match) {
+        t = t.replace(re, "").trim();
+        changed = true;
+      }
+    }
+    // Leading Emojis und Sonderzeichen entfernen
+    const noLeading = t.replace(/^[\p{Emoji_Presentation}\p{Extended_Pictographic}\s*\|:-]+/gu, "").trim();
+    if (noLeading !== t) {
+      t = noLeading;
+      changed = true;
+    }
   }
+
   // Trailing Emojis entfernen
   t = t.replace(/[\p{Extended_Pictographic}\u{FE0F}\u{200D}\s]+$/u, "").trim();
-  // Leading Emojis entfernen (wenn nur noch Emojis + kurzer Text übrig)
-  t = t.replace(/^[\p{Emoji_Presentation}\p{Extended_Pictographic}\s]+/gu, "").trim();
+
+  // Werbung / Anzeige Marker entfernen (z.B. "*Anzeige Churros sind lecker")
+  t = t.replace(/\*?anzeige\s*[:|-]?\s*/gi, "").trim();
+
+  // Smart Truncation: Wenn der Titel extrem lang ist (Fließtext), ersten sinnvollen Satz nehmen
+  if (t.length > 70) {
+    const sentences = t.split(/[.!?|]/).map(s => s.trim()).filter(s => s.length > 5);
+    const blacklist = /recipe in the comments|tarif yorumlarda/i;
+    // Ersten Satz nehmen, der nicht auf der Blacklist steht
+    const best = sentences.find(s => !blacklist.test(s));
+    if (best) {
+      t = best;
+    } else if (sentences.length > 0) {
+      t = sentences[0];
+    }
+  }
+
+  // Harter Cut für die UI
+  if (t.length > 80) {
+    t = t.slice(0, 77).trim() + "...";
+  }
+
   return t;
 }
 
