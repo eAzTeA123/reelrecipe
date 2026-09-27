@@ -12,12 +12,12 @@ export function Tour() {
 
   const runTour = useCallback(() => {
     const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
-    const navPrefix = isMobile ? "nav-mobile-" : "nav-desktop-";
     const navSide = isMobile ? "top" as const : "bottom" as const;
 
-    const allCandidateSteps = [
+    // Define all steps with string selectors
+    const candidateConfigs = [
       {
-        element: "#tour-import",
+        selector: "#tour-import",
         popover: {
           title: t("tour.importTitle"),
           description: t("tour.importDesc"),
@@ -25,7 +25,7 @@ export function Tour() {
         },
       },
       {
-        element: "#tour-fridge",
+        selector: "#tour-fridge",
         popover: {
           title: t("tour.fridgeTitle"),
           description: t("tour.fridgeDesc"),
@@ -33,7 +33,7 @@ export function Tour() {
         },
       },
       {
-        element: `[data-tour="${navPrefix}planner"]`,
+        selector: '[data-tour="planner"]',
         popover: {
           title: t("tour.plannerTitle"),
           description: t("tour.plannerDesc"),
@@ -41,7 +41,7 @@ export function Tour() {
         },
       },
       {
-        element: `[data-tour="${navPrefix}shopping"]`,
+        selector: '[data-tour="shopping"]',
         popover: {
           title: t("tour.shoppingTitle"),
           description: t("tour.shoppingDesc"),
@@ -49,7 +49,7 @@ export function Tour() {
         },
       },
       {
-        element: `[data-tour="${navPrefix}recipes"]`,
+        selector: '[data-tour="recipes"]',
         popover: {
           title: t("tour.recipesTitle"),
           description: t("tour.recipesDesc"),
@@ -57,7 +57,7 @@ export function Tour() {
         },
       },
       {
-        element: "#tour-pwa",
+        selector: "#tour-pwa",
         popover: {
           title: t("tour.pwaTitle"),
           description: t("tour.pwaDesc"),
@@ -66,10 +66,26 @@ export function Tour() {
       },
     ];
 
-    const activeSteps = allCandidateSteps.filter((step) => {
-      if (!step.element) return true;
-      return !!document.querySelector(step.element);
-    });
+    const activeSteps: any[] = [];
+    for (const conf of candidateConfigs) {
+      if (typeof document === "undefined") continue;
+      const els = document.querySelectorAll(conf.selector);
+      let visibleEl: Element | null = null;
+      for (let i = 0; i < els.length; i++) {
+        const rect = els[i].getBoundingClientRect();
+        // A simple heuristic for visibility: has size
+        if (rect.width > 0 && rect.height > 0) {
+          visibleEl = els[i];
+          break;
+        }
+      }
+      if (visibleEl) {
+        activeSteps.push({
+          element: visibleEl,
+          popover: conf.popover,
+        });
+      }
+    }
 
     if (activeSteps.length === 0) return;
 
