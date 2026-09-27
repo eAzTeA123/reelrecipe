@@ -11,6 +11,10 @@ export function Tour() {
   const searchParams = useSearchParams();
 
   const runTour = useCallback(() => {
+    const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+    const navPrefix = isMobile ? "nav-mobile-" : "nav-desktop-";
+    const navSide = isMobile ? "top" as const : "bottom" as const;
+
     const allCandidateSteps = [
       {
         element: "#tour-import",
@@ -25,31 +29,31 @@ export function Tour() {
         popover: {
           title: t("tour.fridgeTitle"),
           description: t("tour.fridgeDesc"),
-          side: "top" as const,
+          side: "bottom" as const,
         },
       },
       {
-        element: '[data-tour="planner"]',
+        element: `[data-tour="${navPrefix}planner"]`,
         popover: {
           title: t("tour.plannerTitle"),
           description: t("tour.plannerDesc"),
-          side: "top" as const,
+          side: navSide,
         },
       },
       {
-        element: '[data-tour="shopping"]',
+        element: `[data-tour="${navPrefix}shopping"]`,
         popover: {
           title: t("tour.shoppingTitle"),
           description: t("tour.shoppingDesc"),
-          side: "top" as const,
+          side: navSide,
         },
       },
       {
-        element: '[data-tour="recipes"]',
+        element: `[data-tour="${navPrefix}recipes"]`,
         popover: {
           title: t("tour.recipesTitle"),
           description: t("tour.recipesDesc"),
-          side: "top" as const,
+          side: navSide,
         },
       },
       {
@@ -57,7 +61,7 @@ export function Tour() {
         popover: {
           title: t("tour.pwaTitle"),
           description: t("tour.pwaDesc"),
-          side: "bottom" as const,
+          side: "top" as const,
         },
       },
     ];

@@ -35,7 +35,7 @@ function BottomNav() {
             <Link
               key={href}
               href={href}
-              data-tour={href.replace("/", "") || "home"}
+              data-tour={`nav-mobile-${href.replace("/", "") || "home"}`}
               aria-current={active ? "page" : undefined}
               className={`flex min-h-[52px] flex-col items-center justify-center gap-0.5 py-1.5 text-[11px] font-medium transition-colors ${
                 active ? "text-accent" : "text-ink-3"
@@ -62,7 +62,7 @@ function TopNav() {
     <header className="sticky top-0 z-40 hidden border-b border-line bg-white/80 backdrop-blur-xl md:block">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
         <Link href="/" className="flex items-center gap-2.5 text-[17px] font-bold tracking-tight">
-          <img src="/icon.svg" alt="ReelRecipe Logo" width={32} height={32} className="rounded-[9px]" />
+          <img src="/icon.svg" alt="ReelRecipe Logo" width={32} height={32} className="rounded-xl" />
           {t("brand.name")}
         </Link>
         <nav aria-label="Hauptnavigation" className="flex items-center gap-1">
@@ -72,7 +72,7 @@ function TopNav() {
               <Link
                 key={href}
                 href={href}
-                data-tour={href.replace("/", "") || "home"}
+                data-tour={`nav-desktop-${href.replace("/", "") || "home"}`}
                 aria-current={active ? "page" : undefined}
                 className={`pressable rounded-full px-4 py-2 text-[15px] font-medium ${
                   active ? "bg-accent-soft text-accent" : "text-ink-2 hover:text-ink"
