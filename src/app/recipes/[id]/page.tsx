@@ -8,7 +8,6 @@ import { useRecipe } from "@/hooks/useRecipe";
 import { getRecipeRepository, getShoppingListRepository } from "@/data";
 import { formatAmount, scaleAmount } from "@/lib/scale";
 import { RecipeImage } from "@/components/RecipeImage";
-import { generateShareLink } from "@/lib/share";
 import { Button } from "@/components/Button";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { Spinner } from "@/components/Spinner";
@@ -132,8 +131,8 @@ export default function RecipeDetailPage({ params }: { params: Promise<{ id: str
     const header = [
       recipe.title,
       recipe.description,
-      targetServings ? `Portionen: ${targetServings}` : undefined,
-      time ? `Dauer: ${time}` : undefined,
+      targetServings ? `${t("recipe.servings")}: ${targetServings}` : undefined,
+      time ? `${time}` : undefined,
       recipe.sourceUrl ? `Quelle: ${recipe.sourceUrl}` : undefined,
     ]
       .filter(Boolean)
@@ -141,8 +140,8 @@ export default function RecipeDetailPage({ params }: { params: Promise<{ id: str
 
     return [
       header,
-      ingredients && `Zutaten:\n${ingredients}`,
-      steps && `Zubereitung:\n${steps}`,
+      ingredients && `${t("recipe.ingredients")}:\n${ingredients}`,
+      steps && `${t("recipe.steps")}:\n${steps}`,
     ]
       .filter(Boolean)
       .join("\n\n");
@@ -150,21 +149,20 @@ export default function RecipeDetailPage({ params }: { params: Promise<{ id: str
 
   async function shareRecipe() {
     if (!recipe) return;
+    const text = recipeText();
     try {
-      const link = await generateShareLink(recipe);
       if (navigator.share) {
-        await navigator.share({ title: recipe.title, text: link });
+        await navigator.share({ title: recipe.title, text });
         return;
       }
-      await navigator.clipboard.writeText(link);
-      toast("Link kopiert");
+      await navigator.clipboard.writeText(text);
+      toast(t("toast.recipeCopied"));
     } catch (e) {
       if (e instanceof DOMException && e.name === "AbortError") return;
       console.error("share failed", e);
       try {
-        const fallbackLink = await generateShareLink(recipe); // or just use text if link fails? Wait, generateShareLink already falls back.
-        await navigator.clipboard.writeText(fallbackLink);
-        toast("Link kopiert");
+        await navigator.clipboard.writeText(text);
+        toast(t("toast.recipeCopied"));
       } catch {
         toast("Teilen wird auf diesem Gerät nicht unterstützt.");
       }
