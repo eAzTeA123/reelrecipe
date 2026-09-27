@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
+import { createPortal } from "react-dom";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useI18n } from "@/lib/i18n/context";
 import { Button } from "@/components/Button";
@@ -9,15 +10,17 @@ import { getSampleRecipes } from "@/lib/sampleRecipes";
 import { useToast } from "@/components/Toast";
 import { useHaptic } from "@/hooks/useHaptic";
 import confetti from "canvas-confetti";
-import { IconCheck } from "@/components/Icons";
+import { IconCheck, IconLink, IconCalendar, IconSparkle } from "@/components/Icons";
 
 interface SlideData {
-  emoji: string;
+  icon: "sparkle" | "link" | "calendar" | "check";
   badge: string;
   titleKey: "onboarding.step1Title" | "onboarding.step2Title" | "onboarding.step3Title" | "onboarding.step4Title";
   subtitleKey: "onboarding.step1Subtitle" | "onboarding.step2Subtitle" | "onboarding.step3Subtitle" | "onboarding.step4Subtitle";
   highlights: string[];
 }
+
+const EXIT_MS = 180;
 
 export function OnboardingModal() {
   const { t, lang } = useI18n();
@@ -26,44 +29,43 @@ export function OnboardingModal() {
   const toast = useToast();
   const haptic = useHaptic();
 
-  const [isOpen, setIsOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [closing, setClosing] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [loadingSamples, setLoadingSamples] = useState(false);
-
-  // Touch tracking for swipe gestures
-  const touchStartX = useRef<number | null>(null);
-  const touchEndX = useRef<number | null>(null);
+  const closeTimer = useRef<number | undefined>(undefined);
 
   const slides: SlideData[] = [
     {
-      emoji: "🍳",
+      icon: "check",
       badge: "ReelRecipe",
       titleKey: "onboarding.step1Title",
       subtitleKey: "onboarding.step1Subtitle",
-      highlights: lang === "de" 
-        ? ["100% Lokal & Privat", "Kein Account nötig", "Völlig werbefrei"]
-        : ["100% Local & Private", "No Account Needed", "Zero Ads"],
+      highlights: lang === "de"
+        ? ["100% Lokal & Privat", "Kein Account nötig", "Vollständig werbefrei"]
+        : ["100% Local & Private", "No Account Needed", "Completely Ad-Free"],
     },
     {
-      emoji: "⚡",
-      badge: "Smart Parser",
+      icon: "link",
+      badge: "Smart Import",
       titleKey: "onboarding.step2Title",
       subtitleKey: "onboarding.step2Subtitle",
       highlights: lang === "de"
         ? ["Instagram & TikTok", "Automatische Zutaten", "Mengen-Skalierung"]
-        : ["Instagram & TikTok", "Auto Ingredient Parsing", "Portion Scaler"],
+        : ["Instagram & TikTok", "Auto Ingredients", "Portion Scaler"],
     },
     {
-      emoji: "🛒",
+      icon: "calendar",
       badge: "Kitchen Power",
       titleKey: "onboarding.step3Title",
       subtitleKey: "onboarding.step3Subtitle",
       highlights: lang === "de"
-        ? ["Drag & Drop Planer", "Supermarkt-Gänge", "Kochmodus & Timer"]
-        : ["Drag & Drop Planner", "Supermarket Aisles", "Cook Mode & Timers"],
+        ? ["Wochenplan per Drag & Drop", "Supermarkt-Gänge", "Kochmodus & Timer"]
+        : ["Drag & Drop Meal Plan", "Supermarket Aisles", "Cook Mode & Timers"],
     },
     {
-      emoji: "🚀",
+      icon: "sparkle",
       badge: "Ready!",
       titleKey: "onboarding.step4Title",
       subtitleKey: "onboarding.step4Subtitle",
@@ -74,37 +76,36 @@ export function OnboardingModal() {
   ];
 
   useEffect(() => {
+    setMounted(true);
     const force = searchParams.get("onboarding") === "1" || searchParams.get("tour") === "1";
-    const hasSeen = localStorage.getItem("onboardingSeen") === "true" || localStorage.getItem("tourSeen") === "true";
+    // Check onboardingSeen (do not block on legacy tourSeen so current users can see it)
+    const hasSeen = localStorage.getItem("onboardingSeen") === "true";
 
     if (force || !hasSeen) {
-      setIsOpen(true);
+      setOpen(true);
       setCurrentSlide(0);
     }
   }, [searchParams]);
 
-  // Lock body scroll when open
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
     return () => {
-      document.body.style.overflow = "";
+      if (closeTimer.current) window.clearTimeout(closeTimer.current);
     };
-  }, [isOpen]);
+  }, []);
 
   const handleClose = useCallback(() => {
+    if (closing) return;
     localStorage.setItem("onboardingSeen", "true");
-    localStorage.setItem("tourSeen", "true");
-    setIsOpen(false);
+    setClosing(true);
 
-    // If query param was present, clean it up without reload
-    if (searchParams.get("onboarding") || searchParams.get("tour")) {
-      router.replace("/");
-    }
-  }, [searchParams, router]);
+    closeTimer.current = window.setTimeout(() => {
+      setClosing(false);
+      setOpen(false);
+      if (searchParams.get("onboarding") || searchParams.get("tour")) {
+        router.replace("/");
+      }
+    }, EXIT_MS);
+  }, [closing, searchParams, router]);
 
   const handleNext = () => {
     haptic("light");
@@ -120,31 +121,6 @@ export function OnboardingModal() {
     if (currentSlide > 0) {
       setCurrentSlide((prev) => prev - 1);
     }
-  };
-
-  const handleTouchStart = (e: React.TouchEvent) => {
-    touchStartX.current = e.targetTouches[0].clientX;
-  };
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    touchEndX.current = e.targetTouches[0].clientX;
-  };
-
-  const handleTouchEnd = () => {
-    if (!touchStartX.current || !touchEndX.current) return;
-    const distance = touchStartX.current - touchEndX.current;
-    const minSwipeDistance = 50;
-
-    if (distance > minSwipeDistance && currentSlide < slides.length - 1) {
-      // Swiped left -> next
-      handleNext();
-    } else if (distance < -minSwipeDistance && currentSlide > 0) {
-      // Swiped right -> prev
-      handlePrev();
-    }
-
-    touchStartX.current = null;
-    touchEndX.current = null;
   };
 
   const handleLoadSamples = async () => {
@@ -182,72 +158,100 @@ export function OnboardingModal() {
       if (input instanceof HTMLElement) {
         input.focus();
       }
-    }, 150);
+    }, 200);
   };
 
-  if (!isOpen) return null;
+  if (!mounted) return null;
+  const isRendered = open || closing;
+  if (!isRendered) return null;
 
   const slide = slides[currentSlide];
   const isLast = currentSlide === slides.length - 1;
 
-  return (
+  const renderIcon = () => {
+    switch (slide.icon) {
+      case "link":
+        return <IconLink size={30} />;
+      case "calendar":
+        return <IconCalendar size={30} />;
+      case "sparkle":
+        return <IconSparkle size={30} />;
+      default:
+        return <IconCheck size={30} />;
+    }
+  };
+
+  return createPortal(
     <div
-      role="dialog"
-      aria-modal="true"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-md animate-in fade-in duration-200"
+      className="fixed inset-0 z-50 flex items-end justify-center md:items-center"
+      role="presentation"
+      style={{ overscrollBehavior: "contain" }}
     >
+      {/* Backdrop */}
       <div
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-        className="relative w-full max-w-lg overflow-hidden rounded-3xl border border-line/80 bg-surface p-6 sm:p-8 shadow-2xl transition-all duration-300 flex flex-col justify-between min-h-[480px] max-h-[90vh]"
+        className={`absolute inset-0 bg-black/40 ${closing ? "overlay-out" : "overlay-in"}`}
+        onClick={handleClose}
+        aria-hidden
+      />
+
+      {/* Sheet Content (Responsive: Bottom Sheet on Mobile, Centered Modal on Desktop) */}
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label={t(slide.titleKey)}
+        className={`relative w-full max-w-lg rounded-t-3xl bg-surface p-6 shadow-pop md:rounded-2xl md:p-7 border border-line ${
+          closing ? "sheet-down" : "sheet-up"
+        } max-h-[90dvh] overflow-y-auto flex flex-col justify-between`}
+        style={{ paddingBottom: "calc(1.5rem + env(safe-area-inset-bottom))" }}
       >
-        {/* Top Header / Skip Button */}
-        <div className="flex items-center justify-between">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-accent-soft px-3 py-1 text-xs font-bold text-accent tracking-wide uppercase">
+        {/* Mobile Pull Indicator */}
+        <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-ink-3/40 md:hidden" aria-hidden />
+
+        {/* Top Header / Badge & Skip Button */}
+        <div className="flex items-center justify-between mb-4">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-accent-soft px-3 py-1 text-[11px] font-bold text-accent tracking-wider uppercase">
             {slide.badge}
           </span>
           <button
             type="button"
             onClick={handleClose}
-            className="text-xs font-semibold text-ink-3 hover:text-ink px-2 py-1 rounded-lg transition-colors pressable"
+            className="pressable text-[13px] font-medium text-ink-3 hover:text-ink px-2 py-1 rounded-lg transition-colors"
           >
             {t("onboarding.skip")}
           </button>
         </div>
 
-        {/* Slide Content */}
-        <div className="my-auto py-6 flex flex-col items-center text-center animate-in zoom-in-95 duration-200 key={currentSlide}">
-          {/* Animated Emoji Badge */}
-          <div className="mb-6 flex h-24 w-24 items-center justify-center rounded-3xl bg-surface-2 border border-line text-5xl shadow-sm transform transition-transform hover:scale-105">
-            {slide.emoji}
+        {/* Center Content */}
+        <div className="my-auto py-3 flex flex-col items-center text-center">
+          {/* Theme-aligned Icon Container */}
+          <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-accent-soft text-accent shadow-sm">
+            {renderIcon()}
           </div>
 
-          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-ink mb-3 leading-snug">
+          <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-ink mb-2 leading-snug">
             {t(slide.titleKey)}
           </h2>
 
-          <p className="text-[15px] sm:text-[16px] text-ink-2 leading-relaxed max-w-sm mb-6">
+          <p className="text-[14px] sm:text-[15px] text-ink-2 leading-relaxed max-w-sm mb-5">
             {t(slide.subtitleKey)}
           </p>
 
           {/* Highlights Chips */}
-          <div className="flex flex-wrap justify-center gap-2">
+          <div className="flex flex-wrap justify-center gap-1.5">
             {slide.highlights.map((h, i) => (
               <span
                 key={i}
-                className="inline-flex items-center gap-1 rounded-xl bg-surface-2 px-3 py-1.5 text-xs font-medium text-ink-2 border border-line/60"
+                className="inline-flex items-center gap-1.5 rounded-xl bg-surface-2 px-3 py-1.5 text-[12px] font-medium text-ink-2 border border-line/60"
               >
-                <IconCheck size={13} className="text-accent" />
+                <span className="text-accent font-bold">✓</span>
                 {h}
               </span>
             ))}
           </div>
         </div>
 
-        {/* Footer Actions / Pagination */}
-        <div className="flex flex-col gap-4 pt-4 border-t border-line/50">
-          {/* Slide 4 specific action buttons */}
+        {/* Bottom Actions & Pagination */}
+        <div className="mt-6 pt-4 border-t border-line/60">
           {isLast ? (
             <div className="flex flex-col gap-2.5 w-full">
               <Button
@@ -255,7 +259,7 @@ export function OnboardingModal() {
                 size="lg"
                 onClick={handleLoadSamples}
                 disabled={loadingSamples}
-                className="w-full text-[16px] h-13 shadow-md"
+                className="w-full text-[15px]"
               >
                 {loadingSamples ? t("onboarding.loadingSamples") : t("onboarding.loadSamples")}
               </Button>
@@ -263,7 +267,7 @@ export function OnboardingModal() {
                 variant="secondary"
                 size="lg"
                 onClick={handleStartOwn}
-                className="w-full text-[15px] h-12"
+                className="w-full text-[14px]"
               >
                 {t("onboarding.startEmpty")}
               </Button>
@@ -272,10 +276,10 @@ export function OnboardingModal() {
             <div className="flex items-center justify-between w-full">
               {currentSlide > 0 ? (
                 <Button
-                  variant="ghost"
+                  variant="secondary"
                   size="md"
                   onClick={handlePrev}
-                  className="text-ink-2"
+                  className="text-ink-2 text-xs"
                 >
                   ← {t("onboarding.back")}
                 </Button>
@@ -289,15 +293,15 @@ export function OnboardingModal() {
                   <button
                     key={idx}
                     type="button"
-                    aria-label={`Go to slide ${idx + 1}`}
+                    aria-label={`Slide ${idx + 1}`}
                     onClick={() => {
                       haptic("light");
                       setCurrentSlide(idx);
                     }}
-                    className={`h-2 transition-all rounded-full ${
+                    className={`h-1.5 transition-all rounded-full ${
                       currentSlide === idx
                         ? "w-6 bg-accent"
-                        : "w-2 bg-ink-3/30 hover:bg-ink-3/60"
+                        : "w-2 bg-line hover:bg-ink-3/40"
                     }`}
                   />
                 ))}
@@ -307,7 +311,7 @@ export function OnboardingModal() {
                 variant="primary"
                 size="md"
                 onClick={handleNext}
-                className="min-w-20"
+                className="min-w-20 text-xs"
               >
                 {t("onboarding.next")} →
               </Button>
@@ -315,6 +319,7 @@ export function OnboardingModal() {
           )}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
