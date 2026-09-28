@@ -15,8 +15,6 @@ import { ErrorState } from "@/components/ErrorState";
 import { convertRecipeToMetric, convertRecipeToImperial } from "@/lib/unitConverter";
 import { UnitToggle } from "@/components/UnitToggle";
 import { useToast } from "@/components/Toast";
-import { ShoppingEstimateCard } from "@/components/ShoppingEstimateCard";
-import { useSelectedRetailer, useShoppingEstimate } from "@/hooks/useShoppingEstimate";
 import {
   IconBack, IconCart, IconClock, IconHeart, IconHeartFill,
   IconCopy, IconLink, IconMinus, IconPencil, IconPlay, IconPlus, IconPrint,
@@ -58,7 +56,6 @@ export default function RecipeDetailPage({ params }: { params: Promise<{ id: str
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [unitSystem, setUnitSystem] = useState<"eu" | "us">(lang === "de" ? "eu" : "us");
-  const [retailer, setRetailer] = useSelectedRetailer();
 
   const recipe = useMemo(() => {
     if (!rawRecipe) return rawRecipe;
@@ -68,19 +65,6 @@ export default function RecipeDetailPage({ params }: { params: Promise<{ id: str
   }, [rawRecipe, unitSystem]);
 
   const targetServings = servings ?? recipe?.servings ?? 1;
-
-  // Preise/Nährwerte immer aus metrischen Mengen berechnen, unabhängig von der Anzeige
-  const estimateIngredients = useMemo(() => {
-    if (!rawRecipe) return [];
-    const metric = convertRecipeToMetric(rawRecipe);
-    return metric.ingredients.map((i) => ({
-      id: i.id,
-      name: i.name,
-      amount: scaleAmount(i.amount, metric.servings, targetServings),
-      unit: i.unit,
-    }));
-  }, [rawRecipe, targetServings]);
-  const estimate = useShoppingEstimate(estimateIngredients, retailer);
 
   if (error) {
     return <ErrorState message={error} onRetry={retry} />;
@@ -367,20 +351,7 @@ export default function RecipeDetailPage({ params }: { params: Promise<{ id: str
             })}
           </ul>
         )}
-        {recipe.ingredients.length > 0 && (
-          <div className="no-print mt-4">
-            <ShoppingEstimateCard
-              variant="recipe"
-              estimate={estimate.data}
-              loading={estimate.loading}
-              error={estimate.error}
-              onRetry={estimate.retry}
-              retailer={retailer}
-              onRetailerChange={setRetailer}
-              servings={targetServings}
-            />
-          </div>
-        )}
+
       </section>
 
       {/* Zubereitung */}

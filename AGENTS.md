@@ -29,16 +29,6 @@ npm run test:e2e   # Playwright E2E (braucht vorher `npm run build`; startet Ser
 - `src/app/api/instagram/` – Caption-Abruf: offizielles oEmbed wenn `INSTAGRAM_OEMBED_TOKEN` gesetzt,
   sonst öffentliche og:-Meta-Tags. `image/` = Proxy mit Host-Allowlist (cdninstagram.com, fbcdn.net).
 
-### Preisarchitektur
-
-- `PRODUCT`: Open-Prices-Preis einer hochwertigen OFF-EAN-Zuordnung (`score >= 0.95`); bis zu 20 priorisierte EANs je Zutat.
-- `CATEGORY`: Preis eines zentral verifizierten `category_tag` für unverpackte Rohware; niemals als exaktes Produkt ausgeben.
-- `SIMILAR_PRODUCT`: Preis einer sicheren, aber nicht exakten Produktvariante (`0.8 <= score < 0.95`); bis zu 8 EANs je Zutat.
-- Merge-Priorität: `PRODUCT` > `CATEGORY` > `SIMILAR_PRODUCT` > kein Preis. Innerhalb einer Klasse zählen Confidence und Aktualität vor dem Preis.
-- Open Prices: Produktabfrage gebündelt über `product_code__in`, Kategorieabfrage gezielt über `category_tag`; der letzte Similar-Fallback sucht über `product_name`. Nur EUR, deutsche Filialen und höchstens ein Jahr alte Meldungen.
-- Preis-Caches sind nach Typ, Schlüssel, Land und Händlerkontext aufgebaut (`product:<ean>:DE:all`, `category:<tag>:DE:all`).
-- `ingredientCost` ist der verbrauchte Anteil; `shoppingCost` der tatsächliche Packungsbetrag bzw. bei vergleichbaren Kilogramm-/Stück-Kategoriepreisen die benötigte Menge. Bei inkompatiblen Einheiten bleibt beides leer.
-
 ## Konventionen
 
 - Bilder werden als `local-image:<uuid>`-Referenz in `Recipe.image` gespeichert (Blob in Tabelle `images`).

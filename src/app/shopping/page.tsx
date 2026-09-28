@@ -1,7 +1,7 @@
 "use client";
 import { useI18n } from "@/lib/i18n/context";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useShoppingList } from "@/hooks/useShoppingList";
 import { useHaptic } from "@/hooks/useHaptic";
 import type { ShoppingItem } from "@/domain/types";
@@ -17,13 +17,11 @@ import { Sheet } from "@/components/Sheet";
 import { Field, Input } from "@/components/Input";
 import { IconCart, IconCheck, IconPencil, IconPlus, IconTrash } from "@/components/Icons";
 import { getAisle } from "@/lib/shoppingAisles";
-import { ShoppingEstimateCard } from "@/components/ShoppingEstimateCard";
-import { useSelectedRetailer, useShoppingEstimate } from "@/hooks/useShoppingEstimate";
-import { RETAILER_NAMES } from "@/lib/products/retailers";
+
 
 export default function ShoppingPage() {
 
-  const { t, lang } = useI18n();
+  const { t } = useI18n();
   const haptic = useHaptic();
   const { items, loading, error, retry } = useShoppingList();
   const [recipeTitles, setRecipeTitles] = useState<Record<string, string>>({});
@@ -65,29 +63,11 @@ export default function ShoppingPage() {
       .catch((e) => console.error("recipe titles failed", e));
   }, [items]);
 
-  const [retailer, setRetailer] = useSelectedRetailer();
-  // Abhaken ändert den Anfrageschlüssel nicht – es wird nur lokal neu summiert
-  const estimateIngredients = useMemo(
-    () => items.map((i) => ({ id: i.id, name: i.name, amount: i.amount, unit: i.unit })),
-    [items],
-  );
-  const estimate = useShoppingEstimate(estimateIngredients, retailer);
-  const itemEstimates = useMemo(
-    () => new Map((estimate.data?.items ?? []).map((e) => [e.id, e])),
-    [estimate.data],
-  );
-  const openIds = useMemo(() => new Set(items.filter((i) => !i.checked).map((i) => i.id)), [items]);
-  const openTotal = [...openIds].reduce((s, id) => s + (itemEstimates.get(id)?.shoppingCost ?? 0), 0);
-  const openPriced = [...openIds].filter((id) => itemEstimates.get(id)?.status === "priced").length;
-
-  const euro = new Intl.NumberFormat(lang === "de" ? "de-DE" : "en-GB", { style: "currency", currency: "EUR" });
-
   const checkedCount = items.filter((i) => i.checked).length;
   const subtitleParts: string[] = [];
   if (items.length) {
     subtitleParts.push(`${items.length} ${items.length === 1 ? t("shopping.ingredientSingular") : t("shopping.ingredientPlural")}`);
     if (checkedCount > 0) subtitleParts.push(t("shopping.progress").replace("{n}", String(checkedCount)).replace("{m}", String(items.length)));
-    if (openPriced > 0) subtitleParts.push(t("shopping.openCost").replace("{v}", euro.format(openTotal)));
   }
 
   const groupedItems = items.reduce((acc, item) => {
@@ -193,17 +173,7 @@ export default function ShoppingPage() {
                               {item.recipeIds.length > 1 ? ` +${item.recipeIds.length - 1}` : ""}
                             </span>
                           )}
-                          {(() => {
-                            const est = itemEstimates.get(item.id);
-                            if (est?.status !== "priced" || est.shoppingCost === undefined) return null;
-                            const store = est.price?.retailerId ? RETAILER_NAMES[est.price.retailerId] : est.price?.storeName;
-                            return (
-                              <span className="block text-[12px] font-medium text-ink-2 no-underline">
-                                ≈ {euro.format(est.shoppingCost)}
-                                {store ? ` · ${store}` : ""}
-                              </span>
-                            );
-                          })()}
+
                         </span>
                       </label>
                       <button
@@ -238,18 +208,7 @@ export default function ShoppingPage() {
             </div>
           )}
 
-          <div className="mt-6">
-            <ShoppingEstimateCard
-              variant="list"
-              estimate={estimate.data}
-              loading={estimate.loading}
-              error={estimate.error}
-              onRetry={estimate.retry}
-              retailer={retailer}
-              onRetailerChange={setRetailer}
-              openIds={openIds}
-            />
-          </div>
+
         </>
       )}
 
