@@ -3,11 +3,14 @@ import fs from "node:fs";
 import path from "node:path";
 import type { ObservedPrice, ProductCandidate } from "@/domain/productTypes";
 import {
+  categoryTagFor,
+  computeCategoryCost,
   computeCost,
   isPantryIngredient,
   parsePackageSize,
   scoreProductName,
   searchTermFor,
+  searchTermsFor,
   toBaseQuantity,
   MATCH_THRESHOLD,
 } from "./matching";
@@ -54,6 +57,29 @@ describe("Produkt-Matching (streng, Komposita)", () => {
     expect(isPantryIngredient("Salzstangen")).toBe(false);
     expect(searchTermFor("2 große rote Paprika")).toBe("paprika");
   });
+
+  it("bildet mehrere mengenunabhängige Suchvarianten für uneinheitliche Quellen", () => {
+    expect(searchTermsFor("Knoblauchzehen")).toEqual(["knoblauchzehen", "knoblauch"]);
+    expect(searchTermsFor("Tomaten", "passierte")).toEqual(["tomaten passierte", "tomaten"]);
+    expect(searchTermsFor("Rigatoni", "oder Penne")).toContain("penne");
+    expect(searchTermsFor("Parmesan")).toContain("parmigiano reggiano");
+    expect(categoryTagFor("Zwiebeln")).toBe("en:onions");
+    expect(categoryTagFor("Tomaten", "passierte")).toBeUndefined();
+  });
+
+  it("erkennt Katalognamen, aber lehnt eine andere Produktform ab", () => {
+    ok("Parmesan", "Parmigiano Reggiano DOP");
+    ok("Sahne", "Schlagsahne 30 %");
+    no("Sahne", "Saure Sahne");
+    no("Knoblauchzehen", "Eingelegter Knoblauch");
+    no("Basilikum", "Basilikum getrocknet");
+    no("Chilischoten", "Chili con Carne");
+    no("Chilischoten", "Gefüllte grüne Peperoni");
+    no("Cherrytomaten", "Tomaten geschält Kirschtomaten");
+    no("Rigatoni", "Vollkorn Penne");
+    expect(scoreProductName("Tomaten", "Passierte Tomaten", "passierte")).toBeGreaterThanOrEqual(MATCH_THRESHOLD);
+    expect(scoreProductName("Tomaten", "Cherrytomaten", "passierte")).toBeLessThan(MATCH_THRESHOLD);
+  });
 });
 
 describe("Mengen, Packungen und Kosten", () => {
@@ -88,6 +114,13 @@ describe("Mengen, Packungen und Kosten", () => {
     const r = computeCost(toBaseQuantity(250, "g"), undefined, 3.99, "kilogram");
     expect(r.shoppingCost).toBe(1);
   });
+
+  it("erfindet für Stück gegen Kategorie-Kilopreis keine Kosten", () => {
+    const r = computeCategoryCost(toBaseQuantity(2, undefined), 9.9, "kilogram");
+    expect(r.shoppingCost).toBeUndefined();
+    expect(r.ingredientCost).toBeUndefined();
+    expect(r.amountUnclear).toBe(true);
+  });
 });
 
 describe("Normalisierung der echten API-Formate", () => {
@@ -109,6 +142,28 @@ describe("Normalisierung der echten API-Formate", () => {
     expect(prices[1]).toMatchObject({ discounted: true, regularPrice: 5.99, retailerId: "netto" });
     expect(prices[2]).toBeNull(); // Frankreich
     expect(prices[3]).toBeNull(); // älter als ein Jahr
+  });
+
+  it("normalisiert Kategoriepreise ohne erfundene EAN", () => {
+    const price = normalizeOpenPrice({
+      type: "CATEGORY",
+      product_code: null,
+      category_tag: "en:onions",
+      price: 2.49,
+      price_per: "KILOGRAM",
+      price_is_discounted: false,
+      currency: "EUR",
+      date: "2026-09-20",
+      location: { osm_name: "Edeka", osm_brand: "EDEKA", osm_address_city: "Berlin", osm_address_country_code: "DE" },
+    }, NOW);
+    expect(price).toMatchObject({
+      ean: undefined,
+      categoryTag: "en:onions",
+      priceType: "CATEGORY",
+      basis: "kilogram",
+      confidence: 0.74,
+      retailerId: "edeka",
+    });
   });
 
   it("ordnet Filialen Händlern zu", () => {
@@ -134,6 +189,21 @@ describe("Einkaufsschätzung (offline, injizierte Quellen)", () => {
       return m;
     },
   };
+  const observed = (overrides: Partial<ObservedPrice> = {}): ObservedPrice => ({
+    ean: "4000000000000",
+    price: 1.49,
+    currency: "EUR",
+    basis: "package",
+    priceType: "PRODUCT",
+    confidence: 1,
+    discounted: false,
+    date: "2026-09-20",
+    retrievedAt: "2026-09-28T12:00:00.000Z",
+    storeName: "Testmarkt",
+    scope: "store_specific",
+    source: "open-prices",
+    ...overrides,
+  });
   const ingredients = [
     { id: "a", name: "Hähnchenbrust", amount: 350, unit: "g" },
     { id: "b", name: "Hähnchenbrühe", amount: 200, unit: "ml" },
@@ -141,12 +211,13 @@ describe("Einkaufsschätzung (offline, injizierte Quellen)", () => {
     { id: "d", name: "Safranfäden", amount: 1 },
   ];
 
-  it("wählt den günstigsten echten Preis und kennzeichnet Lücken", async () => {
+  it("priorisiert bei gleicher Match-Qualität den aktuelleren ähnlichen Produktpreis", async () => {
     const r = await estimateShopping(ingredients, "all", deps);
     const byId = Object.fromEntries(r.items.map((i) => [i.id, i]));
     expect(byId.a.status).toBe("priced");
-    expect(byId.a.price?.retailerId).toBe("netto");
-    expect(byId.a.shoppingCost).toBe(4.79);
+    expect(byId.a.price?.retailerId).toBe("aldi_nord");
+    expect(byId.a.price?.priceType).toBe("SIMILAR_PRODUCT");
+    expect(byId.a.shoppingCost).toBe(5.99);
     // Brühe darf nie den Hähnchenfilet-Preis bekommen
     expect(byId.b.status).toBe("no_price");
     expect(byId.b.product?.name).toBe("Hähnchenbrühe klar");
@@ -155,8 +226,8 @@ describe("Einkaufsschätzung (offline, injizierte Quellen)", () => {
     expect(byId.d.status).toBe("no_product");
     expect(r.pricedCount).toBe(1);
     expect(r.consideredCount).toBe(3);
-    expect(r.shoppingTotal).toBe(4.79);
-    expect(r.discountedCount).toBe(1);
+    expect(r.shoppingTotal).toBe(5.99);
+    expect(r.discountedCount).toBe(0);
     expect(r.nutrition.coveredCount).toBe(1);
     expect(Math.round(r.nutrition.total.protein!)).toBe(77);
   });
@@ -168,6 +239,105 @@ describe("Einkaufsschätzung (offline, injizierte Quellen)", () => {
     expect(rewe.items.find((i) => i.id === "a")?.status).toBe("no_price");
     expect(rewe.shoppingTotal).toBe(0);
     expect(rewe.pricedCount).toBe(0);
+  });
+
+  it("verwendet den Preis einer zweiten hochwertigen EAN als PRODUCT", async () => {
+    const candidates: ProductCandidate[] = [
+      { ean: "ean-a", name: "Parmesan" },
+      { ean: "ean-b", name: "Parmesan 24 Monate gereift" },
+    ];
+    const r = await estimateShopping([{ id: "p", name: "Parmesan" }], "all", {
+      searchProducts: async () => candidates,
+      fetchPrices: async () => new Map([
+        ["ean-a", []],
+        ["ean-b", [observed({ ean: "ean-b", price: 2.99 })]],
+      ]),
+    });
+    expect(r.items[0]).toMatchObject({ status: "priced", product: { ean: "ean-b" }, price: { priceType: "PRODUCT", ean: "ean-b" } });
+  });
+
+  it("verwendet für Rohware einen CATEGORY-Preis vor ähnlichen Produkten", async () => {
+    const similar: ProductCandidate = { ean: "onion-product", name: "Zwiebeln gelb" };
+    const categoryPrice = observed({
+      ean: undefined,
+      categoryTag: "en:onions",
+      price: 2.49,
+      basis: "kilogram",
+      priceType: "CATEGORY",
+      confidence: 0.74,
+    });
+    const r = await estimateShopping([{ id: "o", name: "Zwiebeln", amount: 200, unit: "g" }], "all", {
+      searchProducts: async () => [similar],
+      fetchPrices: async () => new Map([[similar.ean, []]]),
+      fetchCategoryPrices: async () => new Map([["en:onions", [categoryPrice]]]),
+    });
+    expect(r.items[0]).toMatchObject({
+      status: "priced",
+      categoryTag: "en:onions",
+      product: undefined,
+      price: { priceType: "CATEGORY", categoryTag: "en:onions" },
+      ingredientCost: 0.5,
+      shoppingCost: 0.5,
+    });
+  });
+
+  it("kennzeichnet eine sichere ähnliche Produktvariante als SIMILAR_PRODUCT", async () => {
+    const exact: ProductCandidate = { ean: "chicken-a", name: "Hähnchenbrust" };
+    const similar: ProductCandidate = { ean: "chicken-b", name: "Hähnchenbrustfilet" };
+    const r = await estimateShopping([{ id: "h", name: "Hähnchenbrust", amount: 350, unit: "g" }], "all", {
+      searchProducts: async () => [exact],
+      fetchPrices: async () => new Map([[exact.ean, []]]),
+      fetchSimilarProductPrices: async () => [{
+        product: similar,
+        prices: [observed({ ean: similar.ean, price: 4.49 })],
+      }],
+    });
+    expect(r.items[0]).toMatchObject({
+      status: "priced",
+      product: { ean: "chicken-b" },
+      price: { priceType: "SIMILAR_PRODUCT", ean: "chicken-b" },
+      matchConfidence: 0.92,
+    });
+  });
+
+  it("liefert für unbekannte Zutaten NO_PRICE statt 0 Euro", async () => {
+    const r = await estimateShopping([{ id: "x", name: "Unbekannte Wunderknolle" }], "all", {
+      searchProducts: async () => [],
+      fetchPrices: async () => new Map(),
+      fetchCategoryPrices: async () => new Map(),
+    });
+    expect(r.items[0].status).toBe("no_product");
+    expect(r.items[0].shoppingCost).toBeUndefined();
+    expect(r.shoppingTotal).toBe(0);
+  });
+
+  it("sucht auch bei null Treffern mit Synonymen und allgemeineren Begriffen weiter", async () => {
+    const searched: string[] = [];
+    const parmesan: ProductCandidate = { ean: "8000000000001", name: "Parmigiano Reggiano DOP" };
+    const r = await estimateShopping([{ id: "p", name: "Parmesan", amount: 50, unit: "g" }], "all", {
+      searchProducts: async (term) => {
+        searched.push(term);
+        return term === "parmigiano reggiano" ? [parmesan] : [];
+      },
+      fetchPrices: async () => new Map([[parmesan.ean, [{
+        ean: parmesan.ean,
+        price: 3.49,
+        currency: "EUR",
+        basis: "package",
+        priceType: "PRODUCT",
+        confidence: 1,
+        discounted: false,
+        date: "2026-09-01",
+        retrievedAt: "2026-09-28T12:00:00.000Z",
+        storeName: "Testmarkt",
+        scope: "store_specific",
+        source: "open-prices",
+      }]]]),
+    });
+    expect(searched).toContain("parmesan");
+    expect(searched).toContain("parmigiano reggiano");
+    expect(r.items[0].status).toBe("priced");
+    expect(r.items[0].product?.name).toBe("Parmigiano Reggiano DOP");
   });
 
   it("meldet Quellfehler, statt Werte zu erfinden", async () => {

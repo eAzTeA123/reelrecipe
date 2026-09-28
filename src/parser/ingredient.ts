@@ -17,7 +17,7 @@ function splitNameAndNotes(rest: string): { name: string; notes?: string } {
   let r = rest.trim();
   const notes: string[] = [];
   // (optional), (ca. 2 cm) etc. ans Ende
-  const parens = r.match(/\(([^)]{1,60})\)\s*$/) || r.match(/\(([^)]{1,60})\)/);
+  const parens = r.match(/\(([^)]{1,120})\)\s*$/) || r.match(/\(([^)]{1,120})\)/);
   if (parens) {
     notes.push(parens[1].trim());
     r = r.replace(parens[0], "").trim();
@@ -72,6 +72,7 @@ export function parseIngredientLine(line: string): ParsedIngredient | null {
   if (amountMatch) {
     amount = parseAmountString(amountMatch[0]);
     rest = rest.slice(amountMatch[0].length).trim();
+    rest = rest.replace(/^[x×]\s+(?=\p{L})/iu, "");
     const unitMatch = rest.match(UNIT_START_REGEX);
     if (unitMatch) {
       unit = canonicalUnit(unitMatch[1]);

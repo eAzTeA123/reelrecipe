@@ -7,8 +7,8 @@ test("Screenshots: Review + Edit + Shopping gefüllt", async ({ page }) => {
   for (const w of [390, 768]) {
     await page.setViewportSize({ width: w, height: 844 });
     await page.goto("/import");
-    await page.getByRole("button", { name: "Ohne Link fortfahren" }).click();
-    await page.getByLabel("Caption einfügen").fill(DE_CAPTION);
+    await page.getByRole("button", { name: "Rezepttext direkt einfügen" }).click();
+    await page.getByLabel("Rezepttext einfügen").fill(DE_CAPTION);
     await page.getByRole("button", { name: "Rezept erkennen" }).click();
     await expect(page.getByRole("heading", { name: "Rezept prüfen" })).toBeVisible();
     await page.screenshot({ path: `e2e/screenshots/${w}-review.png`, fullPage: true });

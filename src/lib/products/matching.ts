@@ -1,7 +1,9 @@
 import type { Nutrition100, PackageSize, QuantityKind } from "@/domain/productTypes";
 
-/** Mindest-Sicherheit, ab der ein Produkt für Preis/Nährwerte verwendet wird */
+/** Zentrale Qualitätsgrenzen für Produkt- und Preiszuordnung. */
 export const MATCH_THRESHOLD = 0.8;
+export const EXACT_PRODUCT_THRESHOLD = 0.95;
+export const CATEGORY_PRICE_CONFIDENCE = 0.74;
 
 /** Grundzutaten, die nicht bepreist werden (Vorrat bzw. Leitungswasser) */
 const PANTRY = new Set(["wasser", "salz", "pfeffer", "salz und pfeffer", "salz pfeffer", "eiswürfel", "water", "salt", "pepper"]);
@@ -29,15 +31,59 @@ const FORM_CHANGERS = [
   "aroma", "extrakt", "gewürz", "würz", "snack", "riegel", "creme", "aufstrich", "suppe", "salat", "pesto",
   "flocken", "mehl", "öl", "essig", "konfitüre", "marmelade", "getränk", "drink", "joghurt", "eis",
   "schokolade", "keks", "kuchen", "pizza", "fertig", "mischung", "spieß", "wurst", "chutney",
-  "scheiben", "aufschnitt", "geräuchert", "nuggets", "wiener", "salami", "schinken",
+  "scheiben", "aufschnitt", "geräuchert", "nuggets", "wiener", "salami", "schinken", "eingelegt", "getrocknet",
+  "tiefgekühlt", "sauer", "passiert", "carne", "vollkorn", "gefüllt", "geschält",
 ];
+
+const PRODUCT_ALIASES: Record<string, string[]> = {
+  aubergine: ["melanzani"],
+  basilikum: ["basil"],
+  cherrytomaten: ["kirschtomaten", "cocktailtomaten"],
+  chilischoten: ["chili", "peperoni"],
+  crèmefraîche: ["creme fraiche"],
+  hackfleisch: ["faschiertes"],
+  knoblauchzehen: ["knoblauch"],
+  koriander: ["cilantro"],
+  maisstärke: ["speisestärke"],
+  parmesan: ["parmigiano reggiano", "grana padano"],
+  rigatoni: ["penne", "röhrennudeln"],
+  sahne: ["schlagsahne"],
+  zucchini: ["courgette"],
+};
+
+/** In Open Prices verifizierte, kanonische OFF-Kategorien für unverpackte Rohware. */
+const RAW_CATEGORY_TAGS: Record<string, string> = {
+  apfel: "en:apples",
+  äpfel: "en:apples",
+  banane: "en:bananas",
+  bananen: "en:bananas",
+  basilikum: "en:basil",
+  cherrytomaten: "en:tomatoes",
+  chilischote: "en:chili-peppers",
+  chilischoten: "en:chili-peppers",
+  karotte: "en:carrots",
+  karotten: "en:carrots",
+  kartoffel: "en:potatoes",
+  kartoffeln: "en:potatoes",
+  knoblauch: "en:garlic",
+  knoblauchzehe: "en:garlic",
+  knoblauchzehen: "en:garlic",
+  paprika: "en:sweet-peppers",
+  petersilie: "en:parsley",
+  tomate: "en:tomatoes",
+  tomaten: "en:tomatoes",
+  zwiebel: "en:onions",
+  zwiebeln: "en:onions",
+};
+
+const NON_RAW_FORMS = /\b(?:passiert|dosiert|dose|getrocknet|eingelegt|gefüllt|pulver|mark|paste|pesto|saft|sauce|soße)\w*\b/i;
 
 /** Erlaubte Endungen, wenn der Produkt-Token mit der Zutat beginnt (Hähnchenbrust → Hähnchenbrustfilet) */
 const OK_SUFFIXES = ["", "n", "en", "e", "s", "filet", "filets", "teilstück", "teilstücke", "stücke", "streifen", "würfel", "hälften"];
 /** Erlaubte Endungen, wenn die Zutat mit dem Produkt-Token beginnt (Knoblauchzehen → Knoblauch) */
-const INGREDIENT_UNIT_SUFFIXES = ["zehe", "zehen", "stange", "stangen", "blätter", "bund", "knolle", "knollen", "schote", "schoten"];
+const INGREDIENT_UNIT_SUFFIXES = ["zehe", "zehen", "stange", "stangen", "blätter", "blatt", "bund", "knolle", "knollen", "schote", "schoten", "zweig", "zweige"];
 /** Sorten-Präfixe, bei denen ein längeres Produktwort dieselbe Zutat meint (Kirschtomaten ⊂ Tomaten) */
-const VARIETY_PREFIXES = ["kirsch", "cherry", "rispen", "strauch", "roma", "cocktail", "gemüse", "spitz", "speise", "rinder", "schweine", "hähnchen", "puten", "voll", "fett", "mager", "block", "süß"];
+const VARIETY_PREFIXES = ["kirsch", "cherry", "rispen", "strauch", "roma", "cocktail", "gemüse", "spitz", "speise", "rinder", "schweine", "hähnchen", "puten", "voll", "fett", "mager", "block", "süß", "schlag"];
 
 export function normalizeText(s: string): string {
   return s
@@ -57,6 +103,12 @@ export function ingredientCoreTokens(name: string): string[] {
   return tokenize(name).filter((t) => !DESCRIPTORS.has(t));
 }
 
+export function categoryTagFor(name: string, notes?: string): string | undefined {
+  if (NON_RAW_FORMS.test(`${name} ${notes ?? ""}`)) return undefined;
+  const core = ingredientCoreTokens(name).join(" ");
+  return RAW_CATEGORY_TAGS[core] ?? RAW_CATEGORY_TAGS[fallbackSearchTermFor(core)];
+}
+
 export function isPantryIngredient(name: string): boolean {
   const n = normalizeText(name);
   if (PANTRY.has(n)) return true;
@@ -64,26 +116,36 @@ export function isPantryIngredient(name: string): boolean {
   return PANTRY.has(core);
 }
 
+function meaningfulNoteTokens(notes?: string): string[] {
+  if (!notes || /^(?:oder|alternativ|optional)\b/i.test(notes.trim())) return [];
+  return ingredientCoreTokens(notes);
+}
+
 /** Suchbegriff für die Produktsuche */
 export function searchTermFor(name: string, notes?: string): string {
   const main = ingredientCoreTokens(name).join(" ");
-  if (!notes) return main;
-  const noteTokens = ingredientCoreTokens(notes).filter((t) => !main.includes(t));
+  const noteTokens = meaningfulNoteTokens(notes).filter((t) => !main.split(" ").includes(t));
   return noteTokens.length ? `${main} ${noteTokens.join(" ")}` : main;
 }
 
 /** Fallback-Suchbegriff, wenn der erste keine Preise liefert: nur das letzte/spezifischste Kernwort */
 export function fallbackSearchTermFor(name: string): string {
   const tokens = ingredientCoreTokens(name);
-  // Nomen meist am Ende; bei Zutaten wie "Chilischoten" bleibt das Wort erhalten
   if (tokens.length === 0) return name.trim().toLowerCase();
-  if (tokens.length === 1) return tokens[0];
-  // Zusammengesetzte Begriffe wie "Knoblauchzehen" -> "Knoblauch" probieren
-  const withUnitRemoved = tokens.map((t) => t.replace(/(zehe|zehen|stange|stangen|schote|schoten|blätter|bund)$/i, "")).filter(Boolean);
-  if (withUnitRemoved.length > 0 && withUnitRemoved.join(" ") !== tokens.join(" ")) {
-    return withUnitRemoved.join(" ");
-  }
-  return tokens.slice(-2).join(" ");
+  const withUnitRemoved = tokens
+    .map((t) => t.replace(/(zehe|zehen|stange|stangen|schote|schoten|blätter|blatt|bund|knolle|knollen|zweig|zweige)$/i, ""))
+    .filter(Boolean);
+  if (withUnitRemoved.join(" ") !== tokens.join(" ")) return withUnitRemoved.join(" ");
+  return tokens.length === 1 ? tokens[0] : tokens.slice(-2).join(" ");
+}
+
+/** Geordnete, mengenunabhängige Suchvarianten für uneinheitliche Caption- und Webseiten-Zutaten. */
+export function searchTermsFor(name: string, notes?: string): string[] {
+  const main = ingredientCoreTokens(name).join(" ");
+  const specific = searchTermFor(name, notes);
+  const fallback = fallbackSearchTermFor(name);
+  const aliases = PRODUCT_ALIASES[normalizeText(main).replace(/\s/g, "")] ?? PRODUCT_ALIASES[normalizeText(main)] ?? [];
+  return [...new Set([specific, main, fallback, ...aliases].map((v) => v.trim()).filter(Boolean))].slice(0, 4);
 }
 
 function tokenScore(core: string, p: string): number {
@@ -110,7 +172,7 @@ function tokenScore(core: string, p: string): number {
  * Bewertet, wie sicher ein Produktname dieselbe Zutat meint (0–1).
  * Bewusst streng: lieber kein Treffer als ein falscher Preis.
  */
-export function scoreProductName(ingredientName: string, productName: string): number {
+function scoreNameVariant(ingredientName: string, productName: string, context: string): number {
   const core = ingredientCoreTokens(ingredientName);
   const prod = tokenize(productName);
   if (core.length === 0 || prod.length === 0) return 0;
@@ -124,17 +186,30 @@ export function scoreProductName(ingredientName: string, productName: string): n
   let score = sum / core.length;
   if (score === 0) return 0;
 
-  const ingredientNorm = normalizeText(ingredientName);
-  const changed = FORM_CHANGERS.some(
-    (f) => !ingredientNorm.includes(f) && prod.some((p) => p.includes(f) && !core.some((c) => c.includes(f))),
-  );
-  if (changed) score *= 0.3;
+  const ingredientNorm = normalizeText(context);
+  const productNorm = normalizeText(productName);
+  const hasForm = (text: string, form: string) => text.includes(form === "sauer" ? "saur" : form);
+  const incompatibleForm = FORM_CHANGERS.some((f) => {
+    const ingredientHasForm = hasForm(ingredientNorm, f);
+    const productHasForm = hasForm(productNorm, f);
+    return ingredientHasForm !== productHasForm;
+  });
+  if (incompatibleForm) score *= 0.3;
 
-  // Viele zusätzliche Wörter (Fertiggerichte, Mischungen) leicht abwerten
   const extra = Math.max(0, prod.length - core.length - 2);
   score -= Math.min(0.15, extra * 0.04);
 
   return Math.max(0, Math.min(1, Number(score.toFixed(2))));
+}
+
+export function scoreProductName(ingredientName: string, productName: string, notes?: string): number {
+  const context = `${ingredientName} ${meaningfulNoteTokens(notes).join(" ")}`.trim();
+  const main = ingredientCoreTokens(ingredientName).join(" ");
+  const aliases = PRODUCT_ALIASES[normalizeText(main).replace(/\s/g, "")] ?? PRODUCT_ALIASES[normalizeText(main)] ?? [];
+  return Math.max(
+    scoreNameVariant(ingredientName, productName, context),
+    ...aliases.map((alias) => scoreNameVariant(alias, productName, `${alias} ${meaningfulNoteTokens(notes).join(" ")}`)),
+  );
 }
 
 /** Menge einer Zutat in einer vergleichbaren Basiseinheit */
@@ -175,7 +250,7 @@ export function parsePackageSize(quantity?: string, productQuantity?: number | s
 
 export interface CostResult {
   packagesNeeded: number;
-  shoppingCost: number;
+  shoppingCost?: number;
   ingredientCost?: number;
   amountUnclear: boolean;
 }
@@ -219,6 +294,18 @@ export function computeCost(
     ingredientCost: round(fraction * price),
     amountUnclear: false,
   };
+}
+
+/** Kategoriepreise nur umrechnen, wenn Quell- und Rezeptmenge vergleichbar sind. */
+export function computeCategoryCost(
+  need: { amount: number; kind: QuantityKind } | undefined,
+  price: number,
+  basis: "package" | "kilogram" | "unit",
+): CostResult {
+  if ((basis === "kilogram" && need && need.kind !== "count") || (basis === "unit" && need?.kind === "count")) {
+    return computeCost(need, undefined, price, basis);
+  }
+  return { packagesNeeded: 1, amountUnclear: true };
 }
 
 /** Nährwertbeitrag einer Zutat (g bzw. ml ≈ g) */

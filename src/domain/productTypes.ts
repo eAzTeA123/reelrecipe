@@ -64,20 +64,34 @@ export interface ProductCandidate {
   nutrition?: Nutrition100;
 }
 
+export interface PricedProductCandidate {
+  product: ProductCandidate;
+  prices: ObservedPrice[];
+}
+
 export type PriceUnitBasis = "package" | "kilogram" | "unit";
+export type PriceType = "PRODUCT" | "CATEGORY" | "SIMILAR_PRODUCT";
 
 export interface ObservedPrice {
-  ean: string;
+  ean?: string;
+  categoryTag?: string;
+  productId?: number;
   price: number;
   currency: "EUR";
   basis: PriceUnitBasis;
+  priceType: PriceType;
+  confidence: number;
   discounted: boolean;
   regularPrice?: number;
   /** Datum der Beobachtung (Kassenbon/Preisschild), ISO yyyy-mm-dd */
   date: string;
+  retrievedAt: string;
+  validFrom?: string;
+  validUntil?: string;
   retailerId?: RetailerId;
   storeName: string;
   city?: string;
+  region?: string;
   /** Filialpreis, niemals bundesweit gültig */
   scope: "store_specific";
   source: "open-prices";
@@ -90,6 +104,7 @@ export interface EstimateItem {
   ingredientName: string;
   status: EstimateItemStatus;
   product?: { ean: string; name: string; brand?: string; package?: PackageSize };
+  categoryTag?: string;
   matchConfidence?: number;
   price?: ObservedPrice;
   packagesNeeded?: number;

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import type { RetailerFilter } from "@/domain/productTypes";
 import { estimateShopping, type EstimateIngredient } from "@/lib/products/estimate";
-import { fetchPrices, searchProducts } from "@/lib/products/sources";
+import { fetchCategoryPrices, fetchPrices, fetchSimilarProductPrices, searchProducts } from "@/lib/products/sources";
 import { RETAILERS } from "@/lib/products/retailers";
 
 const MAX_INGREDIENTS = 40;
@@ -37,7 +37,12 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "invalid_request" }, { status: 400 });
   }
   try {
-    const estimate = await estimateShopping(ingredients, retailer, { searchProducts, fetchPrices });
+    const estimate = await estimateShopping(ingredients, retailer, {
+      searchProducts,
+      fetchPrices,
+      fetchCategoryPrices,
+      fetchSimilarProductPrices,
+    });
     return NextResponse.json(estimate);
   } catch (e) {
     console.error("Einkaufsschätzung fehlgeschlagen", e);

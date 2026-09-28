@@ -201,6 +201,16 @@ export const lineStateMachineStrategy: ParserStrategy = {
           continue;
         }
 
+        const withoutBullet = line.replace(/^[-•*]\s*/, "").trim();
+        if (/^\(\([\s\S]+\)\)$/.test(withoutBullet)) {
+          result.other.push(line);
+          continue;
+        }
+        if (/^\([\s\S]+\)$/.test(withoutBullet) && result.ingredients.length > 0) {
+          result.ingredients[result.ingredients.length - 1] += ` ${withoutBullet}`;
+          continue;
+        }
+
         // Berechne das 2-von-3 Signal-Bündel für Übergang zu ZUBEREITUNG
         const s1 = hasVerbOrSequenceStart(line);
         const s2 = hasSentenceStructure(line);

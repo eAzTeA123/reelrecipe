@@ -59,7 +59,6 @@ test.describe("gefüllte App – 390px & 1440px", () => {
       await noHorizontalOverflow(page);
 
       // Lösch-Dialog
-      const edit = await page.url();
       await page.goto("/");
       await page.getByText("Creamy Garlic Chicken").first().click();
       await page.getByRole("button", { name: "Rezept löschen" }).click();

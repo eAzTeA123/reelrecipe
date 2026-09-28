@@ -74,7 +74,28 @@ function ItemLine({ item, t }: { item: EstimateItem; t: T }) {
   const f = useFormatters();
   let detail: string;
   if (item.status === "priced" && item.price) {
+    const typeLabel =
+      item.price.priceType === "CATEGORY"
+        ? t("price.typeCategory")
+        : item.price.priceType === "SIMILAR_PRODUCT"
+          ? t("price.typeSimilar")
+          : t("price.typeProduct");
+    const categoryReference =
+      item.price.priceType === "CATEGORY"
+        ? fill(
+            t(
+              item.price.basis === "kilogram"
+                ? "price.perKilogram"
+                : item.price.basis === "unit"
+                  ? "price.perUnit"
+                  : "price.perPackage",
+            ),
+            { v: f.money(item.price.price) },
+          )
+        : "";
     const parts = [
+      typeLabel,
+      categoryReference,
       [item.product?.brand, item.product?.name].filter(Boolean).join(" · "),
       `${item.price.storeName}${item.price.city ? ` ${item.price.city}` : ""}`,
       f.date(item.price.date),

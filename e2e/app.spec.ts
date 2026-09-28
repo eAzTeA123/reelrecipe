@@ -10,6 +10,7 @@ test.beforeEach(async ({ page }) => {
         const req = indexedDB.deleteDatabase("rezept");
         req.onsuccess = req.onerror = req.onblocked = () => resolve();
         sessionStorage.clear();
+        localStorage.setItem("onboardingSeenV2", "true");
       }),
   );
   await page.reload();
@@ -21,17 +22,17 @@ test("leere App: Startseite mit Empty State", async ({ page }) => {
   await expect(page.getByRole("link", { name: "Rezept importieren" })).toBeVisible();
 });
 
-test("ungültiger Instagram-Link zeigt Fehler", async ({ page }) => {
+test("ungültiger Rezept-Link zeigt Fehler", async ({ page }) => {
   await page.goto("/import");
-  await page.getByLabel(/Instagram/).fill("https://example.com/foo");
+  await page.getByLabel("Link zum Rezept").fill("kein-link");
   await page.getByRole("button", { name: "Importieren" }).click();
-  await expect(page.getByText("Bitte gib einen gültigen Instagram- oder TikTok-Link ein.")).toBeVisible();
+  await expect(page.getByText("Bitte gib einen gültigen Link ein, z. B. von Instagram, TikTok oder einer Rezeptseite.")).toBeVisible();
 });
 
 test("deutsches Rezept: Caption → Review → Speichern → Detail", async ({ page }) => {
   await page.goto("/import");
-  await page.getByRole("button", { name: "Ohne Link fortfahren" }).click();
-  await page.getByLabel("Caption einfügen").fill(DE_CAPTION);
+  await page.getByRole("button", { name: "Rezepttext direkt einfügen" }).click();
+  await page.getByLabel("Rezepttext einfügen").fill(DE_CAPTION);
   await page.getByRole("button", { name: "Rezept erkennen" }).click();
 
   // Review: geparste Werte prüfen
@@ -68,8 +69,8 @@ test("deutsches Rezept: Caption → Review → Speichern → Detail", async ({ p
 
 test("englisches Rezept mit Brüchen", async ({ page }) => {
   await page.goto("/import");
-  await page.getByRole("button", { name: "Ohne Link fortfahren" }).click();
-  await page.getByLabel("Caption einfügen").fill(EN_CAPTION);
+  await page.getByRole("button", { name: "Rezepttext direkt einfügen" }).click();
+  await page.getByLabel("Rezepttext einfügen").fill(EN_CAPTION);
   await page.getByRole("button", { name: "Rezept erkennen" }).click();
   await expect(page.getByLabel("Titel")).toHaveValue("Easy Pasta Bake");
   const mengen = page.locator("input[placeholder='Menge']");
@@ -113,8 +114,8 @@ test("Einkaufsliste: Merge gleicher Zutaten aus zwei Rezepten", async ({ page })
   await page.getByRole("button", { name: "Zur Einkaufsliste" }).click();
   await expect(page.getByText("Zur Einkaufsliste hinzugefügt")).toBeVisible();
   await page.goto("/import");
-  await page.getByRole("button", { name: "Ohne Link fortfahren" }).click();
-  await page.getByLabel("Caption einfügen").fill(
+  await page.getByRole("button", { name: "Rezepttext direkt einfügen" }).click();
+  await page.getByLabel("Rezepttext einfügen").fill(
     `Zweites Gericht\n\nZutaten:\n250 g Hähnchenbrust\n100 ml Sahne\n\nZubereitung:\n1. Kochen.`,
   );
   await page.getByRole("button", { name: "Rezept erkennen" }).click();
@@ -208,7 +209,7 @@ test("Einkaufsliste: manuell hinzufügen und bearbeiten", async ({ page }) => {
 async function exportBackup(page: Page): Promise<string> {
   await page.goto("/settings");
   const downloadPromise = page.waitForEvent("download");
-  await page.getByRole("button", { name: "Rezepte exportieren" }).click();
+  await page.getByRole("button", { name: "Exportieren" }).click();
   const download = await downloadPromise;
   const path = await download.path();
   const fs = await import("fs");

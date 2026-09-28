@@ -29,9 +29,11 @@ Instructions
 
 /** Legt ein Rezept über den echten Import-Flow an und landet auf der Detailseite. */
 export async function createRecipeViaUI(page: Page, caption: string): Promise<void> {
+  await page.goto("/");
+  await page.evaluate(() => localStorage.setItem("onboardingSeenV2", "true"));
   await page.goto("/import");
-  await page.getByRole("button", { name: "Ohne Link fortfahren" }).click();
-  await page.getByLabel("Caption einfügen").fill(caption);
+  await page.getByRole("button", { name: "Rezepttext direkt einfügen" }).click();
+  await page.getByLabel("Rezepttext einfügen").fill(caption);
   await page.getByRole("button", { name: "Rezept erkennen" }).click();
   await expect(page.getByRole("heading", { name: "Rezept prüfen" })).toBeVisible();
   await page.getByRole("button", { name: "Rezept speichern" }).click();
@@ -48,6 +50,7 @@ export async function clearStorage(page: Page) {
         req.onerror = () => resolve();
         req.onblocked = () => resolve();
         sessionStorage.clear();
+        localStorage.setItem("onboardingSeenV2", "true");
       }),
   );
   await page.reload();
