@@ -17,11 +17,13 @@ import { Sheet } from "@/components/Sheet";
 import { Field, Input } from "@/components/Input";
 import { IconCart, IconCheck, IconPencil, IconPlus, IconTrash } from "@/components/Icons";
 import { getAisle } from "@/lib/shoppingAisles";
+import { useToast } from "@/components/Toast";
 
 
 export default function ShoppingPage() {
 
   const { t } = useI18n();
+  const toast = useToast();
   const haptic = useHaptic();
   const { items, loading, error, retry } = useShoppingList();
   const [recipeTitles, setRecipeTitles] = useState<Record<string, string>>({});
@@ -123,7 +125,7 @@ export default function ShoppingPage() {
       ) : loading ? (
         <div className="flex flex-col gap-2">
           {[0, 1, 2].map((i) => (
-            <div key={i} className="pulse-soft h-14 rounded-xl bg-black/[0.04]" />
+            <div key={i} className="skeleton-shimmer h-14 rounded-xl" />
           ))}
         </div>
       ) : items.length === 0 ? (
@@ -185,7 +187,22 @@ export default function ShoppingPage() {
                       </button>
                       <button
                         aria-label={`${item.name} löschen`}
-                        onClick={() => void getShoppingListRepository().remove(item.id)}
+                        onClick={() => {
+                          void getShoppingListRepository().remove(item.id);
+                          toast(
+                            t("toast.itemRemoved").replace("{name}", item.name),
+                            "success",
+                            {
+                              actionLabel: t("toast.undo"),
+                              action: () => void getShoppingListRepository().addItem({
+                                name: item.name,
+                                amount: item.amount,
+                                unit: item.unit,
+                              }),
+                              duration: 5000,
+                            },
+                          );
+                        }}
                         className="pressable flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-ink-3 hover:text-danger"
                       >
                         <IconTrash size={17} />

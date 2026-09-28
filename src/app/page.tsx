@@ -55,6 +55,10 @@ export default function HomePage() {
       return;
     }
     const saved = await getRecipeRepository().saveWithImage(undefined, recipeInput, pendingImage);
+    const allRecipes = await getRecipeRepository().list();
+    if (allRecipes.length <= 1) {
+      try { sessionStorage.setItem("scroll2cook-first-recipe", "1"); } catch {}
+    }
     toast(t("toast.recipeSaved"));
     router.push(`/recipes/${saved.id}`);
   }

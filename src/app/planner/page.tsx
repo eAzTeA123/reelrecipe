@@ -12,6 +12,8 @@ import { DragHandle } from "@/components/DragHandle";
 import { scaleAmount } from "@/lib/scale";
 import type { DayOfWeek } from "@/domain/types";
 import { useHaptic } from "@/hooks/useHaptic";
+import { useToast } from "@/components/Toast";
+import { useI18n } from "@/lib/i18n/context";
 
 const DAYS: { key: DayOfWeek; label: string }[] = [
   { key: "mo", label: "Montag" },
@@ -26,6 +28,8 @@ const DAYS: { key: DayOfWeek; label: string }[] = [
 export default function PlannerPage() {
   const router = useRouter();
   const haptic = useHaptic();
+  const toast = useToast();
+  const { t } = useI18n();
   const { entries } = useMealPlan();
   const { recipes } = useRecipes();
   const [loading, setLoading] = useState(false);
@@ -100,9 +104,23 @@ export default function PlannerPage() {
     });
   };
 
-  const removeEntry = async (id: string) => {
+  const removeEntry = async (entry: { id: string; dayOfWeek: DayOfWeek; recipeId: string; servings: number }) => {
     const repo = getMealPlanRepository();
-    await repo.remove(id);
+    await repo.remove(entry.id);
+    const title = recipes.find((r) => r.id === entry.recipeId)?.title ?? "";
+    toast(
+      t("toast.itemRemoved").replace("{name}", title),
+      "success",
+      {
+        actionLabel: t("toast.undo"),
+        action: () => void repo.add({
+          dayOfWeek: entry.dayOfWeek,
+          recipeId: entry.recipeId,
+          servings: entry.servings,
+        }),
+        duration: 5000,
+      },
+    );
   };
 
   const updateServings = async (id: string, currentServings: number, delta: number) => {
@@ -279,7 +297,7 @@ export default function PlannerPage() {
                       </div>
 
                       <button
-                        onClick={() => removeEntry(entry.id)}
+                        onClick={() => removeEntry(entry)}
                         className="h-10 w-10 shrink-0 flex items-center justify-center rounded-full text-ink-3 hover:bg-red-50 hover:text-red-500 transition-colors"
                         aria-label="Aus Plan entfernen"
                       >

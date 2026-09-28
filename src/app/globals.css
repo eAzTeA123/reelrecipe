@@ -79,7 +79,7 @@ p, li { text-wrap: pretty; }
   65% { transform: scale(1.06); opacity: 1; }
   100% { transform: scale(1); opacity: 1; }
 }
-.check-pop { animation: check-pop 0.42s var(--ease-spring) both; }
+.check-pop { animation: check-pop 0.3s var(--ease-spring) both; }
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
@@ -89,13 +89,38 @@ p, li { text-wrap: pretty; }
 }
 .pulse-soft { animation: pulse-soft 1.6s ease-in-out infinite; }
 
+@keyframes check-draw {
+  from { stroke-dashoffset: 24; }
+  to   { stroke-dashoffset: 0; }
+}
+.check-draw {
+  stroke-dasharray: 24;
+  stroke-dashoffset: 24;
+  animation: check-draw 0.3s var(--ease-out) 0.05s forwards;
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--color-line) 25%,
+    var(--color-surface) 50%,
+    var(--color-line) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.8s ease-in-out infinite;
+}
+
 .pressable {
   touch-action: manipulation;
-  transition: transform 0.12s ease, opacity 0.12s ease, background-color 0.15s ease,
+  transition: transform 0.12s var(--ease-spring), opacity 0.12s ease, background-color 0.15s ease,
     border-color 0.15s ease, box-shadow 0.15s ease;
 }
 .pressable:active {
-  transform: scale(0.97);
+  transform: scale(0.96);
 }
 
 .card-hover {
@@ -143,7 +168,7 @@ p, li { text-wrap: pretty; }
 
 @media (prefers-reduced-motion: reduce) {
   .page-enter, .sheet-up, .sheet-down, .overlay-in, .overlay-out,
-  .toast-in, .check-pop, .pulse-soft, .spin {
+  .toast-in, .check-pop, .pulse-soft, .spin, .check-draw, .skeleton-shimmer {
     animation: none !important;
   }
   .pressable, .card-hover, .skip-link {

@@ -412,6 +412,13 @@ function ImportFlow() {
     setExistingRecipe(null);
     setShowDuplicateDialog(false);
     setPendingSaveArgs(null);
+
+    try {
+      const allRecipes = await getRecipeRepository().list();
+      if (allRecipes.length <= 1) {
+        sessionStorage.setItem("scroll2cook-first-recipe", "1");
+      }
+    } catch {}
     
     try {
       sessionStorage.removeItem(STORAGE_KEY);

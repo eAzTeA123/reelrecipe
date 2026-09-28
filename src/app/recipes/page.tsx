@@ -249,7 +249,7 @@ function RecipesContent() {
 
 export default function RecipesPage() {
   return (
-    <Suspense fallback={<div className="pulse-soft h-32 rounded-2xl bg-black/[0.04]" />}>
+    <Suspense fallback={<div className="skeleton-shimmer h-32 rounded-2xl" />}>
       <RecipesContent />
     </Suspense>
   );

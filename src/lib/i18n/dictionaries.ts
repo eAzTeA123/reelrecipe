@@ -13,6 +13,7 @@ export const dictionaries = {
     // General
     "general.back": "Zurück",
     "general.save": "Speichern",
+    "general.saved": "Gespeichert",
     "general.cancel": "Abbrechen",
     "general.delete": "Löschen",
     "general.edit": "Bearbeiten",
@@ -171,6 +172,8 @@ export const dictionaries = {
     "toast.importError": "Fehler beim Importieren",
     "toast.deleteSuccess": "Alle Daten gelöscht",
     "toast.recipeExists": "Rezept existiert bereits in deiner Bibliothek",
+    "toast.itemRemoved": "\u201E{name}\u201C entfernt",
+    "toast.undo": "Rückgängig",
 
     // PWA Install Prompt
     "pwa.saveMe": "Als App 👋",
@@ -282,6 +285,7 @@ export const dictionaries = {
     // General
     "general.back": "Back",
     "general.save": "Save",
+    "general.saved": "Saved",
     "general.cancel": "Cancel",
     "general.delete": "Delete",
     "general.edit": "Edit",
@@ -440,6 +444,8 @@ export const dictionaries = {
     "toast.importError": "Error importing",
     "toast.deleteSuccess": "All data deleted",
     "toast.recipeExists": "Recipe already exists in your library",
+    "toast.itemRemoved": "\"{name}\" removed",
+    "toast.undo": "Undo",
 
     // PWA Install Prompt
     "pwa.saveMe": "Save Me 👋",

@@ -1,7 +1,7 @@
 "use client";
 import { useI18n } from "@/lib/i18n/context";
 
-import { use, useMemo, useState } from "react";
+import { use, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRecipe } from "@/hooks/useRecipe";
@@ -56,6 +56,16 @@ export default function RecipeDetailPage({ params }: { params: Promise<{ id: str
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [unitSystem, setUnitSystem] = useState<"eu" | "us">(lang === "de" ? "eu" : "us");
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (sessionStorage.getItem("scroll2cook-first-recipe") !== "1") return;
+    sessionStorage.removeItem("scroll2cook-first-recipe");
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    import("canvas-confetti").then(({ default: confetti }) => {
+      confetti({ particleCount: 80, spread: 60, origin: { y: 0.5 } });
+    }).catch(() => {});
+  }, []);
 
   const recipe = useMemo(() => {
     if (!rawRecipe) return rawRecipe;

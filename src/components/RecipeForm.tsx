@@ -564,11 +564,26 @@ export function RecipeForm({
           size="lg"
           fullWidth
           onClick={() => void submit()}
-          disabled={status === "saving"}
-          className="shadow-pop"
+          disabled={status === "saving" || status === "saved"}
+          className={`shadow-pop transition-colors duration-300 ${status === "saved" ? "!bg-emerald-500 !text-white" : ""}`}
         >
-          {status === "saving" ? <Spinner size={18} /> : <IconCheck size={19} />}
-          {status === "saving" ? t("general.save") : (submitLabel || t("general.save"))}
+          {status === "saving" ? (
+            <Spinner size={18} />
+          ) : status === "saved" ? (
+            <svg width={19} height={19} viewBox="0 0 24 24" fill="none" aria-hidden>
+              <path
+                d="M5 13l4 4L19 7"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="check-draw"
+              />
+            </svg>
+          ) : (
+            <IconCheck size={19} />
+          )}
+          {status === "saving" ? t("general.save") : status === "saved" ? t("general.saved") : (submitLabel || t("general.save"))}
         </Button>
       </div>
     </div>
