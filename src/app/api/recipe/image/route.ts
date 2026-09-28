@@ -24,7 +24,7 @@ export async function GET(req: NextRequest) {
       res = await fetch(current, {
         signal: ctrl.signal,
         redirect: "manual",
-        headers: { "User-Agent": "ReelRecipe/0.1 (Rezeptbild)", Accept: "image/avif,image/webp,image/*" },
+        headers: { "User-Agent": "Scroll2Cook/0.1 (Rezeptbild)", Accept: "image/avif,image/webp,image/*" },
       });
       if (res.status >= 300 && res.status < 400) {
         const location = res.headers.get("location");

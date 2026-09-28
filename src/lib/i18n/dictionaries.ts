@@ -4,7 +4,7 @@ export const dictionaries = {
   de: {
     // Nav
     "nav.home": "Start",
-    "brand.name": "ReelRecipe",
+    "brand.name": "Scroll2Cook",
     "nav.recipes": "Rezepte",
     "nav.planner": "Wochenplan",
     "nav.shopping": "Einkaufsliste",
@@ -20,7 +20,7 @@ export const dictionaries = {
     "general.continueWithoutLink": "Ohne Link fortfahren",
 
     // Start Page
-    "home.title": "ReelRecipe",
+    "home.title": "Scroll2Cook",
     "home.importTitle": "Rezept importieren",
     "home.importSubtitle": "Link von Instagram, TikTok, Chefkoch oder einem Foodblog einfügen – wir erkennen Zutaten und Schritte automatisch.",
     "home.importPlaceholder": "Rezept-Link einfügen",
@@ -210,7 +210,7 @@ export const dictionaries = {
     // PWA Install Prompt
     "pwa.saveMe": "Als App 👋",
     "pwa.title": "Als App installieren 👋",
-    "pwa.subtitle": "Füge ReelRecipe deinem Home-Bildschirm hinzu – wie eine echte App.",
+    "pwa.subtitle": "Füge Scroll2Cook deinem Home-Bildschirm hinzu – wie eine echte App.",
     "pwa.iosTitle": "🍎 iPhone / iOS",
     "pwa.iosStep1": "Öffne diese Website in Safari",
     "pwa.iosStep2": "Tippe auf den Teilen-Button",
@@ -234,7 +234,7 @@ export const dictionaries = {
     "tour.recipesTitle": "Cook-Mode & Reste 📚",
     "tour.recipesDesc": "Alle Rezepte! Entdecke hier die 'Kühlschrank-Suche' (Reste-Verwertung) und den interaktiven Cook-Mode mit globalen Timern, die immer weiterlaufen.",
     "tour.pwaTitle": "Als App installieren 📲",
-    "tour.pwaDesc": "Installiere ReelRecipe direkt auf deinem Homescreen für Haptic-Touch Quick Actions und echtes App-Feeling!",
+    "tour.pwaDesc": "Installiere Scroll2Cook direkt auf deinem Homescreen für Haptic-Touch Quick Actions und echtes App-Feeling!",
     "tour.restart": "Tutorial erneut ansehen",
     "tour.restartDesc": "Erfahre in einer kurzen interaktiven Tour, wie du alle Funktionen optimal nutzt.",
     // Bingo
@@ -290,7 +290,7 @@ export const dictionaries = {
     "onboarding.step2Subtitle": "Reel, TikTok, Chefkoch oder Foodblog: Link einfügen – Zutaten, Mengen und Schritte werden automatisch erkannt. Kein Link? Dann einfach den Text einfügen.",
     "onboarding.step3Title": "Planen, einkaufen, kochen",
     "onboarding.step3Subtitle": "Plane deine Woche per Drag & Drop, sieh geschätzte Einkaufspreise und Nährwerte und koche im Vollbild mit Live-Timern.",
-    "onboarding.step4Title": "Bereit für ReelRecipe?",
+    "onboarding.step4Title": "Bereit für Scroll2Cook?",
     "onboarding.step4Subtitle": "Starte mit 3 Beispiel-Rezepten oder füge direkt deinen ersten eigenen Rezept-Link ein.",
     "onboarding.step1Highlights": "100 % lokal & privat|Kein Account nötig|Werbefrei",
     "onboarding.step2Highlights": "Instagram & TikTok|Rezeptseiten & Blogs|Text einfügen",
@@ -301,14 +301,14 @@ export const dictionaries = {
     "onboarding.samplesLoaded": "3 leckere Rezepte wurden geladen!",
     "onboarding.loadingSamples": "Rezepte werden geladen...",
     "onboarding.restart": "Einführung & Onboarding",
-    "onboarding.restartDesc": "Lerne die wichtigsten Funktionen von ReelRecipe in einer kurzen Einführung kennen.",
+    "onboarding.restartDesc": "Lerne die wichtigsten Funktionen von Scroll2Cook in einer kurzen Einführung kennen.",
 
 
   },
   en: {
     // Nav
     "nav.home": "Home",
-    "brand.name": "ReelRecipe",
+    "brand.name": "Scroll2Cook",
     "nav.recipes": "Recipes",
     "nav.planner": "Planner",
     "nav.shopping": "Shopping",
@@ -324,7 +324,7 @@ export const dictionaries = {
     "general.continueWithoutLink": "Continue without link",
 
     // Start Page
-    "home.title": "ReelRecipe",
+    "home.title": "Scroll2Cook",
     "home.importTitle": "Import Recipe",
     "home.importSubtitle": "Paste a link from Instagram, TikTok, a recipe site or a food blog – we detect ingredients and steps automatically.",
     "home.importPlaceholder": "Paste recipe link",
@@ -538,9 +538,9 @@ export const dictionaries = {
     "tour.recipesTitle": "Cook Mode & Leftovers 📚",
     "tour.recipesDesc": "All recipes! Discover the 'Fridge Search' (leftover utilization) and the interactive Cook Mode with global timers that keep running everywhere.",
     "tour.pwaTitle": "Install as App 📲",
-    "tour.pwaDesc": "Add ReelRecipe to your home screen for Haptic-Touch quick actions and a native app feeling!",
+    "tour.pwaDesc": "Add Scroll2Cook to your home screen for Haptic-Touch quick actions and a native app feeling!",
     "tour.restart": "Replay Tutorial",
-    "tour.restartDesc": "Take a quick interactive tour to discover all features of ReelRecipe.",
+    "tour.restartDesc": "Take a quick interactive tour to discover all features of Scroll2Cook.",
   
     // Bingo
     "bingo.title": "Recipe Bingo",
@@ -596,7 +596,7 @@ export const dictionaries = {
     "onboarding.step2Subtitle": "Reel, TikTok, recipe site or food blog: paste the link – ingredients, amounts and steps are detected automatically. No link? Just paste the text.",
     "onboarding.step3Title": "Plan, Shop, Cook",
     "onboarding.step3Subtitle": "Plan your week via drag & drop, see estimated grocery prices and nutrition, and cook in fullscreen with live timers.",
-    "onboarding.step4Title": "Ready for ReelRecipe?",
+    "onboarding.step4Title": "Ready for Scroll2Cook?",
     "onboarding.step4Subtitle": "Start with 3 sample recipes or paste your first own recipe link right away.",
     "onboarding.step1Highlights": "100% local & private|No account needed|Ad-free",
     "onboarding.step2Highlights": "Instagram & TikTok|Recipe sites & blogs|Paste text",
@@ -607,7 +607,7 @@ export const dictionaries = {
     "onboarding.samplesLoaded": "3 sample recipes added to your library!",
     "onboarding.loadingSamples": "Loading recipes...",
     "onboarding.restart": "Walkthrough & Onboarding",
-    "onboarding.restartDesc": "Explore the key features of ReelRecipe in a quick visual walkthrough.",
+    "onboarding.restartDesc": "Explore the key features of Scroll2Cook in a quick visual walkthrough.",
 }
 };
 

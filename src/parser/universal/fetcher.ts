@@ -8,7 +8,7 @@ export interface FetchHtmlOptions {
 }
 
 const DEFAULT_USER_AGENT =
-  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36 ReelRecipe/1.0";
+  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36 Scroll2Cook/1.0";
 const DEFAULT_TIMEOUT_MS = 15000;
 const DEFAULT_MAX_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB
 

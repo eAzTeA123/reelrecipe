@@ -3,7 +3,7 @@ import { parsePackageSize } from "./matching";
 import { detectRetailer } from "./retailers";
 import { TtlCache } from "./cache";
 
-const USER_AGENT = "ReelRecipe/0.1 (private Rezept-App; lokale Nutzung)";
+const USER_AGENT = "Scroll2Cook/0.1 (private Rezept-App; lokale Nutzung)";
 const TIMEOUT_MS = 8000;
 const OFF_SEARCH_URL = "https://search.openfoodfacts.org/search";
 const OPEN_PRICES_URL = "https://prices.openfoodfacts.org/api/v1/prices";

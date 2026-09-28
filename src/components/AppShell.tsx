@@ -62,7 +62,7 @@ function TopNav() {
     <header className="sticky top-0 z-40 hidden border-b border-line bg-white/80 backdrop-blur-xl md:block">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
         <Link href="/" className="flex items-center gap-2.5 text-[17px] font-bold tracking-tight">
-          <img src="/icon.svg" alt="ReelRecipe Logo" width={32} height={32} className="rounded-xl" />
+          <img src="/icon.svg" alt="Scroll2Cook Logo" width={32} height={32} className="rounded-xl" />
           {t("brand.name")}
         </Link>
         <nav aria-label="Hauptnavigation" className="flex items-center gap-1">

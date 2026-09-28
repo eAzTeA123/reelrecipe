@@ -4,12 +4,12 @@ import { AppShell } from "@/components/AppShell";
 import { ToastProvider } from "@/components/Toast";
 
 export const metadata: Metadata = {
-  title: { default: "ReelRecipe", template: "%s · ReelRecipe" },
-  description: "Rezepte aus Instagram importieren, organisieren und kochen – komplett lokal auf deinem Gerät.",
+  title: { default: "Scroll2Cook", template: "%s · Scroll2Cook" },
+  description: "Rezepte aus Social Media und dem Web importieren, organisieren und kochen – komplett lokal auf deinem Gerät.",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "ReelRecipe",
+    title: "Scroll2Cook",
   },
 };
 

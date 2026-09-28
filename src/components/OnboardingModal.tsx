@@ -40,7 +40,7 @@ export function OnboardingModal() {
 
   const slides: SlideData[] = (
     [
-      { icon: "check", badge: "ReelRecipe" },
+      { icon: "check", badge: "Scroll2Cook" },
       { icon: "link", badge: "Import" },
       { icon: "calendar", badge: lang === "de" ? "Küche" : "Kitchen" },
       { icon: "sparkle", badge: lang === "de" ? "Los geht's" : "Let's go" },

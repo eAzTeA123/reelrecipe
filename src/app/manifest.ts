@@ -2,9 +2,9 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "ReelRecipe – Mein Rezept-Organizer",
-    short_name: "ReelRecipe",
-    description: "Rezepte aus Instagram importieren, organisieren und kochen – komplett lokal.",
+    name: "Scroll2Cook – Dein Rezept-Organizer",
+    short_name: "Scroll2Cook",
+    description: "Rezepte aus Social Media und dem Web importieren, organisieren und kochen – komplett lokal.",
     start_url: "/",
     display: "standalone",
     background_color: "#f6f6f4",
