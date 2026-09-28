@@ -44,8 +44,11 @@ const NUTRITION_RE = /\b(?:kcal|kalorien|kohlenhydrate|carbs)\b|^(?:eiweiß|prot
 
 /** Parst eine Zeile zu einer Zutat. Gibt null zurück, wenn unmöglich. */
 export function parseIngredientLine(line: string): ParsedIngredient | null {
-  // Chefkoch-Pluralschreibweise "Scheibe/n", "Zehe/n", "Ei/er" → "Scheiben", "Zehen", "Eier"
-  let rest = line.trim().replace(/(\p{L})\/(n|en|e|s|er)(?![\p{L}])/gu, "$1$2");
+  // Chefkoch-Pluralschreibweise "Scheibe/n", "Zehe/n", "Ei/er" und "Scheibe(n)" → "Scheiben", "Zehen", "Eier"
+  let rest = line
+    .trim()
+    .replace(/(\p{L})\/(n|en|e|s|er)(?![\p{L}])/gu, "$1$2")
+    .replace(/\s*\(\s*n\s*\)/giu, "n");
   if (!rest || rest.length > 160) return null;
 
   // Servings-Zeilen niemals als Zutat werten (z. B. "Für 4 Stück:")

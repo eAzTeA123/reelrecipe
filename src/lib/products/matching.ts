@@ -65,8 +65,25 @@ export function isPantryIngredient(name: string): boolean {
 }
 
 /** Suchbegriff für die Produktsuche */
-export function searchTermFor(name: string): string {
-  return ingredientCoreTokens(name).join(" ");
+export function searchTermFor(name: string, notes?: string): string {
+  const main = ingredientCoreTokens(name).join(" ");
+  if (!notes) return main;
+  const noteTokens = ingredientCoreTokens(notes).filter((t) => !main.includes(t));
+  return noteTokens.length ? `${main} ${noteTokens.join(" ")}` : main;
+}
+
+/** Fallback-Suchbegriff, wenn der erste keine Preise liefert: nur das letzte/spezifischste Kernwort */
+export function fallbackSearchTermFor(name: string): string {
+  const tokens = ingredientCoreTokens(name);
+  // Nomen meist am Ende; bei Zutaten wie "Chilischoten" bleibt das Wort erhalten
+  if (tokens.length === 0) return name.trim().toLowerCase();
+  if (tokens.length === 1) return tokens[0];
+  // Zusammengesetzte Begriffe wie "Knoblauchzehen" -> "Knoblauch" probieren
+  const withUnitRemoved = tokens.map((t) => t.replace(/(zehe|zehen|stange|stangen|schote|schoten|blätter|bund)$/i, "")).filter(Boolean);
+  if (withUnitRemoved.length > 0 && withUnitRemoved.join(" ") !== tokens.join(" ")) {
+    return withUnitRemoved.join(" ");
+  }
+  return tokens.slice(-2).join(" ");
 }
 
 function tokenScore(core: string, p: string): number {

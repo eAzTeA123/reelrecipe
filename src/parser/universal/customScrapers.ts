@@ -2,6 +2,39 @@ import * as cheerio from "cheerio";
 import type { RecipeTimes } from "./types";
 import { cleanHtmlText, extractJsonLd } from "./structuredData";
 
+/** Entfernt Tags, fügt aber an Tags Leerzeichen ein, damit Inline-Spans nicht kleben */
+function cleanHtmlTextWithSpacing(html: string | null | undefined): string {
+  if (!html) return "";
+  return html
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/&amp;/gi, "&")
+    .replace(/&quot;/gi, '"')
+    .replace(/&apos;/gi, "'")
+    .replace(/&#39;/gi, "'")
+    .replace(/&lt;/gi, "<")
+    .replace(/&gt;/gi, ">")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+/** Bereinigt Chefkoch-typische Formatierungsfehler in Zutatenzeilen */
+function normalizeChefkochIngredient(line: string): string {
+  return (
+    line
+      // Chilischote(n)frische → Chilischote(n), frische
+      .replace(/(\(n\))([a-zäöüß])/i, "$1, $2")
+      // Rigatonioder Penne → Rigatoni oder Penne
+      .replace(/(\p{L})(oder\s)/gu, "$1 $2")
+      // Sahne200 ml → Sahne 200 ml
+      .replace(/(\p{L}{2,})(\d)/gu, "$1 $2")
+      // Cherrytomate(n)400 g falsch? eher selten, aber vorsichtshalber
+      .replace(/(\))(\d)/g, "$1 $2")
+      // n.B. → n. B.
+      .replace(/\bn\s*\.?\s*B\s*\./gi, "n. B.")
+  );
+}
+
 export interface CustomScraperResult {
   title?: string;
   ingredients?: string[];
@@ -43,23 +76,23 @@ export function scrapeChefkoch(html: string): CustomScraperResult | null {
     image = $('meta[property="og:image"]').attr("content") || undefined;
   }
 
-  // Ingredients from Chefkoch's ingredient table
-  if (!ingredients || ingredients.length === 0) {
-    const list: string[] = [];
-    $("table.ingredients tr, table.in-recipe-ingredients tr").each((_, tr) => {
-      const tds = $(tr).find("td");
-      if (tds.length >= 2) {
-        const qty = cleanHtmlText($(tds[0]).text());
-        const name = cleanHtmlText($(tds[1]).text());
-        if (name) {
-          list.push(qty ? `${qty} ${name}` : name);
-        }
-      } else if (tds.length === 1) {
-        const line = cleanHtmlText($(tds[0]).text());
-        if (line) list.push(line);
+  // Chefkoch's DOM ingredient table preserves amounts & units better than JSON-LD strings.
+  const domIngredients: string[] = [];
+  $("table.ingredients tr, table.in-recipe-ingredients tr").each((_, tr) => {
+    const tds = $(tr).find("td");
+    if (tds.length >= 2) {
+      const qty = cleanHtmlTextWithSpacing($(tds[0]).html());
+      const name = cleanHtmlTextWithSpacing($(tds[1]).html());
+      if (name) {
+        domIngredients.push(qty ? `${qty} ${name}` : name);
       }
-    });
-    if (list.length > 0) ingredients = list;
+    } else if (tds.length === 1) {
+      const line = cleanHtmlTextWithSpacing($(tds[0]).html());
+      if (line) domIngredients.push(line);
+    }
+  });
+  if (domIngredients.length > 0) {
+    ingredients = domIngredients.map(normalizeChefkochIngredient);
   }
 
   // Instructions from Chefkoch's ds-box / recipe-text

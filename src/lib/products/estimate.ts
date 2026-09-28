@@ -10,6 +10,7 @@ import {
   MATCH_THRESHOLD,
   addNutrition,
   computeCost,
+  fallbackSearchTermFor,
   isPantryIngredient,
   scaleNutrition,
   scoreProductName,
@@ -21,6 +22,7 @@ import { mapLimit } from "./cache";
 export interface EstimateIngredient {
   id: string;
   name: string;
+  notes?: string;
   amount?: number;
   unit?: string;
 }
@@ -31,7 +33,7 @@ export interface EstimateDeps {
 }
 
 /** Maximal so viele Kandidaten je Zutat werden auf Preise geprüft */
-const MAX_CANDIDATES = 20;
+const MAX_CANDIDATES = 48;
 
 interface Matched {
   ing: EstimateIngredient;
@@ -79,7 +81,7 @@ export async function estimateShopping(
 
   const matched: Matched[] = await mapLimit(ingredients, 3, async (ing) => {
     if (isPantryIngredient(ing.name)) return { ing, pantry: true, candidates: [] };
-    const term = searchTermFor(ing.name);
+    const term = searchTermFor(ing.name, ing.notes);
     if (!term) return { ing, pantry: false, candidates: [] };
     try {
       const products = await deps.searchProducts(term);
@@ -103,6 +105,46 @@ export async function estimateShopping(
       prices = await deps.fetchPrices(eans);
     } catch (e) {
       console.warn("Preisabfrage fehlgeschlagen", e);
+      pricesOk = false;
+    }
+  }
+
+  // Fallback-Suche: wenn ein Kandidat gefunden, aber kein Preis für den gewählten Markt vorliegt,
+  // versuchen wir eine etwas allgemeinere Suche (z. B. "Knoblauchzehen" → "Knoblauch").
+  const newFallbackEans: string[] = [];
+  for (const m of matched) {
+    if (m.pantry || m.candidates.length === 0) continue;
+    const hasPriceForRetailer = m.candidates.some((c) =>
+      (prices.get(c.product.ean) ?? []).some((p) => retailer === "all" || p.retailerId === retailer),
+    );
+    if (hasPriceForRetailer) continue;
+    const mainTerm = searchTermFor(m.ing.name, m.ing.notes);
+    const fallbackTerm = fallbackSearchTermFor(m.ing.name);
+    if (!fallbackTerm || fallbackTerm === mainTerm) continue;
+    try {
+      const products = await deps.searchProducts(fallbackTerm);
+      const existingEans = new Set(m.candidates.map((c) => c.product.ean));
+      const extra = products
+        .map((product) => ({ product, score: scoreProductName(m.ing.name, product.name) }))
+        .filter((c) => c.score >= MATCH_THRESHOLD && !existingEans.has(c.product.ean))
+        .slice(0, MAX_CANDIDATES - m.candidates.length);
+      if (extra.length) {
+        m.candidates.push(...extra);
+        newFallbackEans.push(...extra.map((c) => c.product.ean));
+      }
+    } catch (e) {
+      console.warn("Fallback-Produktsuche fehlgeschlagen", fallbackTerm, e);
+      productsOk = false;
+    }
+  }
+  if (newFallbackEans.length > 0) {
+    try {
+      const extraPrices = await deps.fetchPrices(newFallbackEans);
+      for (const [ean, list] of extraPrices) {
+        prices.set(ean, list);
+      }
+    } catch (e) {
+      console.warn("Fallback-Preisabfrage fehlgeschlagen", e);
       pricesOk = false;
     }
   }

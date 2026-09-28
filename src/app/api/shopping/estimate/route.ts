@@ -16,9 +16,10 @@ function parseIngredients(v: unknown): EstimateIngredient[] | null {
     if (typeof r.id !== "string" || typeof r.name !== "string") return null;
     const name = r.name.trim().slice(0, 120);
     if (!name) continue;
+    const notes = typeof r.notes === "string" ? r.notes.trim().slice(0, 120) : undefined;
     const amount = typeof r.amount === "number" && Number.isFinite(r.amount) && r.amount > 0 ? r.amount : undefined;
     const unit = typeof r.unit === "string" ? r.unit.slice(0, 20) : undefined;
-    out.push({ id: r.id.slice(0, 80), name, amount, unit });
+    out.push({ id: r.id.slice(0, 80), name, notes, amount, unit });
   }
   return out;
 }

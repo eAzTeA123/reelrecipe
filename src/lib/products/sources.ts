@@ -100,7 +100,7 @@ export async function searchProducts(term: string): Promise<ProductCandidate[]> 
     const params = new URLSearchParams({
       q: `${term} countries_tags:"en:germany"`,
       langs: "de",
-      page_size: "24",
+      page_size: "48",
       fields: "code,product_name,product_name_de,brands,quantity,product_quantity,product_quantity_unit,nutriments",
     });
     const data = (await fetchJson(`${OFF_SEARCH_URL}?${params}`)) as { hits?: Record<string, unknown>[] };
