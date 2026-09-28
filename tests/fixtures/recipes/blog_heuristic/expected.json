@@ -1,0 +1,22 @@
+{
+  "titel": "Omis Schneller Apfelkuchen",
+  "zutaten": [
+    "250 g Mehl",
+    "125 g Butter",
+    "100 g Zucker",
+    "1 Pck. Vanillezucker",
+    "3 Eier",
+    "1 TL Backpulver",
+    "4 Äpfel"
+  ],
+  "zubereitung": [
+    "Den Backofen auf 180 Grad Ober-/Unterhitze vorheizen.",
+    "Butter mit Zucker und Vanillezucker schaumig rühren, dann die Eier einzeln unterrühren.",
+    "Mehl mit Backpulver mischen und kurz unter den Teig heben.",
+    "Teig in eine gefettete Springform füllen.",
+    "Äpfel schälen, vierteln, einritzen und auf dem Teig verteilen.",
+    "Im Ofen ca. 40 Minuten goldbraun backen."
+  ],
+  "expectedSource": "heuristik",
+  "expectedStatus": "success"
+}

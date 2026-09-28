@@ -1,0 +1,24 @@
+{
+  "titel": "Ungarisches Rindergulasch",
+  "zutaten": [
+    "800 g Rindergulasch",
+    "800 g Zwiebeln",
+    "3 EL Paprikapulver edelsüß",
+    "2 EL Tomatenmark",
+    "500 ml Rinderbrühe",
+    "2 EL Schmalz oder Öl"
+  ],
+  "zubereitung": [
+    "Zwiebeln schälen und in feine Würfel schneiden.",
+    "Schmalz im Schmortopf erhitzen und Fleisch portionsweise scharf anbraten.",
+    "Zwiebeln zugeben und goldgelb rösten, Tomatenmark und Paprika kurz mitrösten.",
+    "Mit Brühe ablöschen und bei schwacher Hitze ca. 2 Stunden sanft schmoren."
+  ],
+  "zeiten": {
+    "prep": 30,
+    "cook": 120
+  },
+  "portionen": 4,
+  "expectedSource": "schema",
+  "expectedStatus": "success"
+}

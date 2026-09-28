@@ -131,3 +131,10 @@ export const IconDice = (p: P) => (
     <circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none" />
   </svg>
 );
+
+export const IconTag = (p: P) => (
+  <svg {...base(p)}><path d="M3.5 12.2V4.8a1.3 1.3 0 0 1 1.3-1.3h7.4l8.3 8.3a1.3 1.3 0 0 1 0 1.8l-7.4 7.4a1.3 1.3 0 0 1-1.8 0Z" /><circle cx="8.2" cy="8.2" r="1.3" /></svg>
+);
+export const IconChevronDown = (p: P) => (
+  <svg {...base(p)}><path d="m6 9 6 6 6-6" /></svg>
+);

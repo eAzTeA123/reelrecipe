@@ -3,11 +3,11 @@ import { useI18n } from "@/lib/i18n/context";
 
 import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { extractSocialUrlFromText, parseSocialUrl } from "@/lib/socialSource";
+import { extractRecipeLinkFromText, parseRecipeLink, parseSocialUrl, type RecipeLink } from "@/lib/socialSource";
+import { WEB_STATUS_MESSAGE, fetchRecipeImage, fetchWebRecipe } from "@/lib/webImport";
 import { parseRecipe, PARSER_VERSION } from "@/parser";
 import { translateParsedRecipe } from "@/lib/i18n/recipeTranslation";
 import { getRecipeRepository } from "@/data";
-import { compressImage } from "@/lib/image";
 import type { Recipe, RecipeInput } from "@/domain/types";
 import {
   emptyDraft,
@@ -64,6 +64,8 @@ function ImportFlow() {
   const [useOgImage, setUseOgImage] = useState(true);
   const [autoFailed, setAutoFailed] = useState(false);
   const [urlError, setUrlError] = useState<string>();
+  const [failReason, setFailReason] = useState<string>();
+  const [loadingHost, setLoadingHost] = useState<string>();
   const [parseError, setParseError] = useState<string>();
   const [analyzing, setAnalyzing] = useState(false);
   const [draft, setDraft] = useState<RecipeDraft | null>(null);
@@ -81,6 +83,8 @@ function ImportFlow() {
     abortRef.current?.abort();
     const controller = new AbortController();
     abortRef.current = controller;
+    setFailReason(undefined);
+    setLoadingHost(undefined);
     setStep("loading");
 
     const parsed = parseSocialUrl(socialUrl);
@@ -115,6 +119,74 @@ function ImportFlow() {
       setStep("caption");
     }
   }, [analyze]);
+
+  /** Rezeptseiten (Chefkoch, Blogs …) über den universellen Parser importieren */
+  const fetchWeb = useCallback(
+    async (link: string, host: string) => {
+      abortRef.current?.abort();
+      const controller = new AbortController();
+      abortRef.current = controller;
+      setFailReason(undefined);
+      setLoadingHost(host);
+      setStep("loading");
+
+      let res;
+      try {
+        res = await fetchWebRecipe(link, controller.signal);
+      } catch {
+        return;
+      }
+      if (controller.signal.aborted) return;
+
+      const r = res.recipe;
+      if (res.status === "success" && r) {
+        const translated = translateParsedRecipe(
+          { title: r.title, servings: r.servings, prepTime: r.prepTime, cookTime: r.cookTime, ingredients: r.ingredients, steps: r.steps },
+          lang,
+        );
+        let pendingImage: Blob | undefined;
+        let color: string | undefined;
+        if (r.image) {
+          pendingImage = await fetchRecipeImage(r.image, "web");
+          if (pendingImage) {
+            try {
+              color = await extractDominantColor(pendingImage);
+            } catch {
+              color = undefined;
+            }
+          }
+        }
+        if (controller.signal.aborted) return;
+        setDraft({
+          ...emptyDraft(),
+          title: translated.title,
+          description: r.description ?? "",
+          servingsText: translated.servings?.toString() ?? "",
+          prepTimeText: translated.prepTime?.toString() ?? "",
+          cookTimeText: translated.cookTime?.toString() ?? "",
+          sourceUrl: r.sourceUrl,
+          pendingImage,
+          color,
+          ...draftFromIngredients(translated.ingredients, translated.steps),
+        });
+        setStep("review");
+        return;
+      }
+      setFailReason(t(WEB_STATUS_MESSAGE[res.status === "success" ? "not_a_recipe" : res.status]));
+      setAutoFailed(true);
+      setStep("caption");
+    },
+    [lang, t],
+  );
+
+  const startLink = useCallback(
+    (link: RecipeLink) => {
+      setUrl(link.normalized);
+      if (link.kind === "social") void fetchCaption(link.normalized);
+      else void fetchWeb(link.normalized, link.host);
+    },
+    [fetchCaption, fetchWeb],
+  );
 
   useEffect(() => () => abortRef.current?.abort(), []);
 
@@ -193,34 +265,36 @@ function ImportFlow() {
       }
     }
 
-    const qUrl = params.get("url"); const qText = params.get("text"); const combined = [qUrl, qText].filter(Boolean).join(" "); const extracted = extractSocialUrlFromText(combined); const q = extracted ? extracted.normalized : (qUrl || qText);
-    if (!q) {
+    // Share-Target / Startseite: ?url= und/oder ?text= (geteilter Text enthält oft den Link)
+    const qUrl = params.get("url");
+    const qText = params.get("text");
+    const combined = [qUrl, qText].filter(Boolean).join(" ");
+    if (!combined) {
       started.current = false;
       return;
     }
-    const parsed = parseSocialUrl(q);
+    const link = extractRecipeLinkFromText(combined) ?? (qUrl ? parseRecipeLink(qUrl) : null);
     // Defer to avoid synchronous setState during effect
     queueMicrotask(() => {
-      if (parsed) {
-        setUrl(parsed.normalized);
-        void fetchCaption(parsed.normalized);
+      if (link) {
+        startLink(link);
       } else {
+        if (qText) setCaption(qText);
         setStep("caption");
-        setAutoFailed(true);
+        setAutoFailed(!qText);
       }
     });
-  }, [params, fetchCaption, toast]);
+  }, [params, startLink, toast]);
 
   function submitUrl(e: React.FormEvent) {
     e.preventDefault();
-    const parsed = parseSocialUrl(url);
-    if (!parsed) {
+    const link = parseRecipeLink(url);
+    if (!link) {
       setUrlError(t("import.linkError"));
       return;
     }
     setUrlError(undefined);
-    setUrl(parsed.normalized);
-    void fetchCaption(parsed.normalized);
+    startLink(link);
   }
 
   async function pasteFromClipboard() {
@@ -231,10 +305,10 @@ function ImportFlow() {
         return;
       }
       const text = await navigator.clipboard.readText();
-      const extracted = extractSocialUrlFromText(text) ?? parseSocialUrl(text);
+      const extracted = extractRecipeLinkFromText(text) ?? parseRecipeLink(text);
       if (extracted) {
         setUrl(extracted.normalized);
-        toast("Link eingefügt");
+        toast(t("import.linkPasted"));
       } else if (text.trim().startsWith("http")) {
         setUrl(text.trim());
         setUrlError(t("import.clipErrorInvalid"));
@@ -274,13 +348,10 @@ function ImportFlow() {
       const parsed = translateParsedRecipe(rawParsed, lang);
       let pendingImage: Blob | undefined;
       let color: string | undefined;
-      if (imgToUse) {
+      if (imgToUse && useOgImage) {
         try {
-          const res = await fetch(`/api/instagram/image?url=${encodeURIComponent(imgToUse)}`);
-          if (res.ok) {
-            pendingImage = await compressImage(await res.blob());
-            color = await extractDominantColor(pendingImage);
-          }
+          pendingImage = await fetchRecipeImage(imgToUse, "social");
+          if (pendingImage) color = await extractDominantColor(pendingImage);
         } catch (e) {
           console.error("og image fetch failed", e);
         }
@@ -420,7 +491,7 @@ function ImportFlow() {
       {step === "link" && (
         <section className="rounded-2xl bg-surface p-5 shadow-card">
           <form onSubmit={submitUrl} className="flex flex-col gap-3" noValidate>
-            <Field label="Instagram- oder TikTok-Link" htmlFor="social-url">
+            <Field label={t("import.linkLabel")} htmlFor="social-url">
               <div className="relative">
                 <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-3">
                   <IconLink size={17} />
@@ -431,40 +502,48 @@ function ImportFlow() {
                   inputMode="url"
                   autoComplete="url"
                   aria-invalid={!!urlError}
-                  aria-describedby={urlError ? "social-url-error" : undefined}
+                  aria-describedby={urlError ? "social-url-error" : "social-url-hint"}
                   value={url}
                   onChange={(e) => {
                     setUrl(e.target.value);
                     if (urlError) setUrlError(undefined);
                   }}
-                  placeholder="https://www.instagram.com/reel/… oder TikTok-Link"
+                  placeholder={t("import.linkPlaceholder")}
                   className="pl-10 pr-28"
                 />
                 <button
                   type="button"
                   onClick={() => void pasteFromClipboard()}
                   className="pressable absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1.5 rounded-xl bg-surface-2 px-2.5 py-1.5 text-[13px] font-semibold text-ink-2 hover:text-ink border border-line"
-                  aria-label="Link aus Zwischenablage einfügen"
+                  aria-label={t("home.paste")}
                 >
                   <IconClipboard size={14} />
-                  Einfügen
+                  {t("home.paste")}
                 </button>
               </div>
             </Field>
-            {urlError && (
+            {urlError ? (
               <p id="social-url-error" role="alert" className="text-[14px] text-danger">
                 {urlError}
               </p>
+            ) : (
+              <p id="social-url-hint" className="-mt-1 text-[13px] text-ink-3">
+                {t("import.linkHint")}
+              </p>
             )}
             <Button type="submit" size="lg" fullWidth>
-              Importieren
+              {t("import.submit")}
             </Button>
             <button
               type="button"
-              onClick={() => setStep("caption")}
-              className="pressable mx-auto py-2 text-[15px] font-medium text-ink-2 underline-offset-2 hover:underline"
+              onClick={() => {
+                setFailReason(undefined);
+                setAutoFailed(false);
+                setStep("caption");
+              }}
+              className="pressable mx-auto min-h-11 py-2 text-[15px] font-medium text-ink-2 underline-offset-2 hover:underline"
             >
-              Ohne Link fortfahren
+              {t("import.withoutLink")}
             </button>
           </form>
         </section>
@@ -476,16 +555,19 @@ function ImportFlow() {
           aria-live="polite"
         >
           <Spinner size={30} className="text-accent" />
-          <p className="text-[15px] text-ink-2">{t("import.loading")}</p>
+          <p className="px-6 text-center text-[15px] text-ink-2">
+            {loadingHost ? t("import.loadingWeb").replace("{host}", loadingHost) : t("import.loading")}
+          </p>
           <Button
             variant="secondary"
             onClick={() => {
               abortRef.current?.abort();
-              setAutoFailed(true);
-              setStep("caption");
+              setFailReason(undefined);
+              setAutoFailed(false);
+              setStep("link");
             }}
           >
-            Abbrechen
+            {t("import.cancel")}
           </Button>
         </section>
       )}
@@ -494,8 +576,7 @@ function ImportFlow() {
         <section className="flex flex-col gap-4 rounded-2xl bg-surface p-5 shadow-card">
           {autoFailed && (
             <p className="rounded-xl bg-accent-soft px-4 py-3 text-[15px] text-ink" role="status">
-              Die Beschreibung konnte nicht automatisch abgerufen werden.
-              Füge sie bitte manuell ein.
+              {failReason ?? t("import.autoFailed")}
             </p>
           )}
           <Field label={t("import.captionLabel")} htmlFor="caption">
@@ -516,7 +597,7 @@ function ImportFlow() {
                 onChange={(e) => setUseOgImage(e.target.checked)}
                 className="h-5 w-5 accent-accent"
               />
-              Vorschaubild übernehmen
+              {t("import.useOgImage")}
             </label>
           )}
           {parseError && (
@@ -535,7 +616,7 @@ function ImportFlow() {
           </Button>
           {parseError && (
             <Button variant="secondary" fullWidth onClick={startManual}>
-              Manuell ausfüllen
+              {t("import.manualFill")}
             </Button>
           )}
           {url && (
@@ -544,10 +625,11 @@ function ImportFlow() {
               onClick={() => {
                 setStep("link");
                 setAutoFailed(false);
+                setFailReason(undefined);
               }}
-              className="pressable mx-auto py-1 text-[14px] font-medium text-ink-2 hover:underline"
+              className="pressable mx-auto min-h-11 py-1 text-[14px] font-medium text-ink-2 hover:underline"
             >
-              Anderen Link verwenden
+              {t("import.otherLink")}
             </button>
           )}
         </section>

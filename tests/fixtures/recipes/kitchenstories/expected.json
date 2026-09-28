@@ -1,0 +1,26 @@
+{
+  "titel": "Cremige Pilzpfanne mit frischen Kräutern",
+  "zutaten": [
+    "400 g gemischte Pilze (Champignons, Kräuterseitlinge)",
+    "1 Schalotte",
+    "1 Knoblauchzehe",
+    "150 ml Sahne",
+    "2 EL Olivenöl",
+    "1 Bund Petersilie",
+    "Salz und frisch gemahlener Pfeffer"
+  ],
+  "zubereitung": [
+    "Pilze putzen und in mundgerechte Stücke schneiden. Schalotte und Knoblauch fein würfeln.",
+    "Olivenöl in einer Pfanne erhitzen und die Pilze scharf anbraten, bis sie leicht gebräunt sind.",
+    "Schalotte und Knoblauch zugeben und kurz mitbraten.",
+    "Mit Sahne ablöschen, cremig einkochen lassen und mit gehackter Petersilie, Salz und Pfeffer abschmecken."
+  ],
+  "zeiten": {
+    "prep": 10,
+    "cook": 15,
+    "total": 25
+  },
+  "portionen": 2,
+  "expectedSource": "schema",
+  "expectedStatus": "success"
+}

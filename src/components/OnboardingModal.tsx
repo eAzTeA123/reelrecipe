@@ -12,12 +12,14 @@ import { useHaptic } from "@/hooks/useHaptic";
 import confetti from "canvas-confetti";
 import { IconCheck, IconLink, IconCalendar, IconSparkle } from "@/components/Icons";
 
+type StepNo = 1 | 2 | 3 | 4;
+
 interface SlideData {
   icon: "sparkle" | "link" | "calendar" | "check";
   badge: string;
-  titleKey: "onboarding.step1Title" | "onboarding.step2Title" | "onboarding.step3Title" | "onboarding.step4Title";
-  subtitleKey: "onboarding.step1Subtitle" | "onboarding.step2Subtitle" | "onboarding.step3Subtitle" | "onboarding.step4Subtitle";
-  highlights: string[];
+  titleKey: `onboarding.step${StepNo}Title`;
+  subtitleKey: `onboarding.step${StepNo}Subtitle`;
+  highlightsKey: `onboarding.step${StepNo}Highlights`;
 }
 
 const EXIT_MS = 180;
@@ -36,52 +38,30 @@ export function OnboardingModal() {
   const [loadingSamples, setLoadingSamples] = useState(false);
   const closeTimer = useRef<number | undefined>(undefined);
 
-  const slides: SlideData[] = [
-    {
-      icon: "check",
-      badge: "ReelRecipe",
-      titleKey: "onboarding.step1Title",
-      subtitleKey: "onboarding.step1Subtitle",
-      highlights: lang === "de"
-        ? ["100% Lokal & Privat", "Kein Account nötig", "Vollständig werbefrei"]
-        : ["100% Local & Private", "No Account Needed", "Completely Ad-Free"],
-    },
-    {
-      icon: "link",
-      badge: "Smart Import",
-      titleKey: "onboarding.step2Title",
-      subtitleKey: "onboarding.step2Subtitle",
-      highlights: lang === "de"
-        ? ["Instagram & TikTok", "Automatische Zutaten", "Mengen-Skalierung"]
-        : ["Instagram & TikTok", "Auto Ingredients", "Portion Scaler"],
-    },
-    {
-      icon: "calendar",
-      badge: "Kitchen Power",
-      titleKey: "onboarding.step3Title",
-      subtitleKey: "onboarding.step3Subtitle",
-      highlights: lang === "de"
-        ? ["Wochenplan per Drag & Drop", "Supermarkt-Gänge", "Kochmodus & Timer"]
-        : ["Drag & Drop Meal Plan", "Supermarket Aisles", "Cook Mode & Timers"],
-    },
-    {
-      icon: "sparkle",
-      badge: "Ready!",
-      titleKey: "onboarding.step4Title",
-      subtitleKey: "onboarding.step4Subtitle",
-      highlights: lang === "de"
-        ? ["3 Vorlagen inklusive", "PWA Homescreen-App", "Haptisches Feedback"]
-        : ["3 Templates Included", "Homescreen Web App", "Haptic Interactions"],
-    },
-  ];
+  const slides: SlideData[] = (
+    [
+      { icon: "check", badge: "ReelRecipe" },
+      { icon: "link", badge: "Import" },
+      { icon: "calendar", badge: lang === "de" ? "Küche" : "Kitchen" },
+      { icon: "sparkle", badge: lang === "de" ? "Los geht's" : "Let's go" },
+    ] as const
+  ).map((s, i) => {
+    const n = (i + 1) as StepNo;
+    return {
+      ...s,
+      titleKey: `onboarding.step${n}Title`,
+      subtitleKey: `onboarding.step${n}Subtitle`,
+      highlightsKey: `onboarding.step${n}Highlights`,
+    };
+  });
 
   useEffect(() => {
     setMounted(true);
     const force = searchParams.get("onboarding") === "1" || searchParams.get("tour") === "1";
-    // Check onboardingSeen (do not block on legacy tourSeen so current users can see it)
-    const hasSeen = localStorage.getItem("onboardingSeen") === "true";
+    // Versionierte Markierung, damit inhaltliche Updates alle Nutzer einmal sehen
+    const hasSeenV2 = localStorage.getItem("onboardingSeenV2") === "true";
 
-    if (force || !hasSeen) {
+    if (force || !hasSeenV2) {
       setOpen(true);
       setCurrentSlide(0);
     }
@@ -95,6 +75,7 @@ export function OnboardingModal() {
 
   const handleClose = useCallback(() => {
     if (closing) return;
+    localStorage.setItem("onboardingSeenV2", "true");
     localStorage.setItem("onboardingSeen", "true");
     setClosing(true);
 
@@ -238,7 +219,7 @@ export function OnboardingModal() {
 
           {/* Highlights Chips */}
           <div className="flex flex-wrap justify-center gap-1.5">
-            {slide.highlights.map((h, i) => (
+            {t(slide.highlightsKey).split("|").map((h, i) => (
               <span
                 key={i}
                 className="inline-flex items-center gap-1.5 rounded-xl bg-surface-2 px-3 py-1.5 text-[12px] font-medium text-ink-2 border border-line/60"

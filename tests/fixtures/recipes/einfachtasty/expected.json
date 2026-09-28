@@ -1,0 +1,26 @@
+{
+  "titel": "One-Pot Pasta mit Tomaten und Spinat",
+  "zutaten": [
+    "300 g Penne",
+    "250 g Kirschtomaten",
+    "150 g Babyspinat",
+    "1 Zwiebel",
+    "2 Knoblauchzehen",
+    "750 ml Gemüsebrühe",
+    "100 g Frischkäse",
+    "Salz, Pfeffer und Oregano"
+  ],
+  "zubereitung": [
+    "Kirschtomaten halbieren, Zwiebel und Knoblauch fein hacken.",
+    "Nudeln, Tomaten, Zwiebeln und Knoblauch zusammen mit der Gemüsebrühe in einen großen Topf geben.",
+    "Aufkochen lassen und unter gelegentlichem Rühren bei mittlerer Hitze ca. 12 Minuten köcheln lassen.",
+    "Frischkäse und Spinat unterrühren, kurz zusammenfallen lassen und mit Salz, Pfeffer und Oregano abschmecken."
+  ],
+  "zeiten": {
+    "prep": 10,
+    "cook": 15
+  },
+  "portionen": 3,
+  "expectedSource": "schema",
+  "expectedStatus": "success"
+}

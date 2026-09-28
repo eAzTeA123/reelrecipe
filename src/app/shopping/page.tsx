@@ -1,7 +1,7 @@
 "use client";
 import { useI18n } from "@/lib/i18n/context";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useShoppingList } from "@/hooks/useShoppingList";
 import { useHaptic } from "@/hooks/useHaptic";
 import type { ShoppingItem } from "@/domain/types";
@@ -17,10 +17,13 @@ import { Sheet } from "@/components/Sheet";
 import { Field, Input } from "@/components/Input";
 import { IconCart, IconCheck, IconPencil, IconPlus, IconTrash } from "@/components/Icons";
 import { getAisle } from "@/lib/shoppingAisles";
+import { ShoppingEstimateCard } from "@/components/ShoppingEstimateCard";
+import { useSelectedRetailer, useShoppingEstimate } from "@/hooks/useShoppingEstimate";
+import { RETAILER_NAMES } from "@/lib/products/retailers";
 
 export default function ShoppingPage() {
 
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const haptic = useHaptic();
   const { items, loading, error, retry } = useShoppingList();
   const [recipeTitles, setRecipeTitles] = useState<Record<string, string>>({});
@@ -62,7 +65,30 @@ export default function ShoppingPage() {
       .catch((e) => console.error("recipe titles failed", e));
   }, [items]);
 
+  const [retailer, setRetailer] = useSelectedRetailer();
+  // Abhaken ändert den Anfrageschlüssel nicht – es wird nur lokal neu summiert
+  const estimateIngredients = useMemo(
+    () => items.map((i) => ({ id: i.id, name: i.name, amount: i.amount, unit: i.unit })),
+    [items],
+  );
+  const estimate = useShoppingEstimate(estimateIngredients, retailer);
+  const itemEstimates = useMemo(
+    () => new Map((estimate.data?.items ?? []).map((e) => [e.id, e])),
+    [estimate.data],
+  );
+  const openIds = useMemo(() => new Set(items.filter((i) => !i.checked).map((i) => i.id)), [items]);
+  const openTotal = [...openIds].reduce((s, id) => s + (itemEstimates.get(id)?.shoppingCost ?? 0), 0);
+  const openPriced = [...openIds].filter((id) => itemEstimates.get(id)?.status === "priced").length;
+
+  const euro = new Intl.NumberFormat(lang === "de" ? "de-DE" : "en-GB", { style: "currency", currency: "EUR" });
+
   const checkedCount = items.filter((i) => i.checked).length;
+  const subtitleParts: string[] = [];
+  if (items.length) {
+    subtitleParts.push(`${items.length} ${items.length === 1 ? t("shopping.ingredientSingular") : t("shopping.ingredientPlural")}`);
+    if (checkedCount > 0) subtitleParts.push(t("shopping.progress").replace("{n}", String(checkedCount)).replace("{m}", String(items.length)));
+    if (openPriced > 0) subtitleParts.push(t("shopping.openCost").replace("{v}", euro.format(openTotal)));
+  }
 
   const groupedItems = items.reduce((acc, item) => {
     const aisle = getAisle(item.name);
@@ -81,7 +107,7 @@ export default function ShoppingPage() {
     <>
       <PageHeader
         title={t("shopping.title")}
-        subtitle={items.length ? `${items.length} ${items.length === 1 ? t("shopping.ingredientSingular") : t("shopping.ingredientPlural")}` : undefined}
+        subtitle={subtitleParts.length ? subtitleParts.join(" · ") : undefined}
         action={
           items.length > 0 ? (
             <button
@@ -137,7 +163,7 @@ export default function ShoppingPage() {
                 <ul className="divide-y divide-line overflow-hidden rounded-2xl bg-surface shadow-card">
                   {groupedItems[aisle].map((item) => (
                     <li key={item.id} className="flex items-center gap-3 px-3 py-1.5">
-                      <label className="flex min-h-[44px] flex-1 cursor-pointer items-center gap-3">
+                      <label className="flex min-h-[44px] min-w-0 flex-1 cursor-pointer items-center gap-3">
                         <input
                           type="checkbox"
                           checked={item.checked}
@@ -154,9 +180,9 @@ export default function ShoppingPage() {
                         >
                           <IconCheck size={14} />
                         </span>
-                        <span className={`min-w-0 flex-1 text-[15px] ${item.checked ? "text-ink-3 line-through" : ""}`}>
+                        <span className={`min-w-0 flex-1 break-words hyphens-auto text-[15px] ${item.checked ? "text-ink-3 line-through" : ""}`}>
                           {formatAmount(item.amount, item.unit) && (
-                            <span className="mr-1.5 font-semibold tabular-nums text-ink-2">
+                            <span className="mr-1.5 whitespace-nowrap font-semibold tabular-nums text-ink-2">
                               {formatAmount(item.amount, item.unit)}
                             </span>
                           )}
@@ -167,6 +193,17 @@ export default function ShoppingPage() {
                               {item.recipeIds.length > 1 ? ` +${item.recipeIds.length - 1}` : ""}
                             </span>
                           )}
+                          {(() => {
+                            const est = itemEstimates.get(item.id);
+                            if (est?.status !== "priced" || est.shoppingCost === undefined) return null;
+                            const store = est.price?.retailerId ? RETAILER_NAMES[est.price.retailerId] : est.price?.storeName;
+                            return (
+                              <span className="block text-[12px] font-medium text-ink-2 no-underline">
+                                ≈ {euro.format(est.shoppingCost)}
+                                {store ? ` · ${store}` : ""}
+                              </span>
+                            );
+                          })()}
                         </span>
                       </label>
                       <button
@@ -200,6 +237,19 @@ export default function ShoppingPage() {
               </Button>
             </div>
           )}
+
+          <div className="mt-6">
+            <ShoppingEstimateCard
+              variant="list"
+              estimate={estimate.data}
+              loading={estimate.loading}
+              error={estimate.error}
+              onRetry={estimate.retry}
+              retailer={retailer}
+              onRetailerChange={setRetailer}
+              openIds={openIds}
+            />
+          </div>
         </>
       )}
 

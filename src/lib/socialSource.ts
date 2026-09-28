@@ -92,3 +92,54 @@ export function extractSocialUrlFromText(text: string): ParsedSocialUrl | null {
   }
   return found.length === 1 ? found[0] : null;
 }
+
+export type RecipeLink =
+  | { kind: "social"; normalized: string; social: ParsedSocialUrl }
+  | { kind: "web"; normalized: string; host: string };
+
+/**
+ * Erkennt einen Rezept-Link: Instagram/TikTok (Caption-Abruf) oder eine
+ * beliebige Rezeptseite (universeller Parser). Nur http(s); lokale und
+ * interne Adressen werden hier schon abgewiesen, der Server prüft zusätzlich.
+ */
+export function parseRecipeLink(input: string): RecipeLink | null {
+  const social = parseSocialUrl(input);
+  if (social) return { kind: "social", normalized: social.normalized, social };
+
+  const trimmed = input.trim().replace(/[)\].,;!?]+$/, "");
+  if (!trimmed || /\s/.test(trimmed)) return null;
+  let url: URL;
+  try {
+    url = new URL(/^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`);
+  } catch {
+    return null;
+  }
+  if (url.protocol !== "http:" && url.protocol !== "https:") return null;
+  const host = url.hostname.toLowerCase();
+  if (
+    !host.includes(".") ||
+    host === "localhost" ||
+    host.endsWith(".local") ||
+    host.endsWith(".internal") ||
+    /^\d{1,3}(\.\d{1,3}){3}$/.test(host) ||
+    host.startsWith("[")
+  ) {
+    return null;
+  }
+  // Instagram/TikTok-Seiten ohne Beitrag (Profil, Startseite) sind keine Rezepte
+  if (/(^|\.)(instagram\.com|tiktok\.com)$/.test(host)) return null;
+  url.hash = "";
+  return { kind: "web", normalized: url.toString(), host: host.replace(/^www\./, "") };
+}
+
+/** Sucht in einem Text nach einem Rezept-Link; Social-Links haben Vorrang. */
+export function extractRecipeLinkFromText(text: string): RecipeLink | null {
+  const social = extractSocialUrlFromText(text);
+  if (social) return { kind: "social", normalized: social.normalized, social };
+  for (const word of text.trim().split(/\s+/)) {
+    if (!/^https?:\/\//i.test(word) && !/^www\./i.test(word)) continue;
+    const link = parseRecipeLink(word);
+    if (link) return link;
+  }
+  return null;
+}

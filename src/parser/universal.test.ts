@@ -1,0 +1,192 @@
+import { describe, it, expect } from "vitest";
+import {
+  parse_recipe,
+  detectInputType,
+  parseIsoDurationToMinutes,
+  flattenInstructions,
+  flattenIngredients,
+  detectBlockedPage,
+  mergeRecipeFields,
+  hasSiteScraperForUrl,
+} from "./universal";
+import { generateSyntheticCaption } from "./universal/syntheticCaption";
+import { runRecipeBenchmark } from "./universal/benchmarkRunner";
+import { parseRecipe as captionParser } from "./index";
+
+describe("Universal Recipe Parser - Unit Tests", () => {
+  it("detects input types accurately", () => {
+    expect(detectInputType("https://www.chefkoch.de/rezepte/123")).toBe("url");
+    expect(detectInputType("http://example.com/food?id=1")).toBe("url");
+    expect(
+      detectInputType("<!DOCTYPE html><html><head><title>Test</title></head><body><h1>Hello</h1></body></html>")
+    ).toBe("html");
+    expect(
+      detectInputType("<div class=\"recipe\"><h2>Zutaten</h2><p>500g Mehl</p></div>")
+    ).toBe("html");
+    expect(
+      detectInputType("Leckerer Kuchen\nZutaten:\n200 g Mehl\nZubereitung:\nBacken.")
+    ).toBe("caption");
+  });
+
+  it("normalizes ISO-8601 durations into minutes", () => {
+    expect(parseIsoDurationToMinutes("PT30M")).toBe(30);
+    expect(parseIsoDurationToMinutes("PT1H")).toBe(60);
+    expect(parseIsoDurationToMinutes("PT1H30M")).toBe(90);
+    expect(parseIsoDurationToMinutes("P0DT1H45M")).toBe(105);
+    expect(parseIsoDurationToMinutes("PT45S")).toBe(1);
+    expect(parseIsoDurationToMinutes("invalid")).toBeUndefined();
+  });
+
+  it("flattens instructions from string, array, HowToStep, and HowToSection", () => {
+    const rawSteps = [
+      "Step 1: Prep",
+      { "@type": "HowToStep", text: "Step 2: Cook" },
+      {
+        "@type": "HowToSection",
+        itemListElement: [
+          { "@type": "HowToStep", text: "Step 3a: Sauce" },
+          { "@type": "HowToStep", text: "Step 3b: Simmer" },
+        ],
+      },
+    ];
+    const flattened = flattenInstructions(rawSteps);
+    expect(flattened).toEqual([
+      "Step 1: Prep",
+      "Step 2: Cook",
+      "Step 3a: Sauce",
+      "Step 3b: Simmer",
+    ]);
+  });
+
+  it("flattens ingredients properly", () => {
+    const raw = ["200 g flour", { text: "2 eggs" }, ["1 cup milk", "pinch of salt"]];
+    expect(flattenIngredients(raw)).toEqual([
+      "200 g flour",
+      "2 eggs",
+      "1 cup milk",
+      "pinch of salt",
+    ]);
+  });
+
+  it("detects blocked, login, and paywall pages", () => {
+    expect(detectBlockedPage("").isBlocked).toBe(true);
+    expect(
+      detectBlockedPage("<html><body><h1>Anmeldung erforderlich</h1><p>Bitte loggen Sie sich ein.</p></body></html>").status
+    ).toBe("login_required");
+    expect(
+      detectBlockedPage("<html><body><h1>Exklusiv für Abonnenten</h1><p>Paywall text</p></body></html>").status
+    ).toBe("paywall");
+    expect(
+      detectBlockedPage("<html><head><title>Just a moment...</title></head><body>cf-browser-verification</body></html>").status
+    ).toBe("blocked");
+  });
+
+  it("checks dynamic site-scrapers and custom scrapers", () => {
+    // allrecipes.com is registered in installed recipe-scrapers
+    expect(hasSiteScraperForUrl("https://www.allrecipes.com/recipe/123/test")).toBe(true);
+    // chefkoch.de is registered in our custom site-scrapers
+    expect(hasSiteScraperForUrl("https://www.chefkoch.de/rezepte/123/test")).toBe(true);
+    // unknown domain has no scraper
+    expect(hasSiteScraperForUrl("https://www.unbekannte-rezepte-seite-xyz.de/123")).toBe(false);
+  });
+
+  it("merges fields per-field with correct source and confidence", () => {
+    const merged = mergeRecipeFields(
+      {
+        hasScraper: true,
+        title: "Scraper Title",
+        ingredients: ["200 g flour", "2 eggs"],
+      },
+      {
+        hasSchema: true,
+        instructions: ["Mix ingredients", "Bake at 180C"],
+        servings: 4,
+      },
+      null
+    );
+
+    expect(merged.titel.value).toBe("Scraper Title");
+    expect(merged.titel.source).toBe("site-scraper");
+    expect(merged.titel.confidence).toBeGreaterThan(0.9);
+
+    expect(merged.zutaten.value).toEqual(["200 g flour", "2 eggs"]);
+    expect(merged.zutaten.source).toBe("site-scraper");
+
+    expect(merged.zubereitung.value).toEqual(["Mix ingredients", "Bake at 180C"]);
+    expect(merged.zubereitung.source).toBe("schema");
+    expect(merged.zubereitung.confidence).toBeGreaterThan(0.85);
+
+    expect(merged.portionen.value).toBe(4);
+    expect(merged.portionen.source).toBe("schema");
+    expect(merged.isHighConfidence).toBe(true);
+  });
+
+  it("parses plain text caption with existing parser and assigns source=heuristik", async () => {
+    const caption = `Creamy Garlic Chicken
+für 2 Portionen | 25 Minuten
+
+Zutaten:
+500 g Hähnchenbrust
+2 Eier
+200 ml Sahne
+
+Zubereitung:
+1. Hähnchen schneiden und anbraten.
+2. Sahne und Parmesan dazugeben.
+3. 10 Minuten köcheln lassen.`;
+    const result = await parse_recipe(caption);
+    expect(result.status).toBe("success");
+    expect(result.recipe).toBeDefined();
+    expect(result.recipe!.titel.value).toBe("Creamy Garlic Chicken");
+    expect(result.recipe!.titel.source).toBe("heuristik");
+    expect(result.recipe!.zutaten.source).toBe("heuristik");
+    expect(result.recipe!.zubereitung.source).toBe("heuristik");
+    expect(result.recipe!.zutaten.value.length).toBe(3);
+    expect(result.recipe!.zubereitung.value.length).toBe(3);
+  });
+});
+
+describe("Synthetic Caption Generator & Caption Parser Benchmarking", () => {
+  const sample = {
+    titel: "Käsespätzle",
+    zutaten: ["400 g Spätzlemehl", "4 Eier", "100 ml Wasser", "200 g Bergkäse", "2 Zwiebeln"],
+    zubereitung: [
+      "Teig schlagen bis er Blasen wirft.",
+      "Spätzle ins kochende Wasser schaben.",
+      "Mit geriebenem Bergkäse und Röstzwiebeln schichten.",
+    ],
+  };
+
+  it("evaluates caption parser across synthetic styles", () => {
+    const styles = [
+      "markers",
+      "no_markers",
+      "continuous_text",
+      "emojis",
+      "newlines_sparse",
+      "social_media",
+    ] as const;
+
+    for (const style of styles) {
+      const syn = generateSyntheticCaption(sample, style);
+      expect(syn.length).toBeGreaterThan(20);
+      const res = captionParser(syn);
+      // Ensure it produces a valid parsed recipe without crashing
+      if (res) {
+        expect(res.ingredients.length).toBeGreaterThan(0);
+      }
+    }
+  });
+});
+
+describe("Recipe Parser Multi-Site Benchmark", () => {
+  it("runs the full multi-site benchmark runner against offline fixtures", async () => {
+    const { results, summary } = await runRecipeBenchmark();
+    console.log(summary);
+    expect(results.length).toBeGreaterThanOrEqual(10);
+    
+    // Ensure all critical fixtures pass or are correctly recognized
+    const passOrBlocked = results.filter((r) => r.passed);
+    expect(passOrBlocked.length).toBe(results.length);
+  });
+});

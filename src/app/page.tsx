@@ -12,13 +12,13 @@ import { ErrorState } from "@/components/ErrorState";
 import { Button } from "@/components/Button";
 import { Input } from "@/components/Input";
 import { IconClipboard, IconFridge, IconLink, IconSettings, IconX, IconDice } from "@/components/Icons";
-import { extractSocialUrlFromText, parseSocialUrl } from "@/lib/socialSource";
+import { extractRecipeLinkFromText, parseRecipeLink } from "@/lib/socialSource";
+import { fetchRecipeImage, fetchWebRecipe } from "@/lib/webImport";
 import { useToast } from "@/components/Toast";
 import { useI18n } from "@/lib/i18n/context";
 import { OnboardingModal } from "@/components/OnboardingModal";
 import { parseRecipe } from "@/parser";
 import { getRecipeRepository } from "@/data";
-import { compressImage } from "@/lib/image";
 import { Spinner } from "@/components/Spinner";
 import type { RecipeInput } from "@/domain/types";
 
@@ -47,21 +47,66 @@ export default function HomePage() {
     localStorage.setItem("bingoBannerDismissed", "true");
   }
 
-  async function submit(e: React.FormEvent) {
-    e.preventDefault();
-    const trimmed = url.trim();
-    if (!trimmed) {
-      setUrlError(t("import.linkError") || "Bitte füge einen TikTok- oder Instagram-Link ein.");
+  async function saveImported(recipeInput: RecipeInput, pendingImage?: Blob) {
+    const existing = recipeInput.sourceUrl ? await getRecipeRepository().findBySourceUrl(recipeInput.sourceUrl) : undefined;
+    if (existing) {
+      toast(t("toast.recipeExists"));
+      router.push(`/recipes/${existing.id}`);
       return;
     }
-    const parsed = parseSocialUrl(trimmed);
-    if (!parsed) {
-      setUrlError(t("import.linkError") || "Ungültiger Social-Media-Link.");
+    const saved = await getRecipeRepository().saveWithImage(undefined, recipeInput, pendingImage);
+    toast(t("toast.recipeSaved"));
+    router.push(`/recipes/${saved.id}`);
+  }
+
+  /** Rezeptseiten: universeller Parser; nur sichere Ergebnisse direkt speichern, sonst prüfen lassen */
+  async function importWeb(link: string) {
+    const res = await fetchWebRecipe(link);
+    const r = res.recipe;
+    if (res.status === "success" && r && r.highConfidence) {
+      const pendingImage = r.image ? await fetchRecipeImage(r.image, "web") : undefined;
+      await saveImported(
+        {
+          title: r.title || "Neues Rezept",
+          description: r.description,
+          ingredients: r.ingredients,
+          steps: r.steps,
+          servings: r.servings,
+          prepTime: r.prepTime,
+          cookTime: r.cookTime,
+          sourceUrl: r.sourceUrl,
+          favorite: false,
+        },
+        pendingImage,
+      );
+      return;
+    }
+    router.push(`/import?url=${encodeURIComponent(link)}`);
+  }
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    const link = parseRecipeLink(url);
+    if (!link) {
+      setUrlError(t("import.linkError"));
       return;
     }
     setUrlError(undefined);
     setImporting(true);
 
+    if (link.kind === "web") {
+      try {
+        await importWeb(link.normalized);
+      } catch (err) {
+        console.error("web import error", err);
+        router.push(`/import?url=${encodeURIComponent(link.normalized)}`);
+      } finally {
+        setImporting(false);
+      }
+      return;
+    }
+
+    const parsed = link.social;
     try {
       const endpoint = parsed.platform === "tiktok" ? "/api/tiktok" : "/api/instagram";
       const res = await fetch(`${endpoint}?url=${encodeURIComponent(parsed.normalized)}`);
@@ -75,43 +120,21 @@ export default function HomePage() {
       if (data.ok && data.caption && data.caption.trim().length >= 15) {
         const recipeData = parseRecipe(data.caption.trim());
         if (recipeData && (recipeData.ingredients.length > 0 || recipeData.steps.length > 0)) {
-          let pendingImage: Blob | undefined;
-          if (data.image) {
-            try {
-              const imgRes = await fetch(`/api/instagram/image?url=${encodeURIComponent(data.image)}`);
-              if (imgRes.ok) {
-                pendingImage = await compressImage(await imgRes.blob());
-              }
-            } catch (err) {
-              console.error("image compress error", err);
-            }
-          }
-
-          const finalUrl = data.resolvedUrl || parsed.normalized;
-          
-          // DUPLIKAT-CHECK FÜR DIE HOMEPAGE
-          const existing = await getRecipeRepository().findBySourceUrl(finalUrl);
-          if (existing) {
-            toast(t("toast.recipeExists") || "Rezept existiert bereits in deiner Bibliothek.");
-            router.push(`/recipes/${existing.id}`);
-            return;
-          }
-
-          const recipeInput: RecipeInput = {
-            title: recipeData.title || "Neues Rezept",
-            ingredients: recipeData.ingredients,
-            steps: recipeData.steps,
-            servings: recipeData.servings,
-            prepTime: recipeData.prepTime,
-            cookTime: recipeData.cookTime,
-            sourceUrl: finalUrl,
-            sourceCaption: data.caption.trim(),
-            favorite: false,
-          };
-
-          const saved = await getRecipeRepository().saveWithImage(undefined, recipeInput, pendingImage);
-          toast(t("toast.recipeSaved") || "Rezept erfolgreich importiert!");
-          router.push(`/recipes/${saved.id}`);
+          const pendingImage = data.image ? await fetchRecipeImage(data.image, "social") : undefined;
+          await saveImported(
+            {
+              title: recipeData.title || "Neues Rezept",
+              ingredients: recipeData.ingredients,
+              steps: recipeData.steps,
+              servings: recipeData.servings,
+              prepTime: recipeData.prepTime,
+              cookTime: recipeData.cookTime,
+              sourceUrl: data.resolvedUrl || parsed.normalized,
+              sourceCaption: data.caption.trim(),
+              favorite: false,
+            },
+            pendingImage,
+          );
           return;
         }
       }
@@ -134,7 +157,7 @@ export default function HomePage() {
         return;
       }
       const text = await navigator.clipboard.readText();
-      const extracted = extractSocialUrlFromText(text) ?? parseSocialUrl(text);
+      const extracted = extractRecipeLinkFromText(text) ?? parseRecipeLink(text);
       if (extracted) {
         setUrl(extracted.normalized);
         toast(t("toast.linkCopied"));
@@ -218,7 +241,7 @@ export default function HomePage() {
             {importing ? (
               <>
                 <Spinner size={18} />
-                <span>Importiere...</span>
+                <span>{t("home.importing")}</span>
               </>
             ) : (
               t("home.importButton")

@@ -1,0 +1,27 @@
+{
+  "titel": "Klassische Spaghetti Carbonara",
+  "zutaten": [
+    "400 g Spaghetti",
+    "150 g Guanciale oder Pancetta",
+    "4 Eigelb",
+    "1 ganzes Ei",
+    "100 g Pecorino Romano frisch gerieben",
+    "Frisch gemahlener schwarzer Pfeffer",
+    "Salz für das Nudelwasser"
+  ],
+  "zubereitung": [
+    "Spaghetti in reichlich kochendem Salzwasser al dente kochen.",
+    "Guanciale in Streifen schneiden und in einer Pfanne knusprig auslassen.",
+    "Eigelb, Ei und Pecorino mit reichlich schwarzem Pfeffer cremig verrühren.",
+    "Nudeln abgießen, etwas Nudelwasser auffangen. Nudeln zum Guanciale geben und Pfanne vom Herd nehmen.",
+    "Ei-Käse-Mischung unterrühren und mit Nudelwasser cremig emulgieren."
+  ],
+  "zeiten": {
+    "prep": 10,
+    "cook": 15,
+    "total": 25
+  },
+  "portionen": 4,
+  "expectedSource": "site-scraper",
+  "expectedStatus": "success"
+}

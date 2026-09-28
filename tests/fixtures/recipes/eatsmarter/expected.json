@@ -1,0 +1,23 @@
+{
+  "titel": "Avocado-Toast mit pochiertem Ei",
+  "zutaten": [
+    "2 Scheiben Sauerteigbrot",
+    "1 reife Avocado",
+    "2 frische Eier",
+    "1 EL Zitronensaft",
+    "1 Prise Chiliflocken",
+    "Meersalz und frisch gemahlener Pfeffer"
+  ],
+  "zubereitung": [
+    "Brot in einer Pfanne oder im Toaster knusprig anrösten.",
+    "Avocado mit einer Gabel zerdrücken und mit Zitronensaft, Salz und Pfeffer abschmecken.",
+    "Eier in siedendem Wasser mit einem Schuss Essig für 3-4 Minuten pochieren.",
+    "Avocadocreme auf die Brote streichen, je ein pochiertes Ei daraufsetzen und mit Chiliflocken garnieren."
+  ],
+  "zeiten": {
+    "total": 15
+  },
+  "portionen": 2,
+  "expectedSource": "schema",
+  "expectedStatus": "success"
+}

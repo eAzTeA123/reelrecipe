@@ -1,0 +1,28 @@
+{
+  "titel": "Saftiges Bananenbrot mit Walnüssen",
+  "zutaten": [
+    "3 reife Bananen",
+    "200 g Dinkelmehl",
+    "80 g weiche Butter",
+    "70 g brauner Zucker",
+    "2 Eier",
+    "1 TL Backpulver",
+    "1 Prise Zimt",
+    "50 g gehackte Walnüsse"
+  ],
+  "zubereitung": [
+    "Backofen auf 175 °C Ober-/Unterhitze vorheizen und eine Kastenform einfetten.",
+    "Bananen mit einer Gabel gründlich zerdrücken.",
+    "Butter und braunen Zucker cremig schlagen, dann Eier und Bananenmus unterrühren.",
+    "Mehl, Backpulver und Zimt mischen, kurz unterrühren und die gehackten Walnüsse unterheben.",
+    "Teig in die Form füllen und ca. 50-55 Minuten goldbraun backen."
+  ],
+  "zeiten": {
+    "prep": 15,
+    "cook": 55,
+    "total": 70
+  },
+  "portionen": 1,
+  "expectedSource": "schema",
+  "expectedStatus": "success"
+}

@@ -1,0 +1,46 @@
+{
+  "items": [
+    {
+      "product_code": "4061458010627",
+      "type": "PRODUCT",
+      "price": 5.99,
+      "price_per": null,
+      "price_is_discounted": false,
+      "price_without_discount": null,
+      "currency": "EUR",
+      "date": "2026-09-12",
+      "location": { "osm_name": "Aldi", "osm_brand": "ALDI Nord", "osm_address_city": "Strausberg", "osm_address_country_code": "DE" }
+    },
+    {
+      "product_code": "4061458010627",
+      "type": "PRODUCT",
+      "price": 4.79,
+      "price_per": null,
+      "price_is_discounted": true,
+      "price_without_discount": 5.99,
+      "currency": "EUR",
+      "date": "2026-08-20",
+      "location": { "osm_name": "Netto Marken-Discount", "osm_brand": "Netto Marken-Discount", "osm_address_city": "Dahme/Mark", "osm_address_country_code": "DE" }
+    },
+    {
+      "product_code": "4061458010627",
+      "type": "PRODUCT",
+      "price": 3.2,
+      "price_per": null,
+      "price_is_discounted": false,
+      "currency": "EUR",
+      "date": "2026-09-01",
+      "location": { "osm_name": "Super U", "osm_brand": "Super U", "osm_address_city": "Lyon", "osm_address_country_code": "FR" }
+    },
+    {
+      "product_code": "20143541",
+      "type": "PRODUCT",
+      "price": 8.49,
+      "price_per": null,
+      "price_is_discounted": false,
+      "currency": "EUR",
+      "date": "2024-01-10",
+      "location": { "osm_name": "Lidl", "osm_brand": "Lidl", "osm_address_city": "Münster", "osm_address_country_code": "DE" }
+    }
+  ]
+}

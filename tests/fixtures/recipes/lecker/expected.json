@@ -1,0 +1,29 @@
+{
+  "titel": "Cremige Kürbissuppe mit Kokosmilch",
+  "zutaten": [
+    "800 g Hokkaido-Kürbis",
+    "1 Zwiebel",
+    "1 Stück Ingwer (ca. 2 cm)",
+    "2 EL Butter",
+    "600 ml Gemüsebrühe",
+    "200 ml Kokosmilch",
+    "Salz und Pfeffer",
+    "Etwas Muskatnuss"
+  ],
+  "zubereitung": [
+    "Kürbis waschen, halbieren, entkernen und in Würfel schneiden.",
+    "Zwiebel und Ingwer schälen und fein hacken.",
+    "Butter in einem großen Topf zerlassen, Zwiebel und Ingwer darin glasig dünsten.",
+    "Kürbiswürfel zugeben, kurz mitdünsten und mit Gemüsebrühe ablöschen.",
+    "Zugedeckt etwa 20 Minuten köcheln lassen, bis der Kürbis weich ist.",
+    "Kokosmilch zugeben, die Suppe fein pürieren und mit Salz, Pfeffer und Muskat abschmecken."
+  ],
+  "zeiten": {
+    "prep": 20,
+    "cook": 25,
+    "total": 45
+  },
+  "portionen": 4,
+  "expectedSource": "schema",
+  "expectedStatus": "success"
+}

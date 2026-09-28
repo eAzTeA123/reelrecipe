@@ -15,6 +15,8 @@ import { ErrorState } from "@/components/ErrorState";
 import { convertRecipeToMetric, convertRecipeToImperial } from "@/lib/unitConverter";
 import { UnitToggle } from "@/components/UnitToggle";
 import { useToast } from "@/components/Toast";
+import { ShoppingEstimateCard } from "@/components/ShoppingEstimateCard";
+import { useSelectedRetailer, useShoppingEstimate } from "@/hooks/useShoppingEstimate";
 import {
   IconBack, IconCart, IconClock, IconHeart, IconHeartFill,
   IconCopy, IconLink, IconMinus, IconPencil, IconPlay, IconPlus, IconPrint,
@@ -30,6 +32,19 @@ function formatMinutes(min?: number): string | undefined {
 }
 
 import { useImageUrlWithCache } from "@/hooks/useImageUrlWithCache";
+import type { TranslationKey } from "@/lib/i18n/dictionaries";
+
+function sourceLabel(sourceUrl: string, t: (k: TranslationKey) => string): string {
+  let host = "";
+  try {
+    host = new URL(sourceUrl).hostname.toLowerCase().replace(/^(www|m)\./, "");
+  } catch {
+    return t("recipe.originalSource");
+  }
+  if (/(^|\.)tiktok\.com$/.test(host)) return t("recipe.originalTiktok");
+  if (/(^|\.)instagram\.com$/.test(host)) return t("recipe.originalInstagram");
+  return host ? t("recipe.originalOn").replace("{host}", host) : t("recipe.originalSource");
+}
 
 export default function RecipeDetailPage({ params }: { params: Promise<{ id: string }> }) {
 
@@ -43,13 +58,29 @@ export default function RecipeDetailPage({ params }: { params: Promise<{ id: str
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [unitSystem, setUnitSystem] = useState<"eu" | "us">(lang === "de" ? "eu" : "us");
-  
+  const [retailer, setRetailer] = useSelectedRetailer();
+
   const recipe = useMemo(() => {
     if (!rawRecipe) return rawRecipe;
     return unitSystem === "eu"
       ? convertRecipeToMetric(rawRecipe)
       : convertRecipeToImperial(rawRecipe);
   }, [rawRecipe, unitSystem]);
+
+  const targetServings = servings ?? recipe?.servings ?? 1;
+
+  // Preise/Nährwerte immer aus metrischen Mengen berechnen, unabhängig von der Anzeige
+  const estimateIngredients = useMemo(() => {
+    if (!rawRecipe) return [];
+    const metric = convertRecipeToMetric(rawRecipe);
+    return metric.ingredients.map((i) => ({
+      id: i.id,
+      name: i.name,
+      amount: scaleAmount(i.amount, metric.servings, targetServings),
+      unit: i.unit,
+    }));
+  }, [rawRecipe, targetServings]);
+  const estimate = useShoppingEstimate(estimateIngredients, retailer);
 
   if (error) {
     return <ErrorState message={error} onRetry={retry} />;
@@ -75,7 +106,6 @@ export default function RecipeDetailPage({ params }: { params: Promise<{ id: str
     );
   }
 
-  const targetServings = servings ?? recipe.servings ?? 1;
   const time = formatMinutes((recipe.prepTime ?? 0) + (recipe.cookTime ?? 0) || undefined);
 
   async function addToShopping() {
@@ -190,7 +220,7 @@ export default function RecipeDetailPage({ params }: { params: Promise<{ id: str
           aria-label={t("general.back")}
           className="pressable inline-flex items-center gap-1 rounded-full py-2 pl-1 pr-3 text-[15px] font-medium text-ink-2"
         >
-          <IconBack size={20} /> {t("general.back")}
+          <IconBack size={20} /> <span className="max-[359px]:sr-only">{t("general.back")}</span>
         </button>
         <div className="flex gap-1">
           <button
@@ -270,7 +300,7 @@ export default function RecipeDetailPage({ params }: { params: Promise<{ id: str
             className="inline-flex items-center gap-1.5 text-accent underline-offset-2 hover:underline"
           >
             <IconLink size={15} />{" "}
-            {recipe.sourceUrl.includes("tiktok.com") ? t("recipe.originalTiktok") : t("recipe.originalSource")}
+            {sourceLabel(recipe.sourceUrl, t)}
           </a>
         )}
       </div>
@@ -306,7 +336,7 @@ export default function RecipeDetailPage({ params }: { params: Promise<{ id: str
 
       <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(18rem,0.82fr)_minmax(0,1.18fr)] lg:items-start">
       {/* Zutaten */}
-      <section aria-labelledby="ing-heading">
+      <section aria-labelledby="ing-heading" className="min-w-0">
         <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
           <h2 id="ing-heading" className="text-[19px] font-bold">{t("shopping.ingredientPlural")}</h2>
           <UnitToggle value={unitSystem} onChange={setUnitSystem} />
@@ -336,6 +366,20 @@ export default function RecipeDetailPage({ params }: { params: Promise<{ id: str
               );
             })}
           </ul>
+        )}
+        {recipe.ingredients.length > 0 && (
+          <div className="no-print mt-4">
+            <ShoppingEstimateCard
+              variant="recipe"
+              estimate={estimate.data}
+              loading={estimate.loading}
+              error={estimate.error}
+              onRetry={estimate.retry}
+              retailer={retailer}
+              onRetailerChange={setRetailer}
+              servings={targetServings}
+            />
+          </div>
         )}
       </section>
 

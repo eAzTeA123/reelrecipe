@@ -1,0 +1,26 @@
+{
+  "titel": "Classic Scones",
+  "zutaten": [
+    "350 g self-raising flour",
+    "1 tsp baking powder",
+    "85 g butter, cut into cubes",
+    "3 tbsp caster sugar",
+    "175 ml milk",
+    "1 tsp vanilla extract",
+    "Jam and clotted cream, to serve"
+  ],
+  "zubereitung": [
+    "Heat oven to 220C / 200C fan / gas 7. Tip flour and baking powder into a bowl with butter.",
+    "Rub butter in with your fingers until mixture looks like fine crumbs, then stir in sugar.",
+    "Warm milk gently and add vanilla extract. Stir into flour mixture to make a soft dough.",
+    "Roll out dough to 4cm thickness and stamp out rounds. Bake for 10 minutes until golden."
+  ],
+  "zeiten": {
+    "prep": 15,
+    "cook": 10,
+    "total": 25
+  },
+  "portionen": 8,
+  "expectedSource": "site-scraper",
+  "expectedStatus": "success"
+}

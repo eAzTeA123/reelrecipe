@@ -1,0 +1,24 @@
+{
+  "titel": "The Best Crispy Roast Potatoes Ever",
+  "zutaten": [
+    "2 kg russet or Yukon Gold potatoes",
+    "1/2 cup extra-virgin olive oil",
+    "1 small handful rosemary leaves, minced",
+    "3 medium cloves garlic, minced",
+    "Kosher salt and freshly ground black pepper"
+  ],
+  "zubereitung": [
+    "Adjust oven rack to center position and preheat oven to 450F / 230C.",
+    "Boil potatoes in salted water with baking soda until a knife meets no resistance.",
+    "Drain potatoes and rough up surfaces in the pot to create a starchy paste.",
+    "Toss with garlic-rosemary oil and roast on a large rimmed baking sheet for 50 minutes until deeply crispy."
+  ],
+  "zeiten": {
+    "prep": 20,
+    "cook": 50,
+    "total": 70
+  },
+  "portionen": 6,
+  "expectedSource": "site-scraper",
+  "expectedStatus": "success"
+}
