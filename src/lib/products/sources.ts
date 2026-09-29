@@ -130,6 +130,28 @@ export async function searchProducts(term: string): Promise<ProductCandidate[]> 
   });
 }
 
+/**
+ * Deutsche Produkte je Kategorie (Open Food Facts).
+ *
+ * Brücke für Zutaten, deren Namenssuche nichts findet: Kategorie → deutsches
+ * Produkt → Open-Prices-Preis per EAN. Nötig, weil der `category_tag`-Endpunkt
+ * von Open Prices den Länderfilter ignoriert und deutsche Kategoriepreise
+ * dadurch selten sind.
+ */
+export async function searchProductsInCategory(term: string, categoryTag: string): Promise<ProductCandidate[]> {
+  const key = `category-products:${categoryTag}:${term.toLowerCase()}`;
+  return productCache.getOrLoad(key, async () => {
+    const params = new URLSearchParams({
+      q: `${term} categories_tags:"${categoryTag}" countries_tags:"en:germany"`,
+      langs: "de",
+      page_size: "24",
+      fields: "code,product_name,product_name_de,brands,quantity,product_quantity,product_quantity_unit,nutriments",
+    });
+    const data = (await fetchJson(`${OFF_SEARCH_URL}?${params}`)) as { hits?: Record<string, unknown>[] };
+    return (data.hits ?? []).map(normalizeOffHit).filter((p): p is ProductCandidate => p !== null);
+  });
+}
+
 /** Holt gemeldete Preise für mehrere EANs gebündelt (max. 50 je Anfrage) */
 export async function fetchPrices(eans: string[]): Promise<Map<string, ObservedPrice[]>> {
   const result = new Map<string, ObservedPrice[]>();

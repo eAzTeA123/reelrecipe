@@ -38,6 +38,12 @@ export interface EstimateDeps {
   fetchPrices: (eans: string[]) => Promise<Map<string, ObservedPrice[]>>;
   fetchCategoryPrices?: (categoryTags: string[]) => Promise<Map<string, ObservedPrice[]>>;
   fetchSimilarProductPrices?: (term: string) => Promise<PricedProductCandidate[]>;
+  /**
+   * Deutsche Produkte zu Suchbegriff UND Kategorie. Brücke für Zutaten, deren
+   * reine Namenssuche nichts findet: Kategorie → deutsches Produkt → Preis per
+   * EAN. Produktpreise respektieren den Deutschland-Filter, Kategoriepreise nicht.
+   */
+  searchProductsInCategory?: (term: string, categoryTag: string) => Promise<ProductCandidate[]>;
 }
 
 const MAX_EXACT_CANDIDATES = 20;
@@ -164,6 +170,39 @@ export async function estimateShopping(
         .slice(0, MAX_SIMILAR_CANDIDATES),
     };
   });
+
+  // Brücke Kategorie → deutsches Produkt: Zutaten, für die die Namenssuche
+  // nichts gefunden hat, bekommen Kandidaten aus ihrer Kategorie. Deren Preise
+  // holen wir anschließend per EAN – und Produktpreise respektieren den
+  // Deutschland-Filter, anders als der category_tag-Endpunkt.
+  const needCandidates = matched.filter(
+    (item) => !item.pantry && item.exact.length === 0 && item.similar.length === 0 && item.categoryTags.length > 0,
+  );
+  if (needCandidates.length > 0 && deps.searchProductsInCategory) {
+    await mapLimit(needCandidates, 3, async (item) => {
+      const term = searchTermsFor(item.ing.name, item.ing.notes)[0];
+      if (!term) return;
+      const seen = new Map<string, ProductCandidate>();
+      for (const tag of item.categoryTags.slice(0, 2)) {
+        try {
+          for (const product of await deps.searchProductsInCategory!(term, tag)) seen.set(product.ean, product);
+        } catch (e) {
+          console.warn("Kategorie-Produktsuche fehlgeschlagen", tag, e);
+          productsOk = false;
+        }
+      }
+      item.similar.push(
+        ...[...seen.values()]
+          .map((product) => ({
+            product,
+            score: Math.min(SIMILAR_MAX_CONFIDENCE, scoreProductName(item.ing.name, product.name, item.ing.notes)),
+          }))
+          .filter((candidate) => candidate.score >= MATCH_THRESHOLD)
+          .sort((a, b) => b.score - a.score)
+          .slice(0, MAX_SIMILAR_CANDIDATES),
+      );
+    });
+  }
 
   let productPrices = new Map<string, ObservedPrice[]>();
   const eans = [...new Set(matched.flatMap((item) => [...item.exact, ...item.similar].map((candidate) => candidate.product.ean)))];

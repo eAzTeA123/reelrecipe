@@ -364,4 +364,49 @@ describe("Einkaufsschätzung (offline, injizierte Quellen)", () => {
     expect(r.sources.products).toBe("error");
     expect(r.pricedCount).toBe(0);
   });
+
+  it("findet über die Kategorie ein deutsches Produkt und dessen Marktpreis", async () => {
+    // Namenssuche findet nichts, die Kategorie liefert ein deutsches Produkt –
+    // dessen EAN-Preis ist ein echter Marktpreis (kein Richtwert).
+    const product: ProductCandidate = {
+      ean: "4000000000001",
+      name: "Jasminreis 500 g",
+      package: { amount: 500, kind: "mass" },
+    };
+    const price: ObservedPrice = {
+      ean: product.ean,
+      price: 2.49,
+      currency: "EUR",
+      basis: "package",
+      priceType: "PRODUCT",
+      confidence: 1,
+      discounted: false,
+      date: "2026-05-01",
+      retrievedAt: new Date().toISOString(),
+      storeName: "REWE",
+      scope: "store_specific",
+      source: "open-prices",
+      retailerId: "rewe",
+    };
+    const r = await estimateShopping([{ id: "x", name: "Jasminreis", amount: 200, unit: "g" }], "all", {
+      searchProducts: async () => [],
+      searchProductsInCategory: async () => [product],
+      fetchPrices: async () => new Map([[product.ean, [price]]]),
+    });
+
+    expect(r.items[0].status).toBe("priced");
+    expect(r.items[0].price?.priceType).toBe("SIMILAR_PRODUCT");
+    expect(r.items[0].estimate).toBeUndefined();
+    expect(r.estimatedCount).toBe(0);
+  });
+
+  it("bleibt ohne Kategorie-Brücke beim gekennzeichneten Richtwert", async () => {
+    const r = await estimateShopping([{ id: "x", name: "Jasminreis", amount: 200, unit: "g" }], "all", {
+      searchProducts: async () => [],
+      fetchPrices: async () => new Map(),
+    });
+    expect(r.items[0].status).toBe("estimated");
+    expect(r.items[0].estimate?.source).toContain("Schätzung");
+  });
 });
+

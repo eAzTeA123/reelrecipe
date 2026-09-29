@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import type { RetailerFilter } from "@/domain/productTypes";
 import { estimateShopping, type EstimateIngredient } from "@/lib/products/estimate";
-import { fetchCategoryPrices, fetchPrices, fetchSimilarProductPrices, searchProducts } from "@/lib/products/sources";
+import { fetchCategoryPrices, fetchPrices, fetchSimilarProductPrices, searchProducts, searchProductsInCategory } from "@/lib/products/sources";
 import { RETAILERS } from "@/lib/products/retailers";
 
 const MAX_INGREDIENTS = 40;
@@ -42,6 +42,7 @@ export async function POST(req: Request) {
       fetchPrices,
       fetchCategoryPrices,
       fetchSimilarProductPrices,
+      searchProductsInCategory,
     });
     return NextResponse.json(estimate);
   } catch (e) {
@@ -49,3 +50,4 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "estimate_failed" }, { status: 502 });
   }
 }
+
