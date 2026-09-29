@@ -7,7 +7,7 @@ import { extractRecipeLinkFromText, parseRecipeLink, parseSocialUrl, type Recipe
 import { WEB_STATUS_MESSAGE, fetchRecipeImage, fetchWebRecipe } from "@/lib/webImport";
 import { parseRecipe, PARSER_VERSION } from "@/parser";
 import { translateParsedRecipe } from "@/lib/i18n/recipeTranslation";
-import { getRecipeRepository, getCorrectionRepository } from "@/data";
+import { getRecipeRepository, getCorrectionRepository, getShoppingListRepository } from "@/data";
 import { createParseSnapshot } from "@/data/local/parseMerge";
 import type { ParsedRecipe, Recipe, RecipeInput } from "@/domain/types";
 import {
@@ -52,6 +52,44 @@ function saveDraft(d: DraftState) {
 }
 
 import { extractDominantColor } from "@/lib/color";
+import { decodeShareCode, extractShareCode, looksLikeShareCode } from "@/lib/shareCode";
+
+/** Gemeinsame Feldabbildung für den alten ?share=-Weg und die neuen Weitergabe-Codes. */
+interface SharePayloadShape {
+  title?: string;
+  description?: string;
+  servings?: number;
+  prepTime?: number;
+  cookTime?: number;
+  color?: string;
+  sourceUrl?: string;
+  ingredients?: { name?: string; amount?: number; unit?: string; notes?: string }[];
+  steps?: string[];
+}
+
+function draftFromSharePayload(payload: SharePayloadShape) {
+  return {
+    title: payload.title || "",
+    description: payload.description || "",
+    servingsText: payload.servings ? String(payload.servings) : "",
+    prepTimeText: payload.prepTime ? String(payload.prepTime) : "",
+    cookTimeText: payload.cookTime ? String(payload.cookTime) : "",
+    color: payload.color,
+    sourceUrl: payload.sourceUrl || "",
+    ingredients: (payload.ingredients || []).map((i) => ({
+      id: crypto.randomUUID(),
+      name: i.name || "",
+      amountText: i.amount ? String(i.amount) : "",
+      unit: i.unit || "",
+      notes: i.notes || "",
+      uncertain: false,
+    })),
+    steps: (payload.steps || []).map((s: string) => ({
+      id: crypto.randomUUID(),
+      instruction: s,
+    })),
+  };
+}
 
 function ImportFlow() {
   const { t, lang, setLang } = useI18n();
@@ -235,31 +273,16 @@ function ImportFlow() {
       // So if the original URL was /import?share=..., it will be /import?share=...
     }
 
+    const codeParam = params.get("code");
+    if (codeParam && looksLikeShareCode(codeParam)) {
+      void applyShareCode(codeParam);
+      return;
+    }
+
     if (shareParam) {
       try {
         const payload = JSON.parse(decodeURIComponent(shareParam));
-        setDraft({
-          ...emptyDraft(),
-          title: payload.title || "",
-          description: payload.description || "",
-          servingsText: payload.servings ? String(payload.servings) : "",
-          prepTimeText: payload.prepTime ? String(payload.prepTime) : "",
-          cookTimeText: payload.cookTime ? String(payload.cookTime) : "",
-          color: payload.color,
-          sourceUrl: payload.sourceUrl || "",
-          ingredients: (payload.ingredients || []).map((i: any) => ({
-            id: crypto.randomUUID(),
-            name: i.name || "",
-            amountText: i.amount ? String(i.amount) : "",
-            unit: i.unit || "",
-            notes: i.notes || "",
-            uncertain: false,
-          })),
-          steps: (payload.steps || []).map((s: string) => ({
-            id: crypto.randomUUID(),
-            instruction: s,
-          })),
-        });
+        setDraft({ ...emptyDraft(), ...draftFromSharePayload(payload) });
         setStep("review");
         return;
       } catch (e) {
@@ -291,6 +314,12 @@ function ImportFlow() {
 
   function submitUrl(e: React.FormEvent) {
     e.preventDefault();
+    // Das Feld nimmt Link ODER Weitergabe-Code entgegen
+    if (looksLikeShareCode(url)) {
+      setUrlError(undefined);
+      void applyShareCode(url);
+      return;
+    }
     const link = parseRecipeLink(url);
     if (!link) {
       setUrlError(t("import.linkError"));
@@ -298,6 +327,31 @@ function ImportFlow() {
     }
     setUrlError(undefined);
     startLink(link);
+  }
+
+  /**
+   * Weitergabe-Code übernehmen: Rezept geht in den Review, eine Einkaufsliste
+   * wird direkt zusammengeführt (Mengen addieren sich, nichts wird doppelt).
+   * Gibt true zurück, wenn der Text ein Code war.
+   */
+  async function applyShareCode(raw: string): Promise<boolean> {
+    if (!looksLikeShareCode(raw)) return false;
+    try {
+      const payload = await decodeShareCode(raw);
+      if (payload.kind === "shopping") {
+        await getShoppingListRepository().addIngredients(payload.items, "share");
+        toast(t("share.added").replace("{n}", String(payload.items.length)), "success");
+        router.push("/shopping");
+        return true;
+      }
+      setDraft({ ...emptyDraft(), ...draftFromSharePayload(payload.recipe) });
+      setStep("review");
+      return true;
+    } catch (e) {
+      setParseError(e instanceof Error ? e.message : "Der Code konnte nicht gelesen werden.");
+      setStep("caption");
+      return true;
+    }
   }
 
   async function pasteFromClipboard() {
@@ -308,6 +362,13 @@ function ImportFlow() {
         return;
       }
       const text = await navigator.clipboard.readText();
+      // Weitergabe-Code? Dann nur einsetzen – eingelesen wird er über den Knopf.
+      const code = extractShareCode(text);
+      if (code) {
+        setUrl(code);
+        toast(t("share.codePasted"));
+        return;
+      }
       const extracted = extractRecipeLinkFromText(text) ?? parseRecipeLink(text);
       if (extracted) {
         setUrl(extracted.normalized);
@@ -334,6 +395,8 @@ function ImportFlow() {
     const urlToUse = overrideUrl ?? url;
 
     const trimmed = textToParse.trim();
+    // Weitergabe-Code? Dann direkt übernehmen (Review bzw. Einkaufsliste)
+    if (await applyShareCode(trimmed)) return;
     if (trimmed.length < 20) {
       setParseError(t("import.parseErrorLength"));
       setStep("caption");

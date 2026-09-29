@@ -12,7 +12,7 @@ import { useHaptic } from "@/hooks/useHaptic";
 import confetti from "canvas-confetti";
 import { IconCheck, IconLink, IconCalendar, IconSparkle } from "@/components/Icons";
 
-type StepNo = 1 | 2 | 3 | 4;
+type StepNo = 1 | 2 | 3 | 4 | 5;
 
 interface SlideData {
   icon: "sparkle" | "link" | "calendar" | "check";
@@ -43,6 +43,7 @@ export function OnboardingModal() {
       { icon: "check", badge: "Scroll2Cook" },
       { icon: "link", badge: "Import" },
       { icon: "calendar", badge: lang === "de" ? "Küche" : "Kitchen" },
+      { icon: "link", badge: lang === "de" ? "Weitergeben" : "Sharing" },
       { icon: "sparkle", badge: lang === "de" ? "Los geht's" : "Let's go" },
     ] as const
   ).map((s, i) => {
@@ -59,7 +60,7 @@ export function OnboardingModal() {
     setMounted(true);
     const force = searchParams.get("onboarding") === "1" || searchParams.get("tour") === "1";
     // Versionierte Markierung, damit inhaltliche Updates alle Nutzer einmal sehen
-    const hasSeenV2 = localStorage.getItem("onboardingSeenV2") === "true";
+    const hasSeenV2 = localStorage.getItem("onboardingSeenV3") === "true";
 
     if (force || !hasSeenV2) {
       setOpen(true);
@@ -75,7 +76,7 @@ export function OnboardingModal() {
 
   const handleClose = useCallback(() => {
     if (closing) return;
-    localStorage.setItem("onboardingSeenV2", "true");
+    localStorage.setItem("onboardingSeenV3", "true");
     localStorage.setItem("onboardingSeen", "true");
     setClosing(true);
 
@@ -304,3 +305,4 @@ export function OnboardingModal() {
     document.body,
   );
 }
+

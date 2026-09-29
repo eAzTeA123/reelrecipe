@@ -13,6 +13,7 @@ import { Button } from "@/components/Button";
 import { Input } from "@/components/Input";
 import { IconClipboard, IconFridge, IconLink, IconSettings, IconX, IconDice } from "@/components/Icons";
 import { extractRecipeLinkFromText, parseRecipeLink } from "@/lib/socialSource";
+import { looksLikeShareCode } from "@/lib/shareCode";
 import { fetchRecipeImage, fetchWebRecipe } from "@/lib/webImport";
 import { useToast } from "@/components/Toast";
 import { useI18n } from "@/lib/i18n/context";
@@ -90,6 +91,13 @@ export default function HomePage() {
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
+    // Weitergabe-Code? Dann in den Import geben – dort wird er eingelesen.
+    if (looksLikeShareCode(url)) {
+      setUrlError(undefined);
+      setImporting(true);
+      router.push(`/import?code=${encodeURIComponent(url.trim())}`);
+      return;
+    }
     const link = parseRecipeLink(url);
     if (!link) {
       setUrlError(t("import.linkError"));
@@ -337,3 +345,4 @@ export default function HomePage() {
     </>
   );
 }
+

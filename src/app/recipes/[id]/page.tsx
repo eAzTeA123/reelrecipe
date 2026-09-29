@@ -10,6 +10,7 @@ import { formatAmount, scaleAmount } from "@/lib/scale";
 import { RecipeImage } from "@/components/RecipeImage";
 import { Button } from "@/components/Button";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
+import { ShareSheet } from "@/components/ShareSheet";
 import { Spinner } from "@/components/Spinner";
 import { ErrorState } from "@/components/ErrorState";
 import { convertRecipeToMetric, convertRecipeToImperial } from "@/lib/unitConverter";
@@ -30,6 +31,7 @@ function formatMinutes(min?: number): string | undefined {
 }
 
 import { useImageUrlWithCache } from "@/hooks/useImageUrlWithCache";
+import { encodeShareCode, recipeToSharePayload } from "@/lib/shareCode";
 import type { TranslationKey } from "@/lib/i18n/dictionaries";
 
 function sourceLabel(sourceUrl: string, t: (k: TranslationKey) => string): string {
@@ -56,6 +58,8 @@ export default function RecipeDetailPage({ params }: { params: Promise<{ id: str
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [unitSystem, setUnitSystem] = useState<"eu" | "us">(lang === "de" ? "eu" : "us");
+  const [shareOpen, setShareOpen] = useState(false);
+  const [shareCode, setShareCode] = useState<string | null | undefined>(undefined);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -75,6 +79,25 @@ export default function RecipeDetailPage({ params }: { params: Promise<{ id: str
   }, [rawRecipe, unitSystem]);
 
   const targetServings = servings ?? recipe?.servings ?? 1;
+
+  // Code erst erzeugen, wenn wirklich geteilt wird
+  useEffect(() => {
+    if (!shareOpen || !recipe) return;
+    let cancelled = false;
+    void encodeShareCode(recipeToSharePayload(recipe))
+      .then((code) => {
+        if (!cancelled) setShareCode(code);
+      })
+      .catch((e) => {
+        if (cancelled) return;
+        console.warn("share code failed", e);
+        setShareCode(null);
+        toast(t("share.codeUnavailable"), "error");
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [shareOpen, recipe, toast, t]);
 
   if (error) {
     return <ErrorState message={error} onRetry={retry} />;
@@ -218,7 +241,10 @@ export default function RecipeDetailPage({ params }: { params: Promise<{ id: str
         </button>
         <div className="flex gap-1">
           <button
-            onClick={() => void shareRecipe()}
+            onClick={() => {
+              setShareCode(undefined);
+              setShareOpen(true);
+            }}
             aria-label={t("recipe.share")}
             className="pressable rounded-full p-2.5 text-ink-2"
           >
@@ -414,7 +440,17 @@ export default function RecipeDetailPage({ params }: { params: Promise<{ id: str
         onConfirm={() => void doDelete()}
         onCancel={() => setConfirmDelete(false)}
       />
+
+      <ShareSheet
+        open={shareOpen}
+        onClose={() => setShareOpen(false)}
+        title={t("recipe.share")}
+        onShareText={shareRecipe}
+        code={shareCode}
+      />
       </article>
     </>
   );
 }
+
+

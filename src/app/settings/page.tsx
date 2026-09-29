@@ -268,6 +268,7 @@ export default function SettingsPage() {
           variant="secondary"
           onClick={() => {
             localStorage.removeItem("onboardingSeen");
+            localStorage.removeItem("onboardingSeenV3");
             localStorage.removeItem("tourSeen");
             router.push("/?onboarding=1");
           }}

@@ -18,12 +18,45 @@ import { Field, Input } from "@/components/Input";
 import { IconCart, IconCheck, IconPencil, IconPlus, IconTrash } from "@/components/Icons";
 import { getAisle } from "@/lib/shoppingAisles";
 import { useToast } from "@/components/Toast";
+import { ShareSheet } from "@/components/ShareSheet";
+import { encodeShareCode, shoppingToSharePayload, shoppingToText } from "@/lib/shareCode";
 
 
 export default function ShoppingPage() {
 
   const { t } = useI18n();
   const toast = useToast();
+  const [shareOpen, setShareOpen] = useState(false);
+  const [shareCode, setShareCode] = useState<string | null | undefined>(undefined);
+
+  /** Code erst beim Öffnen erzeugen (und nur aus den offenen Einträgen). */
+  async function openShareSheet() {
+    setShareOpen(true);
+    setShareCode(undefined);
+    try {
+      setShareCode(await encodeShareCode(shoppingToSharePayload(items.filter((i) => !i.checked))));
+    } catch (e) {
+      console.warn("share code failed", e);
+      setShareCode(null);
+    }
+  }
+
+  /** Textweg: nativ teilen, sonst in die Zwischenablage. */
+  async function shareListAsText() {
+    const text = shoppingToText(items);
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: t("share.listTitle"), text });
+        return;
+      }
+      await navigator.clipboard.writeText(text);
+      toast(t("share.textCopied"), "success");
+    } catch (e) {
+      if (e instanceof DOMException && e.name === "AbortError") return;
+      console.error("share failed", e);
+      toast(t("share.copyHint"), "error");
+    }
+  }
   const haptic = useHaptic();
   const { items, loading, error, retry } = useShoppingList();
   const [recipeTitles, setRecipeTitles] = useState<Record<string, string>>({});
@@ -214,6 +247,14 @@ export default function ShoppingPage() {
             ))}
           </div>
 
+          {items.some((item) => !item.checked) && (
+            <div className="mt-3 flex justify-center">
+              <Button variant="secondary" onClick={() => void openShareSheet()}>
+                {t("share.listTitle")}
+              </Button>
+            </div>
+          )}
+
           {checkedCount > 0 && (
             <div className="mt-4 flex justify-center">
               <Button
@@ -269,6 +310,14 @@ export default function ShoppingPage() {
           setConfirmClear(false);
         }}
         onCancel={() => setConfirmClear(false)}
+      />
+
+      <ShareSheet
+        open={shareOpen}
+        onClose={() => setShareOpen(false)}
+        title={t("share.listTitle")}
+        onShareText={shareListAsText}
+        code={shareCode}
       />
     </>
   );
