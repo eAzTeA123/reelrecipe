@@ -159,7 +159,7 @@ export const dictionaries = {
     "settings.deleteConfirmTitle": "Alles löschen?",
     "settings.deleteConfirmMessage": "Dies kann nicht rückgängig gemacht werden.",
     "settings.about": "Über die App",
-    "settings.aboutDesc": "Dies ist ein lokaler MVP. Alle Daten bleiben auf deinem Gerät.",
+    "settings.aboutDesc": "Dies ist ein lokaler MVP. Alle Daten bleiben auf deinem Gerät – ein Backup schützt sie, falls der Browser Speicherplatz aufräumt.",
 
     // Toasts
     "toast.linkCopied": "Link kopiert",
@@ -431,7 +431,7 @@ export const dictionaries = {
     "settings.deleteConfirmTitle": "Delete everything?",
     "settings.deleteConfirmMessage": "This action cannot be undone.",
     "settings.about": "About this app",
-    "settings.aboutDesc": "This is a local MVP. All data remains on your device.",
+    "settings.aboutDesc": "This is a local MVP. All data stays on your device – a backup protects it if the browser reclaims storage.",
 
     // Toasts
     "toast.linkCopied": "Link pasted",

@@ -66,6 +66,21 @@ export class RecipeDB extends Dexie {
     this.version(6).stores({
       corrections: "id, createdAt",
     });
+
+    // Schema-Upgrade in einem anderen Tab: unsere alte Verbindung würde das
+    // Upgrade blockieren. Deshalb schließen und neu laden – die Daten liegen in
+    // IndexedDB, es geht nichts verloren.
+    this.on("versionchange", () => {
+      console.warn("Scroll2Cook: Datenbank-Schema wurde in einem anderen Tab geändert – Seite wird neu geladen.");
+      this.close();
+      if (typeof window !== "undefined") window.location.reload();
+    });
+
+    // Wir wollen upgraden, ein anderer Tab hält aber noch eine alte Verbindung.
+    // Kein stiller Fehlschlag: der Nutzer soll wissen, warum es hakt.
+    this.on("blocked", () => {
+      console.warn("Scroll2Cook: Datenbank-Upgrade blockiert – ein anderer Tab hält noch eine ältere Verbindung offen.");
+    });
   }
 }
 

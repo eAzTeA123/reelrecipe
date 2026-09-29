@@ -2,7 +2,7 @@
 import { useI18n } from "@/lib/i18n/context";
 
 import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { IconCart, IconGrid, IconHeart, IconHeartFill, IconHome, IconCalendar } from "./Icons";
 
@@ -91,10 +91,41 @@ function TopNav() {
 export function AppShell({ children }: { children: React.ReactNode }) {
   
   const pathname = usePathname();
-  // Persistenten Speicher anfragen, damit der Browser IndexedDB nicht vorzeitig löscht
+  const [storageAtRisk, setStorageAtRisk] = useState(false);
+
+  // Persistenten Speicher anfragen UND das Ergebnis auswerten: ohne gewährte
+  // Persistenz kann der Browser (v. a. Safari/iOS) die IndexedDB räumen. Dann
+  // darf die App keine Dauerhaftigkeit versprechen, sondern muss zum Backup raten.
   useEffect(() => {
-    navigator.storage?.persist?.().catch(() => {});
+    let cancelled = false;
+    const storage = navigator.storage;
+    if (!storage?.persist) return;
+    void (async () => {
+      try {
+        if (localStorage.getItem("scroll2cook-storage-hint") === "dismissed") return;
+      } catch {
+        // localStorage nicht verfügbar: Hinweis trotzdem zeigen
+      }
+      try {
+        const alreadyPersisted = storage.persisted ? await storage.persisted() : false;
+        const granted = alreadyPersisted || (await storage.persist());
+        if (!cancelled && !granted) setStorageAtRisk(true);
+      } catch {
+        // Storage-API nicht verfügbar: nichts zusichern, lieber warnen
+        if (!cancelled) setStorageAtRisk(true);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, []);
+
+  function dismissStorageHint() {
+    setStorageAtRisk(false);
+    try {
+      localStorage.setItem("scroll2cook-storage-hint", "dismissed");
+    } catch {}
+  }
 
   return (
     <>
@@ -106,6 +137,25 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           id="main"
           tabIndex={-1}
         >
+          {storageAtRisk && (
+            <div
+              className="mb-4 flex items-start gap-3 rounded-2xl bg-[#fdf6ef] p-3 text-[14px] leading-snug text-[#9a5b23]"
+              role="status"
+            >
+              <p className="flex-1">
+                Dieser Browser garantiert nicht, dass deine Rezepte dauerhaft gespeichert bleiben.
+                Exportiere in den Einstellungen regelmäßig ein Backup.
+              </p>
+              <button
+                type="button"
+                onClick={dismissStorageHint}
+                aria-label="Hinweis schließen"
+                className="shrink-0 rounded-lg px-2 py-1 text-[13px] font-semibold underline underline-offset-2"
+              >
+                Verstanden
+              </button>
+            </div>
+          )}
           <div key={pathname} className="page-enter">
             {children}
           </div>
@@ -115,3 +165,5 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     </>
   );
 }
+
+

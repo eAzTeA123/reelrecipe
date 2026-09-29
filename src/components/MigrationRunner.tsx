@@ -20,6 +20,14 @@ export function MigrationRunner() {
         const suffix = kept > 0 ? `, ${kept} eigene Änderung(en) behalten` : "";
         toast(`${result.updated} Rezept(e) aktualisiert${suffix}`, "success");
       }
+      if (result.failed > 0) {
+        // Fehlgeschlagene Rezepte werden nicht als aktuell gestempelt und beim
+        // nächsten Start erneut versucht – das soll der Nutzer wissen.
+        toast(
+          `${result.failed} Rezept(e) konnten nicht aktualisiert werden. Beim nächsten Start wird es erneut versucht.`,
+          "error",
+        );
+      }
       // Trigger lazy caching of external images
       migrateExternalImages().then(() => {
         return backfillColors();

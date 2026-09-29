@@ -49,8 +49,9 @@ export async function runParserMigration(lang: "de" | "en"): Promise<MigrationRe
     try {
       const parsed = parseRecipe(recipe.sourceCaption!);
       if (!parsed || (parsed.ingredients.length === 0 && parsed.steps.length === 0)) {
+        // Kein brauchbares Ergebnis: Version bewusst NICHT stempeln, damit eine
+        // spätere Parser-Version es erneut versuchen kann (Kosten: ein Parse je Start).
         result.skipped++;
-        updates.push({ ...recipe, parserVersion: PARSER_VERSION });
         continue;
       }
 
@@ -86,9 +87,11 @@ export async function runParserMigration(lang: "de" | "en"): Promise<MigrationRe
       });
       result.updated++;
     } catch (e) {
+      // Fehler (z. B. Quota oder transienter IndexedDB-Fehler): Version NICHT
+      // stempeln, sonst bleibt das Rezept dauerhaft unmigriert. Beim nächsten
+      // Start wird es erneut versucht und der Fehler dem Nutzer gemeldet.
       console.error(`Migration failed for recipe ${recipe.id}:`, e);
       result.failed++;
-      updates.push({ ...recipe, parserVersion: PARSER_VERSION });
     }
   }
 
