@@ -22,6 +22,9 @@ const DESCRIPTORS = new Set([
   "light", "zero", "fettarm", "fettarmes", "fettfrei", "fettfreie", "fettfreier", "zuckerfrei", "zuckerfreie",
   "protein", "proteinreich", "high", "low", "balance", "leicht", "leichte", "mild", "milde", "pur", "natur",
   "original", "classic", "premium", "feinste", "beste", "gute", "guter", "halbfett", "vollfett", "fettreduziert",
+  // Zubereitungs-/Qualitätsvarianten: gehören nicht in die Produktsuche
+  "geräuchert", "geräucherte", "geräucherter", "geräuchertes", "geraeuchert", "geraeuchertes", "edelsüß",
+  "edelsuess", "gemahlen", "gemahlene", "gemahlener", "gemahlenes", "gehobelt", "grob", "grobe", "grobgerieben",
   "rot", "rote", "roter", "gelb", "gelbe", "grün", "grüne", "weiß", "weiße", "schwarz", "schwarzer",
   "fresh", "chopped", "minced", "large", "small", "medium", "of", "the", "a",
 ]);
@@ -53,6 +56,8 @@ const PRODUCT_ALIASES: Record<string, string[]> = {
   parmesan: ["parmigiano reggiano", "grana padano"],
   rigatoni: ["penne", "röhrennudeln"],
   sahne: ["schlagsahne"],
+  // "Streukäse" heißt im Handel Reibekäse – sonst findet die Produktsuche nichts
+  streukäse: ["reibekäse", "geriebener käse"],
   zucchini: ["courgette"],
 };
 
