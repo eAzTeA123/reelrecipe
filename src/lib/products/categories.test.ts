@@ -64,6 +64,24 @@ describe("Abdeckung auf echten Rezepten (Corpus)", () => {
   it("ordnet mindestens 95 % der Zutaten einer Kategorie oder dem Vorrat zu", () => {
     const covered = ingredients.filter((name) => isPantryIngredient(name) || categoryTagFor(name));
     const rate = covered.length / ingredients.length;
+
+    // Report wie beim Parser-Corpus: `npm run test` zeigt die Abdeckung direkt an
+    const pantry = ingredients.filter((name) => isPantryIngredient(name)).length;
+    const byCategory = covered.length - pantry;
+    const estimated = ingredients.length - covered.length;
+    const pct = (n: number) => `${((n / ingredients.length) * 100).toFixed(0)}%`;
+    console.log(
+      [
+        "",
+        `Preis-Abdeckung (${ingredients.length} echte Zutaten aus dem Parser-Corpus)`,
+        `  Kategorie-Preis (Marktdaten): ${byCategory} (${pct(byCategory)})`,
+        `  Vorrat (bewusst ohne Preis) : ${pantry} (${pct(pantry)})`,
+        `  Richtwert (Schätzung)       : ${estimated} (${pct(estimated)})`,
+        `  => Zutaten mit Eintrag      : ${pct(covered.length + estimated)}`,
+        "",
+      ].join("\n"),
+    );
+
     expect(ingredients.length).toBeGreaterThan(80);
     expect(rate, `nur ${covered.length} von ${ingredients.length} Zutaten abgedeckt`).toBeGreaterThanOrEqual(0.95);
   });
