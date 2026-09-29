@@ -14,8 +14,6 @@ import { Spinner } from "@/components/Spinner";
 import { ErrorState } from "@/components/ErrorState";
 import { convertRecipeToMetric, convertRecipeToImperial } from "@/lib/unitConverter";
 import { UnitToggle } from "@/components/UnitToggle";
-import { ShoppingEstimateCard } from "@/components/ShoppingEstimateCard";
-import { useSelectedRetailer, useShoppingEstimate } from "@/hooks/useShoppingEstimate";
 import { useToast } from "@/components/Toast";
 import {
   IconBack, IconCart, IconClock, IconHeart, IconHeartFill,
@@ -77,22 +75,6 @@ export default function RecipeDetailPage({ params }: { params: Promise<{ id: str
   }, [rawRecipe, unitSystem]);
 
   const targetServings = servings ?? recipe?.servings ?? 1;
-
-  // Preise/Nährwerte immer aus metrischen Mengen berechnen, unabhängig von der Anzeige
-  const estimateIngredients = useMemo(() => {
-    if (!rawRecipe) return [];
-    const metric = convertRecipeToMetric(rawRecipe);
-    return metric.ingredients.map((ing) => ({
-      id: ing.id,
-      name: ing.name,
-      notes: ing.notes,
-      amount: scaleAmount(ing.amount, metric.servings, targetServings),
-      unit: ing.unit,
-    }));
-  }, [rawRecipe, targetServings]);
-
-  const [retailer, setRetailer] = useSelectedRetailer();
-  const estimate = useShoppingEstimate(estimateIngredients, retailer);
 
   if (error) {
     return <ErrorState message={error} onRetry={retry} />;
@@ -380,20 +362,6 @@ export default function RecipeDetailPage({ params }: { params: Promise<{ id: str
           </ul>
         )}
 
-        {recipe.ingredients.length > 0 && (
-          <div className="no-print mt-4">
-            <ShoppingEstimateCard
-              variant="recipe"
-              estimate={estimate.data}
-              loading={estimate.loading}
-              error={estimate.error}
-              onRetry={estimate.retry}
-              retailer={retailer}
-              onRetailerChange={setRetailer}
-              servings={targetServings}
-            />
-          </div>
-        )}
       </section>
 
       {/* Zubereitung */}
@@ -450,4 +418,3 @@ export default function RecipeDetailPage({ params }: { params: Promise<{ id: str
     </>
   );
 }
-
