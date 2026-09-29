@@ -180,15 +180,21 @@ export async function estimateShopping(
   );
   if (needCandidates.length > 0 && deps.searchProductsInCategory) {
     await mapLimit(needCandidates, 3, async (item) => {
-      const term = searchTermsFor(item.ing.name, item.ing.notes)[0];
-      if (!term) return;
+      // Erster Begriff reicht meist; Alias-Begriffe (Cherrytomaten → Kirschtomaten)
+      // werden nur nachprobiert, wenn ein Begriff in dieser Kategorie nichts findet.
+      const terms = searchTermsFor(item.ing.name, item.ing.notes).slice(0, 2);
       const seen = new Map<string, ProductCandidate>();
       for (const tag of item.categoryTags.slice(0, 2)) {
-        try {
-          for (const product of await deps.searchProductsInCategory!(term, tag)) seen.set(product.ean, product);
-        } catch (e) {
-          console.warn("Kategorie-Produktsuche fehlgeschlagen", tag, e);
-          productsOk = false;
+        for (const term of terms) {
+          try {
+            const found = await deps.searchProductsInCategory!(term, tag);
+            if (found.length === 0) continue;
+            for (const product of found) seen.set(product.ean, product);
+            break;
+          } catch (e) {
+            console.warn("Kategorie-Produktsuche fehlgeschlagen", tag, e);
+            productsOk = false;
+          }
         }
       }
       item.similar.push(
