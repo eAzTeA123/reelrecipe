@@ -18,6 +18,10 @@ const DESCRIPTORS = new Set([
   "tk", "bio", "etwas", "ca", "einige", "evtl", "optional", "nach", "belieben", "geschmack", "und", "oder",
   "mit", "ohne", "für", "zum", "zur", "der", "die", "das", "den", "dem", "ein", "eine", "einer", "von",
   "in", "im", "am", "auf", "aus", "als", "je", "pro",
+  // Marketing-/Qualitätszusätze: verhindern Produkttreffer ("Light Streukäse" → "streukäse")
+  "light", "zero", "fettarm", "fettarmes", "fettfrei", "fettfreie", "fettfreier", "zuckerfrei", "zuckerfreie",
+  "protein", "proteinreich", "high", "low", "balance", "leicht", "leichte", "mild", "milde", "pur", "natur",
+  "original", "classic", "premium", "feinste", "beste", "gute", "guter", "halbfett", "vollfett", "fettreduziert",
   "rot", "rote", "roter", "gelb", "gelbe", "grün", "grüne", "weiß", "weiße", "schwarz", "schwarzer",
   "fresh", "chopped", "minced", "large", "small", "medium", "of", "the", "a",
 ]);

@@ -223,6 +223,97 @@ function normalize(value: string): string {
     .trim();
 }
 
+/**
+ * Breitere Kategorien als Rückfall, wenn ein spezifischer Tag in Deutschland
+ * keine gemeldeten Preise hat (z. B. "en:cherry-tomatoes" → "en:tomatoes").
+ */
+const CATEGORY_FALLBACKS: Record<string, string[]> = {
+  "en:cherry-tomatoes": ["en:tomatoes", "en:vegetables"],
+  "en:tomatoes": ["en:vegetables"],
+  "en:chicken-breasts": ["en:chickens", "en:poultry", "en:meats"],
+  "en:chickens": ["en:poultry", "en:meats"],
+  "en:ground-meat": ["en:meats"],
+  "en:beef": ["en:meats"],
+  "en:pork": ["en:meats"],
+  "en:salmon": ["en:fishes", "en:seafood"],
+  "en:tunas": ["en:fishes", "en:seafood"],
+  "en:fish": ["en:seafood"],
+  "en:ham": ["en:meats", "en:prepared-meats"],
+  "en:sausages": ["en:prepared-meats"],
+  "en:bacon": ["en:prepared-meats"],
+  "en:cream-cheeses": ["en:cheeses", "en:dairies"],
+  "en:grated-cheese": ["en:cheeses", "en:dairies"],
+  "en:gouda-cheese": ["en:cheeses", "en:dairies"],
+  "en:emmentaler-cheese": ["en:cheeses", "en:dairies"],
+  "en:parmesan": ["en:cheeses", "en:dairies"],
+  "en:feta": ["en:cheeses", "en:dairies"],
+  "en:mozzarella": ["en:cheeses", "en:dairies"],
+  "en:yogurts": ["en:dairies"],
+  "en:milks": ["en:dairies"],
+  "en:butters": ["en:dairies"],
+  "en:cream": ["en:dairies"],
+  "en:creme-fraiche": ["en:dairies"],
+  "en:eggs": ["en:eggs-and-egg-products"],
+  "en:rices": ["en:cereals-and-potatoes"],
+  "en:pastas": ["en:cereals-and-potatoes"],
+  "en:wheat-flours": ["en:cereals-and-potatoes"],
+  "en:oats": ["en:cereals-and-potatoes"],
+  "en:potatoes": ["en:cereals-and-potatoes"],
+  "en:sweet-potatoes": ["en:cereals-and-potatoes"],
+  "en:bread": ["en:breads", "en:cereals-and-potatoes"],
+  "en:olive-oils": ["en:vegetable-oils"],
+  "en:sunflower-oils": ["en:vegetable-oils"],
+  "en:coconut-milks": ["en:canned-foods"],
+  "en:tomato-pastes": ["en:canned-foods", "en:sauces"],
+  "en:pesto": ["en:sauces"],
+  "en:ketchup": ["en:sauces"],
+  "en:mayonnaises": ["en:sauces"],
+  "en:mustards": ["en:sauces"],
+  "en:hot-sauces": ["en:sauces"],
+  "en:chutneys": ["en:sauces"],
+  "en:broths": ["en:sauces", "en:canned-foods"],
+  "en:paprika-powder": ["en:spices"],
+  "en:curry-powder": ["en:spices"],
+  "en:seasonings": ["en:spices"],
+  "en:cinnamon": ["en:spices"],
+  "en:turmeric": ["en:spices"],
+  "en:peppers": ["en:spices"],
+  "en:broccoli": ["en:vegetables"],
+  "en:cauliflowers": ["en:vegetables"],
+  "en:peas": ["en:vegetables"],
+  "en:maizes": ["en:vegetables"],
+  "en:pumpkins": ["en:vegetables"],
+  "en:sweet-peppers": ["en:vegetables"],
+  "en:cucumbers": ["en:vegetables"],
+  "en:carrots": ["en:vegetables"],
+  "en:onions": ["en:vegetables"],
+  "en:garlic": ["en:vegetables"],
+  "en:zucchini": ["en:vegetables"],
+  "en:spinachs": ["en:vegetables"],
+  "en:mushrooms": ["en:vegetables"],
+  "en:lettuces": ["en:vegetables"],
+  "en:green-beans": ["en:vegetables"],
+  "en:apples": ["en:fruits"],
+  "en:bananas": ["en:fruits"],
+  "en:lemons": ["en:fruits"],
+  "en:berries": ["en:fruits"],
+  "en:hazelnuts": ["en:nuts"],
+  "en:almonds": ["en:nuts"],
+  "en:walnuts": ["en:nuts"],
+  "en:peanuts": ["en:nuts"],
+};
+
+/**
+ * Kategorie-Kandidaten in Reihenfolge: spezifisch zuerst, dann breitere
+ * Kategorien. So bekommt eine Zutat auch dann einen Marktpreis, wenn der
+ * genaue Tag in Deutschland keine Meldungen hat.
+ */
+export function categoryTagCandidates(name: string, notes?: string): string[] {
+  const match = resolveCategory(name, notes);
+  if (!match) return [];
+  return [match.tag, ...(CATEGORY_FALLBACKS[match.tag] ?? [])];
+}
+
 /** Kategorie-Tag für eine Zutat, oder undefined wenn keine Rohware erkannt wird. */
 export function resolveCategoryTag(name: string, notes?: string): string | undefined {
   return resolveCategory(name, notes)?.tag;

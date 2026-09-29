@@ -13,7 +13,6 @@ import {
   EXACT_PRODUCT_THRESHOLD,
   MATCH_THRESHOLD,
   addNutrition,
-  categoryTagFor,
   computeCategoryCost,
   computeCost,
   isPantryIngredient,
@@ -23,7 +22,7 @@ import {
   toBaseQuantity,
 } from "./matching";
 import { mapLimit } from "./cache";
-import { resolveCategory } from "./categories";
+import { categoryTagCandidates, resolveCategory } from "./categories";
 import { ESTIMATE_SOURCE, REFERENCE_PRICES } from "./referencePrices";
 
 export interface EstimateIngredient {
@@ -50,7 +49,7 @@ type ScoredProduct = { product: ProductCandidate; score: number };
 interface Matched {
   ing: EstimateIngredient;
   pantry: boolean;
-  categoryTag?: string;
+  categoryTags: string[];
   exact: ScoredProduct[];
   similar: ScoredProduct[];
 }
@@ -100,21 +99,25 @@ function pickProductPrice(
 
 function pickCategoryPrice(
   ing: EstimateIngredient,
-  categoryTag: string | undefined,
+  categoryTags: string[] | undefined,
   prices: Map<string, ObservedPrice[]>,
   retailer: RetailerFilter,
 ): PickedPrice | undefined {
-  if (!categoryTag) return undefined;
+  if (!categoryTags || categoryTags.length === 0) return undefined;
   const need = toBaseQuantity(ing.amount, ing.unit);
-  let best: PickedPrice | undefined;
-  for (const price of prices.get(categoryTag) ?? []) {
-    if (!supportsRetailer(price, retailer)) continue;
-    const cost = computeCategoryCost(need, price.price, price.basis);
-    if (!best || price.confidence > best.score || (price.confidence === best.score && price.date > (best.price?.date ?? ""))) {
-      best = { categoryTag, score: price.confidence, price, cost };
+  // Spezifischer Tag zuerst: hat er deutsche Meldungen, gewinnt er.
+  for (const categoryTag of categoryTags) {
+    let best: PickedPrice | undefined;
+    for (const price of prices.get(categoryTag) ?? []) {
+      if (!supportsRetailer(price, retailer)) continue;
+      const cost = computeCategoryCost(need, price.price, price.basis);
+      if (!best || price.confidence > best.score || (price.confidence === best.score && price.date > (best.price?.date ?? ""))) {
+        best = { categoryTag, score: price.confidence, price, cost };
+      }
     }
+    if (best) return best;
   }
-  return best;
+  return undefined;
 }
 
 /**
@@ -132,7 +135,7 @@ export async function estimateShopping(
   let pricesOk = true;
 
   const matched: Matched[] = await mapLimit(ingredients, 3, async (ing) => {
-    if (isPantryIngredient(ing.name)) return { ing, pantry: true, exact: [], similar: [] };
+    if (isPantryIngredient(ing.name)) return { ing, pantry: true, categoryTags: [], exact: [], similar: [] };
     const terms = searchTermsFor(ing.name, ing.notes);
     const byEan = new Map<string, ProductCandidate>();
     const searches = await mapLimit(terms, 2, async (term) => {
@@ -154,7 +157,7 @@ export async function estimateShopping(
     return {
       ing,
       pantry: false,
-      categoryTag: categoryTagFor(ing.name, ing.notes),
+      categoryTags: categoryTagCandidates(ing.name, ing.notes),
       exact: candidates.filter((candidate) => candidate.score >= EXACT_PRODUCT_THRESHOLD).slice(0, MAX_EXACT_CANDIDATES),
       similar: candidates
         .filter((candidate) => candidate.score < EXACT_PRODUCT_THRESHOLD)
@@ -180,7 +183,13 @@ export async function estimateShopping(
   }
 
   let categoryPrices = new Map<string, ObservedPrice[]>();
-  const categoryTags = [...new Set(matched.filter((item) => !exactPicks.has(item.ing.id)).map((item) => item.categoryTag).filter((tag): tag is string => Boolean(tag)))];
+  const categoryTags = [
+    ...new Set(
+      matched
+        .filter((item) => !exactPicks.has(item.ing.id))
+        .flatMap((item) => item.categoryTags),
+    ),
+  ];
   if (categoryTags.length > 0 && deps.fetchCategoryPrices) {
     try {
       categoryPrices = await deps.fetchCategoryPrices(categoryTags);
@@ -194,7 +203,7 @@ export async function estimateShopping(
   const similarPicks = new Map<string, PickedPrice>();
   for (const item of matched) {
     if (exactPicks.has(item.ing.id)) continue;
-    const category = pickCategoryPrice(item.ing, item.categoryTag, categoryPrices, retailer);
+    const category = pickCategoryPrice(item.ing, item.categoryTags, categoryPrices, retailer);
     if (category) {
       categoryPicks.set(item.ing.id, category);
       continue;
@@ -254,7 +263,7 @@ export async function estimateShopping(
   let nutritionTotal: Nutrition100 = {};
   let nutritionCovered = 0;
 
-  const items: EstimateItem[] = matched.map(({ ing, pantry, categoryTag, exact, similar }) => {
+  const items: EstimateItem[] = matched.map(({ ing, pantry, categoryTags, exact, similar }) => {
     if (pantry) return { id: ing.id, ingredientName: ing.name, status: "pantry" };
 
     const candidates = [...exact, ...similar];
@@ -296,9 +305,9 @@ export async function estimateShopping(
     return {
       id: ing.id,
       ingredientName: ing.name,
-      status: top || categoryTag ? "no_price" : "no_product",
+      status: top || categoryTags.length > 0 ? "no_price" : "no_product",
       product: top ? { ean: top.product.ean, name: top.product.name, brand: top.product.brand, package: top.product.package } : undefined,
-      categoryTag,
+      categoryTag: categoryTags[0],
       matchConfidence: top?.score,
       nutrition,
     } satisfies EstimateItem;
@@ -330,4 +339,6 @@ export async function estimateShopping(
     generatedAt: new Date().toISOString(),
   };
 }
+
+
 

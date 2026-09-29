@@ -9,7 +9,7 @@ const TIMEOUT_MS = 8000;
 const OFF_SEARCH_URL = "https://search.openfoodfacts.org/search";
 const OPEN_PRICES_URL = "https://prices.openfoodfacts.org/api/v1/prices";
 /** Preise älter als ein Jahr werden nicht verwendet */
-const MAX_PRICE_AGE_DAYS = 365;
+const MAX_PRICE_AGE_DAYS = 730;
 const MAX_PRICE_PAGES = 3;
 
 async function fetchJson(url: string): Promise<unknown> {
@@ -72,7 +72,13 @@ export function normalizeOpenPrice(raw: Record<string, unknown>, now = new Date(
   const ean = typeof raw.product_code === "string" && raw.product_code ? raw.product_code : undefined;
   const categoryTag = typeof raw.category_tag === "string" && raw.category_tag ? raw.category_tag : undefined;
   const priceType = raw.type === "CATEGORY" ? "CATEGORY" : "PRODUCT";
-  const date = typeof raw.date === "string" ? raw.date : "";
+  // Viele deutsche Preisschild-Einträge haben kein eigenes Datum; dann zählt das
+  // Belegdatum bzw. der Erfassungszeitpunkt. Datum wird in der UI immer angezeigt.
+  const proof = (raw.proof as Record<string, unknown>) ?? {};
+  const date =
+    (typeof raw.date === "string" && raw.date) ||
+    (typeof proof.date === "string" && proof.date) ||
+    (typeof raw.created === "string" ? raw.created.slice(0, 10) : "");
   if ((priceType === "PRODUCT" && !ean) || (priceType === "CATEGORY" && !categoryTag) || !date || !Number.isFinite(price) || price <= 0) return null;
   const ageDays = (now.getTime() - new Date(date).getTime()) / 86_400_000;
   if (!(ageDays >= 0 && ageDays <= MAX_PRICE_AGE_DAYS)) return null;
@@ -143,6 +149,10 @@ export async function fetchPrices(eans: string[]): Promise<Map<string, ObservedP
     for (let page = 1; page <= MAX_PRICE_PAGES; page++) {
       const params = new URLSearchParams({
         product_code__in: chunk.join(","),
+        // Ohne diesen Filter liefert die API Preise aus ganz Europa, die wir
+        // danach (Land != DE) wieder verwerfen – dadurch blieben nur ~4 von 10
+        // Zutaten übrig. Der Wert muss ausgeschrieben sein ("Germany", nicht "DE").
+        location_osm_address_country_code: "Germany",
         currency: "EUR",
         date__gte: since,
         order_by: "-date",
@@ -175,6 +185,7 @@ export async function fetchCategoryPrices(categoryTags: string[]): Promise<Map<s
       for (let page = 1; page <= MAX_PRICE_PAGES; page++) {
         const params = new URLSearchParams({
           category_tag: categoryTag,
+          location_osm_address_country_code: "Germany",
           currency: "EUR",
           date__gte: since,
           order_by: "-date",
@@ -204,6 +215,7 @@ export async function fetchSimilarProductPrices(term: string): Promise<PricedPro
     for (let page = 1; page <= MAX_PRICE_PAGES; page++) {
       const params = new URLSearchParams({
         product_name: term,
+        location_osm_address_country_code: "Germany",
         currency: "EUR",
         date__gte: since,
         order_by: "-date",
