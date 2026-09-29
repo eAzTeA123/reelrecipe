@@ -1,0 +1,66 @@
+{
+  "id": "noel-dd1luuyoqqy",
+  "source": "https://www.instagram.com/reel/Dd1lUUyoQqY/",
+  "account": "noel.rbd",
+  "language": "de",
+  "style": "emoji-bullets+promo-code+nutrition+mikrowelle",
+  "caption": "574kcal - 90g K - 42g E - 4g F\n( für 800g Futter ) 🫪\n.\n@prozis Code: NOEL\n❌ = bei Prozis erhältlich\n.\n.\n.\n❌ 45g Instant Rice Flour (Prozis)\n❌ 45g vegan Protein (Prozis)\n( das beste vegane, was ich je probiert habe )\n✖️ 1g Salz\n✖️ 1/2 TL Flohsamenschalen\n✖️ 500ml kochendes Wasser\n⏰ 3 bis 5 Minuten Mikrowelle ~ 700 W\n❌ Yummy Drops (Prozis)\n✖️ 150g TK Obst\n✖️ 150g frisches Obst\n✖️ 15g fettfreie Kellogs\n❌ 1 EL Zero Ahornsirup (Prozis)\n.\n@prozis Code: NOEL",
+  "expected": {
+    "title": null,
+    "servings": null,
+    "ingredients": [
+      {
+        "amount": 45,
+        "unit": "g",
+        "name": "Instant Rice Flour"
+      },
+      {
+        "amount": 45,
+        "unit": "g",
+        "name": "vegan Protein"
+      },
+      {
+        "amount": 1,
+        "unit": "g",
+        "name": "Salz"
+      },
+      {
+        "amount": 0.5,
+        "unit": "TL",
+        "name": "Flohsamenschalen"
+      },
+      {
+        "amount": 500,
+        "unit": "ml",
+        "name": "kochendes Wasser"
+      },
+      {
+        "amount": null,
+        "unit": null,
+        "name": "Yummy Drops"
+      },
+      {
+        "amount": 150,
+        "unit": "g",
+        "name": "TK Obst"
+      },
+      {
+        "amount": 150,
+        "unit": "g",
+        "name": "frisches Obst"
+      },
+      {
+        "amount": 15,
+        "unit": "g",
+        "name": "fettfreie Kellogs"
+      },
+      {
+        "amount": 1,
+        "unit": "EL",
+        "name": "Zero Ahornsirup"
+      }
+    ],
+    "stepsCount": 1
+  },
+  "notes": "Nur eine echte Anweisung (Mikrowelle 3-5 Minuten ~700 W). Nährwerte oben und der Prozis-Werbeblock mit Code NOEL sind keine Zutaten; \"Yummy Drops\" ist ein Fertigprodukt ohne Mengenangabe. Caption enthält keine Titelzeile – Titel wird nur auf Plausibilität geprüft."
+}

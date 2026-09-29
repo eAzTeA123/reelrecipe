@@ -1,5 +1,12 @@
 import Dexie, { type Table } from "dexie";
-import type { LocalImage, Recipe, ShoppingItem, MealPlanEntry } from "@/domain/types";
+import type {
+  LocalImage,
+  Recipe,
+  ShoppingItem,
+  MealPlanEntry,
+  AisleCheckEvent,
+  ParserCorrection,
+} from "@/domain/types";
 
 interface SettingRow {
   key: string;
@@ -19,6 +26,8 @@ export class RecipeDB extends Dexie {
   settings!: Table<SettingRow, string>;
   mealPlan!: Table<MealPlanEntry, string>;
   drafts!: Table<DraftRow, string>;
+  aisleOrder!: Table<AisleCheckEvent, string>;
+  corrections!: Table<ParserCorrection, string>;
 
   constructor() {
     super("rezept");
@@ -48,6 +57,14 @@ export class RecipeDB extends Dexie {
     });
     this.version(4).stores({
       drafts: "id",
+    });
+    this.version(5).stores({
+      aisleOrder: "id, aisle, timestamp",
+    });
+
+    // Lokales Parser-Korrektur-Log (nur für die Parser-Verbesserung, bleibt im Browser)
+    this.version(6).stores({
+      corrections: "id, createdAt",
     });
   }
 }

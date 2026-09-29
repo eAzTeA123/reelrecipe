@@ -7,9 +7,47 @@ const UNICODE_FRACTIONS: Record<string, string> = {
   "⅛": "1/8", "⅜": "3/8", "⅝": "5/8", "⅞": "7/8",
 };
 
-const BULLET_RE = /^[\s\-–—•·∙◦▪▫●○*+~›»➡️➜→↳✓✔️☐🔹🔸📌🥄🍴\p{Emoji_Presentation}]+/u;
+/** Klassische Aufzählungszeichen und Satzzeichen, die Listenzeilen einleiten. */
+const CLASSIC_BULLET_RE = /^[\s\-–—•·∙◦▪▫●○*+~›».'%✅👇]+/u;
+/**
+ * Emoji am Zeilenanfang – bewusst OHNE Ziffern, "#" und "*", denn die zählen in
+ * Unicode ebenfalls als "Extended_Pictographic" und würden Mengen zerstören.
+ */
+const LEADING_EMOJI_RE =
+  /^(?![\d#*])[\p{Extended_Pictographic}\p{Emoji_Presentation}][\uFE0E\uFE0F\u{1F3FB}-\u{1F3FF}\u200D]*(?:[\p{Extended_Pictographic}\p{Emoji_Presentation}][\uFE0E\uFE0F\u{1F3FB}-\u{1F3FF}]*)*/u;
+
 const HASHTAG_LINE_RE = /^(#\S+\s*)+$/;
 const MENTION_LINE_RE = /^(@\S+\s*)+$/;
+
+/**
+ * Entfernt Aufzählungszeichen/Emojis am Zeilenanfang ("* 200 g Reis" → "200 g Reis",
+ * "✖️ 1g Salz" → "1g Salz"). Zentrale Stelle, damit Zutaten-Erkennung und -Parsing
+ * dieselben Zeichen kennen – Instagram nutzt ❌/✖️/🌶️ ebenso wie "-" oder "*".
+ */
+export function stripLeadingBullets(line: string): string {
+  let l = line.trim();
+  for (;;) {
+    const before = l;
+    l = l.replace(CLASSIC_BULLET_RE, "").trimStart();
+    if (l !== before) continue;
+
+    const emoji = l.match(LEADING_EMOJI_RE);
+    if (emoji && emoji[0].length > 0) {
+      l = l.slice(emoji[0].length).trimStart();
+      continue;
+    }
+    break;
+  }
+  return l;
+}
+
+/**
+ * Entfernt Variation-Selectors und Hautton-Modifier aus Emojis,
+ * damit "👨🏻‍🍳" als Marker "👨‍🍳" erkannt wird.
+ */
+export function stripEmojiModifiers(text: string): string {
+  return text.replace(/[\uFE0E\uFE0F]/gu, "").replace(/[\u{1F3FB}-\u{1F3FF}]/gu, "");
+}
 
 export function normalizeCaption(caption: string): string {
   let text = caption;
@@ -27,7 +65,12 @@ export function normalizeCaption(caption: string): string {
   
   // Break lines before inline bullets (* or •)
   text = text.replace(/([^\n])\s+([*•])\s+/g, "$1\n$2 ");
-  
+
+  // Unicode-Schmuckschrift und Sonderformen auf ASCII bringen: Instagram nutzt
+  // "𝙕𝙪𝙩𝙖𝙩𝙚𝙣"/"𝐇𝐢𝐠𝐡 𝐏𝐫𝐨𝐭𝐞𝐢𝐧" – ohne Normalisierung greifen weder Marker
+  // noch Zutaten-Erkennung. Erst NACH der Bruch-Umwandlung, damit "½" erhalten bleibt.
+  text = text.normalize("NFKC");
+
   return text;
 }
 
@@ -70,13 +113,14 @@ export function cleanLine(line: string): string {
   ];
   if (trashPhrases.some(re => re.test(l))) return "";
 
-  // Ignore nutritional values
-  if (/nährwerte|kalorien|nutritional info/i.test(l)) return "";
-  if (/^\d+\s*kcal/i.test(l)) return "";
-  if (/\|\s*(?<![\p{L}])(?:kh|f|e|eiweiß|protein|fett|kohlenhydrate|kcal)(?![\p{L}])\s*[:=]?/iu.test(l)) return "";
-  if (/^(?<![\p{L}])(?:kh|f|e|eiweiß|protein|fett|kohlenhydrate|kcal)(?![\p{L}])\s*[:=]\s*\d/iu.test(l)) return "";
-  if (/^\d+\s*(?:g|ml)\s*\|?\s*(?<![\p{L}])(?:kh|f|e|eiweiß|protein|fett|kohlenhydrate|kcal)(?![\p{L}])/iu.test(l)) return "";
-  if (/(?<![\p{L}])(?:kh|f|e|eiweiß|protein|fett|kohlenhydrate|kcal)(?![\p{L}])\s*[:=]\s*\d+\s*(?:g|ml)/iu.test(l)) return "";
+  // Ignore nutritional values (Bullet-Präfixe wie "* 46 g Protein" mitdenken)
+  const noBullet = stripLeadingBullets(l);
+  if (/nährwerte|kalorien|nutritional info/i.test(noBullet)) return "";
+  if (/^\d+\s*kcal/i.test(noBullet)) return "";
+  if (/\|\s*(?<![\p{L}])(?:kh|f|e|eiweiß|protein|fett|kohlenhydrate|kcal)(?![\p{L}])\s*[:=]?/iu.test(noBullet)) return "";
+  if (/^(?<![\p{L}])(?:kh|f|e|eiweiß|protein|fett|kohlenhydrate|kcal)(?![\p{L}])\s*[:=]\s*\d/iu.test(noBullet)) return "";
+  if (/^\d+[.,]?\d*\s*(?:g|ml|kcal)\s*\|?\s*(?<![\p{L}])(?:kh|f|e|eiweiß|protein|fett|kohlenhydrate|kcal)(?![\p{L}])/iu.test(noBullet)) return "";
+  if (/(?<![\p{L}])(?:kh|f|e|eiweiß|protein|fett|kohlenhydrate|kcal)(?![\p{L}])\s*[:=]\s*\d+\s*(?:g|ml)/iu.test(noBullet)) return "";
   
   return l;
 }

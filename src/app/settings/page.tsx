@@ -3,10 +3,11 @@ import { useI18n } from "@/lib/i18n/context";
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { getRecipeRepository, getShoppingListRepository } from "@/data";
+import { getRecipeRepository, getShoppingListRepository, getCorrectionRepository } from "@/data";
 import { buildBackup, importBackup, parseBackup, type ParsedBackup } from "@/data/backup";
 import { PageHeader } from "@/components/PageHeader";
 import { Button } from "@/components/Button";
+import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { Sheet } from "@/components/Sheet";
 import { Spinner } from "@/components/Spinner";
 import { useToast } from "@/components/Toast";
@@ -33,6 +34,16 @@ export default function SettingsPage() {
   const [preview, setPreview] = useState<ImportPreview | null>(null);
   const [importError, setImportError] = useState<string>();
   const [storageText, setStorageText] = useState<string>();
+  const [correctionCount, setCorrectionCount] = useState(0);
+  const [exportingCorrections, setExportingCorrections] = useState(false);
+  const [confirmClearCorrections, setConfirmClearCorrections] = useState(false);
+
+  useEffect(() => {
+    void getCorrectionRepository()
+      .count()
+      .then(setCorrectionCount)
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     void navigator.storage?.estimate?.()
@@ -61,6 +72,40 @@ export default function SettingsPage() {
       toast("Der Export ist fehlgeschlagen.");
     } finally {
       setExporting(false);
+    }
+  }
+
+  /** Nutzerkorrekturen als Corpus-Fixtures exportieren (Ablage: src/parser/corpus/fixtures/) */
+  async function exportCorrections() {
+    setExportingCorrections(true);
+    try {
+      const json = await getCorrectionRepository().exportFixtures();
+      const blob = new Blob([json], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `parser-fixtures-${new Date().toISOString().slice(0, 10)}.json`;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 5000);
+      toast(`${correctionCount} Korrektur(en) exportiert`);
+    } catch (e) {
+      console.error("correction export failed", e);
+      toast("Der Export ist fehlgeschlagen.");
+    } finally {
+      setExportingCorrections(false);
+    }
+  }
+
+  async function clearCorrections() {
+    try {
+      await getCorrectionRepository().clearAll();
+      setCorrectionCount(0);
+      toast("Korrektur-Log geleert");
+    } catch (e) {
+      console.error("clear corrections failed", e);
+      toast("Das Log konnte nicht geleert werden.");
+    } finally {
+      setConfirmClearCorrections(false);
     }
   }
 
@@ -174,6 +219,36 @@ export default function SettingsPage() {
         )}
       </section>
 
+      <section className="mb-6 rounded-2xl bg-surface p-5 shadow-card" aria-labelledby="parser-h">
+        <h2 id="parser-h" className="mb-1 text-[17px] font-bold">Parser-Testfälle</h2>
+        <p className="mb-4 text-[14px] leading-relaxed text-ink-2">
+          Wenn du beim Import Zutaten oder Schritte korrigierst, wird die Korrektur anonym lokal
+          gespeichert ({correctionCount} {correctionCount === 1 ? "Eintrag" : "Einträge"}). Über den
+          Export werden daraus Testfälle für den Rezeptparser – damit dieselbe Caption nie wieder
+          falsch gelesen wird. Die Daten verlassen deinen Browser nicht.
+        </p>
+        <div className="flex flex-col gap-2.5 sm:flex-row">
+          <Button
+            onClick={() => void exportCorrections()}
+            disabled={exportingCorrections || correctionCount === 0}
+            size="lg"
+            fullWidth
+          >
+            {exportingCorrections ? <Spinner size={18} /> : <IconDownload size={18} />}
+            Testfälle exportieren
+          </Button>
+          <Button
+            variant="secondary"
+            size="lg"
+            fullWidth
+            disabled={correctionCount === 0}
+            onClick={() => setConfirmClearCorrections(true)}
+          >
+            Log leeren
+          </Button>
+        </div>
+      </section>
+
       <section className="mb-6 rounded-2xl bg-surface p-5 shadow-card" aria-labelledby="onboarding-h">
         <h2 id="onboarding-h" className="mb-1 text-[17px] font-bold">{t("onboarding.restart")}</h2>
         <p className="mb-4 text-[14px] leading-relaxed text-ink-2">
@@ -197,6 +272,17 @@ export default function SettingsPage() {
           {t("settings.aboutDesc")}
         </p>
       </section>
+
+      <ConfirmDialog
+        open={confirmClearCorrections}
+        title="Korrektur-Log leeren?"
+        message={`${correctionCount} ${
+          correctionCount === 1 ? "Eintrag wird" : "Einträge werden"
+        } gelöscht. Bereits exportierte Testfälle bleiben erhalten.`}
+        confirmLabel="Log leeren"
+        onConfirm={() => void clearCorrections()}
+        onCancel={() => setConfirmClearCorrections(false)}
+      />
 
       <Sheet
         open={!!preview}

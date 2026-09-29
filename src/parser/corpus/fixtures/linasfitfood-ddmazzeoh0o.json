@@ -1,0 +1,16 @@
+{
+  "id": "linasfitfood-ddmazzeoh0o",
+  "source": "https://www.instagram.com/reel/DdmAZZeoh0o/",
+  "account": "linasfitfood",
+  "language": "de",
+  "style": "narrative-prose+english-remnants+nutrition-only+no-ingredient-list",
+  "caption": "Gnocchi Hähnchen Feta Salat 😋\n\nKein Bock auf langweiligen Salat? Try this! 🤤✨\n\nKnusprig, frisch & volle Protein-Power für dein Post-Workout-Meal!\n\nNährwerte auf einem Blick:\n\n454 Kalorien\n\n44 g Protein\n\n#highprotein #abbehmenohnezuhungern #abnehmenohneverzicht #proteinmeals",
+  "expected": {
+    "title": "Gnocchi Hähnchen Feta Salat",
+    "servings": null,
+    "ingredients": [],
+    "stepsCount": 0
+  },
+  "notes": "Negativtest: reine Erzähl-Caption ohne Zutatenliste und ohne Anleitung (Rezept nur im Video). Nährwerte (\"454 Kalorien\", \"44 g Protein\") sind keine Zutaten. Englische Reste (\"Try this!\", \"Post-Workout-Meal\"). Titel steht als erste Zeile, der Parser darf hier nichts erfinden → 0 Zutaten, 0 Schritte, servings null. Negativfall: Caption enthält kein Rezept – der Parser darf nichts erfinden.",
+  "negative": true
+}

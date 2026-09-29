@@ -7,8 +7,8 @@ import { extractRecipeLinkFromText, parseRecipeLink, parseSocialUrl, type Recipe
 import { WEB_STATUS_MESSAGE, fetchRecipeImage, fetchWebRecipe } from "@/lib/webImport";
 import { parseRecipe, PARSER_VERSION } from "@/parser";
 import { translateParsedRecipe } from "@/lib/i18n/recipeTranslation";
-import { getRecipeRepository } from "@/data";
-import type { Recipe, RecipeInput } from "@/domain/types";
+import { getRecipeRepository, getCorrectionRepository } from "@/data";
+import type { ParsedRecipe, Recipe, RecipeInput } from "@/domain/types";
 import {
   emptyDraft,
   draftFromIngredients,
@@ -69,6 +69,8 @@ function ImportFlow() {
   const [parseError, setParseError] = useState<string>();
   const [analyzing, setAnalyzing] = useState(false);
   const [draft, setDraft] = useState<RecipeDraft | null>(null);
+  /** Vorschlag des Parsers, damit Korrekturen des Nutzers als Testfall erfasst werden */
+  const [parserSuggestion, setParserSuggestion] = useState<ParsedRecipe | null>(null);
   const [existingRecipe, setExistingRecipe] = useState<Recipe | null>(null);
   const [showDuplicateDialog, setShowDuplicateDialog] = useState(false);
   const [pendingSaveArgs, setPendingSaveArgs] = useState<{
@@ -346,6 +348,7 @@ function ImportFlow() {
         return;
       }
       const parsed = translateParsedRecipe(rawParsed, lang);
+      setParserSuggestion(parsed);
       let pendingImage: Blob | undefined;
       let color: string | undefined;
       if (imgToUse && useOgImage) {
@@ -380,6 +383,8 @@ function ImportFlow() {
 
   function startManual() {
     setParseError(undefined);
+    // Ohne Parser-Vorschlag gibt es nichts zu korrigieren
+    setParserSuggestion(null);
     setDraft({
       ...emptyDraft(),
       sourceUrl: parseSocialUrl(url)?.normalized ?? (url.trim() || undefined),
@@ -400,6 +405,26 @@ function ImportFlow() {
     }
 
     input.parserVersion = PARSER_VERSION;
+
+    // Korrektur am Parser-Vorschlag lokal festhalten: wird zum Testfall für den
+    // Real-Caption-Corpus (Export in den Einstellungen).
+    if (parserSuggestion && input.sourceCaption) {
+      void getCorrectionRepository()
+        .record({
+          sourceUrl: input.sourceUrl,
+          sourceCaption: input.sourceCaption,
+          parsed: parserSuggestion,
+          corrected: {
+            title: input.title,
+            servings: input.servings,
+            prepTime: input.prepTime,
+            cookTime: input.cookTime,
+            ingredients: input.ingredients,
+            steps: input.steps,
+          },
+        })
+        .catch((e) => console.warn("Korrektur konnte nicht gespeichert werden", e));
+    }
 
     const targetId = existingRecipe?.id ?? undefined;
     const recipe = await getRecipeRepository().saveWithImage(

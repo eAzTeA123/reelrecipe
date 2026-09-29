@@ -1,0 +1,86 @@
+{
+  "id": "chefkoch-ddwfyxrlay",
+  "source": "https://www.instagram.com/reel/DdwF-YxRlAY/",
+  "account": "chefkoch",
+  "language": "de",
+  "style": "numbered-ingredients+multi-sentence-steps+engagement-cta",
+  "caption": "Die beste Lasagne-Suppe aller Zeiten: Der Party-Trend, den JEDER lieben wird! 😋🥣\n\nHast du schon mal Lasagneplatten für eine Suppe zerbrochen? 🤔 Schreib mir in die Kommentare, ob du diesen viralen Trend schon ausprobiert hast oder ob du ihn am Wochenende kochen wirst! Markiere jemanden, der dir diese cremig-würzige Party-Suppe unbedingt kochen MUSS! 👇🔥\n\n👨‍🍳 Zutaten\n2 EL Olivenöl\n500g Hackfleisch, gemischtes\n1 Zwiebel(n)\n3 Zehe/n Knoblauch\n1 Liter Rinderbrühe\n800 g Tomaten, stückige\n3 EL Tomatenmark\n1 TL Oregano\n1 TL Thymian\n10 Lasagneplatte(n)\n150 g Crème fraîche\nSalz und Pfeffer\nParmesan\n\n👨‍🍳 Und so geht’s\n1 EL Olivenöl in einem großen Topf bei mittlerer bis hoher Hitze erhitzen. Das Hackfleisch hineinkrümeln, mit Salz und Pfeffer würzen und knusprig braten. Zwiebel würfeln und Knoblauch hacken.\nDas restliche Olivenöl in den Topf geben und die Zwiebel darin unter gelegentlichem Rühren circa zwei Minuten glasig anschwitzen. Den Knoblauch hinzugeben und weitere 30 Sekunden dünsten.\nDie Lasagneplatten in mundgerechte Stücke brechen. Rinderbrühe, gehackte Tomaten, Tomatenmark, Lasagneplatten, Oregano, Thymian, Rosmarin, Salz und Pfeffer hinzufügen und bei kleiner Hitze so lange köcheln lassen, bis die Lasagneplatten gegart sind.\nNoch einmal abschmecken und mit einem Klacks Crème fraîche und etwas geriebenem Parmesan servieren.\n\nViel Spaß beim Nachkochen!",
+  "expected": {
+    "title": "Lasagne-Suppe",
+    "servings": null,
+    "ingredients": [
+      {
+        "amount": 2,
+        "unit": "EL",
+        "name": "Olivenöl"
+      },
+      {
+        "amount": 500,
+        "unit": "g",
+        "name": "Hackfleisch, gemischtes"
+      },
+      {
+        "amount": 1,
+        "unit": null,
+        "name": "Zwiebel(n)"
+      },
+      {
+        "amount": 3,
+        "unit": "Zehe",
+        "name": "Knoblauch"
+      },
+      {
+        "amount": 1,
+        "unit": "l",
+        "name": "Rinderbrühe"
+      },
+      {
+        "amount": 800,
+        "unit": "g",
+        "name": "Tomaten, stückige"
+      },
+      {
+        "amount": 3,
+        "unit": "EL",
+        "name": "Tomatenmark"
+      },
+      {
+        "amount": 1,
+        "unit": "TL",
+        "name": "Oregano"
+      },
+      {
+        "amount": 1,
+        "unit": "TL",
+        "name": "Thymian"
+      },
+      {
+        "amount": 10,
+        "unit": null,
+        "name": "Lasagneplatte(n)"
+      },
+      {
+        "amount": 150,
+        "unit": "g",
+        "name": "Crème fraîche"
+      },
+      {
+        "amount": null,
+        "unit": null,
+        "name": "Salz"
+      },
+      {
+        "amount": null,
+        "unit": null,
+        "name": "Pfeffer"
+      },
+      {
+        "amount": null,
+        "unit": null,
+        "name": "Parmesan"
+      }
+    ],
+    "stepsCount": 5
+  },
+  "notes": "Einheiten hinter dem Namen, teils in Klammer-Pluralform ('Zwiebel(n)', 'Zehe/n Knoblauch'); Zubereitung als Absätze ohne Nummerierung (4 Kochschritte) plus Schlusssatz 'Viel Spaß beim Nachkochen!' = 5. '1 Liter' kanonisch zu 'l'. Keine Portionsangabe."
+}

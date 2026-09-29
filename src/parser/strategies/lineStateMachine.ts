@@ -1,62 +1,32 @@
 import { getAllVocab } from "../vocabulary";
 import { splitLines } from "../normalize";
 import { looksLikeIngredient } from "../ingredient";
+import {
+  SERVINGS_HEADER_RE,
+  containsIngredientMarker,
+  hasIngredientEmoji,
+  hasStepEmoji,
+  hasStepNumbering,
+  hasVerbOrSequenceStart,
+  isCreditOrLinkLine,
+  isIngredientMarkerHeading,
+  isListItemWithoutVerb,
+  isNoteLine,
+  isNutritionLine,
+  isOutroLine,
+  isPromoLine,
+  isStepLeadIn,
+  isStepMarkerHeading,
+  isSubIngredientHeader,
+  looksLikeHeading,
+  normalizeHeader,
+  startsNewItem,
+} from "../lineFacts";
 import type { ParserStrategy, RawParseResult } from "./types";
 
 const vocab = getAllVocab();
 
 type State = "TITEL" | "PREAMBLE" | "ZUTATEN" | "ZUBEREITUNG" | "SONSTIGES";
-
-const SERVINGS_HEADER_RE = /^(?:für|for|serves?|yields?|ergibt|bei|pro)\s*(?:ca\.?\s*|about\s*)?(?:\d{1,2})?\s*(?:portionen?|pers(?:onen)?\.?|servings?|people|persons|stücke?|tacos?|portion|stück|person)\s*:?$/i;
-
-/** Prüft, ob die Zeile eine Sub-Kategorie für Zutaten ist (z. B. "Für die Soße:") */
-function isSubIngredientHeader(line: string): boolean {
-  if (line.length > 40) return false;
-  if (/^(?:für|for)\s+(?:den|die|das|diesen|diese|der)/i.test(line)) return true;
-  const lower = line.toLowerCase().replace(/[:\-_#*]/g, "").trim();
-  
-  if (vocab.ingredientMarkers.some(m => lower.startsWith(m + " "))) {
-    if (!lower.endsWith(" english") && !lower.endsWith(" deutsch")) return true;
-  }
-
-  const exactMatch = vocab.subIngredientPrefixes.some(p => lower === p || lower === p + "s"); 
-  if (exactMatch) return true;
-
-  return false;
-}
-
-/** Prüft, ob die Zeile wie Outro / Social Media CTA / Hashtags aussieht */
-function isOutroLine(line: string): boolean {
-  const lower = line.toLowerCase().trim();
-  if (/^\d+[.)]/.test(lower) || /^schritt\s*\d+/i.test(lower)) {
-    return false;
-  }
-  if (lower.startsWith("#") || lower.split(/\s+/).filter((w) => w.startsWith("#")).length >= 3) {
-    return true;
-  }
-  if (line.length > 60) return false;
-  return vocab.outroKeywords.some((k) => lower.includes(k));
-}
-
-/** Signal 1: Beginnt mit Verb/Sequenzwort ODER enthält Kochverb */
-function hasVerbOrSequenceStart(line: string): boolean {
-  const words = line
-    .toLowerCase()
-    .replace(/^[0-9.\-•*):]+\s*/, "")
-    .replace(/[.,!?]+$/, "")
-    .trim()
-    .split(/\s+/)
-    .map((w) => w.replace(/[.,!?]$/, ""));
-  const firstWord = words[0] || "";
-  const firstTwoWords = `${words[0] || ""} ${words[1] || ""}`.trim();
-
-  const isVerbStart = vocab.stepVerbs.some((v) => firstWord === v || firstTwoWords === v);
-  const isSeq = vocab.sequenceWords.some((s) => firstWord === s || firstTwoWords === s);
-  const containsVerb = vocab.stepVerbs.some((v) => words.includes(v));
-  const hasOvenOrTemp = /\b(?:backofen|umluft|ober-\/unterhitze|o\/u-hitze|grad|°c|minuten?|stunden?|min\.)\b/i.test(line);
-
-  return isVerbStart || isSeq || containsVerb || hasOvenOrTemp;
-}
 
 /** Signal 2: Strukturwechsel (langer Satz, wenig wie Zutat geformt) */
 function hasSentenceStructure(line: string): boolean {
@@ -66,31 +36,12 @@ function hasSentenceStructure(line: string): boolean {
   return (trimmed.length > 30 || /[.!?]$/.test(trimmed)) && ingScore < 2;
 }
 
-/** Signal 3: Schritt-Nummerierung oder explizites Schrittwort */
-function hasStepNumbering(line: string): boolean {
-  return (
-    /^(?:schritt\s*\d+|\d+[.)]|step\s*\d+)/i.test(line.trim()) ||
-    vocab.sequenceWords.some((w) => line.toLowerCase().trim().startsWith(w))
-  );
-}
-
-function isNutritionLine(line: string): boolean {
-  if (line.length > 50) return false;
-  const lower = line.toLowerCase();
-  
-  if (lower.includes("kcal") || lower.includes("kalorien")) return true;
-  if (/k\w?cal/i.test(line)) return true;
-  
-  const words = lower.split(/[\s,;|:]+/);
-  const nutritionWords = ["kh", "kohlenhydrate", "protein", "eiweiß", "fett", "f", "ew", "carbs", "fat"];
-  const macroCount = words.filter(w => nutritionWords.includes(w)).length;
-  if (macroCount >= 2) return true;
-
-  if (/(?:kh|ew|f|p|eiweiß|fett|protein|kohlenhydrate|carbs|fat)\s*:\s*\d+/i.test(line)) return true;
-  if (/\d+\s*(?:g|%)\s+(?:kh|ew|f|p|eiweiß|fett|protein|kohlenhydrate|carbs|fat)(?:\s|$)/i.test(line)) return true;
-
-  return false;
-}
+/**
+ * "4x:"-Überschrift: folgende Zutaten ohne eigene Menge erben den Faktor.
+ * Die Faktor-Logik selbst liegt zentral in `applyItemMultiplier` (ingredient.ts),
+ * damit alle Strategien identisch behandelt werden.
+ */
+const MULTIPLIER_HEADER_RE = /^[-•*+~›»]?\s*(\d{1,2})\s*[x×]\s*:?\s*$/i;
 
 export const lineStateMachineStrategy: ParserStrategy = {
   name: "line_state_machine",
@@ -108,12 +59,20 @@ export const lineStateMachineStrategy: ParserStrategy = {
     if (lines.length === 0) return result;
 
     let state: State = "TITEL";
+    let hasExplicitStepMarker = false;
 
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i].trim();
       if (!line) continue;
 
       if (isNutritionLine(line)) {
+        result.other.push(line);
+        continue;
+      }
+
+      // "4x:" / "2x" als Zwischenüberschrift: keine Zutat, Faktor setzt
+      // `applyItemMultiplier` beim Zusammenbau des Rezepts.
+      if (MULTIPLIER_HEADER_RE.test(line)) {
         result.other.push(line);
         continue;
       }
@@ -125,12 +84,24 @@ export const lineStateMachineStrategy: ParserStrategy = {
         continue;
       }
 
+      // Werbe-/Kooperationszeilen beenden das Rezept – aber nur innerhalb der
+      // Zutaten-/Zubereitungsphase und nur, wenn die Zeile keine Listenzeile ist.
+      // (In PREAMBLE regelt das schon der PREAMBLE-Zweig, ohne den Zustand zu beenden.)
+      if (
+        isPromoLine(line) &&
+        (state === "ZUBEREITUNG" || state === "ZUTATEN") &&
+        !startsNewItem(line) &&
+        !isNoteLine(line) &&
+        looksLikeIngredient(line) < 2
+      ) {
+        state = "SONSTIGES";
+        result.other.push(line);
+        continue;
+      }
+
       // 2. Zustandsübergänge (NUR VORWÄRTS: TITEL -> PREAMBLE -> ZUTATEN -> ZUBEREITUNG -> SONSTIGES)
       if (state === "TITEL") {
-        const clean = line.toLowerCase().replace(/[:\-_#*]/g, "").trim();
-        const isHeader =
-          vocab.ingredientMarkers.some((m) => clean === m || clean.startsWith(m)) ||
-          vocab.stepMarkers.some((m) => clean === m || clean.startsWith(m));
+        const isHeader = isIngredientMarkerHeading(line) || isStepMarkerHeading(line);
         if (isHeader) {
           state = "PREAMBLE";
           // Nicht als Titel setzen, in PREAMBLE weiterverarbeiten
@@ -143,25 +114,27 @@ export const lineStateMachineStrategy: ParserStrategy = {
 
       if (state === "PREAMBLE") {
         // Expliziter Zubereitungs-Marker leitet direkt Zubereitung ein
-        const cleanLower = line.toLowerCase().replace(/[:\-_#*]/g, "").trim();
-        if (vocab.stepMarkers.some((m) => cleanLower === m || cleanLower.startsWith(m))) {
+        if (isStepMarkerHeading(line)) {
           state = "ZUBEREITUNG";
+          hasExplicitStepMarker = true;
           continue;
         }
 
         // Expliziter Zutaten-Marker oder Portions-Header leitet Zutaten ein
-        if (
-          vocab.ingredientMarkers.some((m) => line.toLowerCase().includes(m)) ||
-          vocab.ingredientEmojis.some((e) => line.includes(e)) ||
-          SERVINGS_HEADER_RE.test(line)
-        ) {
+        if (containsIngredientMarker(line) || hasIngredientEmoji(line) || SERVINGS_HEADER_RE.test(line)) {
           state = "ZUTATEN";
           result.other.push(line);
           continue;
         }
 
+        // Werbe-/Introzeilen ("30 Tage – 30 Rezepte | …") sind keine Zutaten
+        if (isPromoLine(line)) {
+          result.other.push(line);
+          continue;
+        }
+
         // Wenn die Zeile wie eine Zutat aussieht (z.B. mit Mengenangabe / Bullets)
-        if (looksLikeIngredient(line) >= 2 || /^[-•*]\s*\d/.test(line)) {
+        if (looksLikeIngredient(line) >= 2 || /^[-•*+~]\s*\d/.test(line)) {
           state = "ZUTATEN";
           result.ingredients.push(line);
           continue;
@@ -174,18 +147,16 @@ export const lineStateMachineStrategy: ParserStrategy = {
 
       if (state === "ZUTATEN") {
         // Expliziter Zubereitungs-Marker (z.B. "Zubereitung:", "Anleitung:", 👩‍🍳)
-        const cleanLower = line.toLowerCase().replace(/[:\-_#*]/g, "").replace(/[\p{Emoji_Presentation}\p{Extended_Pictographic}]/gu, "").trim();
         const isExplicitStepMarker =
-          vocab.stepMarkers.some((m) => cleanLower === m || cleanLower.startsWith(m)) ||
-          (vocab.stepEmojis.some((e) => line.includes(e)) && line.length < 25 && !/\d/.test(line));
+          isStepMarkerHeading(line) || (hasStepEmoji(line) && line.length < 25 && !/\d/.test(line));
 
         if (isExplicitStepMarker) {
           state = "ZUBEREITUNG";
+          hasExplicitStepMarker = true;
           continue;
         }
 
-        const isExactIngredientMarker = vocab.ingredientMarkers.some((m) => cleanLower === m);
-        if (isExactIngredientMarker) {
+        if (vocab.ingredientMarkers.some((m) => normalizeHeader(line) === m)) {
           continue;
         }
 
@@ -218,7 +189,13 @@ export const lineStateMachineStrategy: ParserStrategy = {
 
         const signalsMet = (s1 ? 1 : 0) + (s2 ? 1 : 0) + (s3 ? 1 : 0);
 
-        if (signalsMet >= 2) {
+        // Zeit-/Temperaturhinweise sind Anweisungen, keine Zutaten
+        // ("⏰ 3 bis 5 Minuten Mikrowelle ~ 700 W"), außer die Zeile ist klar eine Zutat.
+        const isTimeOrTempHint =
+          /\b(?:mikrowelle|backofen|umluft|ober-\/unterhitze|o\/u-hitze|vorgeheizt)\b/i.test(line) &&
+          looksLikeIngredient(line) < 3;
+
+        if (signalsMet >= 2 || isTimeOrTempHint) {
           // Übergang zu ZUBEREITUNG ausgelöst!
           state = "ZUBEREITUNG";
           result.steps.push(line);
@@ -227,8 +204,9 @@ export const lineStateMachineStrategy: ParserStrategy = {
 
         // Check if it's a continuation line (short, no bullet or number at start)
         if (
-          !/^[-•*]|\d/.test(line) &&
+          !startsNewItem(line) &&
           !line.endsWith(":") &&
+          !hasStepEmoji(line) &&
           line.length < 40 &&
           result.ingredients.length > 0 &&
           !isSubIngredientHeader(line)
@@ -245,9 +223,10 @@ export const lineStateMachineStrategy: ParserStrategy = {
 
         // Check if it's a continuation line (starts with lowercase, no bullet)
         if (
-          !/^[-•*]|\d/.test(line) &&
+          !startsNewItem(line) &&
           /^[a-zäöü]/.test(line) &&
           !line.endsWith(":") &&
+          !hasStepEmoji(line) &&
           line.length < 50 &&
           result.ingredients.length > 0 &&
           !isSubIngredientHeader(line)
@@ -268,6 +247,17 @@ export const lineStateMachineStrategy: ParserStrategy = {
       }
 
       if (state === "ZUBEREITUNG") {
+        // Notiz-/Alternativzeilen ("( erhältlich bei … )", "alternativ 25g Ofen Chips")
+        // beschreiben die vorherige Zutat – sie sind kein Zubereitungsschritt.
+        if (isNoteLine(line)) {
+          if (result.ingredients.length > 0) {
+            result.ingredients[result.ingredients.length - 1] += ` ${line}`;
+          } else {
+            result.other.push(line);
+          }
+          continue;
+        }
+
         // Falls wir eine Sub-Überschrift finden (z.B. Zubereitung Füllung), geht's wieder in die Zutaten!
         if (isSubIngredientHeader(line)) {
           state = "ZUTATEN";
@@ -276,7 +266,7 @@ export const lineStateMachineStrategy: ParserStrategy = {
         }
 
         // Wenn ein neuer Rezept-Block beginnt (z.B. englische Übersetzung), abbrechen
-        const cleanLower = line.toLowerCase().replace(/[:\-_#*]/g, "").replace(/[\p{Emoji_Presentation}\p{Extended_Pictographic}]/gu, "").trim();
+        const cleanLower = normalizeHeader(line);
         const isNewRecipe = 
           vocab.ingredientMarkers.some((m) => cleanLower === m || cleanLower === m + " english" || cleanLower === m + " deutsch") ||
           vocab.stepMarkers.some((m) => cleanLower === m || cleanLower === m + " english" || cleanLower === m + " deutsch");
@@ -288,7 +278,38 @@ export const lineStateMachineStrategy: ParserStrategy = {
         }
 
         // Überspringe explizite Zubereitungs-Überschriften, die fälschlicherweise als Schritt gewertet würden
-        if (vocab.stepMarkers.some((m) => cleanLower === m || cleanLower.startsWith(m)) && line.split(" ").length <= 3) {
+        if (isStepMarkerHeading(line) && line.split(" ").length <= 3) {
+          continue;
+        }
+
+        // Wenn wir nicht durch einen expliziten Zubereitungs-Marker hier gelandet sind,
+        // und die Zeile eindeutig wie eine Zutat aussieht: Zurück zu ZUTATEN!
+        if (!hasExplicitStepMarker) {
+          const isStepPrefix = /^\d+[.)]?$/.test(line) || hasStepNumbering(line);
+          const isIng =
+            !isStepPrefix &&
+            !hasVerbOrSequenceStart(line) &&
+            (looksLikeIngredient(line) >= 2 ||
+              (/^[-•*]\s*\d/.test(line) && looksLikeIngredient(line) >= 1) ||
+              // Aufgezählte Zeile ohne Kochverb bleibt ein Listeneintrag,
+              // auch wenn sie nach einem Temperaturhinweis steht ("❌ Yummy Drops").
+              (startsNewItem(line) && !/[.!?]\s*$/.test(line)));
+          if (isIng) {
+            state = "ZUTATEN";
+            result.ingredients.push(line);
+            continue;
+          }
+        }
+
+        // Überschrift, aufgezählte Zutaten-Nennung (Schicht-Liste) oder
+        // Footer-/Linkzeile → kein Schritt
+        if (
+          isCreditOrLinkLine(line) ||
+          looksLikeHeading(line, lines[i + 1]) ||
+          isStepLeadIn(line, lines.slice(i + 1, i + 3)) ||
+          isListItemWithoutVerb(line)
+        ) {
+          result.other.push(line);
           continue;
         }
 
@@ -304,7 +325,24 @@ export const lineStateMachineStrategy: ParserStrategy = {
     }
 
     // Konfidenz berechnen
-    if (result.ingredients.length > 0 && result.steps.length > 0) {
+    const suspiciousSteps = result.steps.filter(
+      (s) => looksLikeIngredient(s) >= 2 && !hasVerbOrSequenceStart(s) && !hasStepNumbering(s),
+    );
+    // Zutaten, die eigentlich Nährwerte, Portionsangaben oder Überschriften sind,
+    // sind ein starkes Signal dafür, dass diese Strategie daneben liegt.
+    const suspiciousIngredients = result.ingredients.filter(
+      (i) =>
+        isNutritionLine(i) ||
+        /^(?:pro|je)\s+portion\b/i.test(i) ||
+        /^(?:zutaten|zubereitung|anleitung|nährwerte)\b/i.test(i.replace(/^[^\p{L}]+/u, "").trim()),
+    );
+
+    if (suspiciousSteps.length > 0 || suspiciousIngredients.length > 0) {
+      result.confidence = Math.max(
+        0.1,
+        0.85 - suspiciousSteps.length * 0.15 - suspiciousIngredients.length * 0.2,
+      );
+    } else if (result.ingredients.length > 0 && result.steps.length > 0) {
       result.confidence = 0.85;
     } else if (result.ingredients.length > 0) {
       result.confidence = 0.55;
@@ -315,3 +353,6 @@ export const lineStateMachineStrategy: ParserStrategy = {
     return result;
   },
 };
+
+
+

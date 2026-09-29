@@ -1,0 +1,61 @@
+{
+  "id": "essenspause-ddzajowqaro",
+  "source": "https://www.instagram.com/reel/DdzAJowqaRO/",
+  "account": "essens_pause",
+  "language": "de",
+  "style": "arrow-prose-steps+compact-units+no-title-case",
+  "caption": "OFENPFANNKUCHEN FETA-KÜRBIS | 115 KCAL 🥞\n\n(9 „Stück“)\n\n➡️300g Magerquark, 2 Eier, 100g Dinkelmehl, 5g Backpulvet, Salz & 80ml Wasser vermengen.\n\n➡️auf einem Backblech ausstreichen\n\n➡️mit 100g Feta/Hirtenkäse Light & 230g Hokkaido Kürbis (in dünnen Streifen)  belegen.\n\n➡️ etwas schwarzen Pfeffer darüber streuen.\n\n➡️ ca. 25 Minuten bei 180 Grad Umluft backen lassen & in 9 Stücke schneiden.\n\nNährwerte pro Stück (1/9):\n\n115 kcal | 12,9g KH | 9,1g E | 2,7g F\n\n#rezept #magerquark #proteinpizza",
+  "expected": {
+    "title": "Ofenpfannkuchen Feta-Kürbis",
+    "servings": 9,
+    "ingredients": [
+      {
+        "amount": 300,
+        "unit": "g",
+        "name": "Magerquark"
+      },
+      {
+        "amount": 2,
+        "unit": null,
+        "name": "Eier"
+      },
+      {
+        "amount": 100,
+        "unit": "g",
+        "name": "Dinkelmehl"
+      },
+      {
+        "amount": 5,
+        "unit": "g",
+        "name": "Backpulvet"
+      },
+      {
+        "amount": null,
+        "unit": null,
+        "name": "Salz"
+      },
+      {
+        "amount": 80,
+        "unit": "ml",
+        "name": "Wasser"
+      },
+      {
+        "amount": 100,
+        "unit": "g",
+        "name": "Feta/Hirtenkäse Light"
+      },
+      {
+        "amount": 230,
+        "unit": "g",
+        "name": "Hokkaido Kürbis"
+      },
+      {
+        "amount": null,
+        "unit": null,
+        "name": "schwarzen Pfeffer"
+      }
+    ],
+    "stepsCount": 5
+  },
+  "notes": "Zutaten stehen nicht als Liste, sondern im Fließtext der \"➡️\"-Schritte; Einheiten kleben ohne Leerzeichen am Wert (\"300g\", \"80ml\"). Servings aus dem Ertrag \"(9 „Stück“)\". \"„Backpulvet“ ist der Tippfehler der Caption und wurde bewusst nicht korrigiert. \"Salz\" und \"etwas schwarzen Pfeffer\" haben keine Menge → amount/unit null. \"(in dünnen Streifen)\" ist ein Zubereitungshinweis und kein Namensteil. Nährwerte pro Stück sind keine Zutaten; die Titelzeile enthält \"… | 115 KCAL\", das ist Werbung/Nährwert und kein Titelbestandteil."
+}

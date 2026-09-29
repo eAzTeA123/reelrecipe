@@ -1,0 +1,67 @@
+{
+  "id": "medusas-dc879w_t4f6",
+  "source": "https://www.instagram.com/reel/Dc879w_t4f6/",
+  "account": "medusas.foodlove",
+  "language": "de",
+  "style": "prose-paragraph-steps+emoji-bullets+nutrition",
+  "caption": "🍔 𝗖𝗵𝗲𝗲𝘀𝗲𝗯𝘂𝗿𝗴𝗲𝗿-𝗔𝘂𝗳𝗹𝗮𝘂𝗳 – 𝗕𝘂𝗿𝗴𝗲𝗿-𝗟𝗶𝗲𝗯𝗲 𝗮𝘂𝘀 𝗱𝗲𝗺 𝗢𝗳𝗲𝗻! 🧀\n\nWenn du Cheeseburger liebst, aber mal etwas anderes als den klassischen Burger möchtest: Dieser Cheeseburger-Auflauf ist genau das Richtige. 🤤🍔\n\nSaftiges Hackfleisch, geschmolzener Käse, würzige Burgersauce und natürlich Sesam-Buns – alles zusammen aus dem Ofen und anschließend einfach nur noch genießen. 🥹❤️\n\nDas Beste: maximal 𝙪𝙣𝙠𝙤𝙢𝙥𝙡𝙞𝙯𝙞𝙚𝙧𝙩, richtig schön 𝙘𝙝𝙚𝙚𝙨𝙮 und 𝙥𝙚𝙧𝙛𝙚𝙠𝙩 für ein gemütliches Abendessen. Und ja – auch beim Abnehmen darf so etwas auf dem Teller landen. 😏\n\n💾 𝙎𝙥𝙚𝙞𝙘𝙝𝙚𝙧 dir das Rezept ab, wenn du Cheeseburger genauso liebst wie ich!\n\n👇𝙏𝙚𝙖𝙢 𝘾𝙝𝙚𝙚𝙨𝙚𝙗𝙪𝙧𝙜𝙚𝙧 𝙤𝙙𝙚𝙧 𝙏𝙚𝙖𝙢 𝙋𝙞𝙯𝙯𝙖?\n\n1 𝙱𝚞𝚛𝚐𝚎𝚛:\n\n🔥362 kcal | 🌾 36,5 g | 🥚26,0 g | 🧈 11,6 g\n\n𝚉𝚞𝚝𝚊𝚝𝚎𝚗:\n\n🍔6 Burger Buns\n\n🍔400 g Geflügelhack\n\n🍔1-2 TL Hackfleischgewürz\n\n🍔6 Scheiben Schmelzkäse\n\n🍔4 Gewürzgurken\n\n🍔2 Tomaten\n\n🍔1 Zwiebel\n\n🍔30 g Mayonnaise light\n\n🍔1 EL Senf\n\n🍔3 EL Ketchup, zuckerreduziert\n\n𝚉𝚞𝚋𝚎𝚛𝚎𝚒𝚝𝚞𝚗𝚐:\n\nZwiebeln schneiden und in einer beschichteten Pfanne glasig dünsten. Hackfleisch anbraten und würzen. Ketchup, Senf und Mayonnaise zu einer Sauce verrühren. In eine Auflaufform die untere Brötchenhälfte geben. Die Hälfte der Sauce darauf verteilen. Hackfleisch darüber geben. Mit geschnittenen Tomaten und Essigkurken sowie gedünsteten Zwiebeln belegen. Die restliche Sauce sowie Käse darauf verteilen und im Backofen bei 180°C 15 Minuten backen. Die oberen Brötchenhälften drauf legen und nochmal ca. 4 Minuten im Ofen backen.",
+  "expected": {
+    "title": "Cheeseburger-Auflauf",
+    "servings": null,
+    "ingredients": [
+      {
+        "amount": 6,
+        "unit": null,
+        "name": "Burger Buns"
+      },
+      {
+        "amount": 400,
+        "unit": "g",
+        "name": "Geflügelhack"
+      },
+      {
+        "amount": 1,
+        "unit": "TL",
+        "name": "Hackfleischgewürz",
+        "amountMax": 2
+      },
+      {
+        "amount": 6,
+        "unit": "Scheibe",
+        "name": "Schmelzkäse"
+      },
+      {
+        "amount": 4,
+        "unit": null,
+        "name": "Gewürzgurken"
+      },
+      {
+        "amount": 2,
+        "unit": null,
+        "name": "Tomaten"
+      },
+      {
+        "amount": 1,
+        "unit": null,
+        "name": "Zwiebel"
+      },
+      {
+        "amount": 30,
+        "unit": "g",
+        "name": "Mayonnaise light"
+      },
+      {
+        "amount": 1,
+        "unit": "EL",
+        "name": "Senf"
+      },
+      {
+        "amount": 3,
+        "unit": "EL",
+        "name": "Ketchup, zuckerreduziert"
+      }
+    ],
+    "stepsCount": 9
+  },
+  "notes": "Zubereitung ist ein einziger Fließtext-Absatz mit 9 Imperativsätzen – stepsCount zählt diese 9 Anweisungen, nicht die eine Caption-Zeile (Fließtext muss zerlegt werden). Nährwerte (\"1 Bürger:\" + kcal-Zeile) sind keine Zutaten und keine Portionsangabe – servings bleibt null, weil \"1 Burger:\" nur die Nährwert-Basis ist. Titel steht im Fettdruck der ersten Zeile (mathematische Unicode-Fettzeichen → Klartext, Emojis entfernt). \"1-2 TL\" → unterer Wert wie in den übrigen Fixtures; \"Scheiben\" kanonisch zu \"Scheibe\"."
+}

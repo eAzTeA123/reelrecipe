@@ -1,0 +1,66 @@
+{
+  "id": "marvin-dc0eafrivrf",
+  "source": "https://www.instagram.com/reel/Dc0eafRIVrF/",
+  "account": "kochenmitmarvin",
+  "language": "de",
+  "style": "emoji-sections+asterisk-bullets+nutrition",
+  "caption": "🍅 Pesto Rosso Hähnchen Reis One Pot\n\n30 Tage – 30 Rezepte | Abnehmen leichter gemacht \n\n👉 Folge mir für täglich einfache High Protein Rezepte zum Abnehmen & schicke es an jemanden der keine Lust hat zu kochen 😬\n\n🛒 Zutaten\n\n* 200 g Jasminreis\n* 500 g Hähnchenbrustfilet\n* 1 EL Pesto Rosso\n* 400 ml Hühnerbrühe\n* 200 g TK-Brokkoli\n* 150 g Light Streukäse\n* 300 g Cherrytomaten\n* 1½ TL Knoblauch\n* 1½ TL Tomatengewürz\n* 1 TL geräuchertes Paprikapulver\n\n📊 Nährwerte\n\nPro Portion (4 Portionen):\n\n* 464 kcal\n* 46 g Protein\n* 47 g Kohlenhydrate\n*  8,5 g Fett\n\n👨🏻‍🍳 Zubereitung\n\nHähnchen und Brokkoli kleinschneiden.\n\nAlle Zutaten bis auf den Käse zusammen in eine Auflaufform geben und gut miteinander vermengen.\n\nAnschließend mit dem Light-Käse toppen und die Auflaufform mit Alufolie abdecken.\n\n🔥 45 Minuten bei 190 °C in den vorgeheizten Ofen geben.\n\nDanach die Alufolie entfernen und nochmal ca. 5 Minuten backen, bis der Käse schön goldbraun ist. 🧀🔥\n\nFertig! Einfache Zutaten, wenig Aufwand und richtig viel Protein. 💪🏻\n\n#highprotein #abnehmen #rezept #diät \n#onepot muskelaufbau Fitness",
+  "expected": {
+    "title": "Pesto Rosso Hähnchen Reis One Pot",
+    "servings": 4,
+    "ingredients": [
+      {
+        "amount": 200,
+        "unit": "g",
+        "name": "Jasminreis"
+      },
+      {
+        "amount": 500,
+        "unit": "g",
+        "name": "Hähnchenbrustfilet"
+      },
+      {
+        "amount": 1,
+        "unit": "EL",
+        "name": "Pesto Rosso"
+      },
+      {
+        "amount": 400,
+        "unit": "ml",
+        "name": "Hühnerbrühe"
+      },
+      {
+        "amount": 200,
+        "unit": "g",
+        "name": "TK-Brokkoli"
+      },
+      {
+        "amount": 150,
+        "unit": "g",
+        "name": "Light Streukäse"
+      },
+      {
+        "amount": 300,
+        "unit": "g",
+        "name": "Cherrytomaten"
+      },
+      {
+        "amount": 1.5,
+        "unit": "TL",
+        "name": "Knoblauch"
+      },
+      {
+        "amount": 1.5,
+        "unit": "TL",
+        "name": "Tomatengewürz"
+      },
+      {
+        "amount": 1,
+        "unit": "TL",
+        "name": "geräuchertes Paprikapulver"
+      }
+    ],
+    "stepsCount": 5
+  },
+  "notes": "Zubereitungs-Emoji MIT Hautton (👨🏻‍🍳), Zutaten mit '* '-Bullets, kein eigener Abschluss-Satz außer 'Fertig! Einfache Zutaten ... 💪🏻' (zählt nicht als Schritt)."
+}

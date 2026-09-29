@@ -1,5 +1,6 @@
 import type {
   LocalImage,
+  ParserCorrection,
   Recipe,
   RecipeInput,
   ShoppingItem,
@@ -74,6 +75,27 @@ export interface MealPlanRepository {
     onChange: (entries: MealPlanEntry[]) => void,
     onError?: (error: unknown) => void,
   ): () => void;
+}
+
+export interface AisleOrderRepository {
+  recordCheck(aisle: string): Promise<void>;
+  getOrder(): Promise<Map<string, number>>;
+  clear(): Promise<void>;
+}
+
+/**
+ * Lokales Log der Nutzerkorrekturen am Parser-Ergebnis. Wird genutzt, um den
+ * Real-Caption-Corpus mit echten Fehlfällen zu füttern.
+ */
+export interface CorrectionRepository {
+  /** Speichert nur, wenn sich die Nutzerfassung wirklich vom Parser-Vorschlag unterscheidet */
+  record(entry: Omit<ParserCorrection, "id" | "createdAt">): Promise<ParserCorrection | undefined>;
+  list(): Promise<ParserCorrection[]>;
+  count(): Promise<number>;
+  remove(id: string): Promise<void>;
+  clearAll(): Promise<void>;
+  /** JSON-Inhalt (Fixture-Array) für src/parser/corpus/fixtures/ */
+  exportFixtures(): Promise<string>;
 }
 
 export interface ImageRepository {

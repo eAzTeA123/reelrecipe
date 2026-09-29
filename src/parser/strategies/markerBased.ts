@@ -1,18 +1,29 @@
 import { getAllVocab } from "../vocabulary";
 import { splitLines } from "../normalize";
 import { looksLikeIngredient } from "../ingredient";
+import {
+  INGREDIENT_EMOJIS,
+  STEP_EMOJIS,
+  hasEmoji,
+  isCreditOrLinkLine,
+  isListItemWithoutVerb,
+  isNoteLine,
+  isNutritionLine,
+  isOutroLine,
+  isPromoLine,
+  isStepLeadIn,
+  looksLikeHeading,
+  normalizeHeader,
+} from "../lineFacts";
 import type { ParserStrategy, RawParseResult } from "./types";
 
 const vocab = getAllVocab();
 
 function isMarker(line: string, markers: string[], emojis: string[]): boolean {
-  const clean = line.trim().toLowerCase().replace(/[:\-_#*]/g, "").trim();
+  const clean = normalizeHeader(line);
   if (markers.some((m) => clean === m || clean.startsWith(m))) return true;
-  if (emojis.some((e) => line.includes(e))) {
-    // Wenn ein Emoji vorkommt, die Zeile kurz ist und KEINE Ziffern enthält (keine Zutat wie "2 Eier")
-    if (line.trim().length < 25 && !/\d/.test(line)) return true;
-  }
-  return false;
+  // Wenn ein Emoji vorkommt, die Zeile kurz ist und KEINE Ziffern enthält (keine Zutat wie "2 Eier")
+  return hasEmoji(line, emojis) && line.trim().length < 25 && !/\d/.test(line);
 }
 
 export const markerBasedStrategy: ParserStrategy = {
@@ -39,26 +50,35 @@ export const markerBasedStrategy: ParserStrategy = {
       if (!line) continue;
 
       // Prüfe auf Zutaten-Marker
-      if (isMarker(line, vocab.ingredientMarkers, vocab.ingredientEmojis)) {
+      if (isMarker(line, vocab.ingredientMarkers, INGREDIENT_EMOJIS)) {
         currentSection = "ingredients";
         foundIngredientMarker = true;
         continue;
       }
 
       // Prüfe auf Zubereitungs-Marker
-      if (isMarker(line, vocab.stepMarkers, vocab.stepEmojis)) {
+      if (isMarker(line, vocab.stepMarkers, STEP_EMOJIS)) {
         currentSection = "steps";
         foundStepMarker = true;
         continue;
       }
 
-      // Prüfe auf Outro (nur wenn nicht nummeriert und kurz)
+      // Nährwerte/Portionsangaben: ab in "other", Abschnitt NICHT umschalten,
+      // damit danach folgende Zubereitungsschritte nicht verloren gehen.
+      if (isNutritionLine(line)) {
+        result.other.push(line);
+        continue;
+      }
+
+      // Prüfe auf Outro (nur wenn nicht nummeriert und kurz) – inklusive
+      // Werbe-/Kooperationszeilen, die sonst als Schritte enden. Notizzeilen zu
+      // einer Zutat ("( erhältlich bei Prozis )") sind keine Werbung.
       const lower = line.toLowerCase();
       const isNumberedStep = /^\d+[.)]/.test(lower) || /^schritt\s*\d+/i.test(lower);
       if (
         !isNumberedStep &&
-        (line.startsWith("#") ||
-          vocab.outroKeywords.some((k) => lower.includes(k) && line.length < 60))
+        !isNoteLine(line) &&
+        (line.startsWith("#") || isOutroLine(line) || isPromoLine(line))
       ) {
         currentSection = "other";
       }
@@ -71,12 +91,35 @@ export const markerBasedStrategy: ParserStrategy = {
           result.other.push(line);
         }
       } else if (currentSection === "ingredients") {
+        const withoutBullet = line.replace(/^[-•*]\s*/, "").trim();
+        if (/^\(\([\s\S]+\)\)$/.test(withoutBullet)) {
+          result.other.push(line);
+          continue;
+        }
+        // Klammer-Notizen und Alternativangaben gehören zur vorherigen Zutat
+        if (result.ingredients.length > 0 && (isNoteLine(line) || /^\([\s\S]+\)$/.test(withoutBullet))) {
+          result.ingredients[result.ingredients.length - 1] += ` ${withoutBullet}`;
+          continue;
+        }
+
         if (looksLikeIngredient(line) < 0) {
           result.steps.push(line);
         } else {
           result.ingredients.push(line);
         }
       } else if (currentSection === "steps") {
+        // Überschriften ("Haselnuss-Creme"), aufgezählte Zutaten-Nennungen
+        // ("→ 🍫 Schoko-Creme"), Notizen und Footer-/Linkzeilen sind keine Schritte.
+        if (
+          isCreditOrLinkLine(line) ||
+          looksLikeHeading(line, lines[i + 1]) ||
+          isStepLeadIn(line, lines.slice(i + 1, i + 3)) ||
+          isListItemWithoutVerb(line) ||
+          isNoteLine(line)
+        ) {
+          result.other.push(line);
+          continue;
+        }
         result.steps.push(line);
       } else {
         result.other.push(line);
@@ -85,6 +128,8 @@ export const markerBasedStrategy: ParserStrategy = {
 
     if (foundIngredientMarker && foundStepMarker && result.ingredients.length > 0 && result.steps.length > 0) {
       result.confidence = 0.95;
+    } else if (foundIngredientMarker && result.ingredients.length >= 3 && result.steps.length > 0) {
+      result.confidence = 0.9;
     } else if (foundIngredientMarker && result.ingredients.length > 0) {
       result.confidence = 0.7;
     } else if (foundStepMarker && result.steps.length > 0) {
@@ -98,6 +143,16 @@ export const markerBasedStrategy: ParserStrategy = {
       result.confidence -= 0.5;
     }
 
+    // Wenn viele Zutaten-ähnliche Zeilen in "other"/"steps" gelandet sind, hat die
+    // Marker-Zuordnung die Liste zerrissen ("Für das Gyros:"-Blöcke) – dann ist die
+    // hohe Konfidenz falsch und die Zeilen-Strategie wäre die bessere Wahl.
+    const leaked = [...result.other, ...result.steps].filter((l) => looksLikeIngredient(l) >= 3).length;
+    if (leaked > result.ingredients.length) {
+      result.confidence = Math.max(0.1, result.confidence - 0.4);
+    }
+
     return result;
   },
 };
+
+

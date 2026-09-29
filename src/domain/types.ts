@@ -84,6 +84,13 @@ export interface BackupFile {
   shopping: ShoppingItem[];
 }
 
+export interface AisleCheckEvent {
+  id: string;
+  aisle: string;
+  position: number;
+  timestamp: number;
+}
+
 export interface ParsedRecipe {
   title: string;
   servings?: number;
@@ -92,4 +99,18 @@ export interface ParsedRecipe {
   ingredients: Ingredient[];
   steps: RecipeStep[];
   tags?: string[];
+}
+
+/**
+ * Nutzerkorrektur eines Parser-Ergebnisses: was der Parser vorgeschlagen hat und
+ * was der Nutzer im Review daraus gemacht hat. Bleibt lokal und dient als
+ * Testfall-Material für den Parser (Export in den Real-Caption-Corpus).
+ */
+export interface ParserCorrection {
+  id: string;
+  createdAt: number;
+  sourceUrl?: string;
+  sourceCaption: string;
+  parsed: ParsedRecipe;
+  corrected: ParsedRecipe;
 }

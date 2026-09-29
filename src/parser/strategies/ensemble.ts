@@ -43,12 +43,15 @@ export const ensembleStrategy: ParserStrategy = {
       };
     }
 
-    // 4. Fallback auf die Strategie mit der absolut höchsten Konfidenz
-    const candidates = [markerRes, sentenceRes];
-    if (hasManyLines) candidates.push(lineStateMachineStrategy.parse(caption));
+    // 4. Fallback auf die Strategie mit der absolut höchsten Konfidenz.
+    // Bei Gleichstand gewinnt die strukturierte Zeilen-Strategie vor dem
+    // Satz-Splitter (Zeilenumbrüche sind das verlässlichere Signal).
+    const candidates = [markerRes, hasManyLines ? lineStateMachineStrategy.parse(caption) : undefined, sentenceRes]
+      .filter((r): r is RawParseResult => r !== undefined)
+      .map((r, index) => ({ r, index }));
 
-    candidates.sort((a, b) => b.confidence - a.confidence);
-    const best = candidates[0];
+    candidates.sort((a, b) => b.r.confidence - a.r.confidence || a.index - b.index);
+    const best = candidates[0].r;
 
     return {
       ...best,

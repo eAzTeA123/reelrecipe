@@ -32,7 +32,7 @@ export const UNITS: UnitDef[] = [
   { label: "Kopf", aliases: ["kopf", "köpfe", "koepfe", "head", "heads"] },
   { label: "Glas", aliases: ["glas", "gläser", "glaeser", "jar", "jars"] },
   { label: "Becher", aliases: ["becher"] },
-  { label: "Handvoll", aliases: ["handvoll", "handful", "handfuls"] },
+  { label: "Handvoll", aliases: ["handvoll", "handfull", "handful", "handfuls", "hand voll", "hand"] },
   { label: "Spritzer", aliases: ["spritzer", "splash", "splashes", "schuss"] },
   { label: "Tropfen", aliases: ["tropfen", "drop", "drops"] },
   { label: "Blatt", aliases: ["blatt", "blätter", "blaetter", "leaf", "leaves", "sheet", "sheets"] },

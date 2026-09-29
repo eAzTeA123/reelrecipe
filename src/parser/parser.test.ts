@@ -57,6 +57,28 @@ describe("parseIngredientLine", () => {
     });
   });
 
+  it("erkennt Aufzählungszeichen (*, •, +) vor der Menge", () => {
+    expect(parseIngredientLine("* 200 g Jasminreis")).toMatchObject({
+      amount: 200, unit: "g", name: "Jasminreis",
+    });
+    expect(parseIngredientLine("• 1 EL Pesto Rosso")).toMatchObject({
+      amount: 1, unit: "EL", name: "Pesto Rosso",
+    });
+    expect(parseIngredientLine("+ 400 ml Hühnerbrühe")).toMatchObject({
+      amount: 400, unit: "ml", name: "Hühnerbrühe",
+    });
+    expect(parseIngredientLine("* 1 1/2 TL Knoblauch")).toMatchObject({
+      amount: 1.5, unit: "TL", name: "Knoblauch",
+    });
+  });
+
+  it("verwirft Nährwert- und Portionszeilen", () => {
+    expect(parseIngredientLine("* 464 kcal")).toBeNull();
+    expect(parseIngredientLine("46 g Protein")).toBeNull();
+    expect(parseIngredientLine("Pro Portion (4 Portionen):")).toBeNull();
+    expect(parseIngredientLine("Nährwerte")).toBeNull();
+  });
+
   it("extrahiert Notizen aus Klammern und nach Komma", () => {
     expect(parseIngredientLine("50 g Parmesan, frisch gerieben")).toMatchObject({
       amount: 50, unit: "g", name: "Parmesan", notes: "frisch gerieben",

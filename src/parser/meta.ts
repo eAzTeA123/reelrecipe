@@ -1,4 +1,8 @@
+import { looksLikeIngredient } from "./ingredient";
+
 const SERVINGS_RES = [
+  // "Pro Portion (1/4)" → 4 Portionen
+  /\bpro\s+portion\s*\(?\s*1\s*\/\s*(\d{1,2})\s*\)?/i,
   /(?:serves?|servings?|yields?|ergibt|portionen?|portion)\s*[:=-]?\s*(?:about\s*|ca\.?\s*)?(\d{1,2})/i,
   /(?:für|for)\s*(?:ca\.?\s*|about\s*|approximately\s*)?(\d{1,2})\s*(?:portionen?|pers(?:onen)?\.?|servings?|people|persons|stücke?|tacos?|portion|stück|person)\b/i,
   /(\d{1,2})\s*(?:portionen?|pers(?:onen)?\.?|servings?|people|persons)\b/i,
@@ -9,8 +13,25 @@ const MIN_ONLY = /(?<![\p{L}])(\d{1,3})\s*(?:min\.?|minuten?|minutes?)(?![\p{L}]
 const TIME_LABEL = /(zeit|time|dauer|prep(?:aration)?\s*time|vorbereitungs?zeit|cook\s*time|kochzeit|backzeit|bake\s*time|gesamt|total|⏱)/i;
 const PREP_LABEL = /(prep(?:aration)?\s*time|vorbereitungs?zeit|vorbereitung|arbeitszeit)/i;
 
+/**
+ * Ertragszeile ("(9 „Stück“)", "Für 4 Stück:", "Ergibt 12 Stück").
+ * Bewusst streng: "4 Stück Eier" ist eine Zutat, keine Portionsangabe.
+ */
+const YIELD_LINE_RES = [
+  /^\s*\(?\s*(?:für|ergibt|reicht für|bei|pro)?\s*(\d{1,2})\s*[„“"'’]?\s*(?:stücke?|stk\.?)\s*[)\]"„“'’]*\s*:?\s*$/iu,
+  /^\s*\(?\s*(?:für|ergibt|reicht für|bei|pro)\s*(\d{1,2})\s*(?:portionen?|personen?|pers\.?)\s*[)\]]*\s*:?\s*$/iu,
+];
+
 export function parseServings(lines: string[]): number | undefined {
   for (const line of lines) {
+    // Ertragszeilen zuerst: sie sind eindeutig und stehen oft vor der Zutatenliste
+    for (const re of YIELD_LINE_RES) {
+      const m = line.match(re);
+      if (m) {
+        const n = parseInt(m[1], 10);
+        if (n >= 1 && n <= 60) return n;
+      }
+    }
     for (const re of SERVINGS_RES) {
       const m = line.match(re);
       if (m) {
@@ -49,7 +70,41 @@ export function parseTimes(lines: string[]): { prepTime?: number; cookTime?: num
   return { prepTime, cookTime };
 }
 
-const TITLE_BAD = /^(rezept|recipe|hier ist|das hier|dieses|heute|neu)/i;
+const TITLE_BAD = /^(rezept|recipe|hier ist|das hier|dieses|heute|neu\b|wenn\b|falls\b|rabattcode\b|\*?anzeige\b|\*?werbung\b|werbung\b)/i;
+
+/** Menge + Einheit mitten in der Zeile → das ist eine Zutatenzeile, kein Titel. */
+const INGREDIENT_AMOUNT_RE =
+  /\d+[.,]?\d*\s*(?:g|gr|gramm|ml|kg|l|el|tl|stück|stk|packung|dose|zehe|scheibe|prise|bund|handvoll|zweig|blatt|kopf|glas|becher|cup|oz|lb)\b/i;
+
+/**
+ * Taugt die Zeile als Rezepttitel? Zutatenzeilen, Aufzählungen, Klammer-Notizen,
+ * Portionsangaben und Werbetext sind keine Titel – sonst landet "1 großer Apfel"
+ * oder "( für 800g Futter )" als Rezeptname in der App.
+ */
+/**
+ * Werbetext, der einen Titel disqualifiziert. Bewusst enger als `isPromoLine`:
+ * "Tacos zum Abnehmen" ist ein Rezeptname, "Rabattcode: NOEL" nicht.
+ */
+const TITLE_PROMO_RE =
+  /\b(?:prozis|rabattcode|rabatte?|gutschein|werbung|anzeige|folge mir|folgt mir|gratis|unterstützen|link in bio)\b/i;
+
+export function isPlausibleTitle(line: string): boolean {
+  const t = line.trim();
+  if (t.length < 3 || t.length > 80) return false;
+  if (/^[(\[{]/.test(t) || /[)\]}]\s*$/.test(t)) return false;
+  // Aufzählungszeichen oder Nummer am Anfang – aber ein führendes Emoji ist okay
+  // ("🌮 HIGH PROTEIN TACOS" ist ein Titel, "✖️ 1g Salz" nicht: das fängt die Mengen-Regel).
+  if (/^[-–—•·*+~›»]/.test(t) || /^\d/.test(t)) return false;
+  if (INGREDIENT_AMOUNT_RE.test(t)) return false;
+  if (/^(?:für|pro|je)\s/i.test(t)) return false;
+  if (/[,\-:;]$/.test(t)) return false;
+  const cleaned = cleanTitle(t);
+  if (cleaned.length < 3) return false;
+  if (TITLE_BAD.test(cleaned)) return false;
+  if (TITLE_PROMO_RE.test(t)) return false;
+  if (looksLikeIngredient(t) >= 6) return false;
+  return true;
+}
 
 /** Phrasen, die NICHT als Titel taugen (TikTok/Insta Intro-Boilerplate) */
 const TITLE_STRIP_PHRASES = [
@@ -97,8 +152,8 @@ export function cleanTitle(raw: string): string {
   // Trailing Emojis entfernen
   t = t.replace(/[\p{Extended_Pictographic}\u{FE0F}\u{200D}\s]+$/u, "").trim();
 
-  // Werbung / Anzeige Marker entfernen (z.B. "*Anzeige Churros sind lecker")
-  t = t.replace(/\*?anzeige\s*[:|-]?\s*/gi, "").trim();
+  // Werbung / Anzeige Marker entfernen (z.B. "*Anzeige Churros sind lecker", "*ANZElGE")
+  t = t.replace(/\*?an[zs]e[il1|]ge\s*[:|-]?\s*/gi, "").trim();
 
   // Smart Truncation: Wenn der Titel extrem lang ist (Fließtext), ersten sinnvollen Satz nehmen
   if (t.length > 70) {
@@ -121,6 +176,25 @@ export function cleanTitle(raw: string): string {
   return t;
 }
 
+/**
+ * Titel aus einer Marketing-Headline ableiten:
+ * "Die beste Lasagne-Suppe aller Zeiten: Der Party-Trend …" → "Lasagne-Suppe".
+ */
+export function extractTitleFromHeadline(line: string): string | undefined {
+  const head = line.split(/[!:?]|\s+–\s+|\s+-\s+/)[0]?.trim();
+  if (!head) return undefined;
+
+  let candidate = head.replace(
+    /^(?:die|der|das|mein|meine|unser|unsere)\s+(?:beste[nrs]?|leckerste[nrs]?|einfachste[nrs]?|schnellste[nrs]?|gesündeste[nrs]?|cremigste[nrs]?)\s+/i,
+    "",
+  );
+  candidate = candidate.replace(/\s+(?:aller\s+zeiten|überhaupt|ever)$/i, "").trim();
+
+  if (candidate.split(/\s+/).filter(Boolean).length > 6) return undefined;
+  const cleaned = cleanTitle(candidate);
+  return isPlausibleTitle(cleaned) ? cleaned : undefined;
+}
+
 /** Erste sinnvolle Zeile als Titel: keine Überschrift, keine Zutat, 2–80 Zeichen. */
 export function pickTitle(
   preambleLines: string[],
@@ -129,15 +203,11 @@ export function pickTitle(
   for (const line of preambleLines) {
     const l = line.trim();
     if (l.length < 3 || l.length > 80) continue;
-    if (isSectionHeader(l)) continue;
-    if (/^\d/.test(l)) continue;
-    
+    if (isSectionHeader(l)) break;
+
     const cleaned = cleanTitle(l);
-    // Nach dem Bereinigen zu kurz? → Nächste Zeile versuchen
-    if (cleaned.length < 3) continue;
-    // Nur Intro-Text, kein richtiger Titel? → Skip
-    if (TITLE_BAD.test(cleaned) && cleaned.length < 20) continue;
-    
+    if (!isPlausibleTitle(cleaned)) continue;
+
     return cleaned;
   }
   return undefined;

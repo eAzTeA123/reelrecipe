@@ -1,0 +1,61 @@
+{
+  "id": "einfachbacken-dd11fhxffoz",
+  "source": "https://www.instagram.com/reel/Dd11fHXFfoZ/",
+  "account": "einfachbacken",
+  "language": "de",
+  "style": "numbered-steps+prose+back-section",
+  "caption": "Nusshörnchen📌 Rezept zum Speichern\n\nNusshörnchen wie vom Bäcker – das gelingt dir mit unserem Rezept. Die saftigen Hörnchen mit Frischkäse und Haselnuss wirst du ab sofort nur noch selber backen. Das schmeckt am besten!\n\nZUTATEN (Für 32 Stücke)\nFür den Teig\n170 g Weizenmehl (Type 405)\n100 g Butter (zimmerwarm)\n100 g Frischkäse (zimmerwarm)\n1 EL Zucker\n\nFür die Panade\n50 g Zucker\n50 g brauner Zucker\n50 g gemahlene Haselnüsse\n1 TL Zimt\n½ TL Zitronenabrieb\n\nZUBEREITUNG\n1. Schritt\nFür den Teig Mehl, Butter, Frischkäse und Zucker mit den Knethaken des Handrührgeräts mehrere Minuten zu einem glatten Teig verkneten. Teig zu einer Kugel formen und in Frischhaltefolie gewickelt mindestens 2 Stunden kalt stellen.\n\n2. Schritt\nInzwischen für die Panade Zucker, braunen Zucker, Haselnüsse, Zimt und Zitronenabrieb in einer flachen Schüssel miteinander vermischen.\n\n3. Schritt\nDurchgekühlten Teig halbieren. Jede Teighälfte zu einer Kugel formen. Panade auf der Arbeitsfläche verteilen, eine Teigkugel darauf legen und mit einer Teigrolle rund ausrollen (Ø ca. 26 cm).\n\n4. Schritt\nDen Teig beim Ausrollen hin und wieder wenden. Dabei die Arbeitsplatte nochmal mit der Panade bestreuen, damit der Teig von beiden Seiten mit der Mischung bedeckt ist. Den ausgerollten Teig mit einem Pizzaschneider oder einem scharfen Messer in 16 Stücke schneiden (wie Kuchenstücke).\n\n5. Schritt\nJedes Kuchenstück von der breiten Außenseite zur Spitze hin aufrollen, sodass die typische Hörnchen-Form entsteht. Hörnchen nach Belieben nochmal in der Zucker-Nuss-Mischung wälzen, damit sie lückenlos bedeckt sind.\n\nWeitere Zubereitungs-Schritte gibt's auf der Website @einfachbacken. Hier war leider zu wenig Platz. 🙏\n\nhttps://www.einfachbacken.de/rezepte/nusshoernchen-so-lecker-ganz-einfach-selbstgemacht\n\nDas ganze Video findest du jetzt auf unserem YouTube-Kanal!\nhttps://youtu.be/1UssbyVGBbc\n\nProtagonistin: Fabiana\n@hallohueftgold\n\n#einfachbacken #backen #nusshoernchen #nüsse #hoernchen",
+  "expected": {
+    "title": "Nusshörnchen",
+    "servings": 32,
+    "ingredients": [
+      {
+        "amount": 170,
+        "unit": "g",
+        "name": "Weizenmehl (Type 405)"
+      },
+      {
+        "amount": 100,
+        "unit": "g",
+        "name": "Butter (zimmerwarm)"
+      },
+      {
+        "amount": 100,
+        "unit": "g",
+        "name": "Frischkäse (zimmerwarm)"
+      },
+      {
+        "amount": 1,
+        "unit": "EL",
+        "name": "Zucker"
+      },
+      {
+        "amount": 50,
+        "unit": "g",
+        "name": "Zucker"
+      },
+      {
+        "amount": 50,
+        "unit": "g",
+        "name": "brauner Zucker"
+      },
+      {
+        "amount": 50,
+        "unit": "g",
+        "name": "gemahlene Haselnüsse"
+      },
+      {
+        "amount": 1,
+        "unit": "TL",
+        "name": "Zimt"
+      },
+      {
+        "amount": 0.5,
+        "unit": "TL",
+        "name": "Zitronenabrieb"
+      }
+    ],
+    "stepsCount": 6
+  },
+  "notes": "Back-Rezept: Zutatenliste mit Einheit hinter dem Namen, Zubereitung als 'N. Schritt'; der Hinweis auf weitere Schritte auf der Website zählt als letzter Schritt. 'Für 32 Stücke' als Ertrag in servings."
+}

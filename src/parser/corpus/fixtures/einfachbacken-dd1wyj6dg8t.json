@@ -1,0 +1,16 @@
+{
+  "id": "einfachbacken-dd1wyj6dg8t",
+  "source": "https://www.instagram.com/reel/Dd1WYj6DG8t/",
+  "account": "einfachbacken",
+  "language": "de",
+  "style": "prose-only+dm-gate+no-ingredients",
+  "caption": "Kommentiere „Sizilianischer Kuchen“ ✨🍋 und wir senden dir das Rezept per DM! 😍\n\nDas einfache Rezept landet in nur 25 Minuten im Ofen ⏰ und verwöhnt dich mit seinem fruchtig-frischen Aroma. Jeder Bissen schmeckt wie ein kleiner Kurzurlaub unter der Sonne Siziliens 🌞🍰🍋.",
+  "expected": {
+    "title": "Sizilianischer Kuchen",
+    "servings": null,
+    "ingredients": [],
+    "stepsCount": 0
+  },
+  "notes": "Reine Werbe-/Fließtext-Caption ohne Zeilenumbrüche und ohne echte Anleitung (DM-Gate). Keine Zutaten, kein Schritt; der Kuchenname steht nur im Kommentar-Aufruf. Negativtest: der Parser darf hier nichts erfinden. Negativfall: Caption enthält kein Rezept – der Parser darf nichts erfinden.",
+  "negative": true
+}

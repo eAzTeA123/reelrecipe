@@ -4,9 +4,11 @@ import {
   parseIngredientLine,
   toIngredient,
   expandIngredientLine,
+  stripMultiplierHeaders,
 } from "./ingredient";
 import { makeSteps } from "./steps";
-import { parseServings, parseTimes, pickTitle, cleanTitle } from "./meta";
+import { deriveIngredientsFromSteps } from "./deriveIngredients";
+import { parseServings, parseTimes, pickTitle, cleanTitle, isPlausibleTitle, extractTitleFromHeadline } from "./meta";
 import { ensembleStrategy, ALL_STRATEGIES } from "./strategies/ensemble";
 import { markerBasedStrategy } from "./strategies/markerBased";
 import { lineStateMachineStrategy } from "./strategies/lineStateMachine";
@@ -25,19 +27,12 @@ export {
 };
 
 /** Inkrement bei jeder wesentlichen Parser-Änderung */
-export const PARSER_VERSION = 6;
+export const PARSER_VERSION = 14;
 
-import { getAllVocab } from "./vocabulary";
+import { isSectionHeader as isSectionHeaderLine } from "./lineFacts";
 
-const vocab = getAllVocab();
 function isSectionHeader(l: string): boolean {
-  const clean = l.toLowerCase().replace(/[:\-_#*]/g, "").trim();
-  return (
-    vocab.ingredientMarkers.some((m) => clean === m || clean.startsWith(m)) ||
-    vocab.stepMarkers.some((m) => clean === m || clean.startsWith(m)) ||
-    (vocab.ingredientEmojis.some((e) => l.includes(e)) && !/\d/.test(l)) ||
-    (vocab.stepEmojis.some((e) => l.includes(e)) && !/\d/.test(l))
-  );
+  return isSectionHeaderLine(l);
 }
 
 export function parseRecipe(caption: string): ParsedRecipe | null {
@@ -47,7 +42,7 @@ export function parseRecipe(caption: string): ParsedRecipe | null {
   // Nutze die Hybrid-Ensemble-Pipeline
   const raw = ensembleStrategy.parse(caption);
 
-  const ingredients = raw.ingredients
+  const ingredients = stripMultiplierHeaders(raw.ingredients)
     .flatMap(expandIngredientLine)
     .map(parseIngredientLine)
     .filter((i): i is NonNullable<typeof i> => i !== null)
@@ -59,13 +54,43 @@ export function parseRecipe(caption: string): ParsedRecipe | null {
     return null;
   }
 
-  const meta = parseTimes(lines);
-  const rawTitle =
-    raw.title && raw.title.length > 2 && !isSectionHeader(raw.title)
-      ? raw.title
-      : pickTitle(lines, isSectionHeader) ?? "Neues Rezept";
+  // Zutaten, die nur in der Anleitung genannt sind, ergänzen (Einkaufsliste!)
+  ingredients.push(
+    ...deriveIngredientsFromSteps(
+      steps.map((s) => s.instruction),
+      ingredients,
+    ),
+  );
 
-  const title = cleanTitle(rawTitle) || "Neues Rezept";
+  const meta = parseTimes(lines);
+  let title =
+    raw.title && !isSectionHeader(raw.title) && isPlausibleTitle(raw.title)
+      ? cleanTitle(raw.title)
+      : "";
+
+  if (!title || title.length < 3) {
+    const picked = pickTitle(lines, isSectionHeader);
+    title = picked ? cleanTitle(picked) : "";
+  }
+
+  // Marketing-Headlines als letzte Chance vor dem Zutaten-Fallback
+  if (!title || title.length < 3) {
+    for (const line of lines.slice(0, 3)) {
+      const derived = extractTitleFromHeadline(line);
+      if (derived) {
+        title = derived;
+        break;
+      }
+    }
+  }
+
+  if (!title || title.length < 3) {
+    if (ingredients.length > 0 && ingredients[0].name.length >= 3) {
+      title = ingredients[0].name.replace(/\s*\(.*?\)/g, "").trim();
+    }
+  }
+
+  title = title || "Neues Rezept";
 
   return {
     title: title || "Neues Rezept",
@@ -76,3 +101,12 @@ export function parseRecipe(caption: string): ParsedRecipe | null {
     steps,
   };
 }
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,61 @@
+{
+  "id": "einfachbacken-dd1g64bipaw",
+  "source": "https://www.instagram.com/p/Dd1g64bipaW/",
+  "account": "einfachbacken",
+  "language": "de",
+  "style": "dessert-recipe+numbered-steps+section-headings",
+  "caption": "M&M Cookies! 🍪\nMit Rezept 📌\nM&M Cookies gelingen dir mit meinem Rezept ganz leicht. 🧑🏽‍🍳 Die weiche Konsistenz und die bunten Schokolinsen machen die Kekse unwiderstehlich. Unbedingt ausprobieren! ✨\n\nZUTATEN (Für 12 Stücke)\nFür den Teig\n100 g Schokolinsen\n100 g Butter\n50 g Zucker\n100 g brauner Zucker\n1 Ei (Größe M)\n160 g Weizenmehl (Type 405)\n½ TL Natron\n1 Prise Salz\n\nAußerdem\n50 g Schokolinsen als Dekoration\n\nZUBEREITUNG\n1. Schritt\nBackofen auf 180 Grad Ober-/Unterhitze (Umluft: 160 Grad) vorheizen. Schokolinsen grob hacken. Für den Teig Butter, Zucker und braunen Zucker mit einem Rührgerät cremig aufschlagen, dann das Ei hinzugeben und unterrühren. Mehl, Natron und Salz in einer separaten Schüssel mischen, dann mit der Buttermischung verrühren. Anschließend die gehackten Schokolinsen unterheben.\n\n2. Schritt\nCookieteig mit ausreichend Abstand mithilfe eines Eisportionierers auf ein mit Backpapier belegtes Backblech setzen. Cookies im vorgeheizten Ofen ca. 12 Minuten backen, bis der Rand leicht gebräunt ist. Restliche Schokolinsen auf den noch warmen Cookies verteilen und ganz leicht eindrücken. Der Teig ergibt ca. 12 Cookies, die sich luftdicht verpackt rund 1 Woche bei Zimmertemperatur halten.\n\nyoutube.com/c/einfachbacken\nFacebook.com/einfachbacken.de\npinterest.de/einfachbacken\n\nFOTO: @maria.panzer 🌷\nREZEPT: Lie-Hong 🌷\n\n#einfachbacken #cookies #mundm #schokolinsen",
+  "expected": {
+    "title": "M&M Cookies",
+    "servings": 12,
+    "ingredients": [
+      {
+        "amount": 100,
+        "unit": "g",
+        "name": "Schokolinsen"
+      },
+      {
+        "amount": 100,
+        "unit": "g",
+        "name": "Butter"
+      },
+      {
+        "amount": 50,
+        "unit": "g",
+        "name": "Zucker"
+      },
+      {
+        "amount": 100,
+        "unit": "g",
+        "name": "brauner Zucker"
+      },
+      {
+        "amount": 1,
+        "unit": null,
+        "name": "Ei (Größe M)"
+      },
+      {
+        "amount": 160,
+        "unit": "g",
+        "name": "Weizenmehl (Type 405)"
+      },
+      {
+        "amount": 0.5,
+        "unit": "TL",
+        "name": "Natron"
+      },
+      {
+        "amount": 1,
+        "unit": "Prise",
+        "name": "Salz"
+      },
+      {
+        "amount": 50,
+        "unit": "g",
+        "name": "Schokolinsen als Dekoration"
+      }
+    ],
+    "stepsCount": 2
+  },
+  "notes": "Dessert-/Back-Rezept: '½' als 0.5, Backofen-Temperatur und Backzeit stecken im ersten bzw. zweiten Schritt (deshalb nur 2 Schritte). Der Kanal-/Foto-/Hashtag-Block am Ende ist keine Zutat und kein Schritt. Die Caption schreibt 'Schokolinsen' durchgehend ohne 'k' — hier bewusst so gelassen."
+}

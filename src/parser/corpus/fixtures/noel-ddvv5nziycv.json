@@ -1,0 +1,56 @@
+{
+  "id": "noel-ddvv5nziycv",
+  "source": "https://www.instagram.com/reel/Ddvv5nZIyCv/",
+  "account": "noel.rbd",
+  "language": "de",
+  "style": "compact-bullets+promo+nutrition+oven-note+topping-note",
+  "caption": "ZUM REZEPT ⬇️\n.\n.\n❤️🧡💛\nWenn euch meine Rezepte gefallen und ihr mich unterstützen wollt,\ndann könnt ihr gerne bei PROZIS den\nRabattcode: ❗️👉🏼NOEL👈🏼❗️\nbenutzen um immer Rabatte und Gratis Produkte zu erhalten\n❤️🧡💛\n*ANZElGE\n.\n.\n.\n🥗🍳🥑\nNährwerte (alles insgesamt)\n743kcal, 90g K, 80g E, 5g F\n🥗🍳🥑\n.\n.\n.\n⚖️🔢⏳⏲️\nMengenangaben:\n.\n- 1 großer Apfel\n.\n- 60g Dinkelmehl\n- 100ml Eiklar l Alternativ 2 rohe Eier\n- 350g Magerquark\n- 100g Vanille Protein Pudding\n- 3g Backpulver\n- 8g Real Flavor - Süßungsmittel\n( erhältlich bei Prozis - Code: NOEL ) ❤️\n.\n- BACKOFEN: 200 Grad O/U-Hitze ~ 30min\n.\n- restlichen 100g Vanille Protein Pudding\n- optional verdünnen mit einem Schluck Wasser und einen Teelöffel Flohsamenschalen dazugeben\n.\n- 1/2 TL Zimt\n.\n⚖️🔢⏳⏲️\n.\n.\n.\n.\n.\n.\n.\n.\n.\n.\n#highprotein #lecker #eiweiß #protein leckerschmecker essen mealprep eiweiss rezept",
+  "expected": {
+    "title": null,
+    "servings": null,
+    "ingredients": [
+      {
+        "amount": 1,
+        "unit": null,
+        "name": "großer Apfel"
+      },
+      {
+        "amount": 60,
+        "unit": "g",
+        "name": "Dinkelmehl"
+      },
+      {
+        "amount": 100,
+        "unit": "ml",
+        "name": "Eiklar"
+      },
+      {
+        "amount": 350,
+        "unit": "g",
+        "name": "Magerquark"
+      },
+      {
+        "amount": 100,
+        "unit": "g",
+        "name": "Vanille Protein Pudding"
+      },
+      {
+        "amount": 3,
+        "unit": "g",
+        "name": "Backpulver"
+      },
+      {
+        "amount": 8,
+        "unit": "g",
+        "name": "Real Flavor Süßungsmittel"
+      },
+      {
+        "amount": 0.5,
+        "unit": "TL",
+        "name": "Zimt"
+      }
+    ],
+    "stepsCount": 2
+  },
+  "notes": "Nährwerte und PROZIS-Werbeblock (Code NOEL) sind keine Zutaten. Anweisungen: BACKOFEN 200 Grad ~30min und das Topping aus dem restlichen Pudding (optional verdünnt mit Wasser und Flohsamenschalen). Die Prozis-Alternative \"2 rohe Eier\" für das Eiklar wurde nicht doppelt gezählt. Caption enthält keine Titelzeile – Titel wird nur auf Plausibilität geprüft."
+}

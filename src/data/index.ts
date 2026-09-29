@@ -3,11 +3,13 @@ import type {
   RecipeRepository,
   ShoppingListRepository,
   MealPlanRepository,
+  CorrectionRepository,
 } from "./repositories";
 import { LocalRecipeRepository } from "./local/LocalRecipeRepository";
 import { LocalShoppingListRepository } from "./local/LocalShoppingListRepository";
 import { LocalImageRepository } from "./local/LocalImageRepository";
 import { LocalMealPlanRepository } from "./local/LocalMealPlanRepository";
+import { LocalCorrectionRepository } from "./local/LocalCorrectionRepository";
 
 /**
  * Einziger Ort, an dem die konkrete Datenquelle gewählt wird.
@@ -19,6 +21,7 @@ let recipeRepo: RecipeRepository | undefined;
 let shoppingRepo: ShoppingListRepository | undefined;
 let imageRepo: ImageRepository | undefined;
 let mealPlanRepo: MealPlanRepository | undefined;
+let correctionRepo: CorrectionRepository | undefined;
 
 export function getRecipeRepository(): RecipeRepository {
   if (!recipeRepo) recipeRepo = new LocalRecipeRepository();
@@ -40,5 +43,10 @@ export function getMealPlanRepository(): MealPlanRepository {
   return mealPlanRepo;
 }
 
-export type { ImageRepository, RecipeRepository, SearchFilter, ShoppingListRepository, MealPlanRepository } from "./repositories";
+export function getCorrectionRepository(): CorrectionRepository {
+  if (!correctionRepo) correctionRepo = new LocalCorrectionRepository();
+  return correctionRepo;
+}
+
+export type { ImageRepository, RecipeRepository, SearchFilter, ShoppingListRepository, MealPlanRepository, CorrectionRepository } from "./repositories";
 export { getDB } from './local/db';

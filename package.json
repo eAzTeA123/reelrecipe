@@ -9,6 +9,7 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
+    "test:corpus": "vitest run src/parser/corpus.test.ts",
     "recipe:benchmark": "vitest run src/parser/universal.test.ts",
     "test:e2e": "playwright test"
   },

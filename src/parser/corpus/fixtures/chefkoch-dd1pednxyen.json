@@ -1,0 +1,85 @@
+{
+  "id": "chefkoch-dd1pednxyen",
+  "source": "https://www.instagram.com/reel/Dd1PeDNxyen/",
+  "account": "chefkoch",
+  "language": "de",
+  "style": "keycap-numbered-steps+grouped-ingredients+question-cta",
+  "caption": "🔥 Ofensuppe\n\nDiese Ofensuppe kommt nicht in den Ofen. 👀 Der Chefkoch-Klassiker gart normalerweise zwei Stunden bei 200 °C. Meine Version ist nach etwa 20 Minuten auf dem Herd fertig – das spart Zeit und Energie.\n\nCurryketchup wird durch Currypaste und Tomatenmark ersetzt, die Ananas kommt als Chutney obendrauf und statt Dosenerbsen gibt es frische oder TK-Erbsen. Cremig, würzig, leicht scharf und fruchtig!\n\nZutaten für 4–6 Portionen:\nSuppe:\n600 g Hühnerbrust\n400 ml Kokosmilch\n400 ml Hühnerfond\n1–2 EL rote Currypaste\n2 EL Tomatenmark\n150–200 g Erbsen\nSalz und optional etwas Zucker\n\nAnanas-Chutney:\n1 kleine Ananas\n150 g eingelegte rote Paprika\n1 Schalotte\n1–2 EL Olivenöl\nSalz und 1 Prise Zucker\n\nZubereitung:\n1️⃣ Hühnerbrust würfeln. Kokosmilch, Fond, Currypaste und Tomatenmark im Topf verrühren. Fleisch dazugeben und 15–20 Minuten sanft köcheln lassen.\n\n2️⃣ Ananas, Paprika und Schalotte fein würfeln. Mit Olivenöl vermengen und mit Salz und Zucker abschmecken.\n\n3️⃣ Erbsen kurz garen. Suppe abschmecken, anrichten und mit Chutney und Erbsen toppen.\n\nWürdest du sie noch Ofensuppe nennen oder braucht sie einen neuen Namen?",
+  "expected": {
+    "title": "Ofensuppe",
+    "servings": 4,
+    "ingredients": [
+      {
+        "amount": 600,
+        "unit": "g",
+        "name": "Hühnerbrust"
+      },
+      {
+        "amount": 400,
+        "unit": "ml",
+        "name": "Kokosmilch"
+      },
+      {
+        "amount": 400,
+        "unit": "ml",
+        "name": "Hühnerfond"
+      },
+      {
+        "amount": 1,
+        "unit": "EL",
+        "name": "rote Currypaste",
+        "amountMax": 2
+      },
+      {
+        "amount": 2,
+        "unit": "EL",
+        "name": "Tomatenmark"
+      },
+      {
+        "amount": 150,
+        "unit": "g",
+        "name": "Erbsen",
+        "amountMax": 200
+      },
+      {
+        "amount": null,
+        "unit": null,
+        "name": "Salz"
+      },
+      {
+        "amount": null,
+        "unit": null,
+        "name": "Zucker"
+      },
+      {
+        "amount": 1,
+        "unit": null,
+        "name": "Ananas"
+      },
+      {
+        "amount": 150,
+        "unit": "g",
+        "name": "eingelegte rote Paprika"
+      },
+      {
+        "amount": 1,
+        "unit": null,
+        "name": "Schalotte"
+      },
+      {
+        "amount": 1,
+        "unit": "EL",
+        "name": "Olivenöl",
+        "amountMax": 2
+      },
+      {
+        "amount": 1,
+        "unit": "Prise",
+        "name": "Zucker"
+      }
+    ],
+    "stepsCount": 3,
+    "servingsMax": 6
+  },
+  "notes": "Zutaten nach Gruppen (Suppe/Chutney) und mit Einheit hinter dem Namen; Schritte mit Keycap-Ziffern 1️⃣2️⃣3️⃣. Servings null, weil die Caption nur einen Bereich ('4–6 Portionen') nennt. Von Bereichsangaben (1–2 EL, 150–200 g) steht der untere Wert in amount."
+}

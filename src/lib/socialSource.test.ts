@@ -52,7 +52,12 @@ describe("Webimport-Antwort", () => {
     const res = toWebRecipeResponse(await parse_recipe(html), "https://www.lecker.de/kuerbissuppe");
     expect(res.status).toBe("success");
     expect(res.recipe?.title).toBe("Cremige Kürbissuppe mit Kokosmilch");
-    expect(res.recipe?.ingredients.length).toBe(8);
+    // Das Fixture listet "Salz und Pfeffer" als einen Eintrag; der Parser trennt
+    // Aufzählungen bewusst in zwei Zutaten (besser für die Einkaufsliste).
+    expect(res.recipe?.ingredients.length).toBe(9);
+    expect(res.recipe?.ingredients.map((i) => i.name)).toEqual(
+      expect.arrayContaining(["Salz", "Pfeffer"]),
+    );
     expect(res.recipe?.steps.length).toBe(6);
     expect(res.recipe?.servings).toBe(4);
     expect(res.recipe?.prepTime).toBe(20);
