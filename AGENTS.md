@@ -29,6 +29,26 @@ npm run test:e2e   # Playwright E2E (braucht vorher `npm run build`; startet Ser
 - `src/app/api/instagram/` – Caption-Abruf: offizielles oEmbed wenn `INSTAGRAM_OEMBED_TOKEN` gesetzt,
   sonst öffentliche og:-Meta-Tags. `image/` = Proxy mit Host-Allowlist (cdninstagram.com, fbcdn.net).
 
+### Preisarchitektur
+
+- Preisstufen je Zutat, in dieser Reihenfolge: `PRODUCT` (OFF-EAN-Zuordnung, `score >= 0.95`) →
+  `CATEGORY` (kanonischer `category_tag` für unverpackte Rohware) → `SIMILAR_PRODUCT`
+  (`0.8 <= score < 0.95`) → `ESTIMATE` (Richtwert, siehe unten).
+- `ESTIMATE` ist die garantierte Endstufe (`src/lib/products/referencePrices.ts`): ein
+  **gekennzeichneter** Richtwert je Warengruppe. Solche Einträge haben `status: "estimated"`,
+  **kein** `ObservedPrice` (`price` bleibt leer) und immer einen Quellenhinweis – niemals
+  als gemeldeter Marktpreis ausgeben, in der UI mit „≈" kennzeichnen.
+- Kategorie-Auflösung: `src/lib/products/categories.ts` (Match nach Stammlänge + Wortgrenze,
+  kurze Stämme nur als ganzes Wort, Verarbeitungsformen vor Rohware – Hähnchenbrühe ≠ Hähnchen).
+  Neue Zutaten dort ergänzen; die Abdeckung sichert `categories.test.ts` als Invariante ab
+  (≥95 % Kategorie/Vorrat auf den echten Corpus-Zutaten, keine Zutat ohne Preis und Richtwert).
+- Open Prices: Produktabfrage gebündelt über `product_code__in`, Kategorieabfrage über
+  `category_tag`, Similar-Fallback über `product_name`. Nur EUR, deutsche Filialen, Meldungen
+  höchstens ein Jahr alt. Caches je Typ/Schlüssel/Land/Händler (`product:<ean>:DE:all`).
+- `ingredientCost` ist der verbrauchte Anteil; `shoppingCost` der tatsächliche Packungsbetrag.
+  Bei inkompatiblen Einheiten bleibt beides leer. Requests haben 8 s Timeout – läuft einer
+  aus, greift die nächste Stufe (bis hin zum Richtwert), statt die Schätzung abzubrechen.
+
 ## Konventionen
 
 - Bilder werden als `local-image:<uuid>`-Referenz in `Recipe.image` gespeichert (Blob in Tabelle `images`).
