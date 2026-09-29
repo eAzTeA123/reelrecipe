@@ -1,6 +1,11 @@
 import type {
+  AisleCheckEvent,
   BackupFile,
   Ingredient,
+  MealPlanEntry,
+  ParseSnapshot,
+  ParsedRecipe,
+  ParserCorrection,
   Recipe,
   RecipeStep,
   ShoppingItem,
@@ -51,6 +56,32 @@ function parseStep(v: unknown, order: number): RecipeStep {
   };
 }
 
+function parseStringArray(v: unknown): string[] | undefined {
+  if (!Array.isArray(v)) return undefined;
+  return v.filter((entry): entry is string => typeof entry === "string");
+}
+
+/**
+ * Parse-Snapshot (Grundlage der verlustfreien Parser-Migration). Ist er
+ * unbrauchbar, wird er verworfen – das Rezept bleibt gültig, die Migration
+ * fällt dann auf den konservativen Weg zurück.
+ */
+function parseSnapshot(v: unknown): ParseSnapshot | undefined {
+  if (!isRecord(v) || !Array.isArray(v.ingredients) || !Array.isArray(v.steps)) return undefined;
+  const ingredients = [];
+  for (const raw of v.ingredients) {
+    if (!isRecord(raw) || typeof raw.name !== "string" || !raw.name.trim()) return undefined;
+    ingredients.push({
+      name: raw.name,
+      amount: optNumber(raw.amount, 0),
+      unit: optString(raw.unit),
+      notes: optString(raw.notes),
+    });
+  }
+  const steps = v.steps.filter((s): s is string => typeof s === "string");
+  return { title: optString(v.title) ?? "", ingredients, steps };
+}
+
 function parseRecipe(v: unknown): Recipe {
   if (!isRecord(v)) throw new Error("Ungültiges Rezept-Format im Backup.");
   const title = optString(v.title)?.trim();
@@ -78,6 +109,10 @@ function parseRecipe(v: unknown): Recipe {
     ingredients: v.ingredients.map(parseIngredient),
     steps: v.steps.map((s, i) => parseStep(s, i + 1)),
     category: optString(v.category),
+    tags: parseStringArray(v.tags),
+    color: optString(v.color),
+    parserVersion: optNumber(v.parserVersion, 0),
+    parseSnapshot: parseSnapshot(v.parseSnapshot),
     favorite: v.favorite === true,
     createdAt: optNumber(v.createdAt, 0) ?? now,
     updatedAt: optNumber(v.updatedAt, 0) ?? now,
@@ -108,6 +143,15 @@ export interface ParsedBackup {
   recipes: Recipe[];
   images: { id: string; mime: string; dataBase64: string }[];
   shopping: ShoppingItem[];
+  /** Ab Backup-Version 2; bei älteren Dateien leer */
+  mealPlan: MealPlanEntry[];
+  corrections: ParserCorrection[];
+  aisleOrder: AisleCheckEvent[];
+  /**
+   * Nicht-fatale Probleme (z. B. Bildverweis ohne zugehöriges Bild). Wird dem
+   * Nutzer angezeigt, statt still kaputte Rezepte zu erzeugen.
+   */
+  warnings: string[];
 }
 
 export interface ImportResult {
@@ -115,6 +159,12 @@ export interface ImportResult {
   skippedRecipes: number;
   addedShoppingItems: number;
   skippedShoppingItems: number;
+  addedMealPlanEntries: number;
+  addedCorrections: number;
+  addedAisleOrderEntries: number;
+  /** Verwaiste Bild-Blobs, die beim Import aufgeräumt wurden */
+  removedOrphanImages: number;
+  warnings: string[];
 }
 
 export async function importBackup(
@@ -122,7 +172,10 @@ export async function importBackup(
   mode: "skip" | "replace",
 ): Promise<ImportResult> {
   const db = getDB();
-  return db.transaction("rw", db.recipes, db.images, db.shopping, async () => {
+  return db.transaction(
+    "rw",
+    [db.recipes, db.images, db.shopping, db.mealPlan, db.corrections, db.aisleOrder],
+    async () => {
     const existingRecipeIds = new Set(
       (await db.recipes.toArray()).map((recipe) => recipe.id),
     );
@@ -177,17 +230,150 @@ export async function importBackup(
       (item) => mode === "replace" || !existingShoppingIds.has(item.id),
     );
 
+    // Wochenplan, Korrektur-Log und Aisle-Reihenfolge: gleiche Semantik wie bei
+    // Rezepten – "skip" ergänzt nur Unbekanntes, "replace" überschreibt
+    // vorhandene Einträge. Es wird nie etwas gelöscht, das nicht im Backup steht.
+    const existingMealPlanIds = new Set((await db.mealPlan.toArray()).map((entry) => entry.id));
+    const mealPlanToWrite = backup.mealPlan.filter(
+      (entry) => mode === "replace" || !existingMealPlanIds.has(entry.id),
+    );
+    const existingCorrectionIds = new Set((await db.corrections.toArray()).map((entry) => entry.id));
+    const correctionsToWrite = backup.corrections.filter(
+      (entry) => mode === "replace" || !existingCorrectionIds.has(entry.id),
+    );
+    const existingAisleIds = new Set((await db.aisleOrder.toArray()).map((entry) => entry.id));
+    const aisleToWrite = backup.aisleOrder.filter(
+      (entry) => mode === "replace" || !existingAisleIds.has(entry.id),
+    );
+
     await db.images.bulkPut(imagesToWrite);
     await db.recipes.bulkPut(finalRecipesToWrite);
     await db.shopping.bulkPut(shoppingToWrite);
+    await db.mealPlan.bulkPut(mealPlanToWrite);
+    await db.corrections.bulkPut(correctionsToWrite);
+    await db.aisleOrder.bulkPut(aisleToWrite);
+
+    // Bild-Aufräumen: Blobs löschen, auf die kein Rezept (mehr) verweist. Ohne
+    // das wächst die Datenbank bei jedem Re-Import bis zum Quota-Fehler.
+    const referencedImageIds = new Set(
+      (await db.recipes.toArray())
+        .map((recipe) => recipe.image)
+        .filter((ref): ref is string => typeof ref === "string" && ref.startsWith("local-image:"))
+        .map((ref) => ref.slice("local-image:".length)),
+    );
+    const orphanImageIds = (await db.images.toArray())
+      .map((img) => img.id)
+      .filter((id) => !referencedImageIds.has(id));
+    if (orphanImageIds.length > 0) {
+      await db.images.bulkDelete(orphanImageIds);
+    }
 
     return {
       addedRecipes: finalRecipesToWrite.length,
       skippedRecipes: backup.recipes.length - finalRecipesToWrite.length,
       addedShoppingItems: shoppingToWrite.length,
       skippedShoppingItems: backup.shopping.length - shoppingToWrite.length,
+      addedMealPlanEntries: mealPlanToWrite.length,
+      addedCorrections: correctionsToWrite.length,
+      addedAisleOrderEntries: aisleToWrite.length,
+      removedOrphanImages: orphanImageIds.length,
+      warnings: backup.warnings,
     };
   });
+}
+
+const DAYS_OF_WEEK = ["mo", "tu", "we", "th", "fr", "sa", "su"];
+
+function parseMealPlanEntry(v: unknown): MealPlanEntry | null {
+  if (!isRecord(v)) return null;
+  const id = optString(v.id);
+  const recipeId = optString(v.recipeId);
+  const day = optString(v.dayOfWeek);
+  if (!id || !recipeId || !day || !DAYS_OF_WEEK.includes(day)) return null;
+  return {
+    id,
+    dayOfWeek: day as MealPlanEntry["dayOfWeek"],
+    recipeId,
+    servings: optNumber(v.servings, 0) ?? 1,
+  };
+}
+
+function parseAisleCheckEvent(v: unknown): AisleCheckEvent | null {
+  if (!isRecord(v)) return null;
+  const id = optString(v.id);
+  const aisle = optString(v.aisle);
+  if (!id || !aisle) return null;
+  return {
+    id,
+    aisle,
+    position: optNumber(v.position, 0) ?? 0,
+    timestamp: optNumber(v.timestamp, 0) ?? Date.now(),
+  };
+}
+
+function parseParsedRecipeSnapshot(v: unknown): ParsedRecipe | null {
+  if (!isRecord(v) || typeof v.title !== "string" || !Array.isArray(v.ingredients) || !Array.isArray(v.steps)) {
+    return null;
+  }
+  return {
+    title: v.title,
+    servings: optNumber(v.servings, 0),
+    prepTime: optNumber(v.prepTime, 0),
+    cookTime: optNumber(v.cookTime, 0),
+    ingredients: v.ingredients.map(parseIngredient),
+    steps: v.steps.map((s, i) => parseStep(s, i + 1)),
+    tags: parseStringArray(v.tags),
+  };
+}
+
+function parseCorrection(v: unknown): ParserCorrection | null {
+  if (!isRecord(v)) return null;
+  const id = optString(v.id);
+  const sourceCaption = optString(v.sourceCaption);
+  if (!id || !sourceCaption) return null;
+  const parsed = parseParsedRecipeSnapshot(v.parsed);
+  const corrected = parseParsedRecipeSnapshot(v.corrected);
+  if (!parsed || !corrected) return null;
+  return {
+    id,
+    createdAt: optNumber(v.createdAt, 0) ?? Date.now(),
+    sourceUrl: optString(v.sourceUrl),
+    sourceCaption,
+    parsed,
+    corrected,
+  };
+}
+
+/**
+ * Zusatzsammlungen sind Ergänzungsdaten: eine einzelne kaputte Zeile darf keine
+ * vollständige Wiederherstellung verhindern. Sie wird übersprungen und gemeldet.
+ */
+function collectEntries<T>(
+  raw: unknown,
+  parse: (v: unknown) => T | null,
+  label: string,
+  warnings: string[],
+): T[] {
+  if (raw === undefined) return [];
+  if (!Array.isArray(raw)) {
+    warnings.push(`${label} im Backup sind unlesbar und wurden übersprungen.`);
+    return [];
+  }
+  const out: T[] = [];
+  let skipped = 0;
+  for (const entry of raw) {
+    try {
+      const parsed = parse(entry);
+      if (parsed) out.push(parsed);
+      else skipped++;
+    } catch {
+      skipped++;
+    }
+  }
+  if (skipped > 0) {
+    warnings.push(`${skipped} von ${raw.length} ${label} waren unvollständig und wurden übersprungen.`);
+  }
+  return out;
 }
 
 export function parseBackup(json: string): ParsedBackup {
@@ -200,7 +386,7 @@ export function parseBackup(json: string): ParsedBackup {
   } catch {
     throw new Error("Die Datei ist keine gültige JSON-Datei.");
   }
-  if (!isRecord(raw) || raw.app !== "rezept" || raw.version !== 1) {
+  if (!isRecord(raw) || raw.app !== "rezept" || (raw.version !== 1 && raw.version !== 2)) {
     throw new Error("Das ist keine gültige Rezept-Backup-Datei.");
   }
   if (!Array.isArray(raw.recipes)) {
@@ -219,15 +405,41 @@ export function parseBackup(json: string): ParsedBackup {
   const images = rawImages as { id: string; mime: string; dataBase64: string }[];
   const rawShopping = Array.isArray(raw.shopping) ? raw.shopping : [];
   const shopping = rawShopping.map(parseShoppingItem);
-  return { recipes, images, shopping };
+
+  const warnings: string[] = [];
+
+  // Bildverweise prüfen: fehlt der Blob, bleibt nur der Platzhalter – das soll
+  // der Nutzer wissen, statt es später zu bemerken.
+  const imageIds = new Set(images.map((img) => img.id));
+  const missingImages = recipes.filter(
+    (recipe) => recipe.image?.startsWith("local-image:") && !imageIds.has(recipe.image.slice("local-image:".length)),
+  );
+  if (missingImages.length > 0) {
+    warnings.push(
+      `Für ${missingImages.length} Rezept(e) fehlt das Bild in der Backup-Datei – dort erscheint später der Platzhalter.`,
+    );
+  }
+
+  return {
+    recipes,
+    images,
+    shopping,
+    mealPlan: collectEntries(raw.mealPlan, parseMealPlanEntry, "Wochenplan-Einträge", warnings),
+    corrections: collectEntries(raw.corrections, parseCorrection, "Korrektur-Einträge", warnings),
+    aisleOrder: collectEntries(raw.aisleOrder, parseAisleCheckEvent, "Aisle-Einträge", warnings),
+    warnings,
+  };
 }
 
 export async function buildBackup(): Promise<BackupFile> {
   const db = getDB();
-  const [recipes, images, shopping] = await Promise.all([
+  const [recipes, images, shopping, mealPlan, corrections, aisleOrder] = await Promise.all([
     db.recipes.toArray(),
     db.images.toArray(),
     db.shopping.toArray(),
+    db.mealPlan.toArray(),
+    db.corrections.toArray(),
+    db.aisleOrder.toArray(),
   ]);
   const encoded = await Promise.all(
     images.map(async (img) => ({
@@ -238,11 +450,14 @@ export async function buildBackup(): Promise<BackupFile> {
   );
   return {
     app: "rezept",
-    version: 1,
+    version: 2,
     exportedAt: Date.now(),
     recipes,
     images: encoded,
     shopping,
+    mealPlan,
+    corrections,
+    aisleOrder,
   };
 }
 

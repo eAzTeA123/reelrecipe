@@ -144,9 +144,19 @@ export default function SettingsPage() {
     try {
       const result = await importBackup(preview.backup, mode);
       setPreview(null);
+      const extras = [
+        result.addedMealPlanEntries > 0 ? `${result.addedMealPlanEntries} Planeinträge` : null,
+        result.addedCorrections > 0 ? `${result.addedCorrections} Korrekturen` : null,
+        result.addedShoppingItems > 0 ? `${result.addedShoppingItems} Einkaufslisten-Einträge` : null,
+      ].filter(Boolean);
       toast(
-        `Backup importiert: ${result.addedRecipes} Rezepte, ${result.skippedRecipes} übersprungen`,
+        `Backup importiert: ${result.addedRecipes} Rezepte, ${result.skippedRecipes} übersprungen` +
+          (extras.length > 0 ? `, dazu ${extras.join(", ")}` : "") +
+          (result.removedOrphanImages > 0 ? `. ${result.removedOrphanImages} verwaiste Bilder aufgeräumt` : ""),
       );
+      if (result.warnings.length > 0) {
+        setImportError(result.warnings.join(" "));
+      }
       router.refresh();
     } catch (e) {
       console.error("import failed", e);
@@ -304,6 +314,22 @@ export default function SettingsPage() {
                 Einkaufsliste: {preview.newShoppingCount} neu ·{" "}
                 {preview.existingShoppingCount} bereits vorhanden
               </p>
+            )}
+            {preview.backup.mealPlan.length > 0 && (
+              <p className="text-[15px] text-ink-2">
+                Wochenplan: {preview.backup.mealPlan.length} Einträge
+                {preview.backup.corrections.length > 0 &&
+                  ` · Korrektur-Log: ${preview.backup.corrections.length}`}
+                {preview.backup.aisleOrder.length > 0 &&
+                  ` · Aisle-Reihenfolge: ${preview.backup.aisleOrder.length}`}
+              </p>
+            )}
+            {preview.backup.warnings.length > 0 && (
+              <div className="rounded-xl bg-[#fdf6ef] p-3 text-[14px] text-[#9a5b23]" role="alert">
+                {preview.backup.warnings.map((warning) => (
+                  <p key={warning}>{warning}</p>
+                ))}
+              </div>
             )}
             <div className="flex flex-col gap-2.5">
               <Button

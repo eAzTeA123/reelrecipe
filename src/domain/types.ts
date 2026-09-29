@@ -99,11 +99,22 @@ export interface BackupImage {
 
 export interface BackupFile {
   app: "rezept";
-  version: 1;
+  /**
+   * 1 = nur Rezepte, Bilder und Einkaufsliste.
+   * 2 = zusätzlich Wochenplan, Korrektur-Log und Aisle-Reihenfolge.
+   * Beide Versionen bleiben lesbar (`parseBackup`).
+   */
+  version: 1 | 2;
   exportedAt: number;
   recipes: Recipe[];
   images: BackupImage[];
   shopping: ShoppingItem[];
+  /** Ab Version 2 */
+  mealPlan?: MealPlanEntry[];
+  /** Ab Version 2 */
+  corrections?: ParserCorrection[];
+  /** Ab Version 2 */
+  aisleOrder?: AisleCheckEvent[];
 }
 
 export interface AisleCheckEvent {

@@ -399,7 +399,9 @@ function ImportFlow() {
       const existing = await getRecipeRepository().findBySourceUrl(input.sourceUrl);
       if (existing) {
         setExistingRecipe(existing);
-        setPendingSaveArgs({ input, pendingImage, previousImageRef });
+        // Das bisherige Bild des vorhandenen Rezepts mitgeben, sonst räumt
+        // saveWithImage den alten Blob beim Überschreiben nie auf.
+        setPendingSaveArgs({ input, pendingImage, previousImageRef: previousImageRef ?? existing.image });
         setShowDuplicateDialog(true);
         return false;
       }
