@@ -44,6 +44,51 @@ Erkenntnisse aus dem letzten Anlauf stehen dort im Abschnitt „Wiederaktivierun
 - Mobile-first (390×844), Bottom-Nav < md, Top-Nav ≥ md, `prefers-reduced-motion` respektiert.
 - Keine neuen Runtime-Dependencies ohne Not.
 
+## Parser-Corpus und Training
+
+Es gibt **zwei** Messlatten; beide werden von `src/parser/corpus.test.ts` bzw. dem
+Report-Runner ausgewertet:
+
+- `src/parser/corpus/fixtures/` – **Referenz-Corpus** (18 Fixtures, 7 Creator-Stile).
+  Schwellen in `corpus/thresholds.ts` (F1 ≥ 0.97, Schritte ≥ 0.95, Leaks ≤ 1).
+- `src/parser/corpus/fixtures-user/` – **eigene Bibliothek** (24 Instagram-Captions
+  aus einem Nutzer-Backup, Gruppe `eigene-bibliothek`). Hier gilt `expected` =
+  gespeicherte Nutzerfassung, nicht die absolute Wahrheit.
+
+Fixtures aus einem Backup erzeugen:
+
+```bash
+node scripts/backup-to-corpus.mjs <pfad/backup.json>            # nach fixtures-user/
+node scripts/backup-to-corpus.mjs <pfad/backup.json> --dry      # nur anzeigen
+```
+
+Das Skript dokumentiert jede Bereinigung im Feld `notes` und setzt Marker:
+
+- `exclude: "<Grund>"` – Fixture wird **nicht gewertet** (z. B. englische Caption:
+  die gespeicherte Fassung ist die übersetzte Anzeige-Fassung und damit keine
+  gültige Wahrheit für den Parser, der die Rohfassung liest).
+- `stepsUnreliable: "<Grund>"` – die Schrittzahl wird **neutral** bewertet
+  (z. B. Caption ohne Anleitung, Schritte von Hand ergänzt).
+- Überschriften (`Für den Teig`, `Belag:`) und Werbe-/Code-Zeilen fliegen aus
+  `expected`; der Scorer zählt Strukturzeilen auf **beiden** Seiten nicht.
+
+Messen (vitest startet in der Sandbox nicht → mit esbuild bündeln):
+
+```bash
+node node_modules/esbuild/bin/esbuild tmp/tools/run-user-corpus.ts \
+  --bundle --platform=node --format=cjs --outfile=tmp/tools/run-user-corpus.cjs \
+  --tsconfig=tsconfig.json
+node tmp/tools/run-user-corpus.cjs     # beide Corpora + Fall-Details
+```
+
+Stand nach `PARSER_VERSION` 15: Nutzer-Corpus F1 0.979 (Precision 1.000, Recall
+0.962), Titel 95 %, Schritte ±1 86 %; Referenz-Corpus 0.985 (unverändert).
+
+**Zwei gemessene Sackgassen – nicht erneut einbauen** (Werte dokumentiert in der
+Commit-Nachricht von `08b33b2`): Zutaten aus Komma-Listen im Anweisungstext
+retten (nur Fehlzusätze, F1 −0.008) und lange Prosa-Zeilen satzweise zerlegen
+(Über-Segmentierung, Schritte 81 % → 67 %).
+
 <!-- BEGIN:nextjs-agent-rules -->
 
 # This is NOT the Next.js you know
