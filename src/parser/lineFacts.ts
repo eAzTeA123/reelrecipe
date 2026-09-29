@@ -103,7 +103,7 @@ export function isNutritionLine(line: string): boolean {
 
 /** Werbe-/Introzeilen ("30 Tage – 30 Rezepte | …", "Rabattcode: NOEL", "PROZIS") */
 const PROMO_KEYWORDS =
-  /\b(?:folge mir|folgt mir|folgt uns|folg uns|link in bio|rabattcode|rabatte?|gutschein|abnehmen|muskelaufbau|unterstützen|unterstuetzen|prozis|gratis|werbung|anzeige|anzeigen|produkte?|gerne für mehr|speichern und nachmachen|speichern\s*&\s*nachmachen|mealprep|discount|cookbook)\b/i;
+  /\b(?:folge mir|folgt mir|folgt uns|folg uns|link in bio|rabattcode|rabatte?|gutschein|abnehmen|muskelaufbau|unterstützen|unterstuetzen|prozis|gratis|werbung|anzeige|anzeigen|produkte?|gerne für mehr|speichern und nachmachen|speichern\s*&\s*nachmachen|mealprep|discount|cookbook|mit dem code|sparen|code\s+\w+)\b|@[\w.]+\.(?:de|com|at|ch)\b/i;
 
 export function isPromoLine(line: string): boolean {
   // Zutatenzeilen nennen oft Marken ("... (Prozis)") – die sind keine Werbung.
