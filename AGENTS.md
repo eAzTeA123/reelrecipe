@@ -89,6 +89,24 @@ Commit-Nachricht von `08b33b2`): Zutaten aus Komma-Listen im Anweisungstext
 retten (nur Fehlzusätze, F1 −0.008) und lange Prosa-Zeilen satzweise zerlegen
 (Über-Segmentierung, Schritte 81 % → 67 %).
 
+### Offen: „neu einlesen" pro Rezept
+
+Aus dem Plan noch **nicht** gebaut (Stand `915a359`). Bereits vorhanden:
+
+- Review markiert unsichere Zutaten sichtbar (`RecipeForm.tsx`, `ing.uncertain`
+  → farbiger Rand + Hinweis + Sammelaktionen „unsichere entfernen"/„bestätigen").
+- Der Korrektur-Log wird geschrieben (`import/page.tsx` beim Speichern) und in
+  den Einstellungen exportiert/gelöscht (`getCorrectionRepository()`).
+
+Fehlt: ein Knopf auf der Rezeptseite, der ein **bestehendes** Rezept mit dem
+aktuellen Parser aus `recipe.sourceCaption` neu einliest. Nutzen: künftige
+Parser-Verbesserungen wirken sofort, ohne `PARSER_VERSION` zu erhöhen. Achtung:
+`parseSnapshot` aus `data/local/parseMerge.ts` nutzen, damit eigene Änderungen
+der Nutzer nicht überschrieben werden; Verhalten vorher im Testfall festnageln.
+
+Der Parser-Stand misst sich an: `node tmp/tools/run-user-corpus.cjs`
+(Feld-Score + Klassen) und `src/parser/corpus.test.ts` (Schwellen).
+
 <!-- BEGIN:nextjs-agent-rules -->
 
 # This is NOT the Next.js you know
