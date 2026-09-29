@@ -1,0 +1,56 @@
+{
+  "id": "lib-ddgwqihkuuu",
+  "source": "https://www.instagram.com/reel/DdgwqiHKUuu/",
+  "account": "eigene-bibliothek",
+  "language": "de",
+  "style": "real-instagram-nutzerfassung",
+  "caption": "🥞 HIGH PROTEIN SKYR-CRÊPES •anzeige•\n\nSuper weich, fluffig & mit extra Protein – perfekt zum Frühstück oder als süßer Snack! 🤍\nErgibt: ca. 8–10 Crêpes\n\n⸻\n\n🛒 Zutaten\n\n* 200 g Weizenmehl Type 405\n* 250 g Skyr\n* 3 frische Eier\n* 1 EL No More Sugar von MORE\n* 2 Scoops Chunky Flavour Milchreis Zimt von MORE\n* 1 Scoop Chunky Flavour Vanilla Perfection von MORE\n* 250 ml Sprudelwasser\n* Etwas Ölspray zum Ausbacken\n\n✨ Mit dem Code JJ könnt ihr bei @morenutrition.de maximal sparen ✨\n\n⸻\n\n👩‍🍳 Zubereitung\n\n1️⃣ Teig anrühren 🥣\nMehl und No More Sugar in eine Schüssel geben. Eier dazugeben und vorsichtig mit einem Schneebesen verrühren.\n\n⸻\n\n2️⃣ Skyr dazugeben 🤍\nDie Hälfte des Sprudelwassers dazugeben und zu einem klümpchenfreien Teig verrühren.\n\nAnschließend den Skyr unterrühren.\n\n⸻\n\n3️⃣ Verfeinern ✨\nDas restliche Sprudelwasser und beide Chunky Flavour Sorten dazugeben und alles gründlich verrühren.\n\nDen Teig am besten 1 Stunde ruhen lassen – wenn es schnell gehen muss, kannst du ihn aber auch direkt verwenden.\n\n⸻\n\n4️⃣ Crêpes ausbacken 🥞\nEine Pfanne gut erhitzen und leicht mit Ölspray einfetten.\n\nEine Kelle Teig hineingeben, dünn verteilen und von beiden Seiten goldbraun backen.\n\nSo weitermachen, bis der gesamte Teig aufgebraucht ist.\n\n➡️ mit Nomoresugar & Zimt bestreuen\n\n✨🎀 Abspeichern, nachmachen & für mehr High-Protein-Rezepte gerne folgen!\n\n*Anzeige da Markennennung\n\nNährwerte pro Crepe:\nKalorien 110 kcal |  Protein: 9g | Carbs 15g | Fett: 2g\n\nabnehmenohneverzicht highprotein protein frühstück Abnehmen ohne verzicht genießen kaloriesparen highprotein ernährung high protein rezepte fitness rezepte explorepage fitnessrezepte soeinfachistgesund",
+  "expected": {
+    "title": "HIGH PROTEIN SKYR-CRÊPES ••",
+    "servings": 8,
+    "ingredients": [
+      {
+        "amount": 200,
+        "unit": "g",
+        "name": "Weizenmehl Type 405"
+      },
+      {
+        "amount": 250,
+        "unit": "g",
+        "name": "Skyr"
+      },
+      {
+        "amount": 3,
+        "unit": null,
+        "name": "frische Eier"
+      },
+      {
+        "amount": 1,
+        "unit": "EL",
+        "name": "No More Sugar von MORE"
+      },
+      {
+        "amount": 2,
+        "unit": null,
+        "name": "Scoops Chunky Flavour Milchreis Zimt von MORE"
+      },
+      {
+        "amount": 1,
+        "unit": null,
+        "name": "Scoop Chunky Flavour Vanilla Perfection von MORE"
+      },
+      {
+        "amount": 250,
+        "unit": "ml",
+        "name": "Sprudelwasser"
+      },
+      {
+        "amount": null,
+        "unit": null,
+        "name": "Ölspray zum Ausbacken"
+      }
+    ],
+    "stepsCount": 18
+  },
+  "notes": "Aus dem eigenen Backup übernommen: expected = gespeicherte Bibliotheksfassung (von Hand geprüft/gekürzt). Kennung der Vorlage: high-protein-skyr-cr-pes Aus den Zutaten entfernt (Werbung/Überschrift): ✨ Mit dem Code JJ könnt ihr bei @morenutrition.de maximal sparen ✨ Aus den Schritten entfernt (Promo/Outro): Mit dem Code JJ könnt ihr bei @morenutrition.de maximal spar"
+}

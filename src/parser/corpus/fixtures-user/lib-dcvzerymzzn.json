@@ -1,0 +1,66 @@
+{
+  "id": "lib-dcvzerymzzn",
+  "source": "https://www.instagram.com/reel/DcvZErYMzZN/",
+  "account": "eigene-bibliothek",
+  "language": "de",
+  "style": "real-instagram-nutzerfassung",
+  "caption": "Cremige Gochujang-Kokos-Linsen 🌶️🥥\n\nCremig, leicht scharf und super unkompliziert – alles kommt einfach zusammen in eine Pfanne. Perfekt, wenn’s schnell gehen soll. 🌿\n\nZutaten:\n• 150 g rote Linsen\n• 1 große Handvoll TK-Blattspinat\n• 1 große Tomate\n• 1 EL Gochujang\n• 400 ml Kokosmilch\n• etwas Salz\n• etwas Kokosmilch zum Toppen\n• frischer Koriander\n• Chiliöl\n• optional: ½ Limette\n\nZubereitung:\nDie roten Linsen gründlich waschen und in eine Pfanne geben. TK-Blattspinat und die klein geschnittene Tomate dazugeben.\n\nGochujang und 400 ml Kokosmilch dazugeben, alles gut verrühren und bei mittlerer Hitze köcheln lassen, bis die Linsen weich sind und alles schön cremig eingekocht ist. Zwischendurch umrühren und bei Bedarf einen kleinen Schluck Wasser dazugeben.\n\nMit Salz abschmecken und zum Servieren noch etwas Kokosmilch darübergeben. Mit frischem Koriander und Chiliöl toppen. Wer mag, gibt zum Schluss noch etwas frischen Limettensaft darüber – passt richtig gut zur cremigen Kokosmilch und der leichten Schärfe vom Gochujang. 🌶️🥥\n\n#linsen #gochujang #onepan #vegetarisch #schnellerezepte",
+  "expected": {
+    "title": "Cremige Gochujang-Kokos-Linsen",
+    "servings": null,
+    "ingredients": [
+      {
+        "amount": 150,
+        "unit": "g",
+        "name": "rote Linsen"
+      },
+      {
+        "amount": 1,
+        "unit": null,
+        "name": "große Handvoll TK-Blattspinat"
+      },
+      {
+        "amount": 1,
+        "unit": null,
+        "name": "große Tomate"
+      },
+      {
+        "amount": 1,
+        "unit": "EL",
+        "name": "Gochujang"
+      },
+      {
+        "amount": 400,
+        "unit": "ml",
+        "name": "Kokosmilch"
+      },
+      {
+        "amount": null,
+        "unit": null,
+        "name": "Salz"
+      },
+      {
+        "amount": null,
+        "unit": null,
+        "name": "Kokosmilch zum Toppen"
+      },
+      {
+        "amount": null,
+        "unit": null,
+        "name": "frischer Koriander"
+      },
+      {
+        "amount": null,
+        "unit": null,
+        "name": "Chiliöl"
+      },
+      {
+        "amount": 0.5,
+        "unit": null,
+        "name": "Limette"
+      }
+    ],
+    "stepsCount": 3
+  },
+  "notes": "Aus dem eigenen Backup übernommen: expected = gespeicherte Bibliotheksfassung (von Hand geprüft/gekürzt). Kennung der Vorlage: cremige-gochujang-kokos-"
+}

@@ -27,7 +27,7 @@ export {
 };
 
 /** Inkrement bei jeder wesentlichen Parser-Änderung */
-export const PARSER_VERSION = 14;
+export const PARSER_VERSION = 15;
 
 import { isSectionHeader as isSectionHeaderLine } from "./lineFacts";
 
@@ -73,9 +73,11 @@ export function parseRecipe(caption: string): ParsedRecipe | null {
     title = picked ? cleanTitle(picked) : "";
   }
 
-  // Marketing-Headlines als letzte Chance vor dem Zutaten-Fallback
+  // Marketing-Headlines als letzte Chance vor dem Zutaten-Fallback.
+  // Fenster bewusst größer als 3 Zeilen: Captions beginnen oft mit
+  // "ZUM REZEPT ⬇️ / . / ." und der echte Titel steht erst darunter.
   if (!title || title.length < 3) {
-    for (const line of lines.slice(0, 3)) {
+    for (const line of lines.slice(0, 10)) {
       const derived = extractTitleFromHeadline(line);
       if (derived) {
         title = derived;
@@ -85,8 +87,12 @@ export function parseRecipe(caption: string): ParsedRecipe | null {
   }
 
   if (!title || title.length < 3) {
-    if (ingredients.length > 0 && ingredients[0].name.length >= 3) {
-      title = ingredients[0].name.replace(/\s*\(.*?\)/g, "").trim();
+    // Letzter Ausweg: die erste Zutat – aber nur, wenn sie als Titel taugt.
+    // Sonst wurde aus einer durchgesickerten Überschrift ("Zutaten") oder einer
+    // Werbezeile der Rezeptname.
+    const candidate = ingredients[0]?.name.replace(/\s*\(.*?\)/g, "").trim() ?? "";
+    if (candidate.length >= 3 && !isSectionHeader(candidate) && isPlausibleTitle(candidate)) {
+      title = candidate;
     }
   }
 
@@ -101,6 +107,7 @@ export function parseRecipe(caption: string): ParsedRecipe | null {
     steps,
   };
 }
+
 
 
 

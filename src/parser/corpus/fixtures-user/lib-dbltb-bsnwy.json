@@ -1,0 +1,121 @@
+{
+  "id": "lib-dbltb-bsnwy",
+  "source": "https://www.instagram.com/reel/DbLtB-Bsnwy/",
+  "account": "eigene-bibliothek",
+  "language": "de",
+  "style": "real-instagram-nutzerfassung",
+  "caption": "Bulking Nudelpfanne 🍝🔥\n\nNährwerte pro 100 g\n\nKalorien ca. 145 kcal\nEiweiß ca. 12 g\nKohlenhydrate ca. 11 g\nFett ca. 4 g\n\nZutaten\n\n½ Zwiebel\n1 Paprika\n1 TL gepresster Knoblauch\n150 g passierte Tomaten\nGewürze: je 1 TL Salz, 1 TL Pfeffer, 1 TL Paprikapulver, 1 TL Oregano\n150 g Philadelphia Balance\n½ Kelle Nudelwasser\n600 g fettarmes Rinderhackfleisch, max. 5 % Fett\nGewürze: je 1 TL Salz, 1 TL Pfeffer, 1 TL Paprikapulver, 1 TL Oregano\n250 g ungekochte Nudeln\nÖlspray\n\nZubereitung\n\nZuerst die Zwiebel klein schneiden und mit etwas Ölspray in der Pfanne anbraten. Dann den gepressten Knoblauch und die klein geschnittene Paprika dazu. Jetzt die Gewürze und die passierten Tomaten rein und alles ein paar Minuten köcheln lassen.\n\nNebenbei die Nudeln nach Packungsanleitung kochen.\n\nDie fertige Soße mit dem Philadelphia Balance und der halben Kelle Nudelwasser in den Mixer geben und cremig mixen.\n\nIn derselben Pfanne das fettarme Rinderhackfleisch scharf anbraten, bis es komplett durch ist. Davor die zweite Hälfte der Gewürze ans Fleisch.\n\nZum Schluss die gekochten Nudeln zum Fleisch geben, die pürierte Soße drüber verteilen und alles gut vermengen. Direkt servieren.",
+  "expected": {
+    "title": "Bulking Nudelpfanne",
+    "servings": null,
+    "ingredients": [
+      {
+        "amount": 0.5,
+        "unit": null,
+        "name": "Zwiebel"
+      },
+      {
+        "amount": 1,
+        "unit": null,
+        "name": "Paprika"
+      },
+      {
+        "amount": 1,
+        "unit": "TL",
+        "name": "gepresster Knoblauch"
+      },
+      {
+        "amount": 150,
+        "unit": "g",
+        "name": "passierte Tomaten"
+      },
+      {
+        "amount": 1,
+        "unit": "TL",
+        "name": "Salz"
+      },
+      {
+        "amount": 1,
+        "unit": "TL",
+        "name": "Pfeffer"
+      },
+      {
+        "amount": 1,
+        "unit": "TL",
+        "name": "Paprikapulver"
+      },
+      {
+        "amount": 1,
+        "unit": "TL",
+        "name": "Oregano"
+      },
+      {
+        "amount": 150,
+        "unit": "g",
+        "name": "Philadelphia Balance"
+      },
+      {
+        "amount": 0.5,
+        "unit": null,
+        "name": "Kelle Nudelwasser"
+      },
+      {
+        "amount": 600,
+        "unit": "g",
+        "name": "fettarmes Rinderhackfleisch"
+      },
+      {
+        "amount": 1,
+        "unit": "TL",
+        "name": "Salz"
+      },
+      {
+        "amount": 1,
+        "unit": "TL",
+        "name": "Pfeffer"
+      },
+      {
+        "amount": 1,
+        "unit": "TL",
+        "name": "Paprikapulver"
+      },
+      {
+        "amount": 1,
+        "unit": "TL",
+        "name": "Oregano"
+      },
+      {
+        "amount": 250,
+        "unit": "g",
+        "name": "ungekochte Nudeln"
+      },
+      {
+        "amount": null,
+        "unit": null,
+        "name": "Ölspray"
+      },
+      {
+        "amount": 1,
+        "unit": "TL",
+        "name": "Salz"
+      },
+      {
+        "amount": 1,
+        "unit": "TL",
+        "name": "Pfeffer"
+      },
+      {
+        "amount": 1,
+        "unit": "TL",
+        "name": "Paprikapulver"
+      },
+      {
+        "amount": 1,
+        "unit": "TL",
+        "name": "Oregano"
+      }
+    ],
+    "stepsCount": 7
+  },
+  "notes": "Aus dem eigenen Backup übernommen: expected = gespeicherte Bibliotheksfassung (von Hand geprüft/gekürzt). Kennung der Vorlage: bulking-nudelpfanne"
+}

@@ -1,0 +1,102 @@
+{
+  "id": "lib-dcgdvyls97b",
+  "source": "https://www.instagram.com/reel/Dcgdvyls97B/",
+  "account": "eigene-bibliothek",
+  "language": "de",
+  "style": "real-instagram-nutzerfassung",
+  "caption": "🍂 Zimt-Zupfbrot\n\nWenn draußen die ersten Blätter von den Bäumen fallen…\n\nSpeichern & nachbacken 👇\n\nTEIG\n• 500 g Mehl (Type 550)\n• 240 ml lauwarme Milch\n• 60 g Zucker\n• 1 Ei\n• 60 g weiche Butter\n• 7 g Trockenhefe\n• 1 TL Salz\n\nFÜLLUNG\n• 100 g weiche Butter\n• 150 g brauner Zucker\n• 2 EL Zimt\n\nFRISCHKÄSE-GUSS\n• 60 g Frischkäse\n• 30 g Butter\n• 120 g Puderzucker\n• ½ TL Vanille\n• 1 Prise Salz\n• 30–45 ml Milch\n\nSO GEHT’S\n1️⃣ Teigzutaten verkneten, ca. 45–60 Min gehen lassen (bis doppelt so groß).\n\n2️⃣ Rechteckig ausrollen (ca. 40 × 30 cm), Füllung draufstreichen.\n\n3️⃣ In ~10 cm Quadrate schneiden, aufeinanderstapeln\n.\n4️⃣ Hochkant in eine ausgelegte Kastenform setzen, nochmal 25–30 Min gehen lassen.\n\n5️⃣ Bei 180 °C (O/U) ca. 35–40 Min backen.\n\n6️⃣ Kurz abkühlen, Guss glatt rühren, drübergießen. Warm genießen. 🤤\n\nLass mal ein paar 🍂 da, wenn du’s nachbackst!\n\n#zimtzupfbrot #zupfbrot #zimtschnecken #hefeteig #backenmachtglücklich",
+  "expected": {
+    "title": "Zimt-Zupfbrot",
+    "servings": null,
+    "ingredients": [
+      {
+        "amount": 500,
+        "unit": "g",
+        "name": "Mehl"
+      },
+      {
+        "amount": 240,
+        "unit": "ml",
+        "name": "lauwarme Milch"
+      },
+      {
+        "amount": 60,
+        "unit": "g",
+        "name": "Zucker"
+      },
+      {
+        "amount": 1,
+        "unit": null,
+        "name": "Ei"
+      },
+      {
+        "amount": 60,
+        "unit": "g",
+        "name": "weiche Butter"
+      },
+      {
+        "amount": 7,
+        "unit": "g",
+        "name": "Trockenhefe"
+      },
+      {
+        "amount": 1,
+        "unit": "TL",
+        "name": "Salz FÜLLUNG"
+      },
+      {
+        "amount": 100,
+        "unit": "g",
+        "name": "weiche Butter"
+      },
+      {
+        "amount": 150,
+        "unit": "g",
+        "name": "brauner Zucker"
+      },
+      {
+        "amount": 2,
+        "unit": "EL",
+        "name": "Zimt FRISCHKÄSE-GUSS"
+      },
+      {
+        "amount": 60,
+        "unit": "g",
+        "name": "Frischkäse"
+      },
+      {
+        "amount": 30,
+        "unit": "g",
+        "name": "Butter"
+      },
+      {
+        "amount": 120,
+        "unit": "g",
+        "name": "Puderzucker"
+      },
+      {
+        "amount": 0.5,
+        "unit": "TL",
+        "name": "Vanille"
+      },
+      {
+        "amount": 1,
+        "unit": "Prise",
+        "name": "Salz"
+      },
+      {
+        "amount": 37.5,
+        "unit": "ml",
+        "name": "Milch SO GEHT’S"
+      },
+      {
+        "amount": 100,
+        "unit": "g",
+        "name": "weiche Butter"
+      }
+    ],
+    "stepsCount": 6
+  },
+  "exclude": "Gespeicherte Zutaten enthalten englische Namen (Übersetzung) – keine gültige Wahrheit.",
+  "notes": "Aus dem eigenen Backup übernommen: expected = gespeicherte Bibliotheksfassung (von Hand geprüft/gekürzt). Kennung der Vorlage: zimt-zupfbrot Gespeicherte Zutaten enthalten englische Namen (Übersetzung) – keine gültige Wahrheit."
+}

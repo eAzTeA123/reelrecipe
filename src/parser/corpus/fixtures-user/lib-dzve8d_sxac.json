@@ -1,0 +1,41 @@
+{
+  "id": "lib-dzve8d_sxac",
+  "source": "https://www.instagram.com/reel/DZVE8D_sXaC/",
+  "account": "eigene-bibliothek",
+  "language": "de",
+  "style": "real-instagram-nutzerfassung",
+  "caption": "High Protein Cheesecake \n\nNährwerte pro 100 g (Auch pro Stück bei 8 Stücken)\n\n* Kalorien: ca. 95 kcal\n* Eiweiß: ca. 11 g\n* Kohlenhydrate: ca. 5 g\n* Fett: ca. 3 g\n\nNährwerte gesamt (ganzer Kuchen)\n\n* Kalorien: ca. 780 kcal\n* Eiweiß: ca. 88 g\n* Kohlenhydrate: ca. 40 g\n* Fett: ca. 24 g\n\nZutaten\n\n* 500 g Skyr\n* 200 g Frischkäse (fettreduziert)\n* 2 Eier\n* 1 Päckchen Puddingpulver\n* Zitronen Flavor Powder nach Geschmack\n\n(Für unsere Form haben wir die doppelte Portion verwendet.)\n\nZubereitung\n\nAlle Zutaten in eine große Schüssel geben und gründlich verrühren, bis eine glatte Masse entsteht.\n\nDie Masse anschließend in eine Kuchenform füllen und gleichmäßig verteilen.\n\nDen Cheesecake bei 180 °C für 40–60 Minuten backen.\n\nNach dem Backen aus dem Ofen nehmen und bei Zimmertemperatur vollständig abkühlen lassen.",
+  "expected": {
+    "title": "High Protein Cheesecake",
+    "servings": null,
+    "ingredients": [
+      {
+        "amount": 500,
+        "unit": "g",
+        "name": "Skyr"
+      },
+      {
+        "amount": 200,
+        "unit": "g",
+        "name": "Frischkäse"
+      },
+      {
+        "amount": 2,
+        "unit": null,
+        "name": "Eier"
+      },
+      {
+        "amount": 1,
+        "unit": "Packung",
+        "name": "Puddingpulver"
+      },
+      {
+        "amount": null,
+        "unit": null,
+        "name": "Zitronen Flavor Powder"
+      }
+    ],
+    "stepsCount": 5
+  },
+  "notes": "Aus dem eigenen Backup übernommen: expected = gespeicherte Bibliotheksfassung (von Hand geprüft/gekürzt). Kennung der Vorlage: high-protein-cheesecake"
+}

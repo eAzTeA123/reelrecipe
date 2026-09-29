@@ -47,6 +47,19 @@ export interface CorpusFixture {
    * Bewertet wird dann nur, dass der Parser nichts erfindet.
    */
   negative?: boolean;
+  /**
+   * Grund, warum dieses Fixture NICHT in die Metriken eingeht. Nötig für
+   * Fixtures aus der eigenen Bibliothek: dort ist die gespeicherte Fassung
+   * teilweise übersetzt (Anzeige-Sprache) und damit keine gültige Wahrheit
+   * für den Parser, der die Rohfassung liest.
+   */
+  exclude?: string;
+  /**
+   * Grund, warum die Erwartung an die Schrittzahl NICHT bewertet wird.
+   * Beispiel: Die Caption enthält gar keine Anleitung – die gespeicherten
+   * Schritte wurden von Hand ergänzt und sind damit keine Parser-Wahrheit.
+   */
+  stepsUnreliable?: string;
   /** Besonderheiten, die man beim Bewerten kennen muss */
   notes?: string;
 }

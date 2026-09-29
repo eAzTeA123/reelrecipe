@@ -1,0 +1,71 @@
+{
+  "id": "lib-ddrknxunezq",
+  "source": "https://www.instagram.com/reel/DdRknXuNezQ/",
+  "account": "eigene-bibliothek",
+  "language": "de",
+  "style": "real-instagram-nutzerfassung",
+  "caption": "High Protein Lotus Cheesecake😍🍰\nVertraut mir, der Spaß schmeckt crazyyy lecker💪\nZum Nachmachen:\n300g Skyr\n100g Philadelphia „so leicht“\n20g Puddingpulver (bspw. Vanille)\n20g Whey (auch Vanille)\n1 Ei\nSüße nach Wahl (bspw. Erythrit)\n-\nOfen:\n155 Grad Ober-/Unterhitze für 30-35 Minuten🔥\n-\nTopping:\n10g Keks-Caramellcreme\n25g Philadelphia „so leicht“\n20g ungesüßte Mandelmilch\n1 Biscoff Keks\n-\nNährwerte:\n593 Kcal\n46g Kohlenhydrate\n16g Fett\n65g Protein\n-\n➡️MAHLZEIT🫵\n#aufbauseminar #cheesecake #highprotein #fürdich #gym",
+  "expected": {
+    "title": "High Protein Lotus Cheesecake",
+    "servings": null,
+    "ingredients": [
+      {
+        "amount": 300,
+        "unit": "g",
+        "name": "Skyr"
+      },
+      {
+        "amount": 100,
+        "unit": "g",
+        "name": "Philadelphia „so leicht“"
+      },
+      {
+        "amount": 20,
+        "unit": "g",
+        "name": "Puddingpulver"
+      },
+      {
+        "amount": 20,
+        "unit": "g",
+        "name": "Whey"
+      },
+      {
+        "amount": 1,
+        "unit": null,
+        "name": "Ei Süße nach Wahl"
+      },
+      {
+        "amount": 10,
+        "unit": "g",
+        "name": "Keks-Caramellcreme"
+      },
+      {
+        "amount": 25,
+        "unit": "g",
+        "name": "Philadelphia „so leicht“"
+      },
+      {
+        "amount": 20,
+        "unit": "g",
+        "name": "ungesüßte Mandelmilch"
+      },
+      {
+        "amount": 1,
+        "unit": null,
+        "name": "Biscoff Keks"
+      },
+      {
+        "amount": 25,
+        "unit": "g",
+        "name": "Philadelphia „so leicht“"
+      },
+      {
+        "amount": null,
+        "unit": null,
+        "name": "➡️MAHLZEIT🫵"
+      }
+    ],
+    "stepsCount": 1
+  },
+  "notes": "Aus dem eigenen Backup übernommen: expected = gespeicherte Bibliotheksfassung (von Hand geprüft/gekürzt). Kennung der Vorlage: high-protein-lotus-chees Aus den Zutaten entfernt (Werbung/Überschrift): Ofen: | Topping: | MAHLZEIT"
+}

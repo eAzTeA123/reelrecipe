@@ -1,0 +1,91 @@
+{
+  "id": "lib-ddip48zo3th",
+  "source": "https://www.instagram.com/reel/Ddip48zo3tH/",
+  "account": "eigene-bibliothek",
+  "language": "de",
+  "style": "real-instagram-nutzerfassung",
+  "caption": "🌮 HIGH PROTEIN TACOS ZUM ABNEHMEN\n\nIch wollte eigentlich nur Tacos machen, die man während der Diät essen kann aber was dabei rausgekommen ist, sieht so krank lecker aus, dass ich selbst nicht glauben konnte, dass ein Taco nur ca. 200 kcal hat. 🤯\n\n🥙 Zutaten\n• 8 Mini Tacos\n• 500 g Hähnchenbrustfilet\n• 1 x rote Paprika\n• 1 x gelbe Paprika \n• 1 x grüne Paprika \n• 1 x Zwiebel \n• 70 g Light Streukäse\n• ca. 1 TL Mais pro Taco\n• 2 TL Olivenöl \n \nGewürze \n• 4 TL Paprikapulver geräuchert \n• 1 TL Salz \n• 1 TL Currypulver\n• 1/2 TL Pfeffer \n• 2 TL Knoblauchpulver \n• 1 TL Petersilie \n\n1️⃣ Bei 180 °C für 25–30 Minuten in den Ofen.\n2️⃣ Anschließend bei 180 °C weiterbacken, bis der Käse schön geschmolzen und goldbraun ist.\n\n📊 Nährwerte pro Taco\n🔥 ca. 203 kcal\n💪 ca. 19 g Protein\n🍚 ca. 18,5 g Kohlenhydrate\n🥑 ca. 5,8 g Fett\n\n👉 Schick das Rezept an jemanden, der sagt, Tacos kann man während der Diät nicht essen, und folge mir für mehr High Protein Rezepte zum Abnehmen! 🫶🏻\n\n#highprotein #abnehmen #rezept #diät #tacos",
+  "expected": {
+    "title": "HIGH PROTEIN TACOS ZUM ABNEHMEN",
+    "servings": null,
+    "ingredients": [
+      {
+        "amount": 8,
+        "unit": null,
+        "name": "Mini Tacos"
+      },
+      {
+        "amount": 500,
+        "unit": "g",
+        "name": "Hähnchenbrustfilet"
+      },
+      {
+        "amount": 1,
+        "unit": null,
+        "name": "rote Paprika"
+      },
+      {
+        "amount": 1,
+        "unit": null,
+        "name": "gelbe Paprika"
+      },
+      {
+        "amount": 1,
+        "unit": null,
+        "name": "grüne Paprika"
+      },
+      {
+        "amount": 1,
+        "unit": null,
+        "name": "Zwiebel"
+      },
+      {
+        "amount": 70,
+        "unit": "g",
+        "name": "Light Streukäse"
+      },
+      {
+        "amount": 1,
+        "unit": "TL",
+        "name": "Mais pro Taco"
+      },
+      {
+        "amount": 2,
+        "unit": "TL",
+        "name": "Olivenöl"
+      },
+      {
+        "amount": 4,
+        "unit": "TL",
+        "name": "Paprikapulver geräuchert"
+      },
+      {
+        "amount": 1,
+        "unit": "TL",
+        "name": "Salz"
+      },
+      {
+        "amount": 1,
+        "unit": "TL",
+        "name": "Currypulver"
+      },
+      {
+        "amount": 0.5,
+        "unit": "TL",
+        "name": "Pfeffer"
+      },
+      {
+        "amount": 2,
+        "unit": "TL",
+        "name": "Knoblauchpulver"
+      },
+      {
+        "amount": 1,
+        "unit": "TL",
+        "name": "Petersilie"
+      }
+    ],
+    "stepsCount": 2
+  },
+  "notes": "Aus dem eigenen Backup übernommen: expected = gespeicherte Bibliotheksfassung (von Hand geprüft/gekürzt). Kennung der Vorlage: high-protein-tacos-zum-a Aus den Zutaten entfernt (Werbung/Überschrift): Gewürze"
+}

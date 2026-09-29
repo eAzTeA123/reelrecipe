@@ -1,0 +1,51 @@
+{
+  "id": "lib-ddgk0lsiq8j",
+  "source": "https://www.instagram.com/reel/Ddgk0LsIq8j/",
+  "account": "eigene-bibliothek",
+  "language": "de",
+  "style": "real-instagram-nutzerfassung",
+  "caption": "ZUM REZEPT ⬇️\n.\n.\n❤️🧡💛\nWenn euch meine Rezepte gefallen und ihr mich unterstützen wollt, \ndann könnt ihr gerne bei PROZIS den \nRabattcode: ❗️👉🏼NOEL👈🏼❗️\nbenutzen um immer Rabatte und Gratis Produkte zu erhalten \n❤️🧡💛\n*ANZElGE\n.\n.\n.\n🥗🍳🥑\nNährwerte (alle 10 Hälften zsm) \n1818kcal, 222g K, 145g E, 37g F\n🥗🍳🥑\n.\n.\n.\n⚖️🔢⏳⏲️\nMengenangaben:\n.\n- 5x Laugenstangen -> jeweils 100g\nEntweder aus der Backabteilung oder Tiefgekühlt, diese allerdings vorher im Backofen so lange backen, bis sie gerade so durch sind \n.\n- 1 Packung (200g) Frischkäse 0,2% Fett\n- 2 rohe Eier \n- 150g Schinkenwürfel, mager \n- 120g „Eat Lean“ Käse - erhältlich bei Kaufland \n ( alternativ Gouda, leicht )\n- 1/2 rote Zwiebel \n- 1 Frühlingszwiebel\n.\n- BACKOFEN: 200 Grad Umluft ~ 15-20min\n.\n⚖️🔢⏳⏲️\n.\n. \n.\n.\n.\n.\n.\n.\n.\n.\n#highprotein #lecker #eiweiß #protein leckerschmecker essen mealprep eiweiss rezept",
+  "expected": {
+    "title": "Laugenstangen",
+    "servings": null,
+    "ingredients": [
+      {
+        "amount": 5,
+        "unit": null,
+        "name": "Laugenstangen"
+      },
+      {
+        "amount": 1,
+        "unit": "Packung",
+        "name": "Frischkäse 0,2% Fett"
+      },
+      {
+        "amount": 2,
+        "unit": null,
+        "name": "rohe Eier"
+      },
+      {
+        "amount": 150,
+        "unit": "g",
+        "name": "Schinkenwürfel"
+      },
+      {
+        "amount": 120,
+        "unit": "g",
+        "name": "„Eat Lean“ Käse - erhältlich bei Kaufland"
+      },
+      {
+        "amount": 0.5,
+        "unit": null,
+        "name": "rote Zwiebel"
+      },
+      {
+        "amount": 1,
+        "unit": null,
+        "name": "Frühlingszwiebel"
+      }
+    ],
+    "stepsCount": 2
+  },
+  "notes": "Aus dem eigenen Backup übernommen: expected = gespeicherte Bibliotheksfassung (von Hand geprüft/gekürzt). Kennung der Vorlage: laugenstangen"
+}

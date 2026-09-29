@@ -1,0 +1,66 @@
+{
+  "id": "lib-dciitfgoalo",
+  "source": "https://www.instagram.com/reel/DciitFGoaLO/",
+  "account": "eigene-bibliothek",
+  "language": "de",
+  "style": "real-instagram-nutzerfassung",
+  "caption": "ZUM REZEPT ⬇️\n.\n.\n❤️🧡💛\nWenn euch meine Rezepte gefallen und ihr mich unterstützen wollt, \ndann könnt ihr gerne bei PROZIS den \nRabattcode: ❗️👉🏼NOEL👈🏼❗️\nbenutzen um immer Rabatte und Gratis Produkte zu erhalten \n❤️🧡💛\nANZElGE\n.\n.\n.\n🥗🍳🥑\nNährwerte (alles insgesamt) \n1166kcal, 60g K, 156g E, 28g F\n🥗🍳🥑\n.\n.\n.\n⚖️🔢⏳⏲️\nMengenangaben:\n.\n- 750g Magerquark \n- 200g Frischkäse (0,2% Fett)\n- 4 verquirlte Eier \n- 1 Packung (37g) Pudding Pulver\n- 10g Real Flavor (Prozis - Code: NOEL)\n.\n- BACKOFEN: 170 Grad O/U-Hitze \n  mit Alufolie - 60min, dann entfernen \n  ohne Alufolie weitere 35 - 40min \n.\n- circa 2 Stunden abkühlen lassen\n.\n- 100ml Mandelmilch ungesüßt \n- 6 TL Sofort Gelatine\n- 1 Becher (200g) Protein Pudding Karamell\n.\n- über Nacht in den Kühlschrank \n- optional mit Meersalz toppen \n.\n⚖️🔢⏳⏲️\n.\n. \n.\n.\n.\n.\n.\n.\n.\n.\n#highprotein #lecker #eiweiß #protein #leckerschmecker essen",
+  "expected": {
+    "title": "Magerquark",
+    "servings": null,
+    "ingredients": [
+      {
+        "amount": 750,
+        "unit": "g",
+        "name": "Magerquark"
+      },
+      {
+        "amount": 200,
+        "unit": "g",
+        "name": "Frischkäse"
+      },
+      {
+        "amount": 4,
+        "unit": null,
+        "name": "verquirlte Eier"
+      },
+      {
+        "amount": 1,
+        "unit": "Packung",
+        "name": "Pudding Pulver"
+      },
+      {
+        "amount": 10,
+        "unit": "g",
+        "name": "Real Flavor"
+      },
+      {
+        "amount": 100,
+        "unit": "ml",
+        "name": "Mandelmilch ungesüßt"
+      },
+      {
+        "amount": 6,
+        "unit": "TL",
+        "name": "Sofort Gelatine"
+      },
+      {
+        "amount": 1,
+        "unit": "Becher",
+        "name": "Protein Pudding Karamell"
+      },
+      {
+        "amount": null,
+        "unit": null,
+        "name": "über Nacht in den Kühlschrank"
+      },
+      {
+        "amount": null,
+        "unit": null,
+        "name": "mit Meersalz toppen"
+      }
+    ],
+    "stepsCount": 3
+  },
+  "notes": "Aus dem eigenen Backup übernommen: expected = gespeicherte Bibliotheksfassung (von Hand geprüft/gekürzt). Kennung der Vorlage: magerquark"
+}

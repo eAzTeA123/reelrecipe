@@ -1,0 +1,61 @@
+{
+  "id": "lib-dbd7eldrupt",
+  "source": "https://www.instagram.com/reel/Dbd7eLdRUPt/",
+  "account": "eigene-bibliothek",
+  "language": "de",
+  "style": "real-instagram-nutzerfassung",
+  "caption": "228g Eiweiß -  FAJITA PASTA ONEPOT 🍝⬇️\n\nIch teste jetzt jede Woche solche High Protein Meal Prep Fitnessrezepte & schau ob sie wirklich eure Zeit wert sind \n\nWenn du das nicht verpassen willst, dann folge mir ✅💪🏼\n\n🔷Nährwerte (pro Portion):\n551 kcal\n57 g Protein\n55 g Carbs\n13 g Fett\n\nZutaten:\n🍝 200 g Pasta nach Wahl (trocken)\n🍗 650 g Hähnchenbrust\n🧀 80 g Light Streußelkäse\n🧅 1 Zwiebel\n🫑 2 Paprika\n🥛 200 g fettarmer Frischkäse\n🧄 5 Zehen Knoblauch (oder 4)\n🌮Salz, Pfeffer, Paprikapulver, Tomatengewürz & ein paar Chiliflocken\n🍅 400 ml Passierte Tomaten + 100ml Wasser \n\nZubereitung:\n1️⃣ Ofen auf 190 °C vorheizen\n2️⃣ Hähnchen, Zwiebel & Paprika würfeln\n3️⃣ Alle Zutaten außer den Light Käse in eine große ofenfeste Form geben\n4️⃣ Tomatenpackung mit 100 ml Wasser ausspülen, dazugeben & gut vermengen\n5️⃣ Mit Light Käse toppen, mit Alufolie abdecken & 50 Min backen\n ➡️ 45 Min abgedeckt, 5 Min offen\n6️⃣ 5–10 Min ruhen lassen, damit alles schön bindet\n7️⃣ Servieren & genießen 😋🔥\n\nPerfekt fürs Mealprep & ultra sättigend 💪\n\nOrginalrezeot von @davefellfitness \n\n#highprotein #mealprep #pasta #fajitachicken #schnellerezepte",
+  "expected": {
+    "title": null,
+    "servings": null,
+    "ingredients": [
+      {
+        "amount": 200,
+        "unit": "g",
+        "name": "Pasta nach Wahl"
+      },
+      {
+        "amount": 650,
+        "unit": "g",
+        "name": "Hähnchenbrust"
+      },
+      {
+        "amount": 80,
+        "unit": "g",
+        "name": "Light Streußelkäse"
+      },
+      {
+        "amount": 1,
+        "unit": null,
+        "name": "Zwiebel"
+      },
+      {
+        "amount": 2,
+        "unit": null,
+        "name": "Paprika"
+      },
+      {
+        "amount": 200,
+        "unit": "g",
+        "name": "fettarmer Frischkäse"
+      },
+      {
+        "amount": 5,
+        "unit": "Zehe",
+        "name": "Knoblauch"
+      },
+      {
+        "amount": 400,
+        "unit": "ml",
+        "name": "Passierte Tomaten + 100ml Wasser"
+      },
+      {
+        "amount": 100,
+        "unit": "ml",
+        "name": "Wasser ausspülen"
+      }
+    ],
+    "stepsCount": 11
+  },
+  "notes": "Aus dem eigenen Backup übernommen: expected = gespeicherte Bibliotheksfassung (von Hand geprüft/gekürzt). Kennung der Vorlage: ich-teste-jetzt-jede-woc Gespeicherter Titel war „Ich teste jetzt jede Woche solche High Protein Meal Prep Fitnessrezepte & sch...\" – als \"kein Titel\" gewertet. Aus den Schritten entfernt (Promo/Outro): Perfekt fürs Mealprep & ultra sättigend | Perfekt fürs Mealprep & ultra sättigend"
+}

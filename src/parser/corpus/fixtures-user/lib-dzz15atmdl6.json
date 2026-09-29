@@ -1,0 +1,101 @@
+{
+  "id": "lib-dzz15atmdl6",
+  "source": "https://www.instagram.com/reel/DZz15aTMdL6/",
+  "account": "eigene-bibliothek",
+  "language": "de",
+  "style": "real-instagram-nutzerfassung",
+  "caption": "High Protein Smashburger 🍔💪🏾\n\nNährwerte pro Burger\n\n• 545 kcal\n• 56 g Eiweiß\n• 20 g Fett\n• 41 g Kohlenhydrate\n\nZutaten für 4 Burger\n\n• 4 Burger Buns à 62,5 g\n• 700 g mageres Rinderhackfleisch (5 % Fett)\n• 100 g Light-Emmentaler\n• 1 große Zwiebel\n• 1 EL Balsamico-Essig\n• Gewürzgurken\n• 2 bis 3 Sprüher Ölspray\n• Salz und schwarzer Pfeffer\n\nBurgersoße\n\n• 80 g Light-Mayonnaise oder Salatcreme Light\n• 80 g Ketchup\n• 15 g Senf\n• 15 ml Worcestershiresauce\n• 1 EL Sriracha\n\nZubereitung\n\nDie Zwiebel in feine Streifen schneiden. Mit 1 bis 2 Sprühern Ölspray bei niedriger bis mittlerer Hitze etwa 15 bis 20 Minuten anbraten. Anschließend den Balsamico-Essig zugeben und weitere 2 bis 3 Minuten schmoren lassen.\n\nFür die Soße Light-Mayonnaise, Ketchup, Senf, Worcestershiresauce und Sriracha verrühren.\n\nDas Hackfleisch in 8 Kugeln à 87,5 g formen. Eine heiße Pfanne oder Grillplatte leicht mit Ölspray einsprühen. Die Fleischkugeln auf die heiße Fläche geben und sofort sehr dünn zu Smash Patties drücken. Mit Salz und Pfeffer würzen. Nach etwa 1 bis 2 Minuten wenden und jeweils etwas Light-Emmentaler auf die Patties geben.\n\nDie Burger Buns kurz anrösten. Die untere Bun-Hälfte mit der Hälfte der Soße bestreichen. Darauf etwa 4 klein geschnittene Scheiben Gewürzgurke verteilen. Anschließend ein Patty mit Käse auflegen, etwas von den karamellisierten Zwiebeln darauf geben, das zweite Patty mit Käse daraufsetzen und erneut etwas Zwiebel darüber verteilen.\n\nDie obere Bun-Hälfte ebenfalls mit der restlichen Soße bestreichen, aufsetzen und den Burger servieren.",
+  "expected": {
+    "title": "High Protein Smashburger 🍔💪🏾",
+    "servings": null,
+    "ingredients": [
+      {
+        "amount": 4,
+        "unit": "g",
+        "name": "Burger Buns à 62,5"
+      },
+      {
+        "amount": 700,
+        "unit": "g",
+        "name": "mageres Rinderhackfleisch"
+      },
+      {
+        "amount": 100,
+        "unit": "g",
+        "name": "Light-Emmentaler"
+      },
+      {
+        "amount": 1,
+        "unit": null,
+        "name": "große Zwiebel"
+      },
+      {
+        "amount": 1,
+        "unit": "EL",
+        "name": "Balsamico-Essig"
+      },
+      {
+        "amount": null,
+        "unit": null,
+        "name": "Gewürzgurken"
+      },
+      {
+        "amount": 2.5,
+        "unit": null,
+        "name": "Sprüher Ölspray"
+      },
+      {
+        "amount": null,
+        "unit": null,
+        "name": "Salz"
+      },
+      {
+        "amount": null,
+        "unit": null,
+        "name": "schwarzer Pfeffer Burgersoße"
+      },
+      {
+        "amount": 80,
+        "unit": "g",
+        "name": "Light-Mayonnaise"
+      },
+      {
+        "amount": null,
+        "unit": null,
+        "name": "Salatcreme Light"
+      },
+      {
+        "amount": 80,
+        "unit": "g",
+        "name": "Ketchup"
+      },
+      {
+        "amount": 15,
+        "unit": "g",
+        "name": "Senf"
+      },
+      {
+        "amount": 15,
+        "unit": "ml",
+        "name": "Worcestershiresauce"
+      },
+      {
+        "amount": 1,
+        "unit": "EL",
+        "name": "Sriracha"
+      },
+      {
+        "amount": 87.5,
+        "unit": "g",
+        "name": "formen"
+      },
+      {
+        "amount": null,
+        "unit": null,
+        "name": "von den karamellisierten Zwiebeln"
+      }
+    ],
+    "stepsCount": 5
+  },
+  "notes": "Aus dem eigenen Backup übernommen: expected = gespeicherte Bibliotheksfassung (von Hand geprüft/gekürzt). Kennung der Vorlage: high-protein-smashburger"
+}

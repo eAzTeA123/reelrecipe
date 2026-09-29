@@ -1,0 +1,51 @@
+{
+  "id": "lib-ddmba5zs4mm",
+  "source": "https://www.instagram.com/reel/DdMba5Zs4mm/",
+  "account": "eigene-bibliothek",
+  "language": "de",
+  "style": "real-instagram-nutzerfassung",
+  "caption": "Dieses Baguette schmeckt viel zu gut um es nicht zu probieren! 🥖🥷\n\nZutaten:\n\n🥖 1 Baguette \n🥓 150g Schinkenwürfel (mager)\n🧀 100g geriebener Light-Käse\n🥛 200g Creme fraiche Light\n🧅 1/2 rote Zwiebel\n🌱 Schnittlauch\n🧂 Salz, Pfeffer, Knoblauchpulver\n\nFolgt uns gerne für mehr! 🫶🏻\n\n#highprotein #baguette #lecker",
+  "expected": {
+    "title": null,
+    "servings": null,
+    "ingredients": [
+      {
+        "amount": 1,
+        "unit": null,
+        "name": "Baguette"
+      },
+      {
+        "amount": 150,
+        "unit": "g",
+        "name": "Schinkenwürfel"
+      },
+      {
+        "amount": 100,
+        "unit": "g",
+        "name": "geriebener Light-Käse"
+      },
+      {
+        "amount": 200,
+        "unit": "g",
+        "name": "Creme fraiche Light"
+      },
+      {
+        "amount": 0.5,
+        "unit": null,
+        "name": "rote Zwiebel"
+      },
+      {
+        "amount": null,
+        "unit": null,
+        "name": "Schnittlauch"
+      },
+      {
+        "amount": null,
+        "unit": null,
+        "name": "Salz Pfeffer, Knoblauchpulver"
+      }
+    ],
+    "stepsCount": 0
+  },
+  "notes": "Aus dem eigenen Backup übernommen: expected = gespeicherte Bibliotheksfassung (von Hand geprüft/gekürzt). Kennung der Vorlage: zutaten Gespeicherter Titel war „Zutaten\" – als \"kein Titel\" gewertet. Aus den Zutaten entfernt (Werbung/Überschrift): Folgt uns gerne für mehr! 🫶🏻"
+}

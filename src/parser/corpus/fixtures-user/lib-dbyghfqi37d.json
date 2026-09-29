@@ -1,0 +1,71 @@
+{
+  "id": "lib-dbyghfqi37d",
+  "source": "https://www.instagram.com/reel/DbyGHFQI37D/",
+  "account": "eigene-bibliothek",
+  "language": "de",
+  "style": "real-instagram-nutzerfassung",
+  "caption": "ZUM REZEPT ⬇️\n.\n.\n❤️🧡💛\nWenn euch meine Rezepte gefallen und ihr mich unterstützen wollt, \ndann könnt ihr gerne bei PROZIS den \nRabattcode: ❗️👉🏼NOEL👈🏼❗️\nbenutzen um immer Rabatte und Gratis Produkte zu erhalten \n❤️🧡💛\n*ANZElGE\n.\n.\n.\n🥗🍳🥑\nNährwerte (alles insgesamt)\n1384kcal, 32g K, 198g E, 48g F\n🥗🍳🥑\n.\n.\n.\n⚖️🔢⏳⏲️\nMengenangaben:\n.\n- 500g Magerquark\n- 4 verquirlte Eier\n- 50g Gouda gerieben, leicht\n- 1 EL Tomatenmark\n- 1 EL Flohsamenschalen\n- 1g Salz\n.\n- 1 rote Zwiebel\n- 300g (roh gewogen) Hahnchen\nangebraten\n- 100g Gouda gerieben, leicht\n.\n⚖️🔢⏳⏲️\n.\n. \n- BACKOFEN: 220 Grad O/U-Hitze ~ 25-30min\n.\n.\n.\n.\n.\n.\n.\n.\n#highprotein #lecker #eiweiß #protein #leckerschmecker essen mealprep eiweiss rezept",
+  "expected": {
+    "title": "Flammkuchen (Chicken)",
+    "servings": null,
+    "ingredients": [
+      {
+        "amount": 500,
+        "unit": "g",
+        "name": "Magerquark"
+      },
+      {
+        "amount": 4,
+        "unit": null,
+        "name": "verquirlte Eier"
+      },
+      {
+        "amount": 50,
+        "unit": "g",
+        "name": "Gouda gerieben"
+      },
+      {
+        "amount": 1,
+        "unit": "EL",
+        "name": "Tomatenmark"
+      },
+      {
+        "amount": 1,
+        "unit": "EL",
+        "name": "Flohsamenschalen"
+      },
+      {
+        "amount": 1,
+        "unit": "g",
+        "name": "Salz"
+      },
+      {
+        "amount": 1,
+        "unit": null,
+        "name": "rote Zwiebel"
+      },
+      {
+        "amount": 300,
+        "unit": "g",
+        "name": "Hahnchen"
+      },
+      {
+        "amount": null,
+        "unit": null,
+        "name": "angebraten"
+      },
+      {
+        "amount": 100,
+        "unit": "g",
+        "name": "Gouda gerieben"
+      },
+      {
+        "amount": 100,
+        "unit": "g",
+        "name": "Gouda gerieben"
+      }
+    ],
+    "stepsCount": 1
+  },
+  "notes": "Aus dem eigenen Backup übernommen: expected = gespeicherte Bibliotheksfassung (von Hand geprüft/gekürzt). Kennung der Vorlage: flammkuchen-chicken"
+}

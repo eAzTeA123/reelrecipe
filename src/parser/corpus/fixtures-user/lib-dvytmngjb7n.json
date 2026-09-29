@@ -1,0 +1,86 @@
+{
+  "id": "lib-dvytmngjb7n",
+  "source": "https://www.instagram.com/reel/DVyTmnGjB7N/",
+  "account": "eigene-bibliothek",
+  "language": "de",
+  "style": "real-instagram-nutzerfassung",
+  "caption": "Harissa Linsen Feta Tacos mit Hummus & Zitronen-Minz-Joghurt 😍\n\nHigh Protein Mittagessen in unter 10 Minuten ⭐️\n\nFür 4 Stück: \n- 4 Protein Wraps \n- 250g gekochte Linsen aus der Dose, angeschüttet und abgespült \n- 1 TL Harissa-Paste\n- 1 EL Tomatenmarkt\n- 250g Cherry Tomaten, geviertelt\n- 200g Feta (geht auch vegan) \n- 4 EL Hummus\n\nFür den Zitronen-Minz-Joghurt:\n- 200g Sojajoghurt\n- Saft 1 Zitrone\n- 1 kleine Handvoll frische Minze, gehackt \n- Salz & Pfeffer \n\n1️⃣ In einer Pfanne die Linsen mit der Harissa-Paste, dem Tomatenmark, den Kirschtomaten und dem zerbröseltem Feta vermengen und 2 Minuten anbraten. \n2️⃣ Hummus auf die Wraps streichen, die Linsenmischung auf eine Hälfte geben und die Tacos zusammenklappen. \n3️⃣ Joghurt mit Zitronensaft, gehackter Minze und einer Prise Salz zu einem Dip verrühren. \n4️⃣ Etwas Olivenöl in einer Pfanne erhitzen und die Tacos von beiden Seiten goldbraun und knusprig braten. \n5️⃣ Die Tacos heiß mit dem Minzjoghurt servieren. \n\n#gesunderezepte #veganerezepte #schnellerezepte #einfacherezepte",
+  "expected": {
+    "title": "Harissa Linsen Feta Tacos mit Hummus & Zitronen-Minz-Joghurt",
+    "servings": 4,
+    "ingredients": [
+      {
+        "amount": 4,
+        "unit": null,
+        "name": "Protein Wraps"
+      },
+      {
+        "amount": 250,
+        "unit": "g",
+        "name": "gekochte Linsen aus der Dose"
+      },
+      {
+        "amount": null,
+        "unit": null,
+        "name": "abgespült"
+      },
+      {
+        "amount": 1,
+        "unit": "TL",
+        "name": "Harissa-Paste"
+      },
+      {
+        "amount": 1,
+        "unit": "EL",
+        "name": "Tomatenmarkt"
+      },
+      {
+        "amount": 250,
+        "unit": "g",
+        "name": "Cherry Tomaten"
+      },
+      {
+        "amount": 200,
+        "unit": "g",
+        "name": "Feta"
+      },
+      {
+        "amount": 4,
+        "unit": "EL",
+        "name": "Hummus"
+      },
+      {
+        "amount": 200,
+        "unit": "g",
+        "name": "Sojajoghurt"
+      },
+      {
+        "amount": null,
+        "unit": null,
+        "name": "Saft 1 Zitrone"
+      },
+      {
+        "amount": 1,
+        "unit": null,
+        "name": "kleine Handvoll frische Minze"
+      },
+      {
+        "amount": null,
+        "unit": null,
+        "name": "Salz & Pfeffer"
+      },
+      {
+        "amount": 5,
+        "unit": null,
+        "name": "️⃣ Die Tacos heiß mit dem Minzjoghurt servieren"
+      },
+      {
+        "amount": null,
+        "unit": null,
+        "name": "Olivenöl"
+      }
+    ],
+    "stepsCount": 5
+  },
+  "notes": "Aus dem eigenen Backup übernommen: expected = gespeicherte Bibliotheksfassung (von Hand geprüft/gekürzt). Kennung der Vorlage: harissa-linsen-feta-taco Aus den Zutaten entfernt (Werbung/Überschrift): Für den Zitronen-Minz-Joghurt:"
+}

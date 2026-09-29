@@ -1,0 +1,81 @@
+{
+  "id": "lib-dbxltnpiq5i",
+  "source": "https://www.instagram.com/reel/DbxltNPIq5I/",
+  "account": "eigene-bibliothek",
+  "language": "de",
+  "style": "real-instagram-nutzerfassung",
+  "caption": "🥙 DÖNERTELLER zum abnehmen 💪🏻\n\nZutaten für 2 Portionen:\n\n🥔 Für den Dönerteller\n\n* 600 g Kartoffeln\n* 300 g Hähnchenbrust\n* 100 g Gurke\n* 100 g Tomate\n* 1 Zwiebel\n* 100 g Krautsalat\n* Petersilie\n* Gyrosgewürz\n\n🥣 Gesunde Joghurtsoße\n\n* Saft von ½ Zitrone\n* 2 EL stichfester Joghurt 1,5 % Fett\n* Salz\n* Thymian\n* Knoblauch\n\n📊 Nährwerte pro Dönerteller\n\n🔥 ca. 498 kcal\n💪 ca. 48 g Protein\n🍚 ca. 55 g Kohlenhydrate\n🥑 ca. 8 g Fett\n\nFolge mir für High Protein Rezepte, die perfekt für die Diät geeignet sind & Speichere dir das Rezept für später damit du es nicht wieder suchen musst 😬\nschick es an jemanden, der einfache Rezepte liebt 💪🏻\n\n#highprotein #dönerteller #abnehmen #diät #rezept",
+  "expected": {
+    "title": "DÖNERTELLER zum abnehmen 💪🏻",
+    "servings": 2,
+    "ingredients": [
+      {
+        "amount": 600,
+        "unit": "g",
+        "name": "Kartoffeln"
+      },
+      {
+        "amount": 300,
+        "unit": "g",
+        "name": "Hähnchenbrust"
+      },
+      {
+        "amount": 100,
+        "unit": "g",
+        "name": "Gurke"
+      },
+      {
+        "amount": 100,
+        "unit": "g",
+        "name": "Tomate"
+      },
+      {
+        "amount": 1,
+        "unit": null,
+        "name": "Zwiebel"
+      },
+      {
+        "amount": 100,
+        "unit": "g",
+        "name": "Krautsalat"
+      },
+      {
+        "amount": null,
+        "unit": null,
+        "name": "Petersilie"
+      },
+      {
+        "amount": null,
+        "unit": null,
+        "name": "Gyrosgewürz"
+      },
+      {
+        "amount": 0.5,
+        "unit": null,
+        "name": "Saft of Zitrone"
+      },
+      {
+        "amount": 2,
+        "unit": "EL",
+        "name": "stichfester Joghurt 1,5 % Fett"
+      },
+      {
+        "amount": null,
+        "unit": null,
+        "name": "Salz"
+      },
+      {
+        "amount": null,
+        "unit": null,
+        "name": "Thymian"
+      },
+      {
+        "amount": null,
+        "unit": null,
+        "name": "Knoblauch"
+      }
+    ],
+    "stepsCount": 0
+  },
+  "notes": "Aus dem eigenen Backup übernommen: expected = gespeicherte Bibliotheksfassung (von Hand geprüft/gekürzt). Kennung der Vorlage: doenerteller-zum-abnehme Aus den Zutaten entfernt (Werbung/Überschrift): Für den Dönerteller"
+}

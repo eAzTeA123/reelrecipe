@@ -213,7 +213,17 @@ export function scoreCase(fixture: CorpusFixture, actual: ActualRecipe | null): 
     };
   }
 
-  const expectedIngredients = fixture.expected.ingredients;
+  // Symmetrie: Strukturzeilen (Überschriften, "Für den Teig", "Belag:")
+  // zählen auf beiden Seiten nicht – sonst gilt eine Überschrift als
+  // "fehlende Zutat" und drückt Recall und F1 künstlich.
+  const expectedIngredients = fixture.expected.ingredients.filter(
+    (ingredient) =>
+      !isCategoryLine({
+        amount: ingredient.amount ?? undefined,
+        unit: ingredient.unit ?? undefined,
+        name: ingredient.name,
+      }),
+  );
   // Kategorie-Überschriften sind Struktur, keine Zutaten-Behauptung.
   // Wiederholte Nennungen bleiben bewusst erhalten: Captions wiederholen Zutaten
   // (z. B. Gewürze für zwei Komponenten) und die Ground Truth zählt sie mit.
@@ -320,7 +330,11 @@ export function scoreCase(fixture: CorpusFixture, actual: ActualRecipe | null): 
         actual.servings >= fixture.expected.servings - 0.01 &&
         actual.servings <= (fixture.expected.servingsMax ?? fixture.expected.servings) + 0.01;
 
-  const stepsOk = Math.abs(actual.steps.length - fixture.expected.stepsCount) <= 1;
+  // Fixtures, deren Schrittzahl nicht aus der Caption ableitbar ist (z. B. von
+  // Hand ergänzte Anleitung), werden hier neutral bewertet statt falsch.
+  const stepsOk =
+    fixture.stepsUnreliable !== undefined ||
+    Math.abs(actual.steps.length - fixture.expected.stepsCount) <= 1;
 
   return {
     id: fixture.id,

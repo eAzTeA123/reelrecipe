@@ -1,0 +1,66 @@
+{
+  "id": "lib-daw4krusc4l",
+  "source": "https://www.instagram.com/reel/Daw4KRUsC4L/",
+  "account": "eigene-bibliothek",
+  "language": "de",
+  "style": "real-instagram-nutzerfassung",
+  "caption": "Wenn’s schnell gehen muss, aber trotzdem richtig lecker sein soll: Dieser herzhafte Ofenpfannkuchen ist ein absoluter Gamechanger! Und zudem hat er noch eine extra Ladung Protein im Teig.\n\n👉 Kein Pfannkuchen-Wenden, kaum Aufwand und in weniger als 30 Minuten steht ein herrlich fluffiger Ofenpfannkuchen auf dem Tisch. Mit saftigem Schinken, würzigen Lauchzwiebeln und geschmolzenem Mozzarella wird daraus ein schnelles Mittag- oder Abendessen, das garantiert der ganzen Familie schmeckt. ❤️\n\n📌Speicher dir das Rezept unbedingt ab – das wirst du garantiert öfter machen!\n\n➡️ Rezept:\n\n4 Eier \n150 g Mehl\n150 g Quark\nca. 200 ml Milch\n1 gute Prise Salz\n\nBelag:\n• 2 Hände voll klein geschnittener Schinken (ca. 200 g)\n• 1 Handvoll Lauchzwiebeln, in feine Ringe geschnitten\n• 2 Hände voll geriebener Mozzarella (ca. 200 g)\n• Salz & Pfeffer nach Geschmack\n\nZubereitung:\n\nDen Ofen auf 170 °C Umluft (190 °C Ober-/Unterhitze) vorheizen und ein Backblech mit Backpapier auslegen.\n\nQuark, Eier, Mehl, Milch und Salz zu einem glatten Teig verrühren. Nicht zu lange rühren, damit der Pfannkuchen schön locker bleibt.\n\nDen Teig auf das Backblech gießen. Schinken, Lauchzwiebeln und Mozzarella darauf verteilen und alles mit Salz und Pfeffer würzen.\n\nIm vorgeheizten Ofen 20–25 Minuten backen, bis der Ofenpfannkuchen goldbraun aufgegangen ist und der Käse schön gebräunt ist.\n\nNach dem Backen fällt er leicht zusammen – das ist ganz normal. Am besten direkt heiß genießen. 😍\n\n#ofenpfannkuchen",
+  "expected": {
+    "title": null,
+    "servings": null,
+    "ingredients": [
+      {
+        "amount": 4,
+        "unit": null,
+        "name": "Eier"
+      },
+      {
+        "amount": 150,
+        "unit": "g",
+        "name": "Mehl"
+      },
+      {
+        "amount": 150,
+        "unit": "g",
+        "name": "Quark ca. 200 ml Milch"
+      },
+      {
+        "amount": 1,
+        "unit": null,
+        "name": "gute Prise Salz"
+      },
+      {
+        "amount": 2,
+        "unit": null,
+        "name": "Hände voll klein geschnittener Schinken"
+      },
+      {
+        "amount": 1,
+        "unit": "Handvoll",
+        "name": "Lauchzwiebeln"
+      },
+      {
+        "amount": 2,
+        "unit": null,
+        "name": "Hände voll geriebener Mozzarella"
+      },
+      {
+        "amount": null,
+        "unit": null,
+        "name": "Salz & Pfeffer"
+      },
+      {
+        "amount": 200,
+        "unit": "ml",
+        "name": "Milch"
+      },
+      {
+        "amount": null,
+        "unit": null,
+        "name": "Salz & Pfeffer nach Geschmack"
+      }
+    ],
+    "stepsCount": 5
+  },
+  "notes": "Aus dem eigenen Backup übernommen: expected = gespeicherte Bibliotheksfassung (von Hand geprüft/gekürzt). Kennung der Vorlage: wenn-s-schnell-gehen-mus Gespeicherter Titel war „Wenn’s schnell gehen muss, aber trotzdem richtig lecker sein soll: Dieser her...\" – als \"kein Titel\" gewertet. Aus den Zutaten entfernt (Werbung/Überschrift): Belag:"
+}

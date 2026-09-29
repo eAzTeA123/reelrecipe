@@ -88,10 +88,19 @@ const INGREDIENT_AMOUNT_RE =
 const TITLE_PROMO_RE =
   /\b(?:prozis|rabattcode|rabatte?|gutschein|werbung|anzeige|folge mir|folgt mir|gratis|unterstützen|link in bio)\b/i;
 
+/** Wörter, die als Rezepttitel nie taugen (Abschnitts- und Struktur-Marker) */
+const TITLE_MARKER_RE =
+  /^(?:zutaten|zutatenliste|zubereitung|anleitung|nährwerte|naehrwerte|portionen|mengenangaben|belag|topping|sauce|soße|dressing|für den|für die|für das|for the|ingredients?|instructions?|method|steps?)\b/i;
+
+/** Ansprache/Marketing – ein Satz, kein Rezeptname */
+const TITLE_SENTENCE_RE = /\b(?:ich|wir|du|dir|dich|wenn|falls|folge|folgt|speichere|teste|probiert|schau|check|save)\b/i;
+
 export function isPlausibleTitle(line: string): boolean {
   const t = line.trim();
   if (t.length < 3 || t.length > 80) return false;
-  if (/^[(\[{]/.test(t) || /[)\]}]\s*$/.test(t)) return false;
+  // Reine Klammerzeile ("(9 Stück)", "(Werbung)") ist kein Titel – ein Titel
+  // MIT Klammerzusatz ("Flammkuchen (Chicken)") dagegen schon.
+  if (/^[(\[{][^)\]}]*[)\]}]*\s*$/.test(t)) return false;
   // Aufzählungszeichen oder Nummer am Anfang – aber ein führendes Emoji ist okay
   // ("🌮 HIGH PROTEIN TACOS" ist ein Titel, "✖️ 1g Salz" nicht: das fängt die Mengen-Regel).
   if (/^[-–—•·*+~›»]/.test(t) || /^\d/.test(t)) return false;
@@ -101,6 +110,9 @@ export function isPlausibleTitle(line: string): boolean {
   const cleaned = cleanTitle(t);
   if (cleaned.length < 3) return false;
   if (TITLE_BAD.test(cleaned)) return false;
+  if (TITLE_MARKER_RE.test(cleaned)) return false;
+  // Marketingsatz statt Rezeptname ("Ich teste jede Woche …", "Wenn du …")
+  if (cleaned.length > 40 && TITLE_SENTENCE_RE.test(cleaned)) return false;
   if (TITLE_PROMO_RE.test(t)) return false;
   if (looksLikeIngredient(t) >= 6) return false;
   return true;

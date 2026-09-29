@@ -1,0 +1,66 @@
+{
+  "id": "lib-dxukccjicqx",
+  "source": "https://www.instagram.com/reel/DXuKcCJiCqx/",
+  "account": "eigene-bibliothek",
+  "language": "de",
+  "style": "real-instagram-nutzerfassung",
+  "caption": "Low Carb Hühnchen Peperoni Pizza 🍕 ⬇️\n\nSpeicher dir das Rezept direkt ab, damit du es später nicht ewig suchen musst 💾\n\nExtrem Proteinreich ✅\nLow Carb ✅\nUnfassbar lecker ✅\nSchnell & Easy Zubereitet ✅\n\n🛒Zutaten – Chicken-Boden\n\t•\t400g Hackfleisch (Hähnchen)\n\t•\t2 große Eier\n\t•\t60 g geriebener Parmesan\n\t•\t1 TL Knoblauchpulver\n\t•\t1 TL italienische Kräuter\n\t•\t1/2 TL Salz\n\t•\t1/2 TL schwarzer Pfeffer\n\nBelag\n\t•\t120 ml passierte Tomaten\n\t•\t125 g Light-Käse (gerieben)\n\t•\t60 g Putenschinken\n\n🔷Zubereitung:\n\t1.\tBackofen auf 200 °C (Umluft) vorheizen und ein Backblech mit Backpapier auslegen.\n\t2.\tIn einer großen Schüssel Hackfleisch, Eier, Parmesan, Knoblauchpulver, italienische Kräuter, Salz und Pfeffer gut vermengen.\n\t3.\tDie Masse auf das Backblech geben und zu einem dünnen, gleichmäßigen Kreis oder Rechteck formen (wichtig für die Knusprigkeit).\n\t4.\tFür ca. 25 Minuten backen, bis der Boden goldbraun und fest ist. Anschließend 5 Minuten ruhen lassen.\n\t5.\tOfen auf 220 °C erhöhen. Passierte Tomaten, Käse und Putenschinken darauf verteilen.\n\t6.\tWeitere 10 Minuten backen, bis der Käse geschmolzen und leicht gebräunt ist.\n\t7.\tKurz abkühlen lassen, dann genießen 🍕\n\n🔷Nährwerte (Meine Version):\n1428 kcal \n12g KH ‼️\n151g Eiweiß ‼️\n85g Fett \n\nOrginalrezept von @basicswithbails \n.\n.\n.\n#lowcarb #abnehmen #highprotein #schnellerezepte #proteinpizza",
+  "expected": {
+    "title": "Low Carb Hühnchen Peperoni Pizza",
+    "servings": null,
+    "ingredients": [
+      {
+        "amount": 400,
+        "unit": "g",
+        "name": "Hackfleisch"
+      },
+      {
+        "amount": 2,
+        "unit": null,
+        "name": "große Eier"
+      },
+      {
+        "amount": 60,
+        "unit": "g",
+        "name": "geriebener Parmesan"
+      },
+      {
+        "amount": 1,
+        "unit": "TL",
+        "name": "Knoblauchpulver"
+      },
+      {
+        "amount": 1,
+        "unit": "TL",
+        "name": "italienische Kräuter"
+      },
+      {
+        "amount": 0.5,
+        "unit": "TL",
+        "name": "Salz"
+      },
+      {
+        "amount": 0.5,
+        "unit": "TL",
+        "name": "schwarzer Pfeffer"
+      },
+      {
+        "amount": 120,
+        "unit": "ml",
+        "name": "passierte Tomaten"
+      },
+      {
+        "amount": 125,
+        "unit": "g",
+        "name": "Light-Käse"
+      },
+      {
+        "amount": 60,
+        "unit": "g",
+        "name": "Putenschinken"
+      }
+    ],
+    "stepsCount": 8
+  },
+  "notes": "Aus dem eigenen Backup übernommen: expected = gespeicherte Bibliotheksfassung (von Hand geprüft/gekürzt). Kennung der Vorlage: low-carb-huehnchen-peper Aus den Zutaten entfernt (Werbung/Überschrift): Belag"
+}

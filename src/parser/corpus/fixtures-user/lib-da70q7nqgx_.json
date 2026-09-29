@@ -1,0 +1,76 @@
+{
+  "id": "lib-da70q7nqgx_",
+  "source": "https://www.instagram.com/reel/Da70Q7Nqgx_/",
+  "account": "eigene-bibliothek",
+  "language": "de",
+  "style": "real-instagram-nutzerfassung",
+  "caption": "Episode 2: Zitronenkuchen☝🏽\n\nDieses Mal wirklich der perfekte Kuchen für den Sommer 🍰🍋\n\nZutaten:\n* 60 g Dinkelmehl\n* 3 Eier \n* 60g Erythrit\n* 45 g Whey Vanille\n* 2-3 Scoops Flavor Powder Vanille\n* 4 g Backpulver\n* 1 Prise Salz\n* Saft von 1 Zitrone (für den Teig)\n* 1 TL Zitronenschalen Abrieb \n\nFür das Frosting:\n\n* 30 g Erythrit (im Mixer zu Puder verarbeiten)\n* Saft von ½ Zitrone\n* Optional: Zitronenscheiben zum Dekorieren\n\nZubereitung:\n\n1. Eier und Erythrit mindestens 6 Minuten schaumig aufschlagen, bis eine helle, cremige Masse entsteht.\n2. Dinkelmehl, Whey, Flavor Powder, Backpulver, Salz und den Zitronensaft vorsichtig unterheben und alles zu einem glatten Teig verrühren.\n3. Den Teig in eine vorbereitete Backform geben und bei 175 °C Ober-/Unterhitze ca. 25 Minuten backen.\n4. Während der Kuchen abkühlt, 30 g Erythrit mit dem Saft einer halben Zitrone verrühren.\n5. Das Zitronen-Frosting auf dem noch lauwarmen Kuchen verstreichen und nach Belieben mit Zitronenscheiben dekorieren.\n\n#lowcaloriehighprotein #lowcaloriedessert #highproteinlowcalories #highproteinrezepte #highproteinkuchen",
+  "expected": {
+    "title": "Episode 2: Zitronenkuchen☝🏽",
+    "servings": null,
+    "ingredients": [
+      {
+        "amount": 60,
+        "unit": "g",
+        "name": "Dinkelmehl"
+      },
+      {
+        "amount": 3,
+        "unit": null,
+        "name": "Eier"
+      },
+      {
+        "amount": 60,
+        "unit": "g",
+        "name": "Erythrit"
+      },
+      {
+        "amount": 45,
+        "unit": "g",
+        "name": "Whey Vanille"
+      },
+      {
+        "amount": 2.5,
+        "unit": null,
+        "name": "Scoops Flavor Powder Vanille"
+      },
+      {
+        "amount": 4,
+        "unit": "g",
+        "name": "Backpulver"
+      },
+      {
+        "amount": 1,
+        "unit": "Prise",
+        "name": "Salz"
+      },
+      {
+        "amount": 1,
+        "unit": "TL",
+        "name": "Zitronenschalen Abrieb"
+      },
+      {
+        "amount": 30,
+        "unit": "g",
+        "name": "Erythrit"
+      },
+      {
+        "amount": 0.5,
+        "unit": null,
+        "name": "Saft of Zitrone"
+      },
+      {
+        "amount": null,
+        "unit": null,
+        "name": "Optional: Zitronenscheiben zum Dekorieren"
+      },
+      {
+        "amount": null,
+        "unit": null,
+        "name": "* 30 g Erythrit"
+      }
+    ],
+    "stepsCount": 7
+  },
+  "notes": "Aus dem eigenen Backup übernommen: expected = gespeicherte Bibliotheksfassung (von Hand geprüft/gekürzt). Kennung der Vorlage: episode-2-zitronenkuchen Aus den Zutaten entfernt (Werbung/Überschrift): Für das Frosting:"
+}

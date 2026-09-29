@@ -1,0 +1,67 @@
+{
+  "id": "lib-dby8vmdyoi-",
+  "source": "https://www.instagram.com/reel/Dby8VMDyOI-/",
+  "account": "eigene-bibliothek",
+  "language": "de",
+  "style": "real-instagram-nutzerfassung",
+  "caption": "SAVE THIS ‼️ Easy Healthier Cream Cheese Chicken (only 20 minutes!) 🥰\n\nAnnouncements:\n✅ Want to lose weight without eating boring food? My digital cookbooks include 180+ high-protein recipes with calories and macros included! Grab yours today on my site! 😊\n✅ OR Comment “cookbook” and I’ll send you the link! (Macros and Calories Included) 💪🏽\n✅ I developed new seasonings for everyday cooking! @spicexseasoning OUT now! 👀\n\nMacros per serving Rice NOT included (makes x2): 410 Calories | 56g P | 2g C | 19g F\n\nFor the Chicken:\n1lb Chicken Breasts\n2 tsp Daily Blend (SPG) \n1 tsp smoked paprika Powder, \n1 tsp SpiceX Bella Blend (dried herbs)\n2 teaspoon Butter\n2 teaspoon Olive Oil\n\nFor the sauce:\n2 Shallots, finely diced\n3/4 cup Chicken Stock\n4 tbsp light Cream Cheese\n1 heap tsp Dijon mustard\nResting juices of the chicken 🐓 \nfinely diced Fresh Chives, to serve\n\nENJOY 🥰\n.\n.\n.\n#icekarim #healthyrecipes #easyrecipes #mealprep #cooking",
+  "expected": {
+    "title": null,
+    "servings": null,
+    "ingredients": [
+      {
+        "amount": 1,
+        "unit": "Pfund",
+        "name": "Hähnchen Breasts"
+      },
+      {
+        "amount": 2,
+        "unit": "TL",
+        "name": "Daily"
+      },
+      {
+        "amount": 1,
+        "unit": "TL",
+        "name": "smoked Paprikapulver"
+      },
+      {
+        "amount": 1,
+        "unit": "TL",
+        "name": "SpiceX Bella"
+      },
+      {
+        "amount": 2,
+        "unit": "TL",
+        "name": "Butter"
+      },
+      {
+        "amount": 2,
+        "unit": "TL",
+        "name": "Olivenöl"
+      },
+      {
+        "amount": 2,
+        "unit": null,
+        "name": "Shallots"
+      },
+      {
+        "amount": 0.75,
+        "unit": "Tasse",
+        "name": "Hähnchen Brühe"
+      },
+      {
+        "amount": 4,
+        "unit": "EL",
+        "name": "light Frischkäse"
+      },
+      {
+        "amount": 1,
+        "unit": null,
+        "name": "heap tsp Dijon Senf Resting juices of the Hähnchen"
+      }
+    ],
+    "stepsCount": 1
+  },
+  "exclude": "Caption ist englisch – die gespeicherte Fassung ist die übersetzte Anzeige-Fassung.",
+  "notes": "Aus dem eigenen Backup übernommen: expected = gespeicherte Bibliotheksfassung (von Hand geprüft/gekürzt). Kennung der Vorlage: save-this-easy-healthier Gespeicherter Titel war „SAVE THIS ‼Easy Healthier Cream Cheese Chicken (only 20 minutes!)\" – als \"kein Titel\" gewertet. Aus den Zutaten entfernt (Werbung/Überschrift): For the sauce: Caption ist englisch – die gespeicherte Fassung ist die übersetzte Anzeige-Fassung."
+}

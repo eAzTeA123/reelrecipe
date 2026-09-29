@@ -1,0 +1,56 @@
+{
+  "id": "lib-ddy8hkcytgx",
+  "source": "https://www.instagram.com/reel/Ddy8HkcyTgX/",
+  "account": "eigene-bibliothek",
+  "language": "de",
+  "style": "real-instagram-nutzerfassung",
+  "caption": "High Protein Gnocchi Hühnchen OnePot 🥔🔥\n\nSpeichere dir das Rezept direkt ab, damit du es später nicht ewig suchen musst.\n\nZutaten (4 Portionen)\n600 g Gnocchi\n600 g Hühnchenbrustfilet\n200 ml Light Sahne\n15 g Pesto\n250 g Cherrytomaten\n350 g Kaisergemüse (TK)\n250 g Gemüsebrühe\n100 g Gratin-Käse Light\n\nZubereitung\n1)Alle Zutaten bis auf den Light Käse in eine große Auflaufform geben und gut miteinander vermengen.\n2) Den Light Käse gleichmäßig darüber verteilen.\n3) Im vorgeheizten Backofen bei 180 °C Umluft ca. 40 Minuten (mit Alu abgedeckt) backen, bis das Hähnchen durchgegart ist\n\n🔥Nährwerte pro Portion:\nKalorien: 565 kcal\nKohlenhydrate: 56,5 g\nEiweiß: 48,9 g\nFett: 14,4 g",
+  "expected": {
+    "title": "High Protein Gnocchi Hühnchen OnePot",
+    "servings": 4,
+    "ingredients": [
+      {
+        "amount": 600,
+        "unit": "g",
+        "name": "Gnocchi"
+      },
+      {
+        "amount": 600,
+        "unit": "g",
+        "name": "Hühnchenbrustfilet"
+      },
+      {
+        "amount": 200,
+        "unit": "ml",
+        "name": "Light Sahne"
+      },
+      {
+        "amount": 15,
+        "unit": "g",
+        "name": "Pesto"
+      },
+      {
+        "amount": 250,
+        "unit": "g",
+        "name": "Cherrytomaten"
+      },
+      {
+        "amount": 350,
+        "unit": "g",
+        "name": "Kaisergemüse"
+      },
+      {
+        "amount": 250,
+        "unit": "g",
+        "name": "Gemüsebrühe"
+      },
+      {
+        "amount": 100,
+        "unit": "g",
+        "name": "Gratin-Käse Light"
+      }
+    ],
+    "stepsCount": 3
+  },
+  "notes": "Aus dem eigenen Backup übernommen: expected = gespeicherte Bibliotheksfassung (von Hand geprüft/gekürzt). Kennung der Vorlage: high-protein-gnocchi-hue"
+}
