@@ -16,7 +16,9 @@ export function MigrationRunner() {
     
     runParserMigration(lang as "de" | "en").then(result => {
       if (result.updated > 0) {
-        toast(`${result.updated} Rezept(e) aktualisiert`, "success");
+        const kept = result.respectedRemovals + result.respectedEdits;
+        const suffix = kept > 0 ? `, ${kept} eigene Änderung(en) behalten` : "";
+        toast(`${result.updated} Rezept(e) aktualisiert${suffix}`, "success");
       }
       // Trigger lazy caching of external images
       migrateExternalImages().then(() => {

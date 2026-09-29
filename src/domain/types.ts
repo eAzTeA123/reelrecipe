@@ -14,6 +14,26 @@ export interface RecipeStep {
   instruction: string;
 }
 
+/**
+ * Zustand des Parser-Ergebnisses beim Import. Damit erkennt die spätere
+ * Parser-Migration, was der Nutzer danach geändert hat (gelöscht, umbenannt,
+ * Menge angepasst, ergänzt) – und lässt diese Änderungen stehen.
+ */
+export interface ParseSnapshotIngredient {
+  name: string;
+  amount?: number;
+  unit?: string;
+  notes?: string;
+}
+
+export interface ParseSnapshot {
+  ingredients: ParseSnapshotIngredient[];
+  /** Schritt-Texte, wie der Parser sie geliefert hat */
+  steps: string[];
+  /** Titel, den der Parser vorgeschlagen hatte */
+  title: string;
+}
+
 export interface Recipe {
   id: string;
   title: string;
@@ -38,6 +58,8 @@ export interface Recipe {
   updatedAt: number;
   /** Version des Parsers, mit der dieses Rezept zuletzt geparst wurde */
   parserVersion?: number;
+  /** Parser-Ergebnis beim Import – Grundlage für verlustfreie Re-Parses */
+  parseSnapshot?: ParseSnapshot;
 }
 
 export type RecipeInput = Omit<Recipe, "id" | "createdAt" | "updatedAt">;

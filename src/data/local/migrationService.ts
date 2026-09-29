@@ -1,6 +1,8 @@
+import type { Recipe } from "@/domain/types";
 import { getDB } from "./db";
 import { parseRecipe, PARSER_VERSION } from "@/parser";
 import { translateParsedRecipe } from "@/lib/i18n/recipeTranslation";
+import { mergeParsedRecipe } from "./parseMerge";
 import { compressImage } from "@/lib/image";
 import { getImageRepository } from "@/data";
 
@@ -9,15 +11,22 @@ export interface MigrationResult {
   updated: number;
   skipped: number;
   failed: number;
+  /** Vom Nutzer gelöschte Einträge, die nicht wieder aufgetaucht sind */
+  respectedRemovals: number;
+  /** Vom Nutzer angepasste Einträge, die erhalten blieben */
+  respectedEdits: number;
+  /** Rezepte ohne Snapshot (Altbestand) – dort wird konservativ gemergt */
+  legacyMerges: number;
 }
 
 /**
  * Re-parst alle Rezepte, deren parserVersion < PARSER_VERSION.
- * Bewahrt manuelle Edits:
- * - Wenn sourceCaption vorhanden → neu parsen
- * - title wird NUR überschrieben, wenn er exakt dem alten Parse-Titel entspricht
- * - Manuell hinzugefügte Zutaten (die nicht im Parse-Ergebnis vorkommen) bleiben erhalten
- * - favorite, category, image, tags, servings bleiben unangetastet
+ * Der Merge (parseMerge.ts) bewahrt Nutzeränderungen:
+ * - gelöschte Zutaten/Schritte kommen NICHT zurück
+ * - umbenannte Zutaten werden nicht doppelt angelegt
+ * - angepasste Mengen/Notizen und selbst ergänzte Einträge bleiben
+ * - ein selbst gesetzter Titel wird nicht überschrieben
+ * - favorite, category, image, tags bleiben unangetastet
  */
 export async function runParserMigration(lang: "de" | "en"): Promise<MigrationResult> {
   const db = getDB();
@@ -25,8 +34,16 @@ export async function runParserMigration(lang: "de" | "en"): Promise<MigrationRe
     .filter(r => (r.parserVersion ?? 0) < PARSER_VERSION && !!r.sourceCaption)
     .toArray();
 
-  const result: MigrationResult = { total: recipes.length, updated: 0, skipped: 0, failed: 0 };
-  const updates: any[] = [];
+  const result: MigrationResult = {
+    total: recipes.length,
+    updated: 0,
+    skipped: 0,
+    failed: 0,
+    respectedRemovals: 0,
+    respectedEdits: 0,
+    legacyMerges: 0,
+  };
+  const updates: Recipe[] = [];
 
   for (const recipe of recipes) {
     try {
@@ -38,38 +55,29 @@ export async function runParserMigration(lang: "de" | "en"): Promise<MigrationRe
       }
 
       const translated = translateParsedRecipe(parsed, lang);
+      const merged = mergeParsedRecipe(
+        {
+          title: recipe.title,
+          ingredients: recipe.ingredients,
+          steps: recipe.steps,
+          parseSnapshot: recipe.parseSnapshot,
+        },
+        {
+          title: translated.title,
+          ingredients: translated.ingredients,
+          steps: translated.steps,
+        },
+      );
 
-      // Heuristic: If title doesn't match original sourceCaption, user probably edited it
-      const titleChanged = !recipe.sourceCaption!.includes(recipe.title);
-      
-      // Preserve manual ingredients
-      const mergedIngredients = translated.ingredients.map((newIng, i) => {
-        // Find existing by name similarity or position
-        const existing = recipe.ingredients.find(e => e.name === newIng.name) || recipe.ingredients[i];
-        if (existing) {
-          // Keep the ID, and if user removed the uncertain flag, keep it removed
-          return { ...newIng, id: existing.id, uncertain: existing.uncertain === false ? false : newIng.uncertain };
-        }
-        return newIng;
-      });
-
-      // Append ingredients that the user added manually (those that don't match any in the new parsed list by ID)
-      const userAddedIngs = recipe.ingredients.filter(oldIng => !mergedIngredients.some(m => m.id === oldIng.id));
-      mergedIngredients.push(...userAddedIngs);
-
-      // Preserve manual steps
-      const mergedSteps = translated.steps.map((newStep, i) => {
-        const existing = recipe.steps[i];
-        return existing ? { ...newStep, id: existing.id } : newStep;
-      });
-      const userAddedSteps = recipe.steps.slice(translated.steps.length);
-      mergedSteps.push(...userAddedSteps);
+      result.respectedRemovals += merged.respectedRemovals;
+      result.respectedEdits += merged.respectedEdits;
+      if (merged.legacyMerge) result.legacyMerges++;
 
       updates.push({
         ...recipe,
-        title: titleChanged ? recipe.title : translated.title,
-        ingredients: mergedIngredients,
-        steps: mergedSteps,
+        title: merged.title,
+        ingredients: merged.ingredients,
+        steps: merged.steps,
         servings: translated.servings ?? recipe.servings,
         prepTime: translated.prepTime ?? recipe.prepTime,
         cookTime: translated.cookTime ?? recipe.cookTime,
@@ -148,3 +156,4 @@ export async function backfillColors(): Promise<number> {
   }
   return updated;
 }
+

@@ -8,6 +8,7 @@ import { WEB_STATUS_MESSAGE, fetchRecipeImage, fetchWebRecipe } from "@/lib/webI
 import { parseRecipe, PARSER_VERSION } from "@/parser";
 import { translateParsedRecipe } from "@/lib/i18n/recipeTranslation";
 import { getRecipeRepository, getCorrectionRepository } from "@/data";
+import { createParseSnapshot } from "@/data/local/parseMerge";
 import type { ParsedRecipe, Recipe, RecipeInput } from "@/domain/types";
 import {
   emptyDraft,
@@ -406,6 +407,12 @@ function ImportFlow() {
 
     input.parserVersion = PARSER_VERSION;
 
+    // Parser-Ergebnis einfrieren: damit erkennt die spätere Parser-Migration,
+    // was der Nutzer danach gelöscht, umbenannt oder ergänzt hat.
+    if (parserSuggestion) {
+      input.parseSnapshot = createParseSnapshot(parserSuggestion);
+    }
+
     // Korrektur am Parser-Vorschlag lokal festhalten: wird zum Testfall für den
     // Real-Caption-Corpus (Export in den Einstellungen).
     if (parserSuggestion && input.sourceCaption) {
@@ -685,3 +692,4 @@ export default function ImportPage() {
     </Suspense>
   );
 }
+
