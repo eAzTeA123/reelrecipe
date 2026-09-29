@@ -1,7 +1,7 @@
 "use client";
 import { useI18n } from "@/lib/i18n/context";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useShoppingList } from "@/hooks/useShoppingList";
 import { useHaptic } from "@/hooks/useHaptic";
 import type { ShoppingItem } from "@/domain/types";
@@ -10,6 +10,8 @@ import { formatAmount } from "@/lib/scale";
 import { parseAmountString } from "@/parser";
 import { PageHeader } from "@/components/PageHeader";
 import { EmptyState } from "@/components/EmptyState";
+import { ShoppingEstimateCard } from "@/components/ShoppingEstimateCard";
+import { useSelectedRetailer, useShoppingEstimate } from "@/hooks/useShoppingEstimate";
 import { ErrorState } from "@/components/ErrorState";
 import { Button } from "@/components/Button";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
@@ -26,6 +28,14 @@ export default function ShoppingPage() {
   const toast = useToast();
   const haptic = useHaptic();
   const { items, loading, error, retry } = useShoppingList();
+  const [retailer, setRetailer] = useSelectedRetailer();
+  // Abhaken ändert den Anfrageschlüssel nicht – nur lokal neu summiert
+  const estimateIngredients = useMemo(
+    () => items.map((i) => ({ id: i.id, name: i.name, amount: i.amount, unit: i.unit })),
+    [items],
+  );
+  const estimate = useShoppingEstimate(estimateIngredients, retailer);
+  const openIds = useMemo(() => new Set(items.filter((i) => !i.checked).map((i) => i.id)), [items]);
   const [recipeTitles, setRecipeTitles] = useState<Record<string, string>>({});
   const [confirmClear, setConfirmClear] = useState(false);
   const [newItemName, setNewItemName] = useState("");
@@ -138,6 +148,16 @@ export default function ShoppingPage() {
         </div>
       ) : (
         <>
+          <ShoppingEstimateCard
+            variant="list"
+            estimate={estimate.data}
+            loading={estimate.loading}
+            error={estimate.error}
+            onRetry={estimate.retry}
+            retailer={retailer}
+            onRetailerChange={setRetailer}
+            openIds={openIds}
+          />
           <div className="flex flex-col gap-6">
             {sortedAisles.map((aisle) => (
               <div key={aisle}>
@@ -273,3 +293,4 @@ export default function ShoppingPage() {
     </>
   );
 }
+

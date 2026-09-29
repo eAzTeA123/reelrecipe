@@ -1,6 +1,6 @@
 export type Language = "de" | "en";
 
-export const dictionaries = {
+const baseDictionaries = {
   de: {
     // Nav
     "nav.home": "Start",
@@ -548,3 +548,103 @@ export const dictionaries = {
 };
 
 export type TranslationKey = keyof typeof dictionaries.de;
+
+/**
+ * Preis- und Nährwert-Schlüssel. Das Feature war zeitweise entfernt
+ * (siehe PRICE_NUTRITION_ARCHIVE.md), die Texte sind daher als eigene Blöcke
+ * gebündelt statt im großen Literal verstreut.
+ */
+const priceKeysDe = {
+  "price.typeEstimate": "Richtwert (Schätzung)",
+  "price.estimatedCount": "{n} Zutat(en) als Richtwert geschätzt",
+  "price.estimateNote": "Richtwerte sind Schätzungen für typische Supermarktpreise, keine gemeldeten Filialpreise.",
+  "price.title": "Geschätzter Einkauf",
+  "price.openTitle": "Noch zu kaufen",
+  "price.storeFilter": "Markt auswählen",
+  "price.allStores": "Alle Märkte",
+  "price.loading": "Preise werden gesucht…",
+  "price.coverage": "Preise für {n} von {m} Zutaten",
+  "price.pantryNote": "Salz, Wasser & Co. nicht berechnet",
+  "price.perServing": "≈\u00a0{v} Zutatenwert pro Portion",
+  "price.discountedCount": "{n}× Rabattpreis gemeldet",
+  "price.dateRange": "Gemeldet {from} – {to}",
+  "price.dateSingle": "Gemeldet am {date}",
+  "price.none": "Noch keine Preise",
+  "price.noneAll": "Für diese Zutaten wurden in Deutschland noch keine Preise gemeldet.",
+  "price.noneStore": "Bei {store} wurden für diese Zutaten noch keine Preise gemeldet.",
+  "price.error": "Preis- und Nährwertdaten konnten gerade nicht geladen werden.",
+  "price.partialError": "Einige Daten konnten nicht geladen werden – die Angaben sind unvollständig.",
+  "price.retry": "Erneut versuchen",
+  "price.showDetails": "Details anzeigen",
+  "price.hideDetails": "Details ausblenden",
+  "price.noPrice": "Kein Preis gemeldet",
+  "price.noProduct": "Kein passendes Produkt gefunden",
+  "price.typeProduct": "Exakter Produktpreis",
+  "price.typeCategory": "Kategoriepreis",
+  "price.typeSimilar": "Preis eines vergleichbaren Produkts",
+  "price.perKilogram": "{v}/kg",
+  "price.perUnit": "{v}/Stück",
+  "price.perPackage": "{v}/Packung",
+  "price.pantryItem": "Grundzutat – nicht berechnet",
+  "price.discounted": "Rabattpreis",
+  "price.packs": "{n} Packungen",
+  "price.amountUnclear": "Menge nicht vergleichbar – 1 Packung angenommen",
+  "price.source": "Von Nutzern gemeldete Filialpreise (Open Prices) und Produktdaten (Open Food Facts). Preise gelten für die genannte Filiale und können abweichen.",
+  "nutrition.title": "Nährwerte pro Portion",
+  "nutrition.coverage": "aus {n} von {m} Zutaten",
+  "nutrition.none": "Keine verlässlichen Nährwertdaten gefunden.",
+  "nutrition.kcal": "kcal",
+  "nutrition.protein": "Protein",
+  "nutrition.fat": "Fett",
+  "nutrition.carbs": "KH",
+};
+
+const priceKeysEn = {
+  "price.typeEstimate": "Reference estimate",
+  "price.estimatedCount": "{n} ingredient(s) estimated",
+  "price.estimateNote": "Reference values are estimates for typical supermarket prices, not reported store prices.",
+  "price.title": "Estimated shopping",
+  "price.openTitle": "Still to buy",
+  "price.storeFilter": "Choose store",
+  "price.allStores": "All stores",
+  "price.loading": "Looking up prices…",
+  "price.coverage": "Prices for {n} of {m} ingredients",
+  "price.pantryNote": "Salt, water & co. not included",
+  "price.perServing": "≈\u00a0{v} ingredient value per serving",
+  "price.discountedCount": "{n}× discounted price reported",
+  "price.dateRange": "Reported {from} – {to}",
+  "price.dateSingle": "Reported on {date}",
+  "price.none": "No prices yet",
+  "price.noneAll": "No prices have been reported in Germany for these ingredients yet.",
+  "price.noneStore": "No prices have been reported at {store} for these ingredients yet.",
+  "price.error": "Price and nutrition data couldn't be loaded right now.",
+  "price.partialError": "Some data couldn't be loaded – the figures are incomplete.",
+  "price.retry": "Try again",
+  "price.showDetails": "Show details",
+  "price.hideDetails": "Hide details",
+  "price.noPrice": "No price reported",
+  "price.noProduct": "No matching product found",
+  "price.typeProduct": "Exact product price",
+  "price.typeCategory": "Category price",
+  "price.typeSimilar": "Comparable product price",
+  "price.perKilogram": "{v}/kg",
+  "price.perUnit": "{v}/item",
+  "price.perPackage": "{v}/pack",
+  "price.pantryItem": "Staple – not included",
+  "price.discounted": "Discounted",
+  "price.packs": "{n} packs",
+  "price.amountUnclear": "Amount not comparable – 1 pack assumed",
+  "price.source": "Store prices reported by users (Open Prices) and product data (Open Food Facts). Prices apply to the named store and may differ.",
+  "nutrition.title": "Nutrition per serving",
+  "nutrition.coverage": "from {n} of {m} ingredients",
+  "nutrition.none": "No reliable nutrition data found.",
+  "nutrition.kcal": "kcal",
+  "nutrition.protein": "Protein",
+  "nutrition.fat": "Fat",
+  "nutrition.carbs": "Carbs",
+};
+
+export const dictionaries = {
+  de: { ...baseDictionaries.de, ...priceKeysDe },
+  en: { ...baseDictionaries.en, ...priceKeysEn },
+};
