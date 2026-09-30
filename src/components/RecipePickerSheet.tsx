@@ -44,7 +44,7 @@ export function RecipePickerSheet({
 
   return (
     <Sheet open onClose={onClose} title={t("collections.addRecipes")}>
-      <p className="mb-3 text-[13px] text-ink-3">
+      <p className="mb-3 text-meta text-ink-3">
         <span className="font-semibold text-ink-2">{collectionName}</span> · {manualIds.length}{" "}
         {manualIds.length === 1 ? t("collections.item") : t("collections.items")}
       </p>
@@ -58,7 +58,7 @@ export function RecipePickerSheet({
           onChange={(e) => setQuery(e.target.value)}
           placeholder={t("collections.pickerSearch")}
           aria-label={t("collections.pickerSearch")}
-          className="h-11 w-full rounded-xl border border-line bg-surface pl-10 pr-4 text-[16px] text-ink placeholder:text-ink-3 focus:border-accent focus:outline-none"
+          className="h-11 w-full rounded-ctl border border-line bg-surface pl-10 pr-4 text-[16px] text-ink placeholder:text-ink-3 focus:border-accent focus:outline-none"
         />
       </div>
 
@@ -76,7 +76,7 @@ export function RecipePickerSheet({
                   type="button"
                   aria-pressed={included}
                   onClick={() => onToggle(recipe.id, !included)}
-                  className={`pressable flex w-full items-center gap-3 rounded-xl border px-3 py-2.5 text-left ${
+                  className={`pressable flex w-full items-center gap-3 rounded-ctl border px-3 py-2.5 text-left ${
                     included ? "border-accent bg-accent-soft" : "border-line bg-surface"
                   }`}
                 >
@@ -88,10 +88,10 @@ export function RecipePickerSheet({
                     <IconCheck size={14} />
                   </span>
                   <span className="min-w-0 flex-1">
-                    <span className="block truncate text-[15px] font-semibold text-ink">
+                    <span className="block truncate text-body font-semibold text-ink">
                       {recipe.title}
                     </span>
-                    <span className="block text-[12px] text-ink-3">
+                    <span className="block text-label text-ink-3">
                       {[
                         recipe.category,
                         time > 0 ? `${time} Min` : undefined,

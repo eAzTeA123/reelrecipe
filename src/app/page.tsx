@@ -4,8 +4,8 @@ import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRecipes } from "@/hooks/useRecipes";
-import { PageHeader } from "@/components/PageHeader";
-import { RecipeCard } from "@/components/RecipeCard";
+import { RecipeCard, RecipeCover } from "@/components/RecipeCard";
+import { Reveal } from "@/components/Reveal";
 import { RecipeCardSkeleton } from "@/components/RecipeCardSkeleton";
 import { EmptyState } from "@/components/EmptyState";
 import { ErrorState } from "@/components/ErrorState";
@@ -21,7 +21,7 @@ import { OnboardingModal } from "@/components/OnboardingModal";
 import { parseRecipe } from "@/parser";
 import { getRecipeRepository } from "@/data";
 import { Spinner } from "@/components/Spinner";
-import type { RecipeInput } from "@/domain/types";
+import type { Recipe, RecipeInput } from "@/domain/types";
 
 export default function HomePage() {
   const router = useRouter();
@@ -190,119 +190,121 @@ export default function HomePage() {
       <Suspense fallback={null}>
         <OnboardingModal />
       </Suspense>
-      <PageHeader
-        title={t("home.title")}
-        action={
-          <Link
-            href="/settings"
-            aria-label={t("settings.title")}
-            className="pressable inline-flex rounded-full p-2.5 text-ink-2 hover:bg-surface"
-          >
-            <IconSettings size={22} />
-          </Link>
-        }
-      />
-
       <section
         aria-labelledby="import-heading"
-        className="mb-16 mt-8"
+        className="texture-grain relative mb-14 overflow-hidden rounded-frame bg-paper-wash px-5 py-8 shadow-card sm:px-8 sm:py-10 lg:px-12 lg:py-14"
       >
-        <h2 id="import-heading" className="mb-2 text-[32px] md:text-[48px] font-extrabold leading-tight tracking-tighter text-ink">
-          Rezept-Link <br/><span className="text-brand-gradient">einfügen & kochen.</span>
-        </h2>
-        <p className="mb-6 text-[16px] text-ink-2 font-medium">
-          {t("home.importSubtitle")}
-        </p>
-        <form id="tour-import" onSubmit={submit} className="flex flex-col gap-3 sm:flex-row" noValidate>
-          <div className="relative flex-1">
-            <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-ink-3">
-              <IconLink size={20} />
-            </span>
-            <Input
-              type="url"
-              inputMode="url"
-              autoComplete="url"
-              disabled={importing}
-              aria-label={t("home.importPlaceholder")}
-              aria-invalid={!!urlError}
-              aria-describedby={urlError ? "url-error" : undefined}
-              value={url}
-              onChange={(e) => {
-                setUrl(e.target.value);
-                if (urlError) setUrlError(undefined);
-              }}
-              placeholder={t("home.importPlaceholder")}
-              className="h-14 pl-12 pr-28 text-[17px] bg-surface border border-line rounded-none focus:border-ink transition-colors disabled:opacity-50"
-            />
-            <button
-              type="button"
-              disabled={importing}
-              onClick={() => void pasteFromClipboard()}
-              className="pressable absolute right-2 top-2 bottom-2 flex items-center justify-center gap-1.5 bg-surface-2 px-3 text-[12px] font-bold uppercase tracking-wider text-ink hover:bg-line transition-colors disabled:opacity-50"
-              aria-label={t("home.paste")}
+        <Link
+          href="/settings"
+          aria-label={t("settings.title")}
+          className="pressable absolute right-4 top-4 z-20 inline-flex h-10 w-10 items-center justify-center rounded-pill bg-surface/70 text-ink-2 backdrop-blur hover:text-ink"
+        >
+          <IconSettings size={20} />
+        </Link>
+        <div className="relative z-10 grid gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-stretch lg:gap-12">
+          <div>
+            <p className="text-label font-semibold uppercase text-accent">
+              {recipes.length > 0
+                ? `${recipes.length} ${recipes.length === 1 ? t("recipes.countSingular") : t("recipes.countPlural")}`
+                : t("brand.name")}
+            </p>
+            <h1 id="import-heading" className="mt-3 font-display text-display text-ink">
+              Rezept-Link
+              <br />
+              <span className="text-accent">einfügen &amp; kochen.</span>
+            </h1>
+            <p className="mt-4 max-w-[46ch] text-h3 font-medium text-ink-2">
+              {t("home.importSubtitle")}
+            </p>
+
+            <form
+              id="tour-import"
+              onSubmit={submit}
+              className="mt-6 flex flex-col gap-3 sm:flex-row"
+              noValidate
             >
-              <IconClipboard size={14} />
-              {t("home.paste")}
-            </button>
-          </div>
-          <Button
-            type="submit"
-            disabled={importing}
-            className="h-14 sm:w-auto rounded-none bg-brand-gradient text-[16px] font-extrabold uppercase tracking-widest px-8 flex items-center justify-center gap-2.5"
-          >
-            {importing ? (
-              <>
-                <Spinner size={18} />
-                <span>{t("home.importing")}</span>
-              </>
-            ) : (
-              t("home.importButton")
+              <div className="relative flex-1">
+                <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-ink-3">
+                  <IconLink size={20} />
+                </span>
+                <Input
+                  type="url"
+                  inputMode="url"
+                  autoComplete="url"
+                  disabled={importing}
+                  aria-label={t("home.importPlaceholder")}
+                  aria-invalid={!!urlError}
+                  aria-describedby={urlError ? "url-error" : undefined}
+                  value={url}
+                  onChange={(e) => {
+                    setUrl(e.target.value);
+                    if (urlError) setUrlError(undefined);
+                  }}
+                  placeholder={t("home.importPlaceholder")}
+                  className="h-14 bg-surface pl-12 pr-24 shadow-card"
+                />
+                <button
+                  type="button"
+                  disabled={importing}
+                  onClick={() => void pasteFromClipboard()}
+                  className="pressable absolute bottom-2 right-2 top-2 flex items-center justify-center gap-1.5 rounded-ctl bg-surface-2 px-3 text-meta font-semibold text-ink-2 transition-colors hover:text-ink disabled:opacity-50"
+                  aria-label={t("home.paste")}
+                >
+                  <IconClipboard size={15} />
+                  {t("home.paste")}
+                </button>
+              </div>
+              <Button type="submit" size="lg" disabled={importing} className="h-14 sm:w-auto">
+                {importing ? (
+                  <>
+                    <Spinner size={18} />
+                    <span>{t("home.importing")}</span>
+                  </>
+                ) : (
+                  t("home.importButton")
+                )}
+              </Button>
+            </form>
+            {urlError && (
+              <p id="url-error" role="alert" className="mt-3 text-body font-medium text-danger">
+                {urlError}
+              </p>
             )}
-          </Button>
-        </form>
-        {urlError && (
-          <p id="url-error" role="alert" className="mt-3 text-[15px] font-medium text-danger">
-            {urlError}
-          </p>
-        )}
+          </div>
+
+          <RecipeMosaic recipes={recipes} />
+        </div>
       </section>
 
       {/* Bingo Update-Banner (einmalig, schließbar) */}
       {showBingoBanner && (
         <section
           id="tour-fridge"
-          className="relative mb-12 rounded-2xl border border-line bg-surface p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 shadow-card"
+          className="relative mb-12 flex flex-col gap-4 rounded-card border border-line bg-surface p-4 shadow-card sm:flex-row sm:items-center sm:justify-between sm:p-5"
         >
-          <div className="flex items-start sm:items-center gap-3.5 pr-8 sm:pr-0">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-accent-soft text-accent">
+          <div className="flex items-start gap-3.5 pr-8 sm:items-center sm:pr-0">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-ctl bg-accent-soft text-accent">
               <IconDice size={24} />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="rounded-full bg-accent/15 px-2 py-0.5 text-[11px] font-extrabold uppercase tracking-wider text-accent">
-                  Neu
-                </span>
-                <h3 className="font-bold text-[17px] text-ink">Keine Idee, was du kochen sollst?</h3>
+                <span className="text-label font-semibold uppercase text-accent">Neu</span>
+                <h3 className="text-h3 font-bold text-ink">Keine Idee, was du kochen sollst?</h3>
               </div>
-              <p className="mt-0.5 text-[14px] text-ink-2">
-                Lass den Zufall entscheiden: Spiel eine Runde Rezept-Bingo!
+              <p className="mt-0.5 text-meta text-ink-2">
+                Lass den Zufall entscheiden: Spiel eine Runde Rezept-Bingo.
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-2 shrink-0">
-            <Link
-              href="/bingo"
-              onClick={dismissBingoBanner}
-              className="pressable inline-flex items-center justify-center gap-1.5 rounded-xl bg-ink px-4 py-2.5 text-[14px] font-bold text-surface hover:bg-accent hover:text-white transition-colors"
-            >
-              <span>Bingo spielen</span>
-              <span>→</span>
+          <div className="flex shrink-0 items-center gap-2">
+            <Link href="/bingo" onClick={dismissBingoBanner}>
+              <Button variant="secondary">Bingo spielen →</Button>
             </Link>
             <button
               type="button"
               onClick={dismissBingoBanner}
               aria-label="Hinweis schließen"
-              className="pressable absolute right-3 top-3 sm:static flex h-8 w-8 items-center justify-center rounded-full text-ink-3 hover:bg-surface-2 hover:text-ink transition-colors"
+              className="pressable absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-pill text-ink-3 transition-colors hover:bg-surface-2 hover:text-ink sm:static"
             >
               <IconX size={16} />
             </button>
@@ -311,19 +313,19 @@ export default function HomePage() {
       )}
 
       <section id="tour-recipes" aria-labelledby="recent-heading">
-        <h2 id="recent-heading" className="mb-4 text-[21px] font-bold">
+        <h2 id="recent-heading" className="mb-5 font-display text-h1 text-ink">
           {t("home.recent")}
         </h2>
         {error ? (
           <ErrorState message={error} onRetry={retry} />
         ) : loading ? (
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-x-5 gap-y-9 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {[0, 1, 2, 3].map((i) => (
               <RecipeCardSkeleton key={i} />
             ))}
           </div>
         ) : recipes.length === 0 ? (
-          <div className="rounded-2xl bg-surface shadow-card">
+          <div className="rounded-card bg-surface shadow-card">
             <EmptyState
               title={t("home.emptyTitle")}
               subtitle={t("home.emptySubtitle")}
@@ -335,14 +337,53 @@ export default function HomePage() {
             />
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {recipes.slice(0, 6).map((r) => (
-              <RecipeCard key={r.id} recipe={r} />
+          <div className="grid grid-cols-1 gap-x-5 gap-y-9 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {recipes.slice(0, 6).map((r, i) => (
+              <Reveal key={r.id} delay={(i % 4) * 45}>
+                <RecipeCard recipe={r} />
+              </Reveal>
             ))}
           </div>
         )}
       </section>
     </>
+  );
+}
+
+/**
+ * Cover-Collage aus den neuesten Rezepten. Auf dem Handy bewusst ausgeblendet:
+ * dort zählt, dass Eingabe und Button sofort sichtbar sind. Ohne Rezepte
+ * bleibt eine ruhige Papier-Komposition statt eines leeren Loches.
+ */
+function RecipeMosaic({ recipes }: { recipes: Recipe[] }) {
+  const recent = recipes.slice(0, 3);
+
+  if (recent.length === 0) {
+    return (
+      <div className="hidden h-full grid-cols-2 grid-rows-[1.35fr_1fr] gap-4 lg:grid" aria-hidden>
+        <div className="texture-grain relative col-span-2 rounded-frame bg-accent-soft/70" />
+        <div className="texture-grain relative rounded-frame bg-surface-2" />
+        <div className="texture-grain relative rounded-frame bg-accent-soft/40" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="hidden h-full grid-cols-2 grid-rows-[1.35fr_1fr] gap-4 lg:grid" aria-hidden>
+      <div className="col-span-2 rotate-[-0.5deg]">
+        <RecipeCover recipe={recent[0]} className="h-full w-full shadow-card" sizes="45vw" />
+      </div>
+      {recent[1] && (
+        <div className="rotate-[1deg]">
+          <RecipeCover recipe={recent[1]} className="h-full w-full shadow-card" sizes="22vw" />
+        </div>
+      )}
+      {recent[2] && (
+        <div className="rotate-[-0.8deg]">
+          <RecipeCover recipe={recent[2]} className="h-full w-full shadow-card" sizes="22vw" />
+        </div>
+      )}
+    </div>
   );
 }
 

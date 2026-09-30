@@ -1,3 +1,3 @@
 export function Skeleton({ className = '' }: { className?: string }) {
-  return <div className={`skeleton-shimmer rounded-xl ${className}`} />;
+  return <div className={`skeleton-shimmer rounded-ctl ${className}`} />;
 }

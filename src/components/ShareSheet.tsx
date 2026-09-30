@@ -68,20 +68,20 @@ export function ShareSheet({ open, onClose, title, onShareText, code }: ShareShe
               close();
               void onShareText();
             }}
-            className="flex min-h-[56px] w-full flex-col items-start gap-0.5 rounded-2xl bg-surface-2 px-4 py-3 text-left"
+            className="flex min-h-[56px] w-full flex-col items-start gap-0.5 rounded-card bg-surface-2 px-4 py-3 text-left"
           >
-            <span className="text-[15px] font-semibold">{t("share.asText")}</span>
-            <span className="text-[13px] text-ink-2">{t("share.asTextHint")}</span>
+            <span className="text-body font-semibold">{t("share.asText")}</span>
+            <span className="text-meta text-ink-2">{t("share.asTextHint")}</span>
           </button>
           {code !== undefined && (
             <button
               type="button"
               disabled={code === null}
               onClick={() => setView("code")}
-              className="flex min-h-[56px] w-full flex-col items-start gap-0.5 rounded-2xl bg-surface-2 px-4 py-3 text-left disabled:opacity-50"
+              className="flex min-h-[56px] w-full flex-col items-start gap-0.5 rounded-card bg-surface-2 px-4 py-3 text-left disabled:opacity-50"
             >
-              <span className="text-[15px] font-semibold">{t("share.asCode")}</span>
-              <span className="text-[13px] text-ink-2">
+              <span className="text-body font-semibold">{t("share.asCode")}</span>
+              <span className="text-meta text-ink-2">
                 {code === null ? t("share.codePending") : t("share.asCodeHint")}
               </span>
             </button>
@@ -89,17 +89,17 @@ export function ShareSheet({ open, onClose, title, onShareText, code }: ShareShe
         </div>
       ) : (
         <div className="flex flex-col gap-3">
-          <p className="text-[13px] text-ink-2">{t("share.codeHint")}</p>
+          <p className="text-meta text-ink-2">{t("share.codeHint")}</p>
           <textarea
             ref={codeRef}
             readOnly
             value={code ?? ""}
             rows={5}
             aria-label={t("share.codeLabel")}
-            className="w-full resize-none rounded-2xl border border-line bg-surface-2 p-3 font-mono text-[12px] leading-snug"
+            className="w-full resize-none rounded-card border border-line bg-surface-2 p-3 font-mono text-label leading-snug"
             onFocus={(e) => e.currentTarget.select()}
           />
-          <p className="text-[12px] text-ink-3">{t("share.codeLength").replace("{n}", String(code?.length ?? 0))}</p>
+          <p className="text-label text-ink-3">{t("share.codeLength").replace("{n}", String(code?.length ?? 0))}</p>
           <div className="flex flex-col gap-2">
             <Button variant="primary" size="lg" fullWidth onClick={() => void copyCode()}>
               {t("share.copy")}

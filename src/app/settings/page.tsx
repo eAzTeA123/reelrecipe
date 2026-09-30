@@ -144,7 +144,9 @@ export default function SettingsPage() {
         existingShoppingCount: backup.shopping.length - newShoppingCount,
       });
     } catch (e) {
-      console.error("backup parse failed", e);
+      // Erwarteter Fall (falsche Datei), kein interner Fehler: warn statt error,
+      // sonst blendet das Dev-Overlay die Meldung zusätzlich ein.
+      console.warn("backup parse failed", e);
       setImportError(e instanceof Error ? e.message : "Das Backup konnte nicht gelesen werden.");
     }
   }
@@ -183,8 +185,8 @@ export default function SettingsPage() {
     <>
       <PageHeader title={t("settings.title")} />
 
-      <section className="mb-6 rounded-2xl bg-surface p-5 shadow-card" aria-labelledby="lang-h">
-        <h2 id="lang-h" className="mb-1 text-[17px] font-bold">{t("settings.language")}</h2>
+      <section className="mb-6 rounded-card bg-surface p-5 shadow-card" aria-labelledby="lang-h">
+        <h2 id="lang-h" className="mb-1 text-h3 font-bold">{t("settings.language")}</h2>
         <div className="flex gap-4 mt-3">
           <Button
             variant={lang === "de" ? "primary" : "secondary"}
@@ -201,14 +203,14 @@ export default function SettingsPage() {
         </div>
       </section>
 
-      <section className="mb-6 rounded-2xl bg-surface p-5 shadow-card" aria-labelledby="storage-h">
-        <h2 id="storage-h" className="mb-1 text-[17px] font-bold">Lokale Daten</h2>
+      <section className="mb-6 rounded-card bg-surface p-5 shadow-card" aria-labelledby="storage-h">
+        <h2 id="storage-h" className="mb-1 text-h3 font-bold">Lokale Daten</h2>
         <p className="mb-4 text-[14px] leading-relaxed text-ink-2">
           {recipes.length} {recipes.length === 1 ? t("recipes.countSingular") : t("recipes.countPlural")} werden aktuell nur in
           diesem Browser gespeichert (IndexedDB). Exportiere regelmäßig ein Backup, damit nichts
           verloren geht.
         </p>
-        {storageText && <p className="mb-4 text-[13px] font-medium text-ink-3">{storageText}</p>}
+        {storageText && <p className="mb-4 text-meta font-medium text-ink-3">{storageText}</p>}
         <div className="flex flex-col gap-2.5 sm:flex-row">
           <Button onClick={() => void doExport()} disabled={exporting} size="lg" fullWidth>
             {exporting ? <Spinner size={18} /> : <IconDownload size={18} />}
@@ -235,14 +237,14 @@ export default function SettingsPage() {
           />
         </div>
         {importError && (
-          <p role="alert" className="mt-3 rounded-xl bg-[#fdeeec] px-4 py-3 text-[14px] text-danger">
+          <p role="alert" className="mt-3 rounded-ctl bg-[#f7e3e0] px-4 py-3 text-[14px] text-danger">
             {importError}
           </p>
         )}
       </section>
 
-      <section className="mb-6 rounded-2xl bg-surface p-5 shadow-card" aria-labelledby="parser-h">
-        <h2 id="parser-h" className="mb-1 text-[17px] font-bold">Parser-Testfälle</h2>
+      <section className="mb-6 rounded-card bg-surface p-5 shadow-card" aria-labelledby="parser-h">
+        <h2 id="parser-h" className="mb-1 text-h3 font-bold">Parser-Testfälle</h2>
         <p className="mb-4 text-[14px] leading-relaxed text-ink-2">
           Wenn du beim Import Zutaten oder Schritte korrigierst, wird die Korrektur anonym lokal
           gespeichert ({correctionCount} {correctionCount === 1 ? "Eintrag" : "Einträge"}). Über den
@@ -271,8 +273,8 @@ export default function SettingsPage() {
         </div>
       </section>
 
-      <section className="mb-6 rounded-2xl bg-surface p-5 shadow-card" aria-labelledby="aisle-h">
-        <h2 id="aisle-h" className="mb-1 text-[17px] font-bold">
+      <section className="mb-6 rounded-card bg-surface p-5 shadow-card" aria-labelledby="aisle-h">
+        <h2 id="aisle-h" className="mb-1 text-h3 font-bold">
           {t("settings.aisleOrderTitle")}
         </h2>
         <p className="mb-4 text-[14px] leading-relaxed text-ink-2">
@@ -288,8 +290,8 @@ export default function SettingsPage() {
         )}
       </section>
 
-      <section className="mb-6 rounded-2xl bg-surface p-5 shadow-card" aria-labelledby="onboarding-h">
-        <h2 id="onboarding-h" className="mb-1 text-[17px] font-bold">{t("onboarding.restart")}</h2>
+      <section className="mb-6 rounded-card bg-surface p-5 shadow-card" aria-labelledby="onboarding-h">
+        <h2 id="onboarding-h" className="mb-1 text-h3 font-bold">{t("onboarding.restart")}</h2>
         <p className="mb-4 text-[14px] leading-relaxed text-ink-2">
           {t("onboarding.restartDesc")}
         </p>
@@ -306,8 +308,8 @@ export default function SettingsPage() {
         </Button>
       </section>
 
-      <section className="rounded-2xl bg-surface p-5 shadow-card" aria-labelledby="about-h">
-        <h2 id="about-h" className="mb-1 text-[17px] font-bold">{t("settings.about")}</h2>
+      <section className="rounded-card bg-surface p-5 shadow-card" aria-labelledby="about-h">
+        <h2 id="about-h" className="mb-1 text-h3 font-bold">{t("settings.about")}</h2>
         <p className="text-[14px] leading-relaxed text-ink-2">
           {t("settings.aboutDesc")}
         </p>
@@ -331,22 +333,22 @@ export default function SettingsPage() {
       >
         {preview && (
           <div className="flex flex-col gap-4">
-            <p className="text-[15px] text-ink-2">
+            <p className="text-body text-ink-2">
               Das Backup enthält <strong>{preview.backup.recipes.length} Rezepte</strong>
               {preview.backup.shopping.length > 0 &&
                 ` und ${preview.backup.shopping.length} Einkaufsliste-Einträge`}.
             </p>
-            <p className="text-[15px] text-ink-2">
+            <p className="text-body text-ink-2">
               Rezepte: {preview.newCount} neu · {preview.existingCount} bereits vorhanden
             </p>
             {preview.backup.shopping.length > 0 && (
-              <p className="text-[15px] text-ink-2">
+              <p className="text-body text-ink-2">
                 Einkaufsliste: {preview.newShoppingCount} neu ·{" "}
                 {preview.existingShoppingCount} bereits vorhanden
               </p>
             )}
             {preview.backup.mealPlan.length > 0 && (
-              <p className="text-[15px] text-ink-2">
+              <p className="text-body text-ink-2">
                 Wochenplan: {preview.backup.mealPlan.length} Einträge
                 {preview.backup.corrections.length > 0 &&
                   ` · Korrektur-Log: ${preview.backup.corrections.length}`}
@@ -355,7 +357,7 @@ export default function SettingsPage() {
               </p>
             )}
             {preview.backup.warnings.length > 0 && (
-              <div className="rounded-xl bg-[#fdf6ef] p-3 text-[14px] text-[#9a5b23]" role="alert">
+              <div className="rounded-ctl bg-surface-2 p-3 text-[14px] text-ink-2" role="alert">
                 {preview.backup.warnings.map((warning) => (
                   <p key={warning}>{warning}</p>
                 ))}

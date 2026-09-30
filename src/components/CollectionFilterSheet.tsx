@@ -74,14 +74,14 @@ export function CollectionFilterSheet({
   return (
     <Sheet open={open} onClose={onClose} title={t("collections.filterTitle")}>
       <div className="flex max-h-[65vh] flex-col gap-5 overflow-y-auto pb-1">
-        <p className="text-[13px] text-ink-3">
+        <p className="text-meta text-ink-3">
           <span className="font-semibold text-ink-2">{collectionName}</span>
           {" · "}
           {matchCount} {matchCount === 1 ? t("collections.item") : t("collections.items")}
         </p>
 
         <section className="flex flex-col gap-2">
-          <h3 className="text-[15px] font-semibold text-ink">{t("collections.filterCategory")}</h3>
+          <h3 className="text-body font-semibold text-ink">{t("collections.filterCategory")}</h3>
           <ul className="flex flex-wrap gap-1.5">
             {categoryOptions.map((category) => {
               const on = selectedCategories.some(
@@ -106,7 +106,7 @@ export function CollectionFilterSheet({
         </section>
 
         <section className="flex flex-col gap-2">
-          <h3 className="text-[15px] font-semibold text-ink">{t("collections.filterTime")}</h3>
+          <h3 className="text-body font-semibold text-ink">{t("collections.filterTime")}</h3>
           <ul className="flex flex-wrap gap-1.5">
             <li>
               <button
@@ -143,12 +143,12 @@ export function CollectionFilterSheet({
         </section>
 
         <section className="flex flex-col gap-2">
-          <h3 className="text-[15px] font-semibold text-ink">{t("collections.filterMore")}</h3>
+          <h3 className="text-body font-semibold text-ink">{t("collections.filterMore")}</h3>
           <button
             type="button"
             aria-pressed={Boolean(active.favoritesOnly)}
             onClick={() => patch({ favoritesOnly: active.favoritesOnly ? undefined : true })}
-            className={`pressable flex min-h-11 items-center gap-3 rounded-xl border px-4 text-left text-[15px] font-medium ${
+            className={`pressable flex min-h-11 items-center gap-3 rounded-ctl border px-4 text-left text-body font-medium ${
               active.favoritesOnly
                 ? "border-accent bg-accent-soft text-accent"
                 : "border-line bg-surface text-ink-2"
@@ -167,7 +167,7 @@ export function CollectionFilterSheet({
                 if (e.key === "Enter") patch({ titleContains: e.currentTarget.value.trim() || undefined });
               }}
               placeholder={t("collections.filterTextPlaceholder")}
-              className="h-11 w-full rounded-xl border border-line bg-surface px-4 text-[16px] text-ink placeholder:text-ink-3 focus:border-accent focus:outline-none"
+              className="h-11 w-full rounded-ctl border border-line bg-surface px-4 text-[16px] text-ink placeholder:text-ink-3 focus:border-accent focus:outline-none"
             />
           </label>
 
@@ -182,14 +182,14 @@ export function CollectionFilterSheet({
                   patch({ ingredientContains: e.currentTarget.value.trim() || undefined });
               }}
               placeholder={t("collections.filterTextPlaceholder")}
-              className="h-11 w-full rounded-xl border border-line bg-surface px-4 text-[16px] text-ink placeholder:text-ink-3 focus:border-accent focus:outline-none"
+              className="h-11 w-full rounded-ctl border border-line bg-surface px-4 text-[16px] text-ink placeholder:text-ink-3 focus:border-accent focus:outline-none"
             />
           </label>
         </section>
 
         {tagOptions.length > 0 && (
           <section className="flex flex-col gap-2">
-            <h3 className="text-[15px] font-semibold text-ink">{t("collections.filterTags")}</h3>
+            <h3 className="text-body font-semibold text-ink">{t("collections.filterTags")}</h3>
             <ul className="flex flex-wrap gap-1.5">
               {(active.tags ?? []).length > 0 && (
                 <li className="flex flex-wrap gap-1.5">
@@ -198,7 +198,7 @@ export function CollectionFilterSheet({
                       key={tag}
                       type="button"
                       onClick={() => toggleTag(tag)}
-                      className="pressable inline-flex h-9 items-center gap-1.5 rounded-full border border-accent bg-accent-soft px-3 text-[13px] font-medium text-accent"
+                      className="pressable inline-flex h-9 items-center gap-1.5 rounded-full border border-accent bg-accent-soft px-3 text-meta font-medium text-accent"
                     >
                       {tag}
                       <IconX size={13} />
@@ -214,7 +214,7 @@ export function CollectionFilterSheet({
                     <button
                       type="button"
                       onClick={() => toggleTag(tag)}
-                      className="pressable h-9 rounded-full border border-line bg-surface px-3 text-[13px] font-medium text-ink-2"
+                      className="pressable h-9 rounded-full border border-line bg-surface px-3 text-meta font-medium text-ink-2"
                     >
                       {tag}
                     </button>

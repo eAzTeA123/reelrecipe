@@ -16,27 +16,38 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
+  // Kein maximumScale/userScalable: Nutzer müssen zoomen können (WCAG 1.4.4).
   viewportFit: "cover",
-  themeColor: "#f6f6f4",
+  themeColor: "#fbf6ef",
 };
 
 import { I18nProvider } from "@/lib/i18n/context";
 import { PwaInstallPrompt } from "@/components/PwaInstallPrompt";
-import { Manrope } from "next/font/google";
+import { Instrument_Serif, Manrope } from "next/font/google";
 
 import { MigrationRunner } from "@/components/MigrationRunner";
 import { TimerProvider } from "@/components/TimerProvider";
 
 const manrope = Manrope({
   subsets: ["latin"],
-  variable: "--font-sans",
+  variable: "--font-manrope",
+});
+
+/** Display-Schrift für Überschriften und Cover (Kochbuch-Anmutung). */
+const instrumentSerif = Instrument_Serif({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-instrument",
+  display: "swap",
 });
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="de" suppressHydrationWarning className={manrope.variable}>
+    <html
+      lang="de"
+      suppressHydrationWarning
+      className={`${manrope.variable} ${instrumentSerif.variable}`}
+    >
       <body suppressHydrationWarning>
         <I18nProvider>
           <TimerProvider>

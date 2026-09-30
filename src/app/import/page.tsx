@@ -545,8 +545,8 @@ function ImportFlow() {
         
         {showDuplicateDialog && existingRecipe && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-            <div className="bg-surface rounded-2xl p-6 max-w-sm w-full shadow-xl space-y-4">
-              <h3 className="text-[18px] font-bold text-ink">
+            <div className="bg-surface rounded-card p-6 max-w-sm w-full shadow-xl space-y-4">
+              <h3 className="font-display text-h2 text-ink">
                 {t("import.duplicateTitle")}
               </h3>
               <p className="text-sm text-ink/70">
@@ -593,7 +593,7 @@ function ImportFlow() {
       <PageHeader title={t("import.title")} />
 
       {step === "link" && (
-        <section className="rounded-2xl bg-surface p-5 shadow-card">
+        <section className="rounded-card bg-surface p-5 shadow-card">
           <form onSubmit={submitUrl} className="flex flex-col gap-3" noValidate>
             <Field label={t("import.linkLabel")} htmlFor="social-url">
               <div className="relative">
@@ -618,7 +618,7 @@ function ImportFlow() {
                 <button
                   type="button"
                   onClick={() => void pasteFromClipboard()}
-                  className="pressable absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1.5 rounded-xl bg-surface-2 px-2.5 py-1.5 text-[13px] font-semibold text-ink-2 hover:text-ink border border-line"
+                  className="pressable absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1.5 rounded-ctl bg-surface-2 px-2.5 py-1.5 text-meta font-semibold text-ink-2 hover:text-ink border border-line"
                   aria-label={t("home.paste")}
                 >
                   <IconClipboard size={14} />
@@ -631,7 +631,7 @@ function ImportFlow() {
                 {urlError}
               </p>
             ) : (
-              <p id="social-url-hint" className="-mt-1 text-[13px] text-ink-3">
+              <p id="social-url-hint" className="-mt-1 text-meta text-ink-3">
                 {t("import.linkHint")}
               </p>
             )}
@@ -645,7 +645,7 @@ function ImportFlow() {
                 setAutoFailed(false);
                 setStep("caption");
               }}
-              className="pressable mx-auto min-h-11 py-2 text-[15px] font-medium text-ink-2 underline-offset-2 hover:underline"
+              className="pressable mx-auto min-h-11 py-2 text-body font-medium text-ink-2 underline-offset-2 hover:underline"
             >
               {t("import.withoutLink")}
             </button>
@@ -655,11 +655,11 @@ function ImportFlow() {
 
       {step === "loading" && (
         <section
-          className="flex flex-col items-center gap-4 rounded-2xl bg-surface py-16 shadow-card"
+          className="flex flex-col items-center gap-4 rounded-card bg-surface py-16 shadow-card"
           aria-live="polite"
         >
           <Spinner size={30} className="text-accent" />
-          <p className="px-6 text-center text-[15px] text-ink-2">
+          <p className="px-6 text-center text-body text-ink-2">
             {loadingHost ? t("import.loadingWeb").replace("{host}", loadingHost) : t("import.loading")}
           </p>
           <Button
@@ -677,9 +677,9 @@ function ImportFlow() {
       )}
 
       {step === "caption" && (
-        <section className="flex flex-col gap-4 rounded-2xl bg-surface p-5 shadow-card">
+        <section className="flex flex-col gap-4 rounded-card bg-surface p-5 shadow-card">
           {autoFailed && (
-            <p className="rounded-xl bg-accent-soft px-4 py-3 text-[15px] text-ink" role="status">
+            <p className="rounded-ctl bg-accent-soft px-4 py-3 text-body text-ink" role="status">
               {failReason ?? t("import.autoFailed")}
             </p>
           )}
@@ -694,7 +694,7 @@ function ImportFlow() {
             />
           </Field>
           {ogImage && (
-            <label className="flex cursor-pointer items-center gap-2.5 text-[15px] text-ink-2">
+            <label className="flex cursor-pointer items-center gap-2.5 text-body text-ink-2">
               <input
                 type="checkbox"
                 checked={useOgImage}
@@ -705,7 +705,7 @@ function ImportFlow() {
             </label>
           )}
           {parseError && (
-            <p role="alert" className="rounded-xl bg-[#fdf6ef] px-4 py-3 text-[15px] text-[#9a5b23]">
+            <p role="alert" className="rounded-ctl bg-surface-2 px-4 py-3 text-body text-ink-2">
               {parseError}
             </p>
           )}

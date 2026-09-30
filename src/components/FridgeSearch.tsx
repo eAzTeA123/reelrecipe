@@ -69,15 +69,15 @@ export function FridgeSearch({
   );
 
   return (
-    <div className="rounded-2xl border border-line bg-surface p-5 shadow-card">
+    <div className="rounded-card border border-line bg-surface p-5 shadow-card">
       <div className="mb-4 flex items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-accent-soft text-accent">
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-ctl bg-accent-soft text-accent">
             <IconFridge size={22} />
           </div>
           <div>
-            <h2 className="text-[18px] font-bold text-ink">Was ist im Kühlschrank?</h2>
-            <p className="text-[13px] text-ink-2">
+            <h2 className="font-display text-h2 text-ink">Was ist im Kühlschrank?</h2>
+            <p className="text-meta text-ink-2">
               Füge deine Reste hinzu – wir finden passende Rezepte aus deiner Bibliothek.
             </p>
           </div>
@@ -87,7 +87,7 @@ export function FridgeSearch({
           <button
             type="button"
             onClick={clearAll}
-            className="pressable shrink-0 text-[13px] font-medium text-ink-3 hover:text-danger"
+            className="pressable shrink-0 text-meta font-medium text-ink-3 hover:text-danger"
           >
             Alle löschen
           </button>
@@ -102,13 +102,13 @@ export function FridgeSearch({
           onChange={(e) => setInputVal(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="Zutat eintippen (z. B. Feta, Paprika)..."
-          className="h-11 flex-1 rounded-xl border border-line bg-white px-4 text-[15px] text-ink placeholder:text-ink-3 focus:border-accent focus:outline-none"
+          className="h-11 flex-1 rounded-ctl border border-line bg-surface px-4 text-body text-ink placeholder:text-ink-3 focus:border-accent focus:outline-none"
         />
         <button
           type="button"
           onClick={() => addIngredient(inputVal)}
           disabled={!inputVal.trim()}
-          className="pressable inline-flex h-11 items-center gap-1.5 rounded-xl bg-accent px-4 text-[14px] font-bold text-accent-ink hover:opacity-95 disabled:opacity-40"
+          className="pressable inline-flex h-11 items-center gap-1.5 rounded-ctl bg-accent px-4 text-[14px] font-bold text-accent-ink hover:opacity-95 disabled:opacity-40"
         >
           <IconPlus size={18} />
           <span>Hinzufügen</span>
@@ -121,7 +121,7 @@ export function FridgeSearch({
           {ingredients.map((ing, idx) => (
             <span
               key={idx}
-              className="inline-flex items-center gap-1.5 rounded-xl border border-accent/20 bg-accent-soft py-1 pl-3 pr-1.5 text-[14px] font-semibold text-accent"
+              className="inline-flex items-center gap-1.5 rounded-ctl border border-accent/20 bg-accent-soft py-1 pl-3 pr-1.5 text-[14px] font-semibold text-accent"
             >
               {ing}
               <button
@@ -136,7 +136,7 @@ export function FridgeSearch({
           ))}
         </div>
       ) : (
-        <p className="mb-3 text-[13px] text-ink-3 italic">
+        <p className="mb-3 text-meta text-ink-3 italic">
           Noch keine Zutaten gewählt. Tippe oben etwas ein oder nutze die Schnellauswahl:
         </p>
       )}
@@ -144,7 +144,7 @@ export function FridgeSearch({
       {/* Schnellauswahl Vorschläge */}
       {availableQuickPicks.length > 0 && (
         <div className="flex flex-wrap items-center gap-1.5 pt-1">
-          <span className="text-[12px] font-bold uppercase tracking-wider text-ink-3 mr-1">
+          <span className="mr-1 text-label font-semibold text-ink-3">
             Vorschläge:
           </span>
           {availableQuickPicks.slice(0, 8).map((staple) => (
@@ -152,7 +152,7 @@ export function FridgeSearch({
               key={staple}
               type="button"
               onClick={() => addIngredient(staple)}
-              className="pressable inline-flex items-center gap-1 rounded-xl border border-line bg-white px-2.5 py-1 text-[12px] font-medium text-ink-2 hover:border-accent hover:text-accent"
+              className="pressable inline-flex items-center gap-1 rounded-ctl border border-line bg-surface px-2.5 py-1 text-label font-medium text-ink-2 hover:border-accent hover:text-accent"
             >
               <IconPlus size={12} />
               {staple}

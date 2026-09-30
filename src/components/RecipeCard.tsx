@@ -11,6 +11,51 @@ function totalTime(r: Recipe): number | undefined {
   return t > 0 ? t : undefined;
 }
 
+/**
+ * Cover einer Karte: echtes Bild, sonst eine warme Papierfläche. Den Titel
+ * trägt immer die Überschrift unter dem Cover – so steht jeder Titel genau
+ * einmal im Text (wichtig für Screenreader und für die Textsuche im Browser).
+ */
+export function RecipeCover({
+  recipe,
+  className = "",
+  sizes = "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw",
+}: {
+  recipe: Recipe;
+  className?: string;
+  sizes?: string;
+}) {
+  const tone = recipe.color ?? "#c0563a";
+  return (
+    <div
+      className={`relative overflow-hidden rounded-frame ${className}`}
+      style={recipe.image ? { backgroundColor: `${tone}1f` } : undefined}
+    >
+      {recipe.image ? (
+        <>
+          <RecipeImage
+            imageRef={recipe.image}
+            alt=""
+            sizes={sizes}
+            className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+          />
+          {/* Scrim: gibt dem Herz oben rechts Halt, ohne das Foto zu verdecken */}
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/15 to-black/5" />
+        </>
+      ) : (
+        <div
+          className="texture-grain absolute inset-0"
+          style={{
+            background: `radial-gradient(120% 90% at 18% 0%, ${tone}2e 0%, transparent 62%), linear-gradient(160deg, #f6ede1 0%, #ecdfcd 100%)`,
+          }}
+        />
+      )}
+      {/* Innenkante statt Rahmen: hält das Foto auch bei hellen Motiven zusammen */}
+      <div className="pointer-events-none absolute inset-0 rounded-frame ring-1 ring-inset ring-ink/10" />
+    </div>
+  );
+}
+
 export function RecipeCard({
   recipe,
   matchPercentage,
@@ -22,84 +67,56 @@ export function RecipeCard({
 }) {
   const time = totalTime(recipe);
   return (
-    <article className="group relative block border-b-2 border-line pb-6 mb-6 last:border-b-0 sm:pb-8 sm:mb-8">
+    <article className="group relative flex flex-col">
       <Link href={`/recipes/${recipe.id}`} className="block pressable" aria-label={recipe.title}>
-        {recipe.image && (
-          <div 
-            className="relative aspect-[16/11] w-full overflow-hidden mb-3 rounded-2xl sm:aspect-[4/5] sm:mb-4"
-            style={recipe.color ? { backgroundColor: `${recipe.color}20` } : undefined}
-          >
-            {recipe.color && (
-              <div 
-                className="absolute inset-0 pointer-events-none"
-                style={{ backgroundImage: `linear-gradient(to bottom, ${recipe.color}40, transparent)` }}
-              />
-            )}
-            <RecipeImage
-              imageRef={recipe.image}
-              alt=""
-              className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-            />
-          </div>
-        )}
-        <div className="flex flex-col gap-2">
+        <RecipeCover
+          recipe={recipe}
+          className={`aspect-[4/3] w-full shadow-card sm:aspect-[4/5] ${
+            matchPercentage === undefined ? "card-hover" : ""
+          }`}
+        />
+
+        <div className="mt-3.5 flex flex-col gap-1.5">
           {recipe.category && (
-            <span className="text-[14px] font-bold uppercase tracking-widest text-accent">
-              {recipe.category}
-            </span>
+            <span className="text-label font-semibold text-accent">{recipe.category}</span>
           )}
-          {recipe.tags && recipe.tags.length > 0 && (
-            <ul className="flex flex-wrap items-center gap-1.5">
-              {recipe.tags.slice(0, 2).map((tag) => (
-                <li
-                  key={tag}
-                  className="rounded-full border border-line bg-surface-2 px-2.5 py-0.5 text-[12px] font-medium text-ink-2"
-                >
-                  {tag}
-                </li>
-              ))}
-              {recipe.tags.length > 2 && (
-                <li className="text-[12px] font-medium text-ink-3">+{recipe.tags.length - 2}</li>
-              )}
-            </ul>
-          )}
-          <h3 className="text-[21px] font-extrabold leading-tight tracking-tight group-hover:text-accent transition-colors sm:text-[28px] sm:leading-none">
+          <h3 className="font-display text-card text-ink transition-colors group-hover:text-accent">
             {recipe.title}
           </h3>
-          
+
           {matchPercentage !== undefined && (
-            <div className="mt-3 flex flex-col gap-1.5 rounded-xl border border-line bg-surface p-2.5 text-[13px]">
+            <div className="mt-2 flex flex-col gap-1.5 rounded-ctl border border-line bg-surface p-3 text-meta">
               <div className="flex items-center justify-between">
                 <span
                   className={`inline-flex items-center gap-1.5 font-bold ${
                     matchPercentage >= 0.8
-                      ? "text-emerald-600"
+                      ? "text-good"
                       : matchPercentage >= 0.5
-                      ? "text-amber-600"
-                      : "text-ink-2"
+                        ? "text-warn"
+                        : "text-ink-2"
                   }`}
                 >
                   <span
-                    className={`h-2 w-2 rounded-full ${
+                    className={`h-2 w-2 rounded-pill ${
                       matchPercentage >= 0.8
-                        ? "bg-emerald-500"
+                        ? "bg-good"
                         : matchPercentage >= 0.5
-                        ? "bg-amber-500"
-                        : "bg-ink-3"
+                          ? "bg-warn"
+                          : "bg-ink-3"
                     }`}
                   />
                   {Math.round(matchPercentage * 100)}% Match
-                  {matchPercentage >= 1 && " • Alles da!"}
+                  {matchPercentage >= 1 && " · Alles da"}
                 </span>
                 {missingIngredients && (
-                  <span className="text-[12px] text-ink-3">
-                    {recipe.ingredients.length - missingIngredients.length}/{recipe.ingredients.length} Zutaten
+                  <span className="nums text-label text-ink-3">
+                    {recipe.ingredients.length - missingIngredients.length}/
+                    {recipe.ingredients.length} Zutaten
                   </span>
                 )}
               </div>
               {missingIngredients && missingIngredients.length > 0 && (
-                <p className="text-[12px] text-ink-2 line-clamp-1">
+                <p className="line-clamp-1 text-label text-ink-2">
                   <span className="font-semibold text-ink">Fehlt noch:</span>{" "}
                   {missingIngredients.slice(0, 3).join(", ")}
                   {missingIngredients.length > 3 ? ` (+${missingIngredients.length - 3})` : ""}
@@ -109,31 +126,34 @@ export function RecipeCard({
           )}
 
           {(time !== undefined || recipe.servings !== undefined) && (
-            <div className="mt-2 flex items-center gap-6 text-[15px] font-medium text-ink-2">
+            <div className="nums mt-1 flex items-center gap-5 text-meta font-medium text-ink-2">
               {time !== undefined && (
-                <span className="inline-flex items-center gap-2">
-                  <IconClock size={18} /> {time} Min
+                <span className="inline-flex items-center gap-1.5">
+                  <IconClock size={16} /> {time} Min
                 </span>
               )}
               {recipe.servings !== undefined && (
-                <span className="inline-flex items-center gap-2">
-                  <IconUsers size={18} /> {recipe.servings}
+                <span className="inline-flex items-center gap-1.5">
+                  <IconUsers size={16} /> {recipe.servings}
                 </span>
               )}
             </div>
           )}
         </div>
       </Link>
+
       <button
         type="button"
         onClick={() => void getRecipeRepository().toggleFavorite(recipe.id)}
         aria-label={recipe.favorite ? "Aus Favoriten entfernen" : "Zu Favoriten hinzufügen"}
         aria-pressed={recipe.favorite}
-        className={`pressable absolute right-2 top-2 flex h-11 w-11 items-center justify-center bg-surface/90 rounded-full backdrop-blur sm:h-14 sm:w-14 sm:bg-surface ${
-          recipe.favorite ? "text-accent" : "text-ink"
-        } hover:bg-line transition-colors`}
+        className={`pressable absolute right-3 top-3 flex h-11 w-11 items-center justify-center rounded-pill backdrop-blur transition-colors ${
+          recipe.favorite
+            ? "bg-surface/90 text-accent"
+            : "bg-surface/80 text-ink/70 hover:bg-surface hover:text-ink"
+        }`}
       >
-        {recipe.favorite ? <IconHeartFill size={22} /> : <IconHeart size={22} />}
+        {recipe.favorite ? <IconHeartFill size={20} /> : <IconHeart size={20} />}
       </button>
     </article>
   );

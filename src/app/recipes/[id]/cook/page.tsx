@@ -121,7 +121,7 @@ export default function CookModePage({ params }: { params: Promise<{ id: string 
       <div className="mb-5 flex items-center justify-between gap-3">
         <Link
           href={`/recipes/${id}`}
-          className="pressable inline-flex min-h-11 items-center gap-1 rounded-full pr-3 text-[15px] font-medium text-ink-2"
+          className="pressable inline-flex min-h-11 items-center gap-1 rounded-full pr-3 text-body font-medium text-ink-2"
         >
           <IconBack size={20} /> {t("general.back")}
         </Link>
@@ -130,16 +130,16 @@ export default function CookModePage({ params }: { params: Promise<{ id: string 
         )}
       </div>
 
-      <p className="mb-2 text-[14px] font-semibold uppercase tracking-[0.08em] text-accent">{t("cook.title")}</p>
-      <h1 className="text-[30px] font-bold leading-tight tracking-[-0.02em]">{recipe.title}</h1>
+      <p className="mb-2 text-label font-semibold text-accent">{t("cook.title")}</p>
+      <h1 className="font-display text-title">{recipe.title}</h1>
 
-      <section className="mt-6 rounded-2xl border border-line/70 bg-surface p-5 shadow-card">
+      <section className="mt-6 rounded-card border border-line/70 bg-surface p-5 shadow-card">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <div className="flex flex-wrap items-center gap-3">
-            <h2 className="text-[17px] font-bold">{t("cook.ingredients")}</h2>
+            <h2 className="text-h3 font-bold">{t("cook.ingredients")}</h2>
             <UnitToggle value={unitSystem} onChange={setUnitSystem} />
           </div>
-          <span className="text-[13px] font-medium text-ink-3">
+          <span className="text-meta font-medium text-ink-3">
             {checked.size}/{recipe.ingredients.length} bereit
           </span>
         </div>
@@ -150,7 +150,7 @@ export default function CookModePage({ params }: { params: Promise<{ id: string 
               : ing.amount;
             return (
               <li key={ing.id}>
-                <label className="flex min-h-11 cursor-pointer items-center gap-2.5 rounded-xl px-2 text-[15px] hover:bg-surface-2">
+                <label className="flex min-h-11 cursor-pointer items-center gap-2.5 rounded-ctl px-2 text-body hover:bg-surface-2">
                   <input
                     type="checkbox"
                     checked={checked.has(ing.id)}
@@ -177,7 +177,7 @@ export default function CookModePage({ params }: { params: Promise<{ id: string 
         </ul>
       </section>
 
-      <section className="mt-5 flex flex-1 flex-col rounded-2xl border border-line/70 bg-surface p-6 shadow-card">
+      <section className="mt-5 flex flex-1 flex-col rounded-card border border-line/70 bg-surface p-6 shadow-card">
         <div className="mb-5 flex items-center justify-between gap-4">
           <span className="text-[14px] font-semibold text-ink-2">
             {t("cook.step")} {Math.min(currentIndex + 1, steps.length)} {t("cook.of")} {steps.length}

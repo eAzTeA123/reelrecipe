@@ -114,8 +114,8 @@ export default function RecipeDetailPage({ params }: { params: Promise<{ id: str
   if (!recipe) {
     return (
       <div className="flex flex-col items-center gap-4 py-20 text-center">
-        <p className="text-[19px] font-bold">{t("recipe.notFound")}</p>
-        <p className="text-[15px] text-ink-2">{t("recipe.notFoundSub")}</p>
+        <p className="font-display text-h1">{t("recipe.notFound")}</p>
+        <p className="text-body text-ink-2">{t("recipe.notFoundSub")}</p>
         <Link href="/recipes">
           <Button variant="secondary">{t("recipe.toOverview")}</Button>
         </Link>
@@ -235,7 +235,7 @@ export default function RecipeDetailPage({ params }: { params: Promise<{ id: str
             }
           }}
           aria-label={t("general.back")}
-          className="pressable inline-flex items-center gap-1 rounded-full py-2 pl-1 pr-3 text-[15px] font-medium text-ink-2"
+          className="pressable inline-flex items-center gap-1 rounded-full py-2 pl-1 pr-3 text-body font-medium text-ink-2"
         >
           <IconBack size={20} /> <span className="max-[359px]:sr-only">{t("general.back")}</span>
         </button>
@@ -290,25 +290,25 @@ export default function RecipeDetailPage({ params }: { params: Promise<{ id: str
       </div>
 
       {recipe.image && (
-        <div className="mb-6 aspect-[4/3] w-full overflow-hidden rounded-2xl border border-line/60 shadow-card md:aspect-[21/9]">
+        <div className="mb-6 aspect-[4/3] w-full overflow-hidden rounded-card border border-line/60 shadow-card md:aspect-[21/9]">
           <RecipeImage imageRef={cachedImageUrl ?? recipe.image} alt={recipe.title} className="h-full w-full" />
         </div>
       )}
 
       <div className="max-w-3xl">
-        <h1 className="text-[30px] font-bold leading-tight tracking-[-0.02em] md:text-[40px]">{recipe.title}</h1>
+        <h1 className="font-display text-title">{recipe.title}</h1>
       {recipe.description && (
         <p className="mt-2 text-[16px] leading-relaxed text-ink-2">{recipe.description}</p>
       )}
 
-      <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-[15px] text-ink-2">
+      <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-body text-ink-2">
         {time && (
           <span className="inline-flex items-center gap-1.5">
             <IconClock size={17} /> {time}
           </span>
         )}
         {recipe.category && (
-          <span className="rounded-full bg-accent-soft px-3 py-1 text-[13px] font-medium text-accent">
+          <span className="rounded-full bg-accent-soft px-3 py-1 text-meta font-medium text-accent">
             {recipe.category}
           </span>
         )}
@@ -327,8 +327,8 @@ export default function RecipeDetailPage({ params }: { params: Promise<{ id: str
       </div>
 
       {/* Portionen */}
-      <div className="mt-6 flex max-w-2xl items-center justify-between rounded-2xl border border-line/70 bg-surface px-4 py-3 shadow-card">
-        <span className="inline-flex items-center gap-2 text-[15px] font-medium">
+      <div className="mt-6 flex max-w-2xl items-center justify-between rounded-card border border-line/70 bg-surface px-4 py-3 shadow-card">
+        <span className="inline-flex items-center gap-2 text-body font-medium">
           <IconUsers size={18} className="text-ink-2" /> Portionen
         </span>
         <div className="flex items-center gap-3">
@@ -336,18 +336,18 @@ export default function RecipeDetailPage({ params }: { params: Promise<{ id: str
             aria-label="Portionen verringern"
             disabled={targetServings <= 1}
             onClick={() => setServings(Math.max(1, targetServings - 1))}
-            className="pressable flex h-9 w-9 items-center justify-center rounded-full border border-line bg-white text-ink disabled:opacity-30"
+            className="pressable flex h-9 w-9 items-center justify-center rounded-full border border-line bg-surface text-ink disabled:opacity-30"
           >
             <IconMinus size={16} />
           </button>
-          <span className="w-6 text-center text-[17px] font-bold" aria-live="polite">
+          <span className="w-6 text-center text-h3 font-bold" aria-live="polite">
             {targetServings}
           </span>
           <button
             aria-label="Portionen erhöhen"
             disabled={targetServings >= 50}
             onClick={() => setServings(targetServings + 1)}
-            className="pressable flex h-9 w-9 items-center justify-center rounded-full border border-line bg-white text-ink disabled:opacity-30"
+            className="pressable flex h-9 w-9 items-center justify-center rounded-full border border-line bg-surface text-ink disabled:opacity-30"
           >
             <IconPlus size={16} />
           </button>
@@ -358,26 +358,26 @@ export default function RecipeDetailPage({ params }: { params: Promise<{ id: str
       {/* Zutaten */}
       <section aria-labelledby="ing-heading" className="min-w-0">
         <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-          <h2 id="ing-heading" className="text-[19px] font-bold">{t("shopping.ingredientPlural")}</h2>
+          <h2 id="ing-heading" className="font-display text-h1">{t("shopping.ingredientPlural")}</h2>
           <UnitToggle value={unitSystem} onChange={setUnitSystem} />
         </div>
         {recipe.ingredients.length === 0 ? (
-          <p className="text-[15px] text-ink-3">{t("recipe.ingredientsEmpty")}</p>
+          <p className="text-body text-ink-3">{t("recipe.ingredientsEmpty")}</p>
         ) : (
-          <ul className="divide-y divide-line overflow-hidden rounded-2xl bg-surface shadow-card">
+          <ul className="divide-y divide-line overflow-hidden rounded-card bg-surface shadow-card">
             {recipe.ingredients.map((ing) => {
               const scaled = scaleAmount(ing.amount, recipe.servings, targetServings);
               const qty = formatAmount(scaled, ing.unit);
               return (
                 <li key={ing.id} className="flex items-baseline gap-4 px-4 py-3">
-                  <span className="w-20 shrink-0 text-right text-[15px] font-semibold tabular-nums text-accent">
+                  <span className="w-20 shrink-0 text-right text-body font-semibold tabular-nums text-accent">
                     {qty || "–"}
                   </span>
-                  <span className="text-[15px]">
+                  <span className="text-body">
                     {ing.name}
                     {ing.notes && <span className="text-ink-2">, {ing.notes}</span>}
                     {ing.uncertain && (
-                      <span className="ml-2 rounded-full bg-[#fdf6ef] px-2 py-0.5 text-[11px] font-medium text-[#9a5b23]">
+                      <span className="ml-2 rounded-full bg-surface-2 px-2 py-0.5 text-[11px] font-medium text-ink-2">
                         nicht eindeutig
                       </span>
                     )}
@@ -392,23 +392,23 @@ export default function RecipeDetailPage({ params }: { params: Promise<{ id: str
 
       {/* Zubereitung */}
       <section aria-labelledby="steps-heading">
-        <h2 id="steps-heading" className="mb-3 text-[19px] font-bold">{t("recipe.steps")}</h2>
+        <h2 id="steps-heading" className="mb-3 font-display text-h1">{t("recipe.steps")}</h2>
         {recipe.steps.length === 0 ? (
-          <p className="text-[15px] text-ink-3">{t("recipe.stepsEmpty")}</p>
+          <p className="text-body text-ink-3">{t("recipe.stepsEmpty")}</p>
         ) : (
           <ol className="flex flex-col gap-3">
             {recipe.steps
               .slice()
               .sort((a, b) => a.order - b.order)
               .map((s, i) => (
-                <li key={s.id} className="flex gap-3.5 rounded-2xl bg-surface p-4 shadow-card">
+                <li key={s.id} className="flex gap-3.5 rounded-card bg-surface p-4 shadow-card">
                   <span
-                    className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-accent-soft text-[13px] font-bold text-accent"
+                    className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-accent-soft text-meta font-bold text-accent"
                     aria-hidden
                   >
                     {i + 1}
                   </span>
-                  <p className="text-[15px] leading-relaxed">{s.instruction}</p>
+                  <p className="text-body leading-relaxed">{s.instruction}</p>
                 </li>
               ))}
           </ol>

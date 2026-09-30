@@ -205,7 +205,7 @@ export default function CollectionsPage() {
       <PageHeader title={t("collections.title")} subtitle={t("collections.subtitle")} />
 
       {showCreateForm ? (
-        <section className="mb-4 rounded-2xl bg-surface p-4 shadow-card">
+        <section className="mb-4 rounded-card bg-surface p-4 shadow-card">
           <Field label={t("collections.newLabel")} htmlFor="collection-name">
             <div className="flex gap-2">
               <Input
@@ -232,7 +232,7 @@ export default function CollectionsPage() {
         <button
           type="button"
           onClick={() => setCreating(true)}
-          className="pressable mb-4 flex min-h-12 w-full items-center gap-2 rounded-2xl border border-dashed border-line px-4 text-[15px] font-semibold text-ink-2"
+          className="pressable mb-4 flex min-h-12 w-full items-center gap-2 rounded-card border border-dashed border-line px-4 text-body font-semibold text-ink-2"
         >
           <IconPlus size={18} />
           {t("collections.newLabel")}
@@ -256,7 +256,7 @@ export default function CollectionsPage() {
               return (
                 <li
                   key={collection.id}
-                  className={`overflow-hidden rounded-2xl border bg-surface ${
+                  className={`overflow-hidden rounded-card border bg-surface ${
                     active ? "border-accent" : "border-line"
                   }`}
                 >
@@ -293,7 +293,7 @@ export default function CollectionsPage() {
                           <span className="block truncate text-[16px] font-semibold text-ink">
                             {collection.name}
                           </span>
-                          <span className="block text-[13px] text-ink-3">
+                          <span className="block text-meta text-ink-3">
                             {count} {count === 1 ? t("collections.item") : t("collections.items")}
                           </span>
                         </span>
@@ -312,7 +312,7 @@ export default function CollectionsPage() {
                               {labels.map((label) => (
                                 <li
                                   key={label}
-                                  className="rounded-full bg-surface-2 px-2.5 py-1 text-[12px] font-medium text-ink-2"
+                                  className="rounded-full bg-surface-2 px-2.5 py-1 text-label font-medium text-ink-2"
                                 >
                                   {label}
                                 </li>
@@ -342,7 +342,7 @@ export default function CollectionsPage() {
                             <button
                               type="button"
                               onClick={() => setFilterOpen(true)}
-                              className={`pressable ml-auto inline-flex h-10 items-center gap-1.5 rounded-lg px-3 text-[13px] font-semibold ${
+                              className={`pressable ml-auto inline-flex h-10 items-center gap-1.5 rounded-lg px-3 text-meta font-semibold ${
                                 labels.length > 0 ? "text-accent" : "text-ink-2"
                               }`}
                             >
@@ -355,7 +355,7 @@ export default function CollectionsPage() {
                                 setRenameId(collection.id);
                                 setRenameValue(collection.name);
                               }}
-                              className="pressable inline-flex h-10 items-center gap-1.5 rounded-lg px-3 text-[13px] font-semibold text-ink-2"
+                              className="pressable inline-flex h-10 items-center gap-1.5 rounded-lg px-3 text-meta font-semibold text-ink-2"
                               aria-label={t("collections.rename")}
                             >
                               <IconPencil size={16} />
@@ -382,7 +382,7 @@ export default function CollectionsPage() {
           </ul>
 
           <div className="mb-3 flex flex-wrap items-center gap-2">
-            <h2 className="text-[17px] font-bold">{t("collections.contents")}</h2>
+            <h2 className="text-h3 font-bold">{t("collections.contents")}</h2>
             <Button
               size="sm"
               variant="secondary"
@@ -402,7 +402,7 @@ export default function CollectionsPage() {
               }
             />
           ) : (
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-x-5 gap-y-9 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {contents.map((recipe) => {
                 const removable = manualIds.includes(recipe.id);
                 return (

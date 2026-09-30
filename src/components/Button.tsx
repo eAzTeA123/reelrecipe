@@ -1,6 +1,6 @@
 import { forwardRef, type ButtonHTMLAttributes } from "react";
 
-type Variant = "primary" | "secondary" | "ghost" | "danger";
+type Variant = "primary" | "secondary" | "ghost" | "danger" | "quiet";
 type Size = "md" | "lg" | "sm";
 
 interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -10,16 +10,19 @@ interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variants: Record<Variant, string> = {
-  primary: "bg-accent text-accent-ink shadow-[0_1px_2px_rgba(0,0,0,0.08)] hover:bg-[#c74530]",
-  secondary: "bg-surface text-ink border border-line shadow-[0_1px_2px_rgba(0,0,0,0.04)] hover:bg-black/[0.02]",
-  ghost: "bg-transparent text-ink-2 hover:text-ink",
-  danger: "bg-[#fdeeec] text-danger hover:bg-[#fbdad6]",
+  primary:
+    "bg-accent text-accent-ink shadow-[0_1px_2px_rgba(58,38,24,0.16)] hover:bg-[#a8452c]",
+  secondary:
+    "bg-surface text-ink border border-line hover:border-ink-3/60 hover:bg-surface-2/60",
+  ghost: "bg-transparent text-ink-2 hover:text-ink hover:bg-surface-2/70",
+  quiet: "bg-surface-2 text-ink-2 hover:bg-line/70 hover:text-ink",
+  danger: "bg-[#f7e3e0] text-danger hover:bg-[#f1d3ce]",
 };
 
 const sizes: Record<Size, string> = {
-  sm: "h-9 px-3.5 text-[15px] rounded-[10px]",
-  md: "h-11 px-5 text-[16px] rounded-xl",
-  lg: "h-[52px] px-6 text-[17px] rounded-2xl font-semibold",
+  sm: "h-9 px-3.5 text-meta rounded-ctl",
+  md: "h-11 px-5 text-body rounded-ctl",
+  lg: "h-[52px] px-6 text-h3 rounded-card",
 };
 
 export const Button = forwardRef<HTMLButtonElement, Props>(function Button(
@@ -31,8 +34,8 @@ export const Button = forwardRef<HTMLButtonElement, Props>(function Button(
       ref={ref}
       type={type}
       className={[
-        "pressable inline-flex items-center justify-center gap-2 font-medium",
-        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2",
+        "pressable inline-flex items-center justify-center gap-2 font-semibold",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg",
         "disabled:opacity-45 disabled:pointer-events-none select-none",
         variants[variant],
         sizes[size],

@@ -7,6 +7,7 @@ import { useSearchParams } from "next/navigation";
 import { useRecipes } from "@/hooks/useRecipes";
 import { PageHeader } from "@/components/PageHeader";
 import { RecipeCard } from "@/components/RecipeCard";
+import { Reveal } from "@/components/Reveal";
 import { RecipeCardSkeleton } from "@/components/RecipeCardSkeleton";
 import { EmptyState } from "@/components/EmptyState";
 import { ErrorState } from "@/components/ErrorState";
@@ -104,29 +105,34 @@ function RecipesContent() {
     <>
       <PageHeader
         title={t("nav.recipes")}
-        subtitle={`${recipes.length} ${
-          recipes.length === 1 ? t("recipes.countSingular") : t("recipes.countPlural")
-        }`}
+        subtitle={
+          // Während des Ladens keine Zahl behaupten – sonst steht dort kurz „0 Rezepte".
+          loading
+            ? undefined
+            : `${recipes.length} ${
+                recipes.length === 1 ? t("recipes.countSingular") : t("recipes.countPlural")
+              }`
+        }
         action={
           <div className="flex gap-2">
             <Link
               href="/collections"
               aria-label={t("collections.title")}
-              className="pressable inline-flex h-11 w-11 items-center justify-center rounded-full bg-surface-2 text-ink"
+              className="pressable inline-flex h-11 w-11 items-center justify-center rounded-pill border border-line bg-surface text-ink-2 hover:text-ink"
             >
               <IconFolder size={20} />
             </Link>
             <Link
               href="/bingo"
               aria-label="Rezept-Bingo spielen"
-              className="pressable inline-flex h-11 w-11 items-center justify-center rounded-full bg-surface-2 text-ink"
+              className="pressable inline-flex h-11 w-11 items-center justify-center rounded-pill border border-line bg-surface text-ink-2 hover:text-ink"
             >
               <IconDice size={20} />
             </Link>
             <Link
               href="/recipes/new"
               aria-label="Rezept manuell anlegen"
-              className="pressable inline-flex h-11 w-11 items-center justify-center rounded-full bg-accent text-accent-ink"
+              className="pressable inline-flex h-11 w-11 items-center justify-center rounded-pill bg-accent text-accent-ink shadow-[0_1px_2px_rgba(58,38,24,0.16)] hover:bg-[#a8452c]"
             >
               <IconPlus size={20} />
             </Link>
@@ -134,14 +140,14 @@ function RecipesContent() {
         }
       />
 
-      {/* Neuer moderner Modus-Umschalter (Segmented Bar) */}
-      <div className="mb-6 flex rounded-2xl bg-surface-2 p-1.5 border border-line">
+      {/* Modus-Umschalter */}
+      <div className="mb-6 flex rounded-card border border-line bg-surface-2 p-1">
         <button
           type="button"
           onClick={() => setMode("all")}
-          className={`pressable flex flex-1 items-center justify-center gap-2 rounded-xl py-2.5 text-[15px] font-bold transition-all ${
+          className={`pressable flex flex-1 items-center justify-center gap-2 rounded-ctl py-2.5 text-body font-semibold transition-all ${
             mode === "all"
-              ? "bg-white text-ink shadow-sm"
+              ? "bg-surface text-ink shadow-card"
               : "text-ink-2 hover:text-ink"
           }`}
         >
@@ -151,9 +157,9 @@ function RecipesContent() {
         <button
           type="button"
           onClick={() => setMode("fridge")}
-          className={`pressable flex flex-1 items-center justify-center gap-2 rounded-xl py-2.5 text-[15px] font-bold transition-all ${
+          className={`pressable flex flex-1 items-center justify-center gap-2 rounded-ctl py-2.5 text-body font-semibold transition-all ${
             mode === "fridge"
-              ? "bg-white text-accent shadow-sm"
+              ? "bg-surface text-accent shadow-card"
               : "text-ink-2 hover:text-ink"
           }`}
         >
@@ -184,7 +190,7 @@ function RecipesContent() {
               onClick={() => setFiltersOpen((open) => !open)}
               aria-expanded={filtersOpen}
               aria-controls="recipe-filters"
-              className={`pressable inline-flex h-11 items-center gap-2 rounded-xl border px-3.5 text-[14px] font-semibold md:hidden ${
+              className={`pressable inline-flex h-11 items-center gap-2 rounded-ctl border px-3.5 text-[14px] font-semibold md:hidden ${
                 activeFilterCount > 0
                   ? "border-accent bg-accent-soft text-accent"
                   : "border-line bg-surface text-ink-2"
@@ -209,7 +215,7 @@ function RecipesContent() {
                 value={sort}
                 onChange={(e) => setSort(e.target.value as typeof sort)}
                 aria-label="Sortieren"
-                className="h-11 rounded-xl border border-line bg-surface px-3 text-[15px] text-ink focus:border-accent focus:outline-none"
+                className="h-11 rounded-ctl border border-line bg-surface px-3 text-body text-ink focus:border-accent focus:outline-none"
               >
                 <option value="newest">Neueste</option>
                 <option value="oldest">Älteste</option>
@@ -231,7 +237,7 @@ function RecipesContent() {
                 <button
                   type="button"
                   onClick={() => setCategory(undefined)}
-                  className="pressable rounded-full px-2.5 py-1 text-[13px] font-medium text-ink-3 underline underline-offset-2"
+                  className="pressable rounded-full px-2.5 py-1 text-meta font-medium text-ink-3 underline underline-offset-2"
                 >
                   {t("recipes.filtersClear")}
                 </button>
@@ -254,7 +260,7 @@ function RecipesContent() {
               <span className="text-[14px] font-bold text-ink-2">
                 {processedRecipes.filter((r) => (r.matchPercentage ?? 0) > 0).length} passende Rezepte gefunden
               </span>
-              <span className="text-[12px] text-ink-3">
+              <span className="text-label text-ink-3">
                 Sortiert nach bester Übereinstimmung
               </span>
             </div>
@@ -265,23 +271,23 @@ function RecipesContent() {
       {error ? (
         <ErrorState message={error} onRetry={retry} />
       ) : loading ? (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+        <div className="grid grid-cols-1 gap-x-5 gap-y-9 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {[0, 1, 2, 3].map((i) => (
             <RecipeCardSkeleton key={i} />
           ))}
         </div>
       ) : mode === "fridge" && fridgeIngredients.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-line bg-surface/50 p-12 text-center">
-          <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-accent-soft text-accent">
+        <div className="rounded-card border border-dashed border-line bg-surface/50 p-12 text-center">
+          <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-card bg-accent-soft text-accent">
             <IconFridge size={30} />
           </div>
-          <h3 className="text-[18px] font-bold text-ink">Dein Kühlschrank wartet auf Zutaten</h3>
+          <h3 className="font-display text-h2 text-ink">Dein Kühlschrank wartet auf Zutaten</h3>
           <p className="mx-auto mt-1 max-w-md text-[14px] text-ink-2">
             Füge oben ein paar Zutaten hinzu oder klicke auf die Vorschläge, um sofort zu sehen, was du kochen kannst!
           </p>
         </div>
       ) : processedRecipes.length === 0 ? (
-        <div className="rounded-2xl bg-surface shadow-card">
+        <div className="rounded-card bg-surface shadow-card">
           <EmptyState
             title={query || category || mode === "fridge" ? t("recipes.emptyTitle") : t("home.emptyTitle")}
             subtitle={
@@ -301,14 +307,15 @@ function RecipesContent() {
           />
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
-          {processedRecipes.map((r) => (
-            <RecipeCard
-              key={r.recipe.id}
-              recipe={r.recipe}
-              matchPercentage={r.matchPercentage}
-              missingIngredients={r.missingIngredients}
-            />
+        <div className="grid grid-cols-1 gap-x-5 gap-y-9 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {processedRecipes.map((r, i) => (
+            <Reveal key={r.recipe.id} delay={(i % 4) * 45}>
+              <RecipeCard
+                recipe={r.recipe}
+                matchPercentage={r.matchPercentage}
+                missingIngredients={r.missingIngredients}
+              />
+            </Reveal>
           ))}
         </div>
       )}
@@ -322,7 +329,7 @@ function ActiveFilterChip({ label, onRemove }: { label: string; onRemove: () => 
     <button
       type="button"
       onClick={onRemove}
-      className="pressable inline-flex h-8 items-center gap-1.5 rounded-full border border-accent bg-accent-soft px-3 text-[13px] font-medium text-accent"
+      className="pressable inline-flex h-8 items-center gap-1.5 rounded-full border border-accent bg-accent-soft px-3 text-meta font-medium text-accent"
     >
       {label}
       <IconX size={13} />
@@ -333,7 +340,7 @@ function ActiveFilterChip({ label, onRemove }: { label: string; onRemove: () => 
 
 export default function RecipesPage() {
   return (
-    <Suspense fallback={<div className="skeleton-shimmer h-32 rounded-2xl" />}>
+    <Suspense fallback={<div className="skeleton-shimmer h-32 rounded-card" />}>
       <RecipesContent />
     </Suspense>
   );

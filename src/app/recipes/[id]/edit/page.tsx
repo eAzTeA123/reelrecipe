@@ -38,7 +38,7 @@ export default function EditRecipePage({ params }: { params: Promise<{ id: strin
   if (!recipe) {
     return (
       <div className="flex flex-col items-center gap-4 py-20 text-center">
-        <p className="text-[19px] font-bold">{t("recipe.notFound")}</p>
+        <p className="font-display text-h1">{t("recipe.notFound")}</p>
         <Link href="/recipes">
           <Button variant="secondary">{t("recipe.toOverview")}</Button>
         </Link>

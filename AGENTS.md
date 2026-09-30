@@ -59,6 +59,14 @@ werden dafür nicht verschlagwortet:
 
 ## Konventionen
 
+- **Design:** Markenvertrag in [`DESIGN.md`](DESIGN.md), Tokens in `src/app/globals.css`
+  (`@theme`). Keine willkürlichen `text-[Npx]`-Werte und kein hartkodiertes
+  `bg-white`/`text-black` – immer Tokens (`text-body`, `bg-surface`, `text-ink-2`,
+  `rounded-ctl`, `rounded-card`, `shadow-card`). Eingabefelder bleiben bei 16px
+  (iOS zoomt sonst). Zahlen in Listen bekommen `nums` (tabellarische Ziffern).
+  Vor Designrunden: `npx playwright test e2e/design-audit.spec.ts` erzeugt
+  Screenshots in `e2e/screenshots/design/`.
+
 - Bilder werden als `local-image:<uuid>`-Referenz in `Recipe.image` gespeichert (Blob in Tabelle `images`).
 - Mengen-Inputs akzeptieren `1 1/2`, `2,5`, `0.5` → `parseAmountString` aus `src/parser`.
 - Deutsche UI-Texte, klare Fehlermeldungen (keine technischen Fehler an User).

@@ -181,7 +181,7 @@ export function OnboardingModal() {
         role="dialog"
         aria-modal="true"
         aria-label={t(slide.titleKey)}
-        className={`relative w-full max-w-lg rounded-t-3xl bg-surface p-6 shadow-pop md:rounded-2xl md:p-7 border border-line ${
+        className={`relative w-full max-w-lg rounded-t-3xl bg-surface p-6 shadow-pop md:rounded-card md:p-7 border border-line ${
           closing ? "sheet-down" : "sheet-up"
         } max-h-[90dvh] overflow-y-auto flex flex-col justify-between`}
         style={{ paddingBottom: "calc(1.5rem + env(safe-area-inset-bottom))" }}
@@ -191,13 +191,13 @@ export function OnboardingModal() {
 
         {/* Top Header / Badge & Skip Button */}
         <div className="flex items-center justify-between mb-4">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-accent-soft px-3 py-1 text-[11px] font-bold text-accent tracking-wider uppercase">
+          <span className="text-label font-semibold text-accent">
             {slide.badge}
           </span>
           <button
             type="button"
             onClick={handleClose}
-            className="pressable text-[13px] font-medium text-ink-3 hover:text-ink px-2 py-1 rounded-lg transition-colors"
+            className="pressable text-meta font-medium text-ink-3 hover:text-ink px-2 py-1 rounded-lg transition-colors"
           >
             {t("onboarding.skip")}
           </button>
@@ -206,7 +206,7 @@ export function OnboardingModal() {
         {/* Center Content */}
         <div className="my-auto py-3 flex flex-col items-center text-center">
           {/* Theme-aligned Icon Container */}
-          <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-accent-soft text-accent shadow-sm">
+          <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-card bg-accent-soft text-accent shadow-card">
             {renderIcon()}
           </div>
 
@@ -214,7 +214,7 @@ export function OnboardingModal() {
             {t(slide.titleKey)}
           </h2>
 
-          <p className="text-[14px] sm:text-[15px] text-ink-2 leading-relaxed max-w-sm mb-5">
+          <p className="text-[14px] sm:text-body text-ink-2 leading-relaxed max-w-sm mb-5">
             {t(slide.subtitleKey)}
           </p>
 
@@ -223,7 +223,7 @@ export function OnboardingModal() {
             {t(slide.highlightsKey).split("|").map((h, i) => (
               <span
                 key={i}
-                className="inline-flex items-center gap-1.5 rounded-xl bg-surface-2 px-3 py-1.5 text-[12px] font-medium text-ink-2 border border-line/60"
+                className="inline-flex items-center gap-1.5 rounded-ctl bg-surface-2 px-3 py-1.5 text-label font-medium text-ink-2 border border-line/60"
               >
                 <span className="text-accent font-bold">✓</span>
                 {h}
@@ -241,7 +241,7 @@ export function OnboardingModal() {
                 size="lg"
                 onClick={handleLoadSamples}
                 disabled={loadingSamples}
-                className="w-full text-[15px]"
+                className="w-full text-body"
               >
                 {loadingSamples ? t("onboarding.loadingSamples") : t("onboarding.loadSamples")}
               </Button>

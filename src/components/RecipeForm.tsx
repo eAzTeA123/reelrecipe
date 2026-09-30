@@ -238,8 +238,8 @@ export function RecipeForm({
   return (
     <div className="flex flex-col gap-7">
       {hasDraft && (
-        <div className="rounded-xl bg-blue-50 dark:bg-blue-950/30 p-4 border border-blue-100 dark:border-blue-900/50">
-          <p className="font-semibold text-blue-900 dark:text-blue-100 mb-3 text-[15px]">
+        <div className="rounded-ctl bg-blue-50 dark:bg-blue-950/30 p-4 border border-blue-100 dark:border-blue-900/50">
+          <p className="font-semibold text-blue-900 dark:text-blue-100 mb-3 text-body">
             Du hast einen ungespeicherten Rezept-Entwurf.
           </p>
           <div className="flex gap-2">
@@ -264,7 +264,7 @@ export function RecipeForm({
 
       {initial.sourceCaption && (
         <div className="flex flex-col gap-4">
-          <div className="rounded-xl bg-blue-50 dark:bg-blue-950/30 p-3 text-sm text-blue-800 dark:text-blue-200">
+          <div className="rounded-ctl bg-blue-50 dark:bg-blue-950/30 p-3 text-sm text-blue-800 dark:text-blue-200">
             <p className="font-semibold">{t("form.previewBanner")}</p>
             <p className="mt-1 text-blue-700/80 dark:text-blue-300/80">{t("form.previewBannerHint")}</p>
           </div>
@@ -286,7 +286,7 @@ export function RecipeForm({
             >{t("form.previewUncertainAccept")}</button>
           </div>
 
-          <details className="rounded-xl bg-gray-50 dark:bg-gray-900/30 p-3">
+          <details className="rounded-ctl bg-gray-50 dark:bg-gray-900/30 p-3">
             <summary className="cursor-pointer text-sm font-medium text-ink/60">{t("form.previewOriginal")}</summary>
             <pre className="mt-2 text-xs text-ink/50 whitespace-pre-wrap font-mono leading-relaxed max-h-48 overflow-y-auto">
               {initial.sourceCaption}
@@ -296,12 +296,12 @@ export function RecipeForm({
       )}
 
       {status === "saved" && typeof document !== "undefined" && createPortal(
-        <div className="overlay-in fixed inset-0 z-50 flex items-center justify-center bg-white/70 backdrop-blur-sm">
+        <div className="overlay-in fixed inset-0 z-50 flex items-center justify-center bg-bg/70 backdrop-blur-sm">
           <div className="check-pop flex flex-col items-center gap-3">
             <span className="flex h-16 w-16 items-center justify-center rounded-full bg-accent text-white">
               <IconCheck size={30} />
             </span>
-            <p className="text-[19px] font-bold">{t("toast.recipeSaved")}</p>
+            <p className="font-display text-h1">{t("toast.recipeSaved")}</p>
           </div>
         </div>,
         document.body,
@@ -321,7 +321,7 @@ export function RecipeForm({
           }}
         />
         {imageUrl ? (
-          <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl border border-line/70 shadow-card md:aspect-[16/9]">
+          <div className="relative aspect-[4/3] w-full overflow-hidden rounded-card border border-line/70 shadow-card md:aspect-[16/9]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={imageUrl} alt={t("form.imageAlt")} className="h-full w-full object-cover" />
             <div className="absolute bottom-3 right-3 flex gap-2">
@@ -329,7 +329,7 @@ export function RecipeForm({
                 variant="secondary"
                 size="sm"
                 onClick={() => fileRef.current?.click()}
-                className="bg-white/90 backdrop-blur"
+                className="bg-surface/90 backdrop-blur"
               >
                 <IconCamera size={16} />
                 Bild ändern
@@ -341,7 +341,7 @@ export function RecipeForm({
                 onClick={() =>
                   setDraft((d) => ({ ...d, imageRef: undefined, pendingImage: undefined }))
                 }
-                className="bg-white/90 backdrop-blur"
+                className="bg-surface/90 backdrop-blur"
               >
                 <IconX size={16} />
               </Button>
@@ -351,10 +351,10 @@ export function RecipeForm({
           <button
             type="button"
             onClick={() => fileRef.current?.click()}
-            className="pressable flex min-h-28 w-full flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-line bg-surface-2 text-ink-2"
+            className="pressable flex min-h-28 w-full flex-col items-center justify-center gap-2 rounded-card border border-dashed border-line bg-surface-2 text-ink-2"
           >
             <IconCamera size={22} />
-            <span className="text-[15px] font-medium">Bild hinzufügen (optional)</span>
+            <span className="text-body font-medium">Bild hinzufügen (optional)</span>
           </button>
         )}
       </div>
@@ -415,7 +415,7 @@ export function RecipeForm({
 
       {/* Zutaten */}
       <fieldset className="flex flex-col gap-3">
-        <legend className="mb-1 text-[15px] font-semibold text-ink">{t("shopping.ingredientPlural")}</legend>
+        <legend className="mb-1 text-body font-semibold text-ink">{t("shopping.ingredientPlural")}</legend>
         <datalist id="unit-list">
           {UNIT_LABELS.map((u) => (
             <option key={u} value={u} />
@@ -424,13 +424,13 @@ export function RecipeForm({
         {draft.ingredients.map((ing, i) => (
           <div
             key={ing.id}
-            className={`relative rounded-xl border p-2.5 ${
-              ing.uncertain ? "border-[#e8b48a] bg-[#fdf6ef]" : "border-line bg-surface"
+            className={`relative rounded-ctl border p-2.5 ${
+              ing.uncertain ? "border-[#e8b48a] bg-surface-2" : "border-line bg-surface"
             }`}
           >
             {ing.uncertain && (
               <span
-                className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-amber-400 flex items-center justify-center text-[10px] text-white font-bold"
+                className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-warn flex items-center justify-center text-[10px] text-white font-bold"
                 title="Parser war sich unsicher – bitte prüfen"
               >
                 ?
@@ -444,7 +444,7 @@ export function RecipeForm({
                 value={ing.amountText}
                 onChange={(e) => setIng(ing.id, { amountText: e.target.value })}
                 placeholder={t("shopping.editAmount")}
-                className="col-start-1 row-start-1 h-11 min-w-0 rounded-xl border border-line bg-white px-2 text-center text-[15px] focus:border-accent focus:outline-none"
+                className="col-start-1 row-start-1 h-11 min-w-0 rounded-ctl border border-line bg-surface px-2 text-center text-body focus:border-accent focus:outline-none"
               />
               <label className="sr-only" htmlFor={`ing-unit-${ing.id}`}>Einheit {i + 1}</label>
               <input
@@ -453,7 +453,7 @@ export function RecipeForm({
                 value={ing.unit}
                 onChange={(e) => setIng(ing.id, { unit: e.target.value })}
                 placeholder={t("shopping.editUnit")}
-                className="col-start-2 row-start-1 h-11 min-w-0 rounded-xl border border-line bg-white px-2 text-[15px] focus:border-accent focus:outline-none"
+                className="col-start-2 row-start-1 h-11 min-w-0 rounded-ctl border border-line bg-surface px-2 text-body focus:border-accent focus:outline-none"
               />
               <label className="sr-only" htmlFor={`ing-name-${ing.id}`}>Zutat {i + 1}</label>
               <input
@@ -461,7 +461,7 @@ export function RecipeForm({
                 value={ing.name}
                 onChange={(e) => setIng(ing.id, { name: e.target.value })}
                 placeholder={t("shopping.ingredientSingular")}
-                className="col-span-3 col-start-1 row-start-2 h-11 min-w-0 rounded-xl border border-line bg-white px-3 text-[15px] focus:border-accent focus:outline-none sm:col-span-1 sm:col-start-3 sm:row-start-1"
+                className="col-span-3 col-start-1 row-start-2 h-11 min-w-0 rounded-ctl border border-line bg-surface px-3 text-body focus:border-accent focus:outline-none sm:col-span-1 sm:col-start-3 sm:row-start-1"
               />
               <button
                 type="button"
@@ -469,7 +469,7 @@ export function RecipeForm({
                 onClick={() =>
                   setDraft((d) => ({ ...d, ingredients: d.ingredients.filter((x) => x.id !== ing.id) }))
                 }
-                className="pressable col-start-3 row-start-1 flex h-11 w-11 items-center justify-center rounded-xl text-ink-3 hover:text-danger sm:col-start-4 sm:row-start-1"
+                className="pressable col-start-3 row-start-1 flex h-11 w-11 items-center justify-center rounded-ctl text-ink-3 hover:text-danger sm:col-start-4 sm:row-start-1"
               >
                 <IconTrash size={18} />
               </button>
@@ -490,10 +490,10 @@ export function RecipeForm({
 
       {/* Schritte */}
       <fieldset className="flex flex-col gap-3">
-        <legend className="mb-1 text-[15px] font-semibold text-ink">{t("recipe.steps")}</legend>
+        <legend className="mb-1 text-body font-semibold text-ink">{t("recipe.steps")}</legend>
         {draft.steps.map((step, i) => (
           <div key={step.id} className="flex items-start gap-2">
-            <span className="mt-2.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-accent-soft text-[13px] font-bold text-accent">
+            <span className="mt-2.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-accent-soft text-meta font-bold text-accent">
               {i + 1}
             </span>
             <label className="sr-only" htmlFor={`step-${step.id}`}>Schritt {i + 1}</label>
@@ -510,7 +510,7 @@ export function RecipeForm({
               }
               placeholder={t("form.stepPlaceholder")}
               rows={Math.min(4, Math.max(2, Math.ceil(step.instruction.length / 45)))}
-              className="min-w-0 flex-1 resize-none rounded-xl border border-line bg-surface px-3 py-2.5 text-[15px] focus:border-accent focus:outline-none"
+              className="min-w-0 flex-1 resize-none rounded-ctl border border-line bg-surface px-3 py-2.5 text-body focus:border-accent focus:outline-none"
             />
             <div className="flex shrink-0 flex-col gap-0.5">
               <button
@@ -518,7 +518,7 @@ export function RecipeForm({
                 aria-label={`Schritt ${i + 1} nach oben`}
                 disabled={i === 0}
                 onClick={() => moveStep(step.id, -1)}
-                className="pressable flex h-11 w-11 items-center justify-center rounded-xl text-ink-3 hover:text-ink disabled:opacity-30"
+                className="pressable flex h-11 w-11 items-center justify-center rounded-ctl text-ink-3 hover:text-ink disabled:opacity-30"
               >
                 <IconArrowUp size={15} />
               </button>
@@ -527,7 +527,7 @@ export function RecipeForm({
                 aria-label={`Schritt ${i + 1} nach unten`}
                 disabled={i === draft.steps.length - 1}
                 onClick={() => moveStep(step.id, 1)}
-                className="pressable flex h-11 w-11 items-center justify-center rounded-xl text-ink-3 hover:text-ink disabled:opacity-30"
+                className="pressable flex h-11 w-11 items-center justify-center rounded-ctl text-ink-3 hover:text-ink disabled:opacity-30"
               >
                 <IconArrowDown size={15} />
               </button>
@@ -537,7 +537,7 @@ export function RecipeForm({
                 onClick={() =>
                   setDraft((d) => ({ ...d, steps: d.steps.filter((x) => x.id !== step.id) }))
                 }
-                className="pressable flex h-11 w-11 items-center justify-center rounded-xl text-ink-3 hover:text-danger"
+                className="pressable flex h-11 w-11 items-center justify-center rounded-ctl text-ink-3 hover:text-danger"
               >
                 <IconTrash size={15} />
               </button>
@@ -554,7 +554,7 @@ export function RecipeForm({
       </fieldset>
 
       {error && (
-        <p role="alert" className="rounded-xl bg-[#fdeeec] px-4 py-3 text-[15px] text-danger">
+        <p role="alert" className="rounded-ctl bg-[#f7e3e0] px-4 py-3 text-body text-danger">
           {error}
         </p>
       )}
@@ -565,7 +565,7 @@ export function RecipeForm({
           fullWidth
           onClick={() => void submit()}
           disabled={status === "saving" || status === "saved"}
-          className={`shadow-pop transition-colors duration-300 ${status === "saved" ? "!bg-emerald-500 !text-white" : ""}`}
+          className={`shadow-pop transition-colors duration-300 ${status === "saved" ? "!bg-good !text-white" : ""}`}
         >
           {status === "saving" ? (
             <Spinner size={18} />

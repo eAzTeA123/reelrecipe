@@ -1,26 +1,19 @@
 import { Skeleton } from './Skeleton';
 
+/** Gleiche Silhouette wie die echte Karte: Cover, Titel, Meta-Zeile. */
 export function RecipeCardSkeleton() {
   return (
-    <article className="relative block border-b-2 border-line pb-8 mb-8 last:border-b-0">
-      <div className="block">
-        <Skeleton className="aspect-[4/5] w-full mb-4 rounded-2xl" />
-        <div className="flex flex-col gap-2">
-          {/* Category */}
-          <Skeleton className="h-4 w-24 mb-1" />
-          {/* Title */}
-          <Skeleton className="h-8 w-3/4 mb-1" />
-          <Skeleton className="h-8 w-1/2" />
-          
-          {/* Icons row */}
-          <div className="mt-2 flex items-center gap-6">
-             <Skeleton className="h-5 w-20" />
-             <Skeleton className="h-5 w-16" />
-          </div>
+    <article className="relative flex flex-col">
+      <Skeleton className="aspect-[4/3] w-full rounded-frame sm:aspect-[4/5]" />
+      <div className="mt-3.5 flex flex-col gap-2">
+        <Skeleton className="h-3.5 w-24" />
+        <Skeleton className="h-6 w-3/4" />
+        <Skeleton className="h-6 w-1/2" />
+        <div className="mt-1 flex items-center gap-4">
+          <Skeleton className="h-4 w-20" />
+          <Skeleton className="h-4 w-14" />
         </div>
       </div>
-      {/* Heart button */}
-      <Skeleton className="absolute right-2 top-2 h-14 w-14 rounded-full" />
     </article>
   );
 }

@@ -15,7 +15,7 @@ interface Props {
 export function ConfirmDialog({ open, title, message, confirmLabel, onConfirm, onCancel }: Props) {
   return (
     <Sheet open={open} onClose={onCancel} title={title}>
-      <p className="mb-6 text-[15px] text-ink-2">{message}</p>
+      <p className="mb-6 text-body text-ink-2">{message}</p>
       <div className="flex flex-col gap-2.5 md:flex-row">
         <Button variant="secondary" size="lg" fullWidth onClick={onCancel} autoFocus>
           Abbrechen

@@ -17,7 +17,10 @@ test.beforeEach(async ({ page }) => {
 });
 
 test("leere App: Startseite mit Empty State", async ({ page }) => {
-  await expect(page.getByRole("heading", { name: "Scroll2Cook" })).toBeVisible();
+  // Die Marke steht in der Navigation; die Hauptüberschrift ist der Cover-Kopf.
+  await expect(
+    page.getByRole("heading", { level: 1, name: "Rezept-Link einfügen & kochen." }),
+  ).toBeVisible();
   await expect(page.getByText("Du hast noch keine Rezepte")).toBeVisible();
   await expect(page.getByRole("link", { name: "Rezept importieren" })).toBeVisible();
 });
@@ -258,5 +261,9 @@ test("ungültige Backup-Datei wird abgelehnt", async ({ page }) => {
   fs.mkdirSync(`${process.cwd()}/test-results`, { recursive: true });
   fs.writeFileSync(tmp, JSON.stringify({ hello: "world" }));
   await page.locator("input[type=file]").setInputFiles(tmp);
-  await expect(page.getByText("Das ist keine gültige Rezept-Backup-Datei.")).toBeVisible();
+  // Bewusst im Bereich „Lokale Daten" gesucht: das Dev-Overlay von Next.js kann
+  // dieselbe Meldung zusätzlich im DOM haben.
+  await expect(
+    page.getByRole("region", { name: "Lokale Daten" }).getByRole("alert"),
+  ).toContainText("keine gültige Rezept-Backup-Datei");
 });

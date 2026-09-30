@@ -208,7 +208,7 @@ export default function PlannerPage() {
       {draggedEntryId && (
         <div
           ref={ghostRef}
-          className="fixed pointer-events-none z-50 bg-surface shadow-2xl rounded-xl p-3 opacity-90 rotate-2 scale-105 flex gap-3 items-center"
+          className="fixed pointer-events-none z-50 bg-surface shadow-2xl rounded-ctl p-3 opacity-90 rotate-2 scale-105 flex gap-3 items-center"
           style={{ transform: `translate3d(${pointerPosRef.current.x - 50}px, ${pointerPosRef.current.y - 20}px, 0)`, top: 0, left: 0 }}
         >
           <p className="text-sm font-semibold truncate max-w-[200px]">
@@ -223,7 +223,7 @@ export default function PlannerPage() {
         <button
           onClick={generateShoppingList}
           disabled={loading || entries.length === 0}
-          className="flex items-center justify-center gap-2 rounded-full bg-brand-gradient px-5 py-3 font-semibold text-white shadow-card transition-transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none md:mt-1 shrink-0"
+          className="pressable flex shrink-0 items-center justify-center gap-2 rounded-ctl bg-accent px-5 py-3 font-semibold text-accent-ink shadow-card hover:bg-[#a8452c] disabled:pointer-events-none disabled:opacity-50 md:mt-1"
         >
           <IconCart size={20} />
           Woche einkaufen
@@ -237,7 +237,7 @@ export default function PlannerPage() {
             <section
               key={day.key}
               data-day={day.key}
-              className={`flex flex-col rounded-2xl p-4 shadow-card transition-colors ${
+              className={`flex flex-col rounded-card p-4 shadow-card transition-colors ${
                 dropTargetDay === day.key
                   ? "border-2 border-accent bg-accent/5"
                   : "border-2 border-transparent bg-surface"
@@ -252,7 +252,7 @@ export default function PlannerPage() {
                   return (
                     <div
                       key={entry.id}
-                      className={`group relative flex gap-3 rounded-2xl bg-white p-3 shadow-sm border border-line items-center transition-all ${
+                      className={`group relative flex gap-3 rounded-card bg-surface p-3 shadow-card border border-line items-center transition-all ${
                         draggedEntryId === entry.id ? "opacity-50 scale-95" : ""
                       }`}
                       onPointerDown={(e) => handlePointerDown(entry.id, e)}
@@ -262,17 +262,17 @@ export default function PlannerPage() {
                     >
                       <DragHandle entryId={entry.id} onDragStart={handleDragStart} />
                       {recipe ? (
-                        <div className="h-14 w-14 shrink-0 overflow-hidden rounded-xl bg-surface">
+                        <div className="h-14 w-14 shrink-0 overflow-hidden rounded-ctl bg-surface">
                           <RecipeImage imageRef={recipe.image} alt={recipe.title} className="h-full w-full object-cover" />
                         </div>
                       ) : (
-                        <div className="h-14 w-14 shrink-0 rounded-xl bg-surface flex items-center justify-center text-ink-3">
+                        <div className="h-14 w-14 shrink-0 rounded-ctl bg-surface flex items-center justify-center text-ink-3">
                           ?
                         </div>
                       )}
                       
                       <div className="flex-1 min-w-0">
-                        <h4 className="truncate font-semibold text-ink-1 text-[15px]">
+                        <h4 className="truncate font-semibold text-ink-1 text-body">
                           {recipe ? recipe.title : "Rezept gelöscht"}
                         </h4>
                         <div className="mt-1.5 flex items-center gap-1 text-ink-3">
@@ -312,7 +312,7 @@ export default function PlannerPage() {
 
                 {/* Add Button with Native Select Overlay */}
                 <div className="relative mt-2">
-                  <button className="flex w-full items-center justify-center gap-2 rounded-xl border border-dashed border-line py-3 text-[15px] font-medium text-ink-3 transition-colors hover:border-accent hover:bg-accent/5 hover:text-accent">
+                  <button className="flex w-full items-center justify-center gap-2 rounded-ctl border border-dashed border-line py-3 text-body font-medium text-ink-3 transition-colors hover:border-accent hover:bg-accent/5 hover:text-accent">
                     <IconPlus size={18} />
                     <span>Rezept hinzufügen</span>
                   </button>

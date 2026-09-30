@@ -118,7 +118,7 @@ function ActiveTimersOverlay({ timers, removeTimer }: { timers: Timer[], removeT
         const s = remaining % 60;
         
         return (
-          <div key={timer.id} className="bg-white/90 backdrop-blur shadow-lg rounded-xl p-3 flex items-center gap-3 border border-stone-200 pointer-events-auto">
+          <div key={timer.id} className="bg-surface/90 backdrop-blur shadow-pop rounded-ctl p-3 flex items-center gap-3 border border-line pointer-events-auto">
             <div className="flex flex-col">
               <span className="text-xs text-stone-500 font-medium truncate max-w-[120px]">{timer.label}</span>
               <span className="font-mono font-bold text-stone-800 text-lg">

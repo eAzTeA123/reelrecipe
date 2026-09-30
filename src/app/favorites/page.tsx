@@ -21,13 +21,13 @@ export default function FavoritesPage() {
       {error ? (
         <ErrorState message={error} onRetry={retry} />
       ) : loading ? (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-x-5 gap-y-9 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {[0, 1, 2, 3].map((i) => (
             <RecipeCardSkeleton key={i} />
           ))}
         </div>
       ) : recipes.length === 0 ? (
-        <div className="rounded-2xl bg-surface shadow-card">
+        <div className="rounded-card bg-surface shadow-card">
           <EmptyState
             icon={<IconHeart size={40} />}
             title={t("favorites.emptyTitle")}
@@ -40,7 +40,7 @@ export default function FavoritesPage() {
           />
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+        <div className="grid grid-cols-1 gap-x-5 gap-y-9 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {recipes.map((r) => (
             <RecipeCard key={r.id} recipe={r} />
           ))}

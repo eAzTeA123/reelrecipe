@@ -42,7 +42,7 @@ export function PwaInstallPrompt() {
       <button
         id="tour-pwa"
         onClick={() => setShowPrompt(true)}
-        className={`fixed z-30 bottom-24 right-4 md:bottom-6 md:right-6 flex items-center justify-center gap-2 rounded-xl bg-ink text-white px-4 py-2.5 shadow-[0_8px_30px_rgb(0,0,0,0.12)] transition-transform hover:scale-105 active:scale-95 ${
+        className={`fixed z-30 bottom-24 right-4 md:bottom-6 md:right-6 flex items-center justify-center gap-2 rounded-ctl bg-ink text-white px-4 py-2.5 shadow-[0_8px_30px_rgb(0,0,0,0.12)] transition-transform hover:scale-105 active:scale-95 ${
           !hasPulsed ? "animate-pulse ring-4 ring-ink/20" : ""
         }`}
         aria-label={t("pwa.saveMe")}
@@ -57,21 +57,21 @@ export function PwaInstallPrompt() {
         title={t("pwa.title")}
       >
         <div className="flex flex-col gap-6">
-          <p className="text-[15px] text-ink-2 leading-relaxed">
+          <p className="text-body text-ink-2 leading-relaxed">
             {t("pwa.subtitle")}
           </p>
 
-          <div className="rounded-2xl bg-surface p-4 shadow-sm">
+          <div className="rounded-card bg-surface p-4 shadow-card">
             <h3 className="font-bold text-[16px] mb-3">{t("pwa.iosTitle")}</h3>
             <ol className="list-decimal list-inside space-y-2 text-[14px] text-ink-2 marker:font-medium marker:text-ink">
               <li>{t("pwa.iosStep1")}</li>
-              <li>{t("pwa.iosStep2")} <span className="inline-flex items-center justify-center p-1 bg-surface-2 rounded-xl"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></span></li>
-              <li>{t("pwa.iosStep3")} <span className="inline-flex items-center justify-center p-1 bg-surface-2 rounded-xl"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></span></li>
+              <li>{t("pwa.iosStep2")} <span className="inline-flex items-center justify-center p-1 bg-surface-2 rounded-ctl"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></span></li>
+              <li>{t("pwa.iosStep3")} <span className="inline-flex items-center justify-center p-1 bg-surface-2 rounded-ctl"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></span></li>
               <li>{t("pwa.iosStep4")}</li>
             </ol>
           </div>
 
-          <div className="rounded-2xl bg-surface p-4 shadow-sm mb-4">
+          <div className="rounded-card bg-surface p-4 shadow-card mb-4">
             <h3 className="font-bold text-[16px] mb-3">{t("pwa.androidTitle")}</h3>
             <ol className="list-decimal list-inside space-y-2 text-[14px] text-ink-2 marker:font-medium marker:text-ink">
               <li>{t("pwa.androidStep1")}</li>

@@ -25,7 +25,7 @@ function BottomNav() {
   return (
     <nav
       aria-label="Hauptnavigation"
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-white/85 backdrop-blur-xl md:hidden transform-gpu"
+      className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-surface/90 backdrop-blur-xl md:hidden transform-gpu"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
       <div className="mx-auto grid max-w-lg grid-cols-5">
@@ -59,11 +59,11 @@ function TopNav() {
   const { t } = useI18n();
   const pathname = usePathname();
   return (
-    <header className="sticky top-0 z-40 hidden border-b border-line bg-white/80 backdrop-blur-xl md:block">
+    <header className="sticky top-0 z-40 hidden border-b border-line bg-bg/85 backdrop-blur-xl md:block">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
-        <Link href="/" className="flex items-center gap-2.5 text-[17px] font-bold tracking-tight">
-          <img src="/icon.svg" alt="Scroll2Cook Logo" width={32} height={32} className="rounded-xl" />
-          {t("brand.name")}
+        <Link href="/" className="flex items-center gap-2.5">
+          <img src="/icon.svg" alt="Scroll2Cook Logo" width={32} height={32} className="rounded-ctl" />
+          <span className="font-display text-h2 text-ink">{t("brand.name")}</span>
         </Link>
         <nav aria-label="Hauptnavigation" className="flex items-center gap-1">
           {getNavItems(t).map(({ href, label }) => {
@@ -74,7 +74,7 @@ function TopNav() {
                 href={href}
                 data-tour={href.replace("/", "") || "home"}
                 aria-current={active ? "page" : undefined}
-                className={`pressable rounded-full px-4 py-2 text-[15px] font-medium ${
+                className={`pressable rounded-full px-4 py-2 text-body font-medium ${
                   active ? "bg-accent-soft text-accent" : "text-ink-2 hover:text-ink"
                 }`}
               >
@@ -139,7 +139,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         >
           {storageAtRisk && (
             <div
-              className="mb-4 flex items-start gap-3 rounded-2xl bg-[#fdf6ef] p-3 text-[14px] leading-snug text-[#9a5b23]"
+              className="mb-4 flex items-start gap-3 rounded-card border border-line bg-surface-2 p-3.5 text-meta leading-snug text-ink-2"
               role="status"
             >
               <p className="flex-1">
@@ -150,7 +150,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 type="button"
                 onClick={dismissStorageHint}
                 aria-label="Hinweis schließen"
-                className="shrink-0 rounded-lg px-2 py-1 text-[13px] font-semibold underline underline-offset-2"
+                className="pressable shrink-0 rounded-ctl px-2 py-1 text-meta font-semibold text-ink underline underline-offset-2"
               >
                 Verstanden
               </button>

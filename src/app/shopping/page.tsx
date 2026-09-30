@@ -161,11 +161,11 @@ export default function ShoppingPage() {
       ) : loading ? (
         <div className="flex flex-col gap-2">
           {[0, 1, 2].map((i) => (
-            <div key={i} className="skeleton-shimmer h-14 rounded-xl" />
+            <div key={i} className="skeleton-shimmer h-14 rounded-ctl" />
           ))}
         </div>
       ) : items.length === 0 ? (
-        <div className="rounded-2xl bg-surface shadow-card">
+        <div className="rounded-card bg-surface shadow-card">
           <EmptyState
             icon={<IconCart size={40} />}
             title={t("shopping.emptyTitle")}
@@ -178,7 +178,7 @@ export default function ShoppingPage() {
             {sortedAisles.map((aisle) => (
               <div key={aisle}>
                 <h2 className="mb-2 px-1 text-lg font-semibold text-ink-2">{aisle}</h2>
-                <ul className="divide-y divide-line overflow-hidden rounded-2xl bg-surface shadow-card">
+                <ul className="divide-y divide-line overflow-hidden rounded-card bg-surface shadow-card">
                   {groupedItems[aisle].map((item) => (
                     <li key={item.id} className="flex items-center gap-3 px-3 py-1.5">
                       <label className="flex min-h-[44px] min-w-0 flex-1 cursor-pointer items-center gap-3">
@@ -206,7 +206,7 @@ export default function ShoppingPage() {
                         >
                           <IconCheck size={14} />
                         </span>
-                        <span className={`min-w-0 flex-1 break-words hyphens-auto text-[15px] ${item.checked ? "text-ink-3 line-through" : ""}`}>
+                        <span className={`min-w-0 flex-1 break-words hyphens-auto text-body ${item.checked ? "text-ink-3 line-through" : ""}`}>
                           {formatAmount(item.amount, item.unit) && (
                             <span className="mr-1.5 whitespace-nowrap font-semibold tabular-nums text-ink-2">
                               {formatAmount(item.amount, item.unit)}
@@ -214,7 +214,7 @@ export default function ShoppingPage() {
                           )}
                           {item.name}
                           {item.recipeIds.length > 0 && recipeTitles[item.recipeIds[0]] && (
-                            <span className="block text-[12px] text-ink-3">
+                            <span className="block text-label text-ink-3">
                               aus „{recipeTitles[item.recipeIds[0]]}“
                               {item.recipeIds.length > 1 ? ` +${item.recipeIds.length - 1}` : ""}
                             </span>
@@ -225,7 +225,7 @@ export default function ShoppingPage() {
                       <button
                         aria-label={`${item.name} bearbeiten`}
                         onClick={() => openEdit(item)}
-                        className="pressable flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-ink-3 hover:text-ink"
+                        className="pressable flex h-11 w-11 shrink-0 items-center justify-center rounded-ctl text-ink-3 hover:text-ink"
                       >
                         <IconPencil size={17} />
                       </button>
@@ -247,7 +247,7 @@ export default function ShoppingPage() {
                             },
                           );
                         }}
-                        className="pressable flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-ink-3 hover:text-danger"
+                        className="pressable flex h-11 w-11 shrink-0 items-center justify-center rounded-ctl text-ink-3 hover:text-danger"
                       >
                         <IconTrash size={17} />
                       </button>

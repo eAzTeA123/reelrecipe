@@ -110,15 +110,15 @@ export default function BingoPage() {
             value={ingredients}
             onChange={(e) => setIngredients(e.target.value)}
             disabled={cycling}
-            className="h-14 w-full rounded-2xl border border-line bg-surface px-4 text-[16px] text-ink focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+            className="h-14 w-full rounded-card border border-line bg-surface px-4 text-[16px] text-ink focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
           />
-          <Button onClick={handlePlay} disabled={cycling} className="h-14 text-[17px]">
+          <Button onClick={handlePlay} disabled={cycling} className="h-14 text-h3">
             <IconDice size={24} className="mr-2" />{t("bingo.button")}</Button>
         </div>
 
         <div className="mt-8 flex flex-col items-center w-full">
           {!cycling && !winner && (
-            <div className="w-full rounded-2xl border border-dashed border-line bg-surface/50 p-6">
+            <div className="w-full rounded-card border border-dashed border-line bg-surface/50 p-6">
               <EmptyState 
                 title={t("bingo.emptyTitle")} 
                 subtitle={t("bingo.emptySubtitle")} 
@@ -138,7 +138,7 @@ export default function BingoPage() {
               <h2 className="text-2xl font-bold text-center text-accent mb-2">{t("bingo.winner")}</h2>
               <RecipeCard recipe={winner} />
               <Link href={`/recipes/${winner.id}`} className="w-full mt-4 block">
-                <Button variant="primary" className="w-full h-14 text-[17px]">{t("bingo.toRecipe")}</Button>
+                <Button variant="primary" className="w-full h-14 text-h3">{t("bingo.toRecipe")}</Button>
               </Link>
             </div>
           )}
