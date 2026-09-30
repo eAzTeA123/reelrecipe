@@ -3,7 +3,7 @@ import { useI18n } from "@/lib/i18n/context";
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { getRecipeRepository, getShoppingListRepository, getCorrectionRepository } from "@/data";
+import { getRecipeRepository, getShoppingListRepository, getCorrectionRepository, getAisleOrderRepository } from "@/data";
 import { buildBackup, importBackup, parseBackup, type ParsedBackup } from "@/data/backup";
 import { PageHeader } from "@/components/PageHeader";
 import { Button } from "@/components/Button";
@@ -37,6 +37,7 @@ export default function SettingsPage() {
   const [correctionCount, setCorrectionCount] = useState(0);
   const [exportingCorrections, setExportingCorrections] = useState(false);
   const [confirmClearCorrections, setConfirmClearCorrections] = useState(false);
+  const [aisleOrderDone, setAisleOrderDone] = useState(false);
 
   useEffect(() => {
     void getCorrectionRepository()
@@ -93,6 +94,16 @@ export default function SettingsPage() {
       toast("Der Export ist fehlgeschlagen.");
     } finally {
       setExportingCorrections(false);
+    }
+  }
+
+  /** Gelernte Abteilungs-Reihenfolge der Einkaufsliste verwerfen. */
+  async function resetAisleOrder() {
+    try {
+      await getAisleOrderRepository().clear();
+      setAisleOrderDone(true);
+    } catch (e) {
+      console.error("aisle order reset failed", e);
     }
   }
 
@@ -257,6 +268,23 @@ export default function SettingsPage() {
             Log leeren
           </Button>
         </div>
+      </section>
+
+      <section className="mb-6 rounded-2xl bg-surface p-5 shadow-card" aria-labelledby="aisle-h">
+        <h2 id="aisle-h" className="mb-1 text-[17px] font-bold">
+          {t("settings.aisleOrderTitle")}
+        </h2>
+        <p className="mb-4 text-[14px] leading-relaxed text-ink-2">
+          {t("settings.aisleOrderDesc")}
+        </p>
+        <Button variant="secondary" size="lg" fullWidth onClick={() => void resetAisleOrder()}>
+          {t("settings.aisleOrderReset")}
+        </Button>
+        {aisleOrderDone && (
+          <p role="status" className="mt-3 text-[14px] text-ink-2">
+            {t("settings.aisleOrderResetDone")}
+          </p>
+        )}
       </section>
 
       <section className="mb-6 rounded-2xl bg-surface p-5 shadow-card" aria-labelledby="onboarding-h">

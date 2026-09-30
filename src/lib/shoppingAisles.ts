@@ -164,3 +164,25 @@ export function getAisle(ingredientName: string): string {
 
   return "Sonstiges";
 }
+
+/**
+ * Sortiert Abteilungen für die Einkaufsliste.
+ *
+ * `learned` kommt aus LocalAisleOrderRepository: Durchschnittsposition, an der
+ * eine Abteilung üblicherweise abgehakt wird (klein = früh). Gelernte
+ * Abteilungen stehen vorn, alles Ungelernte bleibt alphabetisch – so ändert
+ * sich ohne Lerndaten nichts am heutigen Verhalten. "Sonstiges" ist immer
+ * zuletzt, weil dort die Reste landen.
+ */
+export function sortAisles(names: string[], learned: Map<string, number>): string[] {
+  return [...names].sort((a, b) => {
+    if (a === "Sonstiges") return 1;
+    if (b === "Sonstiges") return -1;
+    const posA = learned.get(a);
+    const posB = learned.get(b);
+    if (posA !== undefined && posB !== undefined && posA !== posB) return posA - posB;
+    if (posA !== undefined && posB === undefined) return -1;
+    if (posA === undefined && posB !== undefined) return 1;
+    return a.localeCompare(b);
+  });
+}

@@ -167,6 +167,10 @@ export const dictionaries = {
     // Settings
     "settings.title": "Einstellungen",
     "settings.language": "Sprache / Language",
+    "settings.aisleOrderTitle": "Einkaufs-Reihenfolge",
+    "settings.aisleOrderDesc": "Die Einkaufsliste sortiert Abteilungen nach deinem Abhak-Verhalten: Sobald du eine Abteilung drei Mal abgehakt hast, merkt sie sich, wann sie bei dir dran war. Unbekanntes bleibt alphabetisch – „Sonstiges“ kommt immer zuletzt.",
+    "settings.aisleOrderReset": "Gelernte Reihenfolge zurücksetzen",
+    "settings.aisleOrderResetDone": "Zurückgesetzt – die Liste sortiert wieder alphabetisch.",
     "settings.export": "Rezepte exportieren",
     "settings.exportDesc": "Speichere deine Rezepte als Backup-Datei auf deinem Gerät.",
     "settings.exportButton": "Exportieren",
@@ -462,6 +466,10 @@ export const dictionaries = {
     // Settings
     "settings.title": "Settings",
     "settings.language": "Language / Sprache",
+    "settings.aisleOrderTitle": "Shopping order",
+    "settings.aisleOrderDesc": "The list sorts aisles by how you tick them off: once you have completed an aisle three times, the app remembers when it was your turn. Anything it does not know yet stays alphabetical – “Sonstiges” always comes last.",
+    "settings.aisleOrderReset": "Reset learned order",
+    "settings.aisleOrderResetDone": "Reset – the list sorts alphabetically again.",
     "settings.export": "Export recipes",
     "settings.exportDesc": "Save your recipes as a backup file on your device.",
     "settings.exportButton": "Export",

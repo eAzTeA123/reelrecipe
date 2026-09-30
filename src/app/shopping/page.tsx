@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useShoppingList } from "@/hooks/useShoppingList";
 import { useHaptic } from "@/hooks/useHaptic";
 import type { ShoppingItem } from "@/domain/types";
-import { getRecipeRepository, getShoppingListRepository } from "@/data";
+import { getRecipeRepository, getShoppingListRepository, getAisleOrderRepository } from "@/data";
 import { formatAmount } from "@/lib/scale";
 import { parseAmountString } from "@/parser";
 import { PageHeader } from "@/components/PageHeader";
@@ -16,7 +16,7 @@ import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { Sheet } from "@/components/Sheet";
 import { Field, Input } from "@/components/Input";
 import { IconCart, IconCheck, IconPencil, IconPlus, IconTrash } from "@/components/Icons";
-import { getAisle } from "@/lib/shoppingAisles";
+import { getAisle, sortAisles } from "@/lib/shoppingAisles";
 import { useToast } from "@/components/Toast";
 import { ShareSheet } from "@/components/ShareSheet";
 import { encodeShareCode, shoppingToSharePayload, shoppingToText } from "@/lib/shareCode";
@@ -28,6 +28,8 @@ export default function ShoppingPage() {
   const toast = useToast();
   const [shareOpen, setShareOpen] = useState(false);
   const [shareCode, setShareCode] = useState<string | null | undefined>(undefined);
+  /** Gelernte Abteilungs-Reihenfolge: Durchschnittsposition je Abteilung. */
+  const [learnedOrder, setLearnedOrder] = useState<Map<string, number>>(new Map());
 
   /** Code erst beim Öffnen erzeugen (und nur aus den offenen Einträgen). */
   async function openShareSheet() {
@@ -96,6 +98,11 @@ export default function ShoppingPage() {
       .list()
       .then((rs) => setRecipeTitles(Object.fromEntries(rs.map((r) => [r.id, r.title]))))
       .catch((e) => console.error("recipe titles failed", e));
+    // Aus Abhak-Ereignissen gelernte Abteilungs-Reihenfolge laden
+    void getAisleOrderRepository()
+      .getOrder()
+      .then(setLearnedOrder)
+      .catch((e) => console.error("aisle order failed", e));
   }, [items]);
 
   const checkedCount = items.filter((i) => i.checked).length;
@@ -112,11 +119,7 @@ export default function ShoppingPage() {
     return acc;
   }, {} as Record<string, ShoppingItem[]>);
 
-  const sortedAisles = Object.keys(groupedItems).sort((a, b) => {
-    if (a === "Sonstiges") return 1;
-    if (b === "Sonstiges") return -1;
-    return a.localeCompare(b);
-  });
+  const sortedAisles = sortAisles(Object.keys(groupedItems), learnedOrder);
 
   return (
     <>
@@ -185,6 +188,14 @@ export default function ShoppingPage() {
                           onChange={() => {
                             haptic('light');
                             void getShoppingListRepository().toggle(item.id);
+                            // Nur beim Abhaken lernen (nicht beim Zurücknehmen)
+                            if (!item.checked) {
+                              void getAisleOrderRepository()
+                                .recordCheck(getAisle(item.name))
+                                .then(() => getAisleOrderRepository().getOrder())
+                                .then(setLearnedOrder)
+                                .catch((e) => console.error("aisle order record failed", e));
+                            }
                           }}
                           aria-label={`${item.name} abhaken`}
                           className="peer sr-only"

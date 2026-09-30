@@ -4,12 +4,14 @@ import type {
   ShoppingListRepository,
   MealPlanRepository,
   CorrectionRepository,
+  AisleOrderRepository,
 } from "./repositories";
 import { LocalRecipeRepository } from "./local/LocalRecipeRepository";
 import { LocalShoppingListRepository } from "./local/LocalShoppingListRepository";
 import { LocalImageRepository } from "./local/LocalImageRepository";
 import { LocalMealPlanRepository } from "./local/LocalMealPlanRepository";
 import { LocalCorrectionRepository } from "./local/LocalCorrectionRepository";
+import { LocalAisleOrderRepository } from "./local/LocalAisleOrderRepository";
 
 /**
  * Einziger Ort, an dem die konkrete Datenquelle gewählt wird.
@@ -22,6 +24,7 @@ let shoppingRepo: ShoppingListRepository | undefined;
 let imageRepo: ImageRepository | undefined;
 let mealPlanRepo: MealPlanRepository | undefined;
 let correctionRepo: CorrectionRepository | undefined;
+let aisleOrderRepo: AisleOrderRepository | undefined;
 
 export function getRecipeRepository(): RecipeRepository {
   if (!recipeRepo) recipeRepo = new LocalRecipeRepository();
@@ -48,5 +51,11 @@ export function getCorrectionRepository(): CorrectionRepository {
   return correctionRepo;
 }
 
-export type { ImageRepository, RecipeRepository, SearchFilter, ShoppingListRepository, MealPlanRepository, CorrectionRepository } from "./repositories";
+/** Gelernte Abteilungs-Reihenfolge der Einkaufsliste (localStorage-frei, Dexie). */
+export function getAisleOrderRepository(): AisleOrderRepository {
+  if (!aisleOrderRepo) aisleOrderRepo = new LocalAisleOrderRepository();
+  return aisleOrderRepo;
+}
+
+export type { ImageRepository, RecipeRepository, SearchFilter, ShoppingListRepository, MealPlanRepository, CorrectionRepository, AisleOrderRepository } from "./repositories";
 export { getDB } from './local/db';
