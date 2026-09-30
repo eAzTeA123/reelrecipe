@@ -124,6 +124,30 @@ export interface AisleCheckEvent {
   timestamp: number;
 }
 
+/**
+ * Sammlung (Ordner) für Rezepte.
+ *
+ * Die Mitgliedschaft liegt **in der Sammlung**, nicht am Rezept – dadurch
+ * braucht kein bestehendes Rezept eine Migration, und ein Rezept darf in
+ * beliebig vielen Sammlungen liegen. `filter` macht eine Sammlung dynamisch
+ * (sie füllt sich selbst), `recipeIds` macht sie statisch; beides zusammen ist
+ * die Vereinigung.
+ */
+export interface Collection {
+  id: string;
+  name: string;
+  emoji?: string;
+  order: number;
+  filter?: {
+    tags?: string[];
+    category?: string;
+    query?: string;
+  };
+  recipeIds?: string[];
+  createdAt: number;
+  updatedAt: number;
+}
+
 export interface ParsedRecipe {
   title: string;
   servings?: number;

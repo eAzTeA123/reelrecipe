@@ -5,6 +5,7 @@ import type {
   RecipeInput,
   ShoppingItem,
   MealPlanEntry,
+  Collection,
 } from "@/domain/types";
 
 export interface SearchFilter {
@@ -81,6 +82,18 @@ export interface AisleOrderRepository {
   recordCheck(aisle: string): Promise<void>;
   getOrder(): Promise<Map<string, number>>;
   clear(): Promise<void>;
+}
+
+/** Sammlungen (Ordner) für Rezepte – Mitgliedschaft liegt in der Sammlung. */
+export interface CollectionRepository {
+  list(): Promise<Collection[]>;
+  create(input: { name: string; emoji?: string; filter?: Collection["filter"] }): Promise<Collection>;
+  rename(id: string, name: string): Promise<void>;
+  update(id: string, patch: Partial<Pick<Collection, "name" | "emoji" | "filter" | "recipeIds">>): Promise<void>;
+  addRecipes(id: string, recipeIds: string[]): Promise<void>;
+  removeRecipe(id: string, recipeId: string): Promise<void>;
+  setOrder(idsInOrder: string[]): Promise<void>;
+  delete(id: string): Promise<void>;
 }
 
 /**

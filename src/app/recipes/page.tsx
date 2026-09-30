@@ -171,6 +171,13 @@ function RecipesContent() {
             onChange={setQuery}
             placeholder="Titel oder Zutat suchen"
           />
+          <Link
+            href="/collections"
+            className="pressable inline-flex min-h-11 items-center gap-2 self-start rounded-xl border border-line bg-surface px-3 text-[14px] font-medium text-ink-2"
+          >
+            <IconGrid size={17} />
+            {t("collections.title")}
+          </Link>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <CategoryChips value={category} onChange={setCategory} allowAll />
             {tagOptions.length > 0 && (

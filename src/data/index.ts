@@ -5,6 +5,7 @@ import type {
   MealPlanRepository,
   CorrectionRepository,
   AisleOrderRepository,
+  CollectionRepository,
 } from "./repositories";
 import { LocalRecipeRepository } from "./local/LocalRecipeRepository";
 import { LocalShoppingListRepository } from "./local/LocalShoppingListRepository";
@@ -12,6 +13,7 @@ import { LocalImageRepository } from "./local/LocalImageRepository";
 import { LocalMealPlanRepository } from "./local/LocalMealPlanRepository";
 import { LocalCorrectionRepository } from "./local/LocalCorrectionRepository";
 import { LocalAisleOrderRepository } from "./local/LocalAisleOrderRepository";
+import { LocalCollectionRepository } from "./local/LocalCollectionRepository";
 
 /**
  * Einziger Ort, an dem die konkrete Datenquelle gewählt wird.
@@ -25,6 +27,7 @@ let imageRepo: ImageRepository | undefined;
 let mealPlanRepo: MealPlanRepository | undefined;
 let correctionRepo: CorrectionRepository | undefined;
 let aisleOrderRepo: AisleOrderRepository | undefined;
+let collectionRepo: CollectionRepository | undefined;
 
 export function getRecipeRepository(): RecipeRepository {
   if (!recipeRepo) recipeRepo = new LocalRecipeRepository();
@@ -57,5 +60,11 @@ export function getAisleOrderRepository(): AisleOrderRepository {
   return aisleOrderRepo;
 }
 
-export type { ImageRepository, RecipeRepository, SearchFilter, ShoppingListRepository, MealPlanRepository, CorrectionRepository, AisleOrderRepository } from "./repositories";
+/** Sammlungen (Ordner) für Rezepte. */
+export function getCollectionRepository(): CollectionRepository {
+  if (!collectionRepo) collectionRepo = new LocalCollectionRepository();
+  return collectionRepo;
+}
+
+export type { ImageRepository, RecipeRepository, SearchFilter, ShoppingListRepository, MealPlanRepository, CorrectionRepository, AisleOrderRepository, CollectionRepository } from "./repositories";
 export { getDB } from './local/db';

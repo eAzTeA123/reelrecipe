@@ -6,6 +6,7 @@ import type {
   MealPlanEntry,
   AisleCheckEvent,
   ParserCorrection,
+  Collection,
 } from "@/domain/types";
 
 interface SettingRow {
@@ -28,6 +29,7 @@ export class RecipeDB extends Dexie {
   drafts!: Table<DraftRow, string>;
   aisleOrder!: Table<AisleCheckEvent, string>;
   corrections!: Table<ParserCorrection, string>;
+  collections!: Table<Collection, string>;
 
   constructor() {
     super("rezept");
@@ -65,6 +67,12 @@ export class RecipeDB extends Dexie {
     // Lokales Parser-Korrektur-Log (nur für die Parser-Verbesserung, bleibt im Browser)
     this.version(6).stores({
       corrections: "id, createdAt",
+    });
+
+    // Sammlungen (Ordner) – Mitgliedschaft liegt in der Sammlung, Rezepte
+    // bleiben unverändert (deshalb keine Rezept-Migration nötig).
+    this.version(7).stores({
+      collections: "id, name, order",
     });
 
     // Schema-Upgrade in einem anderen Tab: unsere alte Verbindung würde das
