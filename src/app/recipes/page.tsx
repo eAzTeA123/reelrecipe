@@ -1,6 +1,5 @@
 "use client";
 
-import { collectTags, matchesTags } from "@/lib/tags";
 import { useI18n } from "@/lib/i18n/context";
 import { useState, useMemo, Suspense } from "react";
 import Link from "next/link";
@@ -14,7 +13,7 @@ import { ErrorState } from "@/components/ErrorState";
 import { SearchField } from "@/components/SearchField";
 import { CategoryChips } from "@/components/CategoryPicker";
 import { Button } from "@/components/Button";
-import { IconPlus, IconFridge, IconGrid, IconDice } from "@/components/Icons";
+import { IconPlus, IconFridge, IconGrid, IconDice, IconFolder, IconFilter, IconChevronDown, IconX } from "@/components/Icons";
 import { normalizeForSearch } from "@/lib/text";
 import { FridgeSearch } from "@/components/FridgeSearch";
 
@@ -28,24 +27,21 @@ function RecipesContent() {
   const [category, setCategory] = useState<string | undefined>();
   const [sort, setSort] = useState<"newest" | "oldest" | "title" | "time">("newest");
   const [fridgeIngredients, setFridgeIngredients] = useState<string[]>([]);
-  const [selectedTags, setSelectedTags] = useState<string[]>(() => {
-    const initial = searchParams.get("tag");
-    return initial ? [initial] : [];
-  });
+  /** Auf dem Handy ist die Filterleiste eingeklappt, damit Rezepte sofort sichtbar sind. */
+  const [filtersOpen, setFiltersOpen] = useState(false);
+
+  const activeFilterCount = category ? 1 : 0;
 
   const { recipes: allRecipes, loading, error, retry } = useRecipes({
     query: mode === "fridge" ? "" : query,
     category: mode === "fridge" ? undefined : category,
   });
 
-  /** Tag-Filter (UND) wirkt zusätzlich zu Suche und Kategorie. */
-  const recipes = useMemo(
-    () => allRecipes.filter((recipe) => matchesTags(recipe, selectedTags)),
-    [allRecipes, selectedTags],
-  );
-
-  /** Vorschlagsliste: alle vergebenen Tags, häufigste zuerst. */
-  const tagOptions = useMemo(() => collectTags(allRecipes), [allRecipes]);
+  /**
+   * Eigene Filter (Kategorie, Zeiten, Zutaten …) gehören zu den **Sammlungen**;
+   * diese Liste filtert nur nach Suche und Kategorie.
+   */
+  const recipes = allRecipes;
 
   const processedRecipes = useMemo(() => {
     if (mode === "all") {
@@ -114,6 +110,13 @@ function RecipesContent() {
         action={
           <div className="flex gap-2">
             <Link
+              href="/collections"
+              aria-label={t("collections.title")}
+              className="pressable inline-flex h-11 w-11 items-center justify-center rounded-full bg-surface-2 text-ink"
+            >
+              <IconFolder size={20} />
+            </Link>
+            <Link
               href="/bingo"
               aria-label="Rezept-Bingo spielen"
               className="pressable inline-flex h-11 w-11 items-center justify-center rounded-full bg-surface-2 text-ink"
@@ -155,7 +158,10 @@ function RecipesContent() {
           }`}
         >
           <IconFridge size={18} />
-          <span>Kühlschrank-Suche</span>
+          <span>
+            <span className="sm:hidden">Kühlschrank</span>
+            <span className="hidden sm:inline">Kühlschrank-Suche</span>
+          </span>
           {fridgeIngredients.length > 0 && (
             <span className="flex h-5 w-5 items-center justify-center rounded-full bg-accent text-[11px] font-bold text-accent-ink">
               {fridgeIngredients.length}
@@ -165,66 +171,44 @@ function RecipesContent() {
       </div>
 
       {mode === "all" ? (
-        <div className="mb-6 flex flex-col gap-3">
+        <div className="mb-5 flex flex-col gap-3">
           <SearchField
             value={query}
             onChange={setQuery}
             placeholder="Titel oder Zutat suchen"
           />
-          <Link
-            href="/collections"
-            className="pressable inline-flex min-h-11 items-center gap-2 self-start rounded-xl border border-line bg-surface px-3 text-[14px] font-medium text-ink-2"
-          >
-            <IconGrid size={17} />
-            {t("collections.title")}
-          </Link>
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <CategoryChips value={category} onChange={setCategory} allowAll />
-            {tagOptions.length > 0 && (
-              <ul className="flex flex-wrap gap-1.5">
-                {tagOptions.slice(0, 12).map((tag) => {
-                  const active = selectedTags.some((own) => own.toLowerCase() === tag.toLowerCase());
-                  return (
-                    <li key={tag}>
-                      <button
-                        type="button"
-                        aria-pressed={active}
-                        onClick={() =>
-                          setSelectedTags((prev) =>
-                            active
-                              ? prev.filter((own) => own.toLowerCase() !== tag.toLowerCase())
-                              : [...prev, tag],
-                          )
-                        }
-                        className={`pressable rounded-full border px-3 py-1 text-[13px] font-medium ${
-                          active
-                            ? "border-accent bg-accent/10 text-accent"
-                            : "border-line bg-surface-2 text-ink-2"
-                        }`}
-                      >
-                        {tag}
-                      </button>
-                    </li>
-                  );
-                })}
-                {selectedTags.length > 0 && (
-                  <li>
-                    <button
-                      type="button"
-                      onClick={() => setSelectedTags([])}
-                      className="pressable rounded-full border border-line px-3 py-1 text-[13px] font-medium text-ink-3"
-                    >
-                      {t("recipes.tagsClear")}
-                    </button>
-                  </li>
-                )}
-              </ul>
-            )}
-            <label className="flex items-center gap-2 text-[14px] font-medium text-ink-2">
-              Sortieren
+
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setFiltersOpen((open) => !open)}
+              aria-expanded={filtersOpen}
+              aria-controls="recipe-filters"
+              className={`pressable inline-flex h-11 items-center gap-2 rounded-xl border px-3.5 text-[14px] font-semibold md:hidden ${
+                activeFilterCount > 0
+                  ? "border-accent bg-accent-soft text-accent"
+                  : "border-line bg-surface text-ink-2"
+              }`}
+            >
+              <IconFilter size={17} />
+              {t("recipes.filters")}
+              {activeFilterCount > 0 && (
+                <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-accent px-1 text-[11px] font-bold text-accent-ink">
+                  {activeFilterCount}
+                </span>
+              )}
+              <IconChevronDown
+                size={15}
+                className={`transition-transform ${filtersOpen ? "rotate-180" : ""}`}
+              />
+            </button>
+
+            <label className="ml-auto flex items-center gap-2 text-[14px] font-medium text-ink-2">
+              <span className="hidden sm:inline">Sortieren</span>
               <select
                 value={sort}
                 onChange={(e) => setSort(e.target.value as typeof sort)}
+                aria-label="Sortieren"
                 className="h-11 rounded-xl border border-line bg-surface px-3 text-[15px] text-ink focus:border-accent focus:outline-none"
               >
                 <option value="newest">Neueste</option>
@@ -233,6 +217,30 @@ function RecipesContent() {
                 <option value="time">Kürzeste Zeit</option>
               </select>
             </label>
+          </div>
+
+          {/* Aktive Filter bleiben sichtbar, auch wenn die Leiste eingeklappt ist. */}
+          {activeFilterCount > 0 && !filtersOpen && (
+            <ul className="flex flex-wrap items-center gap-1.5 md:hidden" aria-label={t("recipes.filtersActive")}>
+              {category && (
+                <li>
+                  <ActiveFilterChip label={category} onRemove={() => setCategory(undefined)} />
+                </li>
+              )}
+              <li>
+                <button
+                  type="button"
+                  onClick={() => setCategory(undefined)}
+                  className="pressable rounded-full px-2.5 py-1 text-[13px] font-medium text-ink-3 underline underline-offset-2"
+                >
+                  {t("recipes.filtersClear")}
+                </button>
+              </li>
+            </ul>
+          )}
+
+          <div id="recipe-filters" className={`${filtersOpen ? "flex" : "hidden"} flex-col gap-3 md:flex`}>
+            <CategoryChips value={category} onChange={setCategory} allowAll />
           </div>
         </div>
       ) : (
@@ -305,6 +313,21 @@ function RecipesContent() {
         </div>
       )}
     </>
+  );
+}
+
+/** Zeigt einen gesetzten Filter als entfernbaren Chip (Handy, eingeklappte Leiste). */
+function ActiveFilterChip({ label, onRemove }: { label: string; onRemove: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onRemove}
+      className="pressable inline-flex h-8 items-center gap-1.5 rounded-full border border-accent bg-accent-soft px-3 text-[13px] font-medium text-accent"
+    >
+      {label}
+      <IconX size={13} />
+      <span className="sr-only">Filter entfernen</span>
+    </button>
   );
 }
 

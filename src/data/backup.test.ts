@@ -91,7 +91,45 @@ describe("parseBackup: kein stiller Feldverlust mehr", () => {
     expect(parsed.recipes).toHaveLength(1);
     expect(parsed.mealPlan).toEqual([]);
     expect(parsed.corrections).toEqual([]);
+    expect(parsed.collections).toEqual([]);
     expect(parsed.warnings).toEqual([]);
+  });
+
+  it("liest Sammlungen mit ihren eigenen Filtern", () => {
+    const parsed = parseBackup(
+      backupFile({
+        collections: [
+          {
+            id: "s1",
+            name: "Schnelle Küche",
+            order: 0,
+            filter: { categories: ["Pasta"], maxTotalTime: 30, favoritesOnly: true, quatsch: "weg" },
+            recipeIds: ["r1"],
+            createdAt: 7,
+            updatedAt: 8,
+          },
+          { id: "s2" }, // ohne Namen → wird übersprungen und gemeldet
+        ],
+      }),
+    );
+
+    expect(parsed.collections).toHaveLength(1);
+    const collection = parsed.collections[0];
+    expect(collection.name).toBe("Schnelle Küche");
+    expect(collection.filter).toEqual({
+      categories: ["Pasta"],
+      maxTotalTime: 30,
+      favoritesOnly: true,
+    });
+    expect(collection.recipeIds).toEqual(["r1"]);
+    expect(parsed.warnings.join(" ")).toContain("Sammlungen");
+  });
+
+  it("verwirft eine leere Filterregel, statt sie zu behalten", () => {
+    const parsed = parseBackup(
+      backupFile({ collections: [{ id: "s1", name: "Leer", order: 0, filter: {} }] }),
+    );
+    expect(parsed.collections[0].filter).toBeUndefined();
   });
 
   it("meldet fehlende Bilder, statt still kaputte Rezepte anzulegen", () => {

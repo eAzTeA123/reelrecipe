@@ -14,7 +14,7 @@ const VIEWPORTS = [
   { width: 1920, height: 1080, name: "1920" },
 ];
 
-const PAGES = ["/", "/recipes", "/shopping", "/favorites", "/settings", "/import"];
+const PAGES = ["/", "/recipes", "/collections", "/shopping", "/favorites", "/settings", "/import"];
 
 async function noHorizontalOverflow(page: Page) {
   const result = await page.evaluate(() => ({

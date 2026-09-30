@@ -1,40 +1,11 @@
 /**
- * Tags an Rezepten: Eingabe normalisieren, Vorschläge sammeln, filtern.
+ * Tags an Rezepten – reine Bestandsdaten.
  *
- * Bewusst reine Funktionen – die UI-Schicht ruft sie nur auf, und sie sind
- * ohne IndexedDB/DOM testbar.
+ * Seit den Sammlungen mit eigenen Filtern vergibt die App keine Tags mehr
+ * (kein Eingabefeld, keine Tag-Leiste in der Rezeptliste). Die Funktionen
+ * bleiben, damit alte Bibliotheken ihre Tags behalten und eine Sammlung mit
+ * einer alten Tag-Regel weiter funktioniert.
  */
-
-export const MAX_TAGS_PER_RECIPE = 12;
-export const MAX_TAG_LENGTH = 24;
-
-/**
- * Zerlegt eine Eingabe in Tags: trennt an Komma und Semikolon, trimmt,
- * kürzt auf 24 Zeichen, wirft Leeres und Duplikate (case-insensitiv) weg und
- * begrenzt auf 12 Tags je Rezept.
- */
-export function parseTagInput(raw: string, existing: string[] = []): string[] {
-  const result = [...existing];
-  const seen = new Set(result.map((tag) => tag.toLowerCase()));
-
-  for (const part of raw.split(/[,;]+/)) {
-    const cleaned = part.replace(/\s+/g, " ").trim().slice(0, MAX_TAG_LENGTH);
-    if (cleaned.length < 2) continue;
-    const key = cleaned.toLowerCase();
-    if (seen.has(key)) continue;
-    if (result.length >= MAX_TAGS_PER_RECIPE) break;
-    seen.add(key);
-    result.push(cleaned);
-  }
-
-  return result;
-}
-
-/** Entfernt ein Tag (case-insensitiv) aus der Liste. */
-export function removeTag(tags: string[], tag: string): string[] {
-  const key = tag.toLowerCase();
-  return tags.filter((entry) => entry.toLowerCase() !== key);
-}
 
 /**
  * Sammelt alle vergebenen Tags über alle Rezepte, häufigste zuerst

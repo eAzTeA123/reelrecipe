@@ -209,7 +209,7 @@ test("Einkaufsliste: manuell hinzufügen und bearbeiten", async ({ page }) => {
 async function exportBackup(page: Page): Promise<string> {
   await page.goto("/settings");
   const downloadPromise = page.waitForEvent("download");
-  await page.getByRole("button", { name: "Exportieren" }).click();
+  await page.getByRole("button", { name: "Exportieren", exact: true }).click();
   const download = await downloadPromise;
   const path = await download.path();
   const fs = await import("fs");
@@ -221,6 +221,8 @@ test("Export und Import des Backups", async ({ page }) => {
   const json = await exportBackup(page);
   const backup = JSON.parse(json);
   expect(backup.app).toBe("rezept");
+  expect(backup.version).toBe(3);
+  expect(backup.collections).toEqual([]);
   expect(backup.recipes).toHaveLength(1);
   expect(backup.recipes[0].title).toBe("Creamy Garlic Chicken");
 

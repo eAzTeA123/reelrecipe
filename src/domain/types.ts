@@ -102,9 +102,10 @@ export interface BackupFile {
   /**
    * 1 = nur Rezepte, Bilder und Einkaufsliste.
    * 2 = zusätzlich Wochenplan, Korrektur-Log und Aisle-Reihenfolge.
-   * Beide Versionen bleiben lesbar (`parseBackup`).
+   * 3 = zusätzlich Sammlungen (Ordner mit eigenen Filtern).
+   * Alle Versionen bleiben lesbar (`parseBackup`).
    */
-  version: 1 | 2;
+  version: 1 | 2 | 3;
   exportedAt: number;
   recipes: Recipe[];
   images: BackupImage[];
@@ -115,6 +116,8 @@ export interface BackupFile {
   corrections?: ParserCorrection[];
   /** Ab Version 2 */
   aisleOrder?: AisleCheckEvent[];
+  /** Ab Version 3 */
+  collections?: Collection[];
 }
 
 export interface AisleCheckEvent {
@@ -122,6 +125,32 @@ export interface AisleCheckEvent {
   aisle: string;
   position: number;
   timestamp: number;
+}
+
+/**
+ * Eigene Filter einer Sammlung: alle gesetzten Regeln gelten zusammen (UND).
+ *
+ * Die Regeln greifen auf vorhandene Rezeptdaten zu (Kategorie, Zeiten,
+ * Favorit, Titel, Zutaten) – dadurch muss ein Rezept für eine Sammlung
+ * **nicht** extra verschlagwortet werden.
+ */
+export interface CollectionFilter {
+  /** Ein oder mehrere Kategorien (innerhalb der Liste ODER-verknüpft) */
+  categories?: string[];
+  /** veraltet: einzelne Kategorie aus der ersten Fassung – wird weiter gelesen */
+  category?: string;
+  /** Bestands-Tags; im Rezept-Formular werden keine Tags mehr vergeben */
+  tags?: string[];
+  /** maximale Gesamtzeit in Minuten (Vorbereitung + Kochen) */
+  maxTotalTime?: number;
+  /** nur Favoriten */
+  favoritesOnly?: boolean;
+  /** Titel enthält … */
+  titleContains?: string;
+  /** Zutat enthält … */
+  ingredientContains?: string;
+  /** veraltet: Suchbegriff über Titel und Zutaten */
+  query?: string;
 }
 
 /**
@@ -138,11 +167,7 @@ export interface Collection {
   name: string;
   emoji?: string;
   order: number;
-  filter?: {
-    tags?: string[];
-    category?: string;
-    query?: string;
-  };
+  filter?: CollectionFilter;
   recipeIds?: string[];
   createdAt: number;
   updatedAt: number;

@@ -158,6 +158,7 @@ export default function SettingsPage() {
       const extras = [
         result.addedMealPlanEntries > 0 ? `${result.addedMealPlanEntries} Planeinträge` : null,
         result.addedCorrections > 0 ? `${result.addedCorrections} Korrekturen` : null,
+        result.addedCollections > 0 ? `${result.addedCollections} Sammlungen` : null,
         result.addedShoppingItems > 0 ? `${result.addedShoppingItems} Einkaufslisten-Einträge` : null,
       ].filter(Boolean);
       toast(

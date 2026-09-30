@@ -1,6 +1,8 @@
 import type {
   AisleCheckEvent,
   BackupFile,
+  Collection,
+  CollectionFilter,
   Ingredient,
   MealPlanEntry,
   ParseSnapshot,
@@ -147,6 +149,8 @@ export interface ParsedBackup {
   mealPlan: MealPlanEntry[];
   corrections: ParserCorrection[];
   aisleOrder: AisleCheckEvent[];
+  /** Ab Backup-Version 3; bei älteren Dateien leer */
+  collections: Collection[];
   /**
    * Nicht-fatale Probleme (z. B. Bildverweis ohne zugehöriges Bild). Wird dem
    * Nutzer angezeigt, statt still kaputte Rezepte zu erzeugen.
@@ -162,6 +166,7 @@ export interface ImportResult {
   addedMealPlanEntries: number;
   addedCorrections: number;
   addedAisleOrderEntries: number;
+  addedCollections: number;
   /** Verwaiste Bild-Blobs, die beim Import aufgeräumt wurden */
   removedOrphanImages: number;
   warnings: string[];
@@ -174,7 +179,7 @@ export async function importBackup(
   const db = getDB();
   return db.transaction(
     "rw",
-    [db.recipes, db.images, db.shopping, db.mealPlan, db.corrections, db.aisleOrder],
+    [db.recipes, db.images, db.shopping, db.mealPlan, db.corrections, db.aisleOrder, db.collections],
     async () => {
     const existingRecipeIds = new Set(
       (await db.recipes.toArray()).map((recipe) => recipe.id),
@@ -245,6 +250,10 @@ export async function importBackup(
     const aisleToWrite = backup.aisleOrder.filter(
       (entry) => mode === "replace" || !existingAisleIds.has(entry.id),
     );
+    const existingCollectionIds = new Set((await db.collections.toArray()).map((entry) => entry.id));
+    const collectionsToWrite = backup.collections.filter(
+      (entry) => mode === "replace" || !existingCollectionIds.has(entry.id),
+    );
 
     await db.images.bulkPut(imagesToWrite);
     await db.recipes.bulkPut(finalRecipesToWrite);
@@ -252,6 +261,7 @@ export async function importBackup(
     await db.mealPlan.bulkPut(mealPlanToWrite);
     await db.corrections.bulkPut(correctionsToWrite);
     await db.aisleOrder.bulkPut(aisleToWrite);
+    await db.collections.bulkPut(collectionsToWrite);
 
     // Bild-Aufräumen: Blobs löschen, auf die kein Rezept (mehr) verweist. Ohne
     // das wächst die Datenbank bei jedem Re-Import bis zum Quota-Fehler.
@@ -276,6 +286,7 @@ export async function importBackup(
       addedMealPlanEntries: mealPlanToWrite.length,
       addedCorrections: correctionsToWrite.length,
       addedAisleOrderEntries: aisleToWrite.length,
+      addedCollections: collectionsToWrite.length,
       removedOrphanImages: orphanImageIds.length,
       warnings: backup.warnings,
     };
@@ -323,6 +334,52 @@ function parseParsedRecipeSnapshot(v: unknown): ParsedRecipe | null {
     ingredients: v.ingredients.map(parseIngredient),
     steps: v.steps.map((s, i) => parseStep(s, i + 1)),
     tags: parseStringArray(v.tags),
+  };
+}
+
+/**
+ * Filter einer Sammlung: nur bekannte Regeln übernehmen, unbekannte Felder
+ * fallen weg – so bleibt der Import auch bei künftigen Formaten robust.
+ */
+function parseCollectionFilter(v: unknown): CollectionFilter | undefined {
+  if (!isRecord(v)) return undefined;
+  const filter: CollectionFilter = {
+    categories: parseStringArray(v.categories),
+    category: optString(v.category),
+    tags: parseStringArray(v.tags),
+    maxTotalTime: optNumber(v.maxTotalTime, 1),
+    favoritesOnly: v.favoritesOnly === true ? true : undefined,
+    titleContains: optString(v.titleContains),
+    ingredientContains: optString(v.ingredientContains),
+    query: optString(v.query),
+  };
+  const hasAny =
+    (filter.categories && filter.categories.length > 0) ||
+    filter.category ||
+    (filter.tags && filter.tags.length > 0) ||
+    filter.maxTotalTime !== undefined ||
+    filter.favoritesOnly ||
+    filter.titleContains ||
+    filter.ingredientContains ||
+    filter.query;
+  return hasAny ? filter : undefined;
+}
+
+function parseCollection(v: unknown): Collection | null {
+  if (!isRecord(v)) return null;
+  const id = optString(v.id);
+  const name = optString(v.name)?.trim();
+  if (!id || !name) return null;
+  const now = Date.now();
+  return {
+    id,
+    name,
+    emoji: optString(v.emoji),
+    order: optNumber(v.order, 0) ?? 0,
+    filter: parseCollectionFilter(v.filter),
+    recipeIds: parseStringArray(v.recipeIds),
+    createdAt: optNumber(v.createdAt, 0) ?? now,
+    updatedAt: optNumber(v.updatedAt, 0) ?? now,
   };
 }
 
@@ -386,7 +443,7 @@ export function parseBackup(json: string): ParsedBackup {
   } catch {
     throw new Error("Die Datei ist keine gültige JSON-Datei.");
   }
-  if (!isRecord(raw) || raw.app !== "rezept" || (raw.version !== 1 && raw.version !== 2)) {
+  if (!isRecord(raw) || raw.app !== "rezept" || (raw.version !== 1 && raw.version !== 2 && raw.version !== 3)) {
     throw new Error("Das ist keine gültige Rezept-Backup-Datei.");
   }
   if (!Array.isArray(raw.recipes)) {
@@ -427,20 +484,23 @@ export function parseBackup(json: string): ParsedBackup {
     mealPlan: collectEntries(raw.mealPlan, parseMealPlanEntry, "Wochenplan-Einträge", warnings),
     corrections: collectEntries(raw.corrections, parseCorrection, "Korrektur-Einträge", warnings),
     aisleOrder: collectEntries(raw.aisleOrder, parseAisleCheckEvent, "Aisle-Einträge", warnings),
+    collections: collectEntries(raw.collections, parseCollection, "Sammlungen", warnings),
     warnings,
   };
 }
 
 export async function buildBackup(): Promise<BackupFile> {
   const db = getDB();
-  const [recipes, images, shopping, mealPlan, corrections, aisleOrder] = await Promise.all([
-    db.recipes.toArray(),
-    db.images.toArray(),
-    db.shopping.toArray(),
-    db.mealPlan.toArray(),
-    db.corrections.toArray(),
-    db.aisleOrder.toArray(),
-  ]);
+  const [recipes, images, shopping, mealPlan, corrections, aisleOrder, collections] =
+    await Promise.all([
+      db.recipes.toArray(),
+      db.images.toArray(),
+      db.shopping.toArray(),
+      db.mealPlan.toArray(),
+      db.corrections.toArray(),
+      db.aisleOrder.toArray(),
+      db.collections.toArray(),
+    ]);
   const encoded = await Promise.all(
     images.map(async (img) => ({
       id: img.id,
@@ -450,7 +510,7 @@ export async function buildBackup(): Promise<BackupFile> {
   );
   return {
     app: "rezept",
-    version: 2,
+    version: 3,
     exportedAt: Date.now(),
     recipes,
     images: encoded,
@@ -458,6 +518,7 @@ export async function buildBackup(): Promise<BackupFile> {
     mealPlan,
     corrections,
     aisleOrder,
+    collections,
   };
 }
 

@@ -22,11 +22,11 @@ export function RecipeCard({
 }) {
   const time = totalTime(recipe);
   return (
-    <article className="group relative block border-b-2 border-line pb-8 mb-8 last:border-b-0">
+    <article className="group relative block border-b-2 border-line pb-6 mb-6 last:border-b-0 sm:pb-8 sm:mb-8">
       <Link href={`/recipes/${recipe.id}`} className="block pressable" aria-label={recipe.title}>
         {recipe.image && (
           <div 
-            className="relative aspect-[4/5] w-full overflow-hidden mb-4 rounded-2xl"
+            className="relative aspect-[16/11] w-full overflow-hidden mb-3 rounded-2xl sm:aspect-[4/5] sm:mb-4"
             style={recipe.color ? { backgroundColor: `${recipe.color}20` } : undefined}
           >
             {recipe.color && (
@@ -64,7 +64,7 @@ export function RecipeCard({
               )}
             </ul>
           )}
-          <h3 className="text-[28px] font-extrabold leading-none tracking-tight group-hover:text-accent transition-colors">
+          <h3 className="text-[21px] font-extrabold leading-tight tracking-tight group-hover:text-accent transition-colors sm:text-[28px] sm:leading-none">
             {recipe.title}
           </h3>
           
@@ -129,11 +129,11 @@ export function RecipeCard({
         onClick={() => void getRecipeRepository().toggleFavorite(recipe.id)}
         aria-label={recipe.favorite ? "Aus Favoriten entfernen" : "Zu Favoriten hinzufügen"}
         aria-pressed={recipe.favorite}
-        className={`pressable absolute right-2 top-2 flex h-14 w-14 items-center justify-center bg-surface rounded-full ${
+        className={`pressable absolute right-2 top-2 flex h-11 w-11 items-center justify-center bg-surface/90 rounded-full backdrop-blur sm:h-14 sm:w-14 sm:bg-surface ${
           recipe.favorite ? "text-accent" : "text-ink"
         } hover:bg-line transition-colors`}
       >
-        {recipe.favorite ? <IconHeartFill size={24} /> : <IconHeart size={24} />}
+        {recipe.favorite ? <IconHeartFill size={22} /> : <IconHeart size={22} />}
       </button>
     </article>
   );

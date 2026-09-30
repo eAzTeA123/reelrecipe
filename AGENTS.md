@@ -17,13 +17,14 @@ npm run test:e2e   # Playwright E2E (braucht vorher `npm run build`; startet Ser
 
 ## Architektur
 
-- `src/domain/` – Typen (`Recipe`, `Ingredient`, `RecipeStep`, `ShoppingItem`, `BackupFile`), Kategorien.
+- `src/domain/` – Typen (`Recipe`, `Ingredient`, `RecipeStep`, `ShoppingItem`, `Collection`, `BackupFile`), Kategorien.
 - `src/data/` – Repository-Schicht. Die UI nutzt nur `data/index.ts` (`getRecipeRepository()` etc.).
   Konkrete Implementierung: `data/local/*` (Dexie/IndexedDB). Für Supabase später: neue
   Implementierung der Interfaces + Austausch in `data/index.ts`. **Die UI darf Dexie nie direkt importieren.**
 - `src/parser/` – heuristischer Rezeptparser (Regex/Scoring, DE+EN, keine KI). Tests: `*.test.ts`.
 - `src/lib/` – `scale` (Portionen, nicht-destruktiv), `shoppingMerge`, `image` (Canvas-Kompression),
-  `instagram` (URL-Validierung), `text` (IDs, Such-Normalisierung).
+  `instagram` (URL-Validierung), `text` (IDs, Such-Normalisierung), `collections`
+  (welche Rezepte gehören in eine Sammlung), `tags` (nur noch Bestandsdaten, s. u.).
 - `src/hooks/` – `useRecipes`, `useRecipe`, `useShoppingList` (Dexie liveQuery), `useImageUrl`
   (löst `local-image:<id>`-Referenzen zu Object-URLs auf).
 - `src/app/api/instagram/` – Caption-Abruf: offizielles oEmbed wenn `INSTAGRAM_OEMBED_TOKEN` gesetzt,
@@ -35,6 +36,26 @@ Auf Wunsch wieder **ausgebaut** (Stand: nach Commit `85e843c`). Der Code liegt l
 in `PRICE_NUTRITION_ARCHIVE.md` (per .gitignore nicht im Repo) und ist über die
 Commits `3f0660e` … `85e843c` jederzeit wiederherstellbar; die wertvollsten
 Erkenntnisse aus dem letzten Anlauf stehen dort im Abschnitt „Wiederaktivierung".
+
+### Sammlungen (Ordner) statt Tags
+
+`/collections` gruppiert Rezepte über **eigene Filter** – die Rezepte selbst
+werden dafür nicht verschlagwortet:
+
+- Eine Sammlung hat `filter` (Kategorie(n), maximale Gesamtzeit, nur Favoriten,
+  Titel enthält, Zutat enthält), `recipeIds` (von Hand hinzugefügt) oder beides;
+  es gilt die Vereinigung. `resolveCollectionRecipes` in `src/lib/collections.ts`
+  ist die einzige Wahrheit dafür und wird auch von der Rezept-Auswahl
+  (`RecipePickerSheet`) genutzt.
+- **Die Mitgliedschaft liegt in der Sammlung**, nicht am Rezept → kein Rezept
+  braucht eine Migration, ein Rezept darf in beliebig vielen Sammlungen liegen.
+- `CollectionFilter` liest alte Felder (`category`, `query`) weiter; neue Regeln
+  kommen nur dazu. Unbekannte Felder werden beim Backup-Import verworfen.
+- **Tags sind Bestandsdaten**: `Recipe.tags` bleibt, aber es gibt kein
+  Eingabefeld mehr und keine Tag-Leiste in der Rezeptliste. `src/lib/tags.ts`
+  behält `collectTags`/`matchesTags`, damit alte Bibliotheken und alte
+  Tag-Regeln funktionieren.
+- Backup **Version 3** enthält `collections`; Version 1 und 2 bleiben lesbar.
 
 ## Konventionen
 

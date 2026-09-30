@@ -138,3 +138,9 @@ export const IconTag = (p: P) => (
 export const IconChevronDown = (p: P) => (
   <svg {...base(p)}><path d="m6 9 6 6 6-6" /></svg>
 );
+export const IconFolder = (p: P) => (
+  <svg {...base(p)}><path d="M3.5 7.2a1.7 1.7 0 0 1 1.7-1.7h3.4l2 2.4h7.2a1.7 1.7 0 0 1 1.7 1.7v8.7a1.7 1.7 0 0 1-1.7 1.7H5.2a1.7 1.7 0 0 1-1.7-1.7Z" /></svg>
+);
+export const IconFilter = (p: P) => (
+  <svg {...base(p)}><path d="M4 6h16l-6.2 7.3v4.9l-3.6 1.8v-6.7Z" /></svg>
+);
