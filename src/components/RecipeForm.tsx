@@ -14,6 +14,7 @@ import { UNIT_LABELS } from "@/parser/units";
 import { Button } from "./Button";
 import { Field, Input, Textarea } from "./Input";
 import { CategoryChips } from "./CategoryPicker";
+import { TagInput } from "./TagInput";
 import { IconArrowDown, IconArrowUp, IconCamera, IconCheck, IconPlus, IconTrash, IconX } from "./Icons";
 import { Spinner } from "./Spinner";
 import { useImageUrl } from "@/hooks/useImageUrl";
@@ -411,6 +412,10 @@ export function RecipeForm({
 
       <Field label={t("form.category")}>
         <CategoryChips value={draft.category} onChange={(v) => set("category", v)} />
+      </Field>
+
+      <Field label={t("form.tags")}>
+        <TagInput value={draft.tags ?? []} onChange={(tags) => set("tags", tags)} />
       </Field>
 
       {/* Zutaten */}

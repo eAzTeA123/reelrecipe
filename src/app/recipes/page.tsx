@@ -1,5 +1,6 @@
 "use client";
 
+import { collectTags, matchesTags } from "@/lib/tags";
 import { useI18n } from "@/lib/i18n/context";
 import { useState, useMemo, Suspense } from "react";
 import Link from "next/link";
@@ -27,11 +28,24 @@ function RecipesContent() {
   const [category, setCategory] = useState<string | undefined>();
   const [sort, setSort] = useState<"newest" | "oldest" | "title" | "time">("newest");
   const [fridgeIngredients, setFridgeIngredients] = useState<string[]>([]);
+  const [selectedTags, setSelectedTags] = useState<string[]>(() => {
+    const initial = searchParams.get("tag");
+    return initial ? [initial] : [];
+  });
 
-  const { recipes, loading, error, retry } = useRecipes({
+  const { recipes: allRecipes, loading, error, retry } = useRecipes({
     query: mode === "fridge" ? "" : query,
     category: mode === "fridge" ? undefined : category,
   });
+
+  /** Tag-Filter (UND) wirkt zusätzlich zu Suche und Kategorie. */
+  const recipes = useMemo(
+    () => allRecipes.filter((recipe) => matchesTags(recipe, selectedTags)),
+    [allRecipes, selectedTags],
+  );
+
+  /** Vorschlagsliste: alle vergebenen Tags, häufigste zuerst. */
+  const tagOptions = useMemo(() => collectTags(allRecipes), [allRecipes]);
 
   const processedRecipes = useMemo(() => {
     if (mode === "all") {
@@ -159,6 +173,46 @@ function RecipesContent() {
           />
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <CategoryChips value={category} onChange={setCategory} allowAll />
+            {tagOptions.length > 0 && (
+              <ul className="flex flex-wrap gap-1.5">
+                {tagOptions.slice(0, 12).map((tag) => {
+                  const active = selectedTags.some((own) => own.toLowerCase() === tag.toLowerCase());
+                  return (
+                    <li key={tag}>
+                      <button
+                        type="button"
+                        aria-pressed={active}
+                        onClick={() =>
+                          setSelectedTags((prev) =>
+                            active
+                              ? prev.filter((own) => own.toLowerCase() !== tag.toLowerCase())
+                              : [...prev, tag],
+                          )
+                        }
+                        className={`pressable rounded-full border px-3 py-1 text-[13px] font-medium ${
+                          active
+                            ? "border-accent bg-accent/10 text-accent"
+                            : "border-line bg-surface-2 text-ink-2"
+                        }`}
+                      >
+                        {tag}
+                      </button>
+                    </li>
+                  );
+                })}
+                {selectedTags.length > 0 && (
+                  <li>
+                    <button
+                      type="button"
+                      onClick={() => setSelectedTags([])}
+                      className="pressable rounded-full border border-line px-3 py-1 text-[13px] font-medium text-ink-3"
+                    >
+                      {t("recipes.tagsClear")}
+                    </button>
+                  </li>
+                )}
+              </ul>
+            )}
             <label className="flex items-center gap-2 text-[14px] font-medium text-ink-2">
               Sortieren
               <select
@@ -254,3 +308,4 @@ export default function RecipesPage() {
     </Suspense>
   );
 }
+

@@ -49,6 +49,21 @@ export function RecipeCard({
               {recipe.category}
             </span>
           )}
+          {recipe.tags && recipe.tags.length > 0 && (
+            <ul className="flex flex-wrap items-center gap-1.5">
+              {recipe.tags.slice(0, 2).map((tag) => (
+                <li
+                  key={tag}
+                  className="rounded-full border border-line bg-surface-2 px-2.5 py-0.5 text-[12px] font-medium text-ink-2"
+                >
+                  {tag}
+                </li>
+              ))}
+              {recipe.tags.length > 2 && (
+                <li className="text-[12px] font-medium text-ink-3">+{recipe.tags.length - 2}</li>
+              )}
+            </ul>
+          )}
           <h3 className="text-[28px] font-extrabold leading-none tracking-tight group-hover:text-accent transition-colors">
             {recipe.title}
           </h3>
