@@ -86,19 +86,10 @@ export async function smallTapTargets(page: Page, rootSelector?: string): Promis
   );
 }
 
-export async function clearStorage(page: Page) {
-  await page.goto("/");
-  await page.evaluate(
-    () =>
-      new Promise<void>((resolve) => {
-        const req = indexedDB.deleteDatabase("rezept");
-        req.onsuccess = () => resolve();
-        req.onerror = () => resolve();
-        req.onblocked = () => resolve();
-        sessionStorage.clear();
-        localStorage.setItem("onboardingSeenV3", "true");
-        localStorage.setItem("onboardingSeenV2", "true");
-      }),
-  );
-  await page.reload();
-}
+/*
+ * Hinweis: Hier lag früher ein `clearStorage`, das bei laufender App die
+ * IndexedDB löschte. Das ist eine Race Condition – Dexie hält die Verbindung,
+ * der Löschversuch löst in `db.ts` ein `versionchange`-Reload aus und reißt dem
+ * Test den Auswertungskontext weg. Es wurde von keiner Spec genutzt; Playwright
+ * gibt jedem Test ohnehin einen frischen Kontext mit leerer Bibliothek.
+ */

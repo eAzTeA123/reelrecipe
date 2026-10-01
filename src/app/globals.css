@@ -11,7 +11,8 @@
 @theme {
   /* Flächen und Schrift (Light) */
   --color-bg: #faf7f2;
-  --scrim: rgba(250, 247, 242, 0); /* warmes Papier */
+  --scrim: rgba(250, 247, 242, 0);
+  --illus-shadow: rgba(27, 24, 21, 0.14); /* warmes Papier */
   --color-surface: #ffffff;
   --color-surface-2: #f3eee7;
   --color-surface-3: #eae4da; /* Vertiefungen, Wells */
@@ -105,6 +106,7 @@
     color-scheme: dark;
     --color-bg: #131110;
   --scrim: rgba(19, 17, 16, 0);
+  --illus-shadow: rgba(0, 0, 0, 0.55);
     --color-surface: #1c1917;
     --color-surface-2: #241f1c;
     --color-surface-3: #2d2723;
@@ -134,6 +136,7 @@
   color-scheme: dark;
   --color-bg: #131110;
   --scrim: rgba(19, 17, 16, 0);
+  --illus-shadow: rgba(0, 0, 0, 0.55);
   --color-surface: #1c1917;
   --color-surface-2: #241f1c;
   --color-surface-3: #2d2723;
@@ -269,6 +272,7 @@ p, li { text-wrap: pretty; }
 .spin { animation: spin 0.8s linear infinite; }
 @keyframes pulse-soft {
   0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
 }
 .pulse-soft { animation: pulse-soft 1.6s ease-in-out infinite; }
 
@@ -483,6 +487,17 @@ input:checked ~ .tick-box {
  * ------------------------------------------------------------------------- */
 .i-svg { display: block; }
 .i-wash { fill: var(--color-surface-2); opacity: 0.55; }
+
+/* Licht und Tiefe: ein Kegel hinter der Szene, ein Bodenschatten darunter.
+   Beides tokenbasiert, damit es in hell und dunkel stimmig bleibt. */
+.i-shadow { fill: var(--illus-shadow); }
+.i-glow-a { stop-color: var(--color-accent); stop-opacity: 0.26; }
+.i-glow-b { stop-color: var(--color-accent); stop-opacity: 0; }
+.i-glow-warm-a { stop-color: var(--color-warn); stop-opacity: 0.24; }
+.i-glow-warm-b { stop-color: var(--color-warn); stop-opacity: 0; }
+.i-highlight { fill: var(--color-surface); opacity: 0.5; }
+.i-tab { fill: var(--color-accent); }
+.i-tab-soft { fill: var(--color-accent-soft); stroke: var(--color-accent); stroke-opacity: 0.35; stroke-width: 1.5; }
 
 /* Flächen */
 .i-card { fill: var(--color-surface); stroke: var(--color-line-2); stroke-width: 2.5; }

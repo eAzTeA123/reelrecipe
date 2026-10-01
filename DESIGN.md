@@ -200,6 +200,17 @@ Zeichnung ist ein Inline-SVG in
   nur für das aktive Element, Tiefe über `surface` / `surface-3`. Der Topf
   zitiert bewusst den Ladezustand (`ExtractionLoader`), damit man ihn beim
   ersten Import wiedererkennt.
+- Tiefe entsteht aus drei Zutaten: ein **Lichtkegel** hinter der Szene (`Spot`,
+  radialer Verlauf in Akzent- oder Warnfarbe), ein **Bodenschatten** darunter
+  (`Ground`, Token `--illus-shadow` – im Dunkeln kräftiger, sonst verschwindet
+  er) und **Glanzkanten** auf den Objekten. Alles tokenbasiert und damit in
+  beiden Modi stimmig.
+- Requisiten nur, wo sie die Geschichte tragen: Herd und Flammen, Kochlöffel,
+  Korbhenkel, Lesezeichen an den Karten, Eckmarken am Code. Sie bleiben
+  geometrisch – kein Freihandstrich –, damit die Reihe ruhig bleibt.
+- Farbverläufe brauchen eindeutige IDs: `useId()` liefert Kennungen mit
+  Doppelpunkten, die in `url(#…)` unzuverlässig sind, deshalb werden sie
+  gefiltert.
 - Der Dialog hat eine **Fokusfalle** (Fokus wandert hinein, Tab bleibt darin,
   Escape schließt, Fokus kehrt zurück) und Fortschrittspunkte mit 44 px
   Trefferfläche.

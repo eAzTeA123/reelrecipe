@@ -3,16 +3,19 @@ import { createRecipeViaUI, DE_CAPTION, EN_CAPTION } from "./helpers";
 
 test.beforeEach(async ({ page }) => {
   await page.goto("/");
-  // Frische IndexedDB pro Test
-  await page.evaluate(
-    () =>
-      new Promise<void>((resolve) => {
-        const req = indexedDB.deleteDatabase("rezept");
-        req.onsuccess = req.onerror = req.onblocked = () => resolve();
-        sessionStorage.clear();
-        localStorage.setItem("onboardingSeenV2", "true");
-      }),
-  );
+  /*
+   * Kein `indexedDB.deleteDatabase` mehr: Playwright gibt jedem Test einen
+   * frischen Browserkontext, die Bibliothek ist also ohnehin leer. Das Löschen
+   * bei laufender App war eine Race Condition – Dexie hält die Verbindung, der
+   * Löschversuch löst in `db.ts` ein `versionchange`-Reload aus, und der reißt
+   * dem Test den Auswertungskontext weg
+   * („Execution context was destroyed, most likely because of a navigation").
+   * Dass die Bibliothek wirklich leer ist, prüft der erste Test unten.
+   */
+  await page.evaluate(() => {
+    sessionStorage.clear();
+    localStorage.setItem("onboardingSeenV2", "true");
+  });
   await page.reload();
 });
 
