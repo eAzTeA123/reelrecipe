@@ -56,7 +56,7 @@ export function StepTextWithTimers({
               recipeId
             });
           }}
-          className="inline-flex items-center gap-1 rounded-md bg-accent/10 px-2 py-0.5 text-accent hover:bg-accent/20 transition-colors font-medium active:scale-95"
+          className="inline-flex items-center gap-1 rounded-md bg-accent/10 px-2 py-0.5 text-accent-text hover:bg-accent/20 transition-colors font-medium active:scale-95"
           title={`${seconds}s Timer starten`}
         >
           <IconClock size={16} /> {original}

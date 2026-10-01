@@ -300,7 +300,7 @@ export default function CollectionsPage() {
                         <IconChevronDown
                           size={18}
                           className={`shrink-0 transition-transform ${
-                            active ? "rotate-180 text-accent" : "text-ink-3"
+                            active ? "rotate-180 text-accent-text" : "text-ink-3"
                           }`}
                         />
                       </button>
@@ -343,7 +343,7 @@ export default function CollectionsPage() {
                               type="button"
                               onClick={() => setFilterOpen(true)}
                               className={`pressable ml-auto inline-flex h-10 items-center gap-1.5 rounded-lg px-3 text-meta font-semibold ${
-                                labels.length > 0 ? "text-accent" : "text-ink-2"
+                                labels.length > 0 ? "text-accent-text" : "text-ink-2"
                               }`}
                             >
                               <IconFilter size={16} />

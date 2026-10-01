@@ -106,7 +106,7 @@ export default function RecipeDetailPage({ params }: { params: Promise<{ id: str
   if (loading) {
     return (
       <div className="flex justify-center py-24" aria-live="polite">
-        <Spinner size={30} className="text-accent" />
+        <Spinner size={30} className="text-accent-text" />
       </div>
     );
   }
@@ -225,7 +225,7 @@ export default function RecipeDetailPage({ params }: { params: Promise<{ id: str
         />
       )}
       <article className="mx-auto max-w-5xl relative">
-        <div className="no-print mb-4 flex items-center justify-between">
+        <div className="no-print glass sticky top-0 z-30 -mx-4 mb-5 flex items-center justify-between border-b border-line px-4 py-1.5 md:-mx-6 md:top-16 md:px-6">
         <button
           onClick={() => {
             if (window.history.length > 1) {
@@ -235,25 +235,25 @@ export default function RecipeDetailPage({ params }: { params: Promise<{ id: str
             }
           }}
           aria-label={t("general.back")}
-          className="pressable inline-flex items-center gap-1 rounded-full py-2 pl-1 pr-3 text-body font-medium text-ink-2"
+          className="pressable inline-flex min-h-11 items-center gap-1 rounded-pill py-2 pl-2 pr-3 text-body font-medium text-ink-2 hover:bg-surface-2 hover:text-ink"
         >
           <IconBack size={20} /> <span className="max-[359px]:sr-only">{t("general.back")}</span>
         </button>
-        <div className="flex gap-1">
+        <div className="flex flex-wrap justify-end gap-1">
           <button
             onClick={() => {
               setShareCode(undefined);
               setShareOpen(true);
             }}
             aria-label={t("recipe.share")}
-            className="pressable rounded-full p-2.5 text-ink-2"
+            className="pressable inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-pill text-ink-2 hover:bg-surface-2 hover:text-ink"
           >
             <IconShare size={21} />
           </button>
           <button
             onClick={() => window.print()}
             aria-label={t("recipe.print")}
-            className="pressable rounded-full p-2.5 text-ink-2"
+            className="pressable inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-pill text-ink-2 hover:bg-surface-2 hover:text-ink"
           >
             <IconPrint size={21} />
           </button>
@@ -261,28 +261,28 @@ export default function RecipeDetailPage({ params }: { params: Promise<{ id: str
             onClick={() => void getRecipeRepository().toggleFavorite(id)}
             aria-label={recipe.favorite ? t("recipe.favoriteRemove") : t("recipe.favoriteAdd")}
             aria-pressed={recipe.favorite}
-            className={`pressable rounded-full p-2.5 ${recipe.favorite ? "text-accent" : "text-ink-2"}`}
+            className={`pressable inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-pill hover:bg-surface-2 ${recipe.favorite ? "text-accent-text" : "text-ink-2"}`}
           >
             {recipe.favorite ? <IconHeartFill size={22} /> : <IconHeart size={22} />}
           </button>
           <button
             onClick={() => void duplicateRecipe()}
             aria-label={t("recipe.duplicate")}
-            className="pressable rounded-full p-2.5 text-ink-2"
+            className="pressable inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-pill text-ink-2 hover:bg-surface-2 hover:text-ink"
           >
             <IconCopy size={20} />
           </button>
           <Link
             href={`/recipes/${id}/edit`}
             aria-label="Rezept bearbeiten"
-            className="pressable rounded-full p-2.5 text-ink-2"
+            className="pressable inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-pill text-ink-2 hover:bg-surface-2 hover:text-ink"
           >
             <IconPencil size={21} />
           </Link>
           <button
             onClick={() => setConfirmDelete(true)}
             aria-label="Rezept löschen"
-            className="pressable rounded-full p-2.5 text-ink-2 hover:text-danger"
+            className="pressable inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-pill text-ink-2 hover:bg-surface-2 hover:text-danger"
           >
             <IconTrash size={21} />
           </button>
@@ -290,7 +290,7 @@ export default function RecipeDetailPage({ params }: { params: Promise<{ id: str
       </div>
 
       {recipe.image && (
-        <div className="mb-6 aspect-[4/3] w-full overflow-hidden rounded-card border border-line/60 shadow-card md:aspect-[21/9]">
+        <div className="mb-7 aspect-[4/3] w-full overflow-hidden rounded-frame border border-line bg-surface-2 shadow-card md:aspect-[21/9]">
           <RecipeImage imageRef={cachedImageUrl ?? recipe.image} alt={recipe.title} className="h-full w-full" />
         </div>
       )}
@@ -308,7 +308,7 @@ export default function RecipeDetailPage({ params }: { params: Promise<{ id: str
           </span>
         )}
         {recipe.category && (
-          <span className="rounded-full bg-accent-soft px-3 py-1 text-meta font-medium text-accent">
+          <span className="rounded-full bg-accent-soft px-3 py-1 text-meta font-medium text-accent-text">
             {recipe.category}
           </span>
         )}
@@ -317,7 +317,7 @@ export default function RecipeDetailPage({ params }: { params: Promise<{ id: str
             href={recipe.sourceUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 text-accent underline-offset-2 hover:underline"
+            className="inline-flex min-h-11 items-center gap-1.5 text-accent-text underline-offset-2 hover:underline"
           >
             <IconLink size={15} />{" "}
             {sourceLabel(recipe.sourceUrl, t)}
@@ -336,7 +336,7 @@ export default function RecipeDetailPage({ params }: { params: Promise<{ id: str
             aria-label="Portionen verringern"
             disabled={targetServings <= 1}
             onClick={() => setServings(Math.max(1, targetServings - 1))}
-            className="pressable flex h-9 w-9 items-center justify-center rounded-full border border-line bg-surface text-ink disabled:opacity-30"
+            className="pressable flex h-11 w-11 items-center justify-center rounded-pill border border-line bg-surface text-ink hover:border-line-2 hover:bg-surface-2 disabled:opacity-30"
           >
             <IconMinus size={16} />
           </button>
@@ -347,7 +347,7 @@ export default function RecipeDetailPage({ params }: { params: Promise<{ id: str
             aria-label="Portionen erhöhen"
             disabled={targetServings >= 50}
             onClick={() => setServings(targetServings + 1)}
-            className="pressable flex h-9 w-9 items-center justify-center rounded-full border border-line bg-surface text-ink disabled:opacity-30"
+            className="pressable flex h-11 w-11 items-center justify-center rounded-pill border border-line bg-surface text-ink hover:border-line-2 hover:bg-surface-2 disabled:opacity-30"
           >
             <IconPlus size={16} />
           </button>
@@ -364,20 +364,20 @@ export default function RecipeDetailPage({ params }: { params: Promise<{ id: str
         {recipe.ingredients.length === 0 ? (
           <p className="text-body text-ink-3">{t("recipe.ingredientsEmpty")}</p>
         ) : (
-          <ul className="divide-y divide-line overflow-hidden rounded-card bg-surface shadow-card">
+          <ul className="divide-y divide-line overflow-hidden rounded-card border border-line bg-surface shadow-card">
             {recipe.ingredients.map((ing) => {
               const scaled = scaleAmount(ing.amount, recipe.servings, targetServings);
               const qty = formatAmount(scaled, ing.unit);
               return (
                 <li key={ing.id} className="flex items-baseline gap-4 px-4 py-3">
-                  <span className="w-20 shrink-0 text-right text-body font-semibold tabular-nums text-accent">
+                  <span className="w-20 shrink-0 text-right text-body font-semibold tabular-nums text-accent-text">
                     {qty || "–"}
                   </span>
                   <span className="text-body">
                     {ing.name}
                     {ing.notes && <span className="text-ink-2">, {ing.notes}</span>}
                     {ing.uncertain && (
-                      <span className="ml-2 rounded-full bg-surface-2 px-2 py-0.5 text-[11px] font-medium text-ink-2">
+                      <span className="ml-2 rounded-xs bg-warn/15 px-2 py-0.5 text-label font-medium text-warn">
                         nicht eindeutig
                       </span>
                     )}
@@ -401,9 +401,9 @@ export default function RecipeDetailPage({ params }: { params: Promise<{ id: str
               .slice()
               .sort((a, b) => a.order - b.order)
               .map((s, i) => (
-                <li key={s.id} className="flex gap-3.5 rounded-card bg-surface p-4 shadow-card">
+                <li key={s.id} className="flex gap-3.5 rounded-card border border-line bg-surface p-4 shadow-card">
                   <span
-                    className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-accent-soft text-meta font-bold text-accent"
+                    className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-accent-soft text-meta font-bold text-accent-text"
                     aria-hidden
                   >
                     {i + 1}

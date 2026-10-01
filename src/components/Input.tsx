@@ -2,12 +2,12 @@ import { forwardRef, type InputHTMLAttributes, type TextareaHTMLAttributes } fro
 
 const baseClass =
   "w-full rounded-ctl border border-line bg-surface px-4 text-[16px] text-ink " +
-  "placeholder:text-ink-3 focus:border-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/20 " +
+  "placeholder:text-ink-3 focus:border-accent focus:outline-none focus-visible:ring-[3px] focus-visible:ring-accent/25 " +
   "transition-colors disabled:opacity-50";
 
 export const Input = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLInputElement>>(
   function Input({ className = "", ...props }, ref) {
-    return <input ref={ref} className={`${baseClass} h-12 ${className}`} {...props} />;
+    return <input ref={ref} className={`${baseClass} h-[52px] ${className}`} {...props} />;
   },
 );
 
@@ -18,7 +18,7 @@ export const Textarea = forwardRef<
   return (
     <textarea
       ref={ref}
-      className={`${baseClass} py-3 min-h-28 resize-y leading-relaxed ${className}`}
+      className={`${baseClass} py-3.5 min-h-32 resize-y leading-relaxed ${className}`}
       {...props}
     />
   );

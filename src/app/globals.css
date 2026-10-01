@@ -3,37 +3,47 @@
 /*
  * Scroll2Cook – Design-Tokens (Markenvertrag, siehe DESIGN.md)
  *
- * Warmes Papier + ein gedämpfter Terrakotta-Akzent. Alle Grautöne sind warm
- * getönt (nie kaltes Zink), Schatten tragen den Farbton des Untergrunds
- * (kein reines Schwarz), Licht kommt immer von oben.
+ * Warmes Papier + ein sattes Terrakotta als einziger Akzent. Alle Grautöne sind
+ * warm getönt (nie kaltes Zink), Schatten tragen den Farbton des Untergrunds,
+ * Licht kommt von oben. Dark Mode überschreibt dieselben `--color-*`-Variablen –
+ * dadurch folgen alle Utilities automatisch, ohne `dark:`-Klassen im Markup.
  */
 @theme {
-  /* Flächen */
-  --color-bg: #fbf6ef; /* warmes Papier */
+  /* Flächen und Schrift (Light) */
+  --color-bg: #faf7f2; /* warmes Papier */
   --color-surface: #ffffff;
-  --color-surface-2: #f4ebdf; /* Sand */
-  --color-ink: #211a15; /* warmes Fast-Schwarz */
-  --color-ink-2: #6a5c50;
-  --color-ink-3: #7d6e5c; /* kleinste Schrift, ≥ 4.5:1 auf Weiß */
-  --color-line: #e6dac9;
+  --color-surface-2: #f3eee7;
+  --color-surface-3: #eae4da; /* Vertiefungen, Wells */
+  --color-ink: #1b1815;
+  --color-ink-2: #5c544c;
+  --color-ink-3: #7b7268; /* kleinste Schrift, ≥ 4.5:1 auf --color-bg */
+  --color-line: #e8e1d6;
+  --color-line-2: #d8d0c2;
 
-  /* Ein Akzent: Terrakotta/Paprika, Sättigung ~54 % */
-  --color-accent: #c0563a;
-  --color-accent-soft: #f8e8e0;
-  --color-accent-ink: #fff8f4;
+  /* Ein Akzent: Terrakotta, Sättigung ~73 % (nie Neon, nie Lila) */
+  --color-accent: #c9472c;
+  --color-accent-hover: #ad3c24;
+  --color-accent-text: #b8442a;
+  --color-accent-soft: #fdeee7;
+  --color-accent-ink: #fffaf7;
 
   /* Semantik */
-  --color-good: #4f6b4a; /* Kräutergrün */
-  --color-warn: #9a6f1f; /* Ocker */
-  --color-danger: #a3302a; /* Ziegel */
+  --color-good: #3d8b5f;
+  --color-warn: #c08420;
+  --color-danger: #d24b3f;
 
-  /* Schrift: Manrope für UI, Instrument Serif für Display */
-  --font-sans: var(--font-manrope), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --font-display: var(--font-instrument), Georgia, "Times New Roman", serif;
+  /* Schwebende Flächen (Glas) */
+  --glass: rgba(255, 255, 255, 0.72);
+  /* Papier-Wäsche für Cover/Kopfbereiche */
+  --wash-1: rgba(224, 86, 58, 0.075);
+  --wash-2: rgba(192, 132, 32, 0.055);
+
+  /* Schrift: Figtree für UI, Fraunces für Display */
+  --font-sans: var(--font-figtree), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-display: var(--font-fraunces), Georgia, "Times New Roman", serif;
 
   /* Typo-Skala – ersetzt willkürliche text-[Npx]-Werte.
-     Display/H1/H2 wachsen mit dem Viewport (clamp), statt pro Breakpoint
-     eine eigene Größe zu setzen. */
+     Display/Titel wachsen mit dem Viewport (clamp) statt pro Breakpoint. */
   --text-display: clamp(2.75rem, 8vw, 4.5rem);
   --text-display--line-height: 0.95;
   --text-display--letter-spacing: -0.035em;
@@ -60,23 +70,93 @@
   --text-label--letter-spacing: 0.04em;
 
   /* Radien: innen enger, außen runder – ein System statt Zufall */
-  --radius-ctl: 12px; /* Buttons, Inputs, kleine Flächen */
-  --radius-card: 20px; /* Karten, Panels */
+  --radius-xs: 10px; /* Badges */
+  --radius-ctl: 14px; /* Buttons, Inputs, Chips */
+  --radius-card: 22px; /* Karten, Panels */
   --radius-frame: 26px; /* Medien, Cover */
+  --radius-sheet: 28px; /* Sheets, Dialoge */
   --radius-pill: 999px;
 
   /* Elevation: warm getönte Schatten, Licht von oben */
-  --shadow-card: 0 1px 2px rgba(58, 38, 24, 0.05), 0 10px 30px -18px rgba(58, 38, 24, 0.35);
-  --shadow-pop: 0 24px 60px -24px rgba(58, 38, 24, 0.45);
+  --shadow-card: 0 1px 2px rgba(60, 42, 30, 0.05), 0 2px 8px -4px rgba(60, 42, 30, 0.1);
+  --shadow-lift: 0 6px 16px -8px rgba(60, 42, 30, 0.18), 0 16px 40px -20px rgba(60, 42, 30, 0.22);
+  --shadow-pop: 0 24px 64px -24px rgba(60, 42, 30, 0.35);
 
-  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.1);
+  --ease-out: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
   --animate-wave: wave 2.5s infinite;
   @keyframes wave {
     0%, 100% { transform: rotate(0deg); }
     25% { transform: rotate(20deg); }
     75% { transform: rotate(-15deg); }
   }
+}
+
+/*
+ * Dark Mode: dieselben Variablen, andere Werte. Zwei Wege hinein –
+ * Systemeinstellung (solange der Nutzer nichts gewählt hat) und explizite Wahl
+ * über `data-theme="dark"` am <html>. Schatten tragen auf dunklem Grund nicht,
+ * dort übernehmen Ränder und eine feine Innenkante die Tiefe.
+ */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --color-bg: #131110;
+    --color-surface: #1c1917;
+    --color-surface-2: #241f1c;
+    --color-surface-3: #2d2723;
+    --color-ink: #f6f2ee;
+    --color-ink-2: #b3aaa1;
+    --color-ink-3: #8b8177;
+    --color-line: #302a26;
+    --color-line-2: #423a35;
+    --color-accent: #ff7a58;
+    --color-accent-hover: #ff9174;
+    --color-accent-text: #ff9a7d;
+    --color-accent-soft: #3a2119;
+    --color-accent-ink: #1a0f0a;
+    --color-good: #62c68d;
+    --color-warn: #e0b45c;
+    --color-danger: #ff6f61;
+    --glass: rgba(28, 25, 23, 0.72);
+    --wash-1: rgba(255, 122, 88, 0.1);
+    --wash-2: rgba(224, 180, 92, 0.06);
+    --shadow-card: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    --shadow-lift: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    --shadow-pop: 0 24px 64px -24px rgba(0, 0, 0, 0.6);
+  }
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --color-bg: #131110;
+  --color-surface: #1c1917;
+  --color-surface-2: #241f1c;
+  --color-surface-3: #2d2723;
+  --color-ink: #f6f2ee;
+  --color-ink-2: #b3aaa1;
+  --color-ink-3: #8b8177;
+  --color-line: #302a26;
+  --color-line-2: #423a35;
+  --color-accent: #ff7a58;
+  --color-accent-hover: #ff9174;
+  --color-accent-text: #ff9a7d;
+  --color-accent-soft: #3a2119;
+  --color-accent-ink: #1a0f0a;
+  --color-good: #62c68d;
+  --color-warn: #e0b45c;
+  --color-danger: #ff6f61;
+  --glass: rgba(28, 25, 23, 0.72);
+  --wash-1: rgba(255, 122, 88, 0.1);
+  --wash-2: rgba(224, 180, 92, 0.06);
+  --shadow-card: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  --shadow-lift: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  --shadow-pop: 0 24px 64px -24px rgba(0, 0, 0, 0.6);
+}
+
+[data-theme="light"] {
+  color-scheme: light;
 }
 
 html {
@@ -94,7 +174,7 @@ body {
 h1, h2, h3 { text-wrap: balance; }
 p, li { text-wrap: pretty; }
 
-/* Serif-Display: optische Größenanpassung, falls die Schrift sie anbietet */
+/* Display-Schrift: nur Gewicht 400 – Größe erzeugt Wirkung, nicht Fettung */
 .font-display {
   font-family: var(--font-display);
   font-weight: 400;
@@ -110,7 +190,7 @@ p, li { text-wrap: pretty; }
   to { opacity: 1; transform: translateY(0); }
 }
 .page-enter {
-  animation: page-in 0.25s var(--ease-out) both;
+  animation: page-in 0.32s var(--ease-out) both;
 }
 
 /* Scroll-Reveal: einmalig, dezent, gestaffelt über --reveal-delay */
@@ -136,6 +216,16 @@ p, li { text-wrap: pretty; }
   mix-blend-mode: multiply;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.055'/%3E%3C/svg%3E");
 }
+[data-theme="dark"] .texture-grain::after {
+  opacity: 0.28;
+  mix-blend-mode: soft-light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .texture-grain::after {
+    opacity: 0.28;
+    mix-blend-mode: soft-light;
+  }
+}
 
 @keyframes sheet-up {
   from { transform: translateY(100%); }
@@ -154,10 +244,10 @@ p, li { text-wrap: pretty; }
   to { opacity: 0; }
 }
 
-.sheet-up { animation: sheet-up 0.3s var(--ease-spring) both; }
-.sheet-down { animation: sheet-down 0.18s ease-in both; }
-.overlay-in { animation: overlay-in 0.2s ease-out both; }
-.overlay-out { animation: overlay-out 0.16s ease-in both; }
+.sheet-up { animation: sheet-up 0.42s var(--ease-out) both; }
+.sheet-down { animation: sheet-down 0.2s var(--ease-in) both; }
+.overlay-in { animation: overlay-in 0.24s ease-out both; }
+.overlay-out { animation: overlay-out 0.18s var(--ease-in) both; }
 
 @keyframes toast-in {
   from { opacity: 0; transform: translateY(12px) scale(0.97); }
@@ -166,10 +256,10 @@ p, li { text-wrap: pretty; }
 .toast-in { animation: toast-in 0.24s var(--ease-out) both; }
 @keyframes check-pop {
   0% { transform: scale(0.5); opacity: 0; }
-  65% { transform: scale(1.06); opacity: 1; }
+  65% { transform: scale(1.12); opacity: 1; }
   100% { transform: scale(1); opacity: 1; }
 }
-.check-pop { animation: check-pop 0.3s var(--ease-spring) both; }
+.check-pop { animation: check-pop 0.38s var(--ease-spring) both; }
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
@@ -186,7 +276,23 @@ p, li { text-wrap: pretty; }
 .check-draw {
   stroke-dasharray: 24;
   stroke-dashoffset: 24;
-  animation: check-draw 0.3s var(--ease-out) 0.05s forwards;
+  animation: check-draw 0.34s var(--ease-out) 0.05s forwards;
+}
+
+/*
+ * Abhaken: die Zeile quittiert den Tap mit einem kurzen Feder-Impuls.
+ * Nur transform/opacity, damit es auf dem Handy billig bleibt.
+ */
+@keyframes tick-pop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.04); }
+  100% { transform: scale(1); }
+}
+.tick-pop { animation: tick-pop 0.32s var(--ease-spring); }
+
+/* Abhaken in der Einkaufsliste: das Kästchen quittiert den Tap mit einem Impuls. */
+input:checked ~ .tick-box {
+  animation: check-pop 0.38s var(--ease-spring);
 }
 
 @keyframes shimmer {
@@ -206,8 +312,8 @@ p, li { text-wrap: pretty; }
 
 .pressable {
   touch-action: manipulation;
-  transition: transform 0.12s var(--ease-spring), opacity 0.12s ease, background-color 0.15s ease,
-    border-color 0.15s ease, box-shadow 0.15s ease, color 0.15s ease;
+  transition: transform 0.14s var(--ease-spring), opacity 0.14s ease, background-color 0.18s ease,
+    border-color 0.18s ease, box-shadow 0.18s ease, color 0.18s ease;
 }
 .pressable:active {
   transform: scale(0.97);
@@ -220,7 +326,7 @@ p, li { text-wrap: pretty; }
 @media (hover: hover) and (pointer: fine) {
   .card-hover:hover {
     transform: translateY(-3px);
-    box-shadow: var(--shadow-pop);
+    box-shadow: var(--shadow-lift);
   }
 }
 
@@ -241,7 +347,7 @@ p, li { text-wrap: pretty; }
   clip-path: inset(50%);
   border-radius: 999px;
   background: var(--color-ink);
-  color: white;
+  color: var(--color-bg);
   white-space: nowrap;
 }
 .skip-link:focus-visible {
@@ -258,7 +364,8 @@ p, li { text-wrap: pretty; }
 
 @media (prefers-reduced-motion: reduce) {
   .page-enter, .sheet-up, .sheet-down, .overlay-in, .overlay-out,
-  .toast-in, .check-pop, .pulse-soft, .spin, .check-draw, .skeleton-shimmer {
+  .toast-in, .check-pop, .pulse-soft, .spin, .check-draw, .skeleton-shimmer,
+  .tick-pop {
     animation: none !important;
   }
   .pressable, .card-hover, .skip-link {
@@ -285,7 +392,7 @@ p, li { text-wrap: pretty; }
   nav, body > div > header, .no-print, .skip-link { display: none !important; }
   main { max-width: none !important; padding: 0 !important; }
   article, section, div, li { break-inside: avoid; }
-  .shadow-card, .shadow-pop { box-shadow: none !important; }
+  .shadow-card, .shadow-pop, .shadow-lift { box-shadow: none !important; }
   .rounded-card, .rounded-ctl { border-color: #ddd !important; }
   .reveal { opacity: 1 !important; transform: none !important; }
 }
@@ -295,7 +402,70 @@ p, li { text-wrap: pretty; }
  */
 @utility bg-paper-wash {
   background:
-    radial-gradient(90% 70% at 100% 0%, rgba(192, 86, 58, 0.07) 0%, transparent 60%),
-    radial-gradient(80% 60% at 0% 100%, rgba(154, 111, 31, 0.07) 0%, transparent 55%),
+    radial-gradient(90% 70% at 100% 0%, var(--wash-1) 0%, transparent 60%),
+    radial-gradient(80% 60% at 0% 100%, var(--wash-2) 0%, transparent 55%),
     var(--color-bg);
+}
+
+/* Schwebende Flächen: halbtransparent + Weichzeichner (nur kleinflächig nutzen) */
+@utility glass {
+  background: var(--glass);
+  backdrop-filter: blur(20px) saturate(1.6);
+  -webkit-backdrop-filter: blur(20px) saturate(1.6);
+}
+
+/*
+ * Extraktions-Loader „Topf mit Dampf": ein Element + drei Pseudoteile.
+ * Ausschließlich transform/opacity, damit es auf dem Handy günstig bleibt.
+ */
+@keyframes steam-rise {
+  0%   { opacity: 0; transform: translateY(8px) scaleY(0.6); }
+  35%  { opacity: 0.9; }
+  100% { opacity: 0; transform: translateY(-16px) scaleY(1.25); }
+}
+.loader-pot {
+  position: relative;
+  width: 72px;
+  height: 68px;
+}
+.loader-pot__body {
+  position: absolute;
+  left: 4px;
+  right: 4px;
+  bottom: 0;
+  height: 34px;
+  border-radius: 6px 6px 16px 16px;
+  background: linear-gradient(180deg, var(--color-accent) 0%, var(--color-accent-hover) 100%);
+}
+/* Deckelgriff */
+.loader-pot__body::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: -7px;
+  width: 28px;
+  height: 6px;
+  transform: translateX(-50%);
+  border-radius: var(--radius-pill);
+  background: var(--color-accent);
+}
+.loader-pot__steam {
+  position: absolute;
+  bottom: 38px;
+  width: 7px;
+  height: 20px;
+  border-radius: var(--radius-pill);
+  background: var(--color-accent);
+  animation: steam-rise 1.8s var(--ease-out) infinite;
+}
+.loader-pot__steam:nth-child(1) { left: 22px; animation-delay: 0s; }
+.loader-pot__steam:nth-child(2) { left: 33px; animation-delay: 0.28s; }
+.loader-pot__steam:nth-child(3) { left: 44px; animation-delay: 0.56s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .loader-pot__steam {
+    animation: none !important;
+    opacity: 0.5;
+    transform: translateY(-4px);
+  }
 }

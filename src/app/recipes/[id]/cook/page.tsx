@@ -112,7 +112,7 @@ export default function CookModePage({ params }: { params: Promise<{ id: string 
 
   if (error) return <ErrorState message={error} onRetry={retry} />;
   if (loading) {
-    return <div className="flex justify-center py-24"><Spinner size={30} className="text-accent" /></div>;
+    return <div className="flex justify-center py-24"><Spinner size={30} className="text-accent-text" /></div>;
   }
   if (!recipe) return <ErrorState title={t("recipe.notFound")} message={t("recipe.notFoundSub")} />;
 
@@ -130,7 +130,7 @@ export default function CookModePage({ params }: { params: Promise<{ id: string 
         )}
       </div>
 
-      <p className="mb-2 text-label font-semibold text-accent">{t("cook.title")}</p>
+      <p className="mb-2 text-label font-semibold text-accent-text">{t("cook.title")}</p>
       <h1 className="font-display text-title">{recipe.title}</h1>
 
       <section className="mt-6 rounded-card border border-line/70 bg-surface p-5 shadow-card">

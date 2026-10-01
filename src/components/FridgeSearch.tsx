@@ -72,7 +72,7 @@ export function FridgeSearch({
     <div className="rounded-card border border-line bg-surface p-5 shadow-card">
       <div className="mb-4 flex items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-ctl bg-accent-soft text-accent">
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-ctl bg-accent-soft text-accent-text">
             <IconFridge size={22} />
           </div>
           <div>
@@ -121,7 +121,7 @@ export function FridgeSearch({
           {ingredients.map((ing, idx) => (
             <span
               key={idx}
-              className="inline-flex items-center gap-1.5 rounded-ctl border border-accent/20 bg-accent-soft py-1 pl-3 pr-1.5 text-[14px] font-semibold text-accent"
+              className="inline-flex items-center gap-1.5 rounded-ctl border border-accent/20 bg-accent-soft py-1 pl-3 pr-1.5 text-[14px] font-semibold text-accent-text"
             >
               {ing}
               <button
@@ -152,7 +152,7 @@ export function FridgeSearch({
               key={staple}
               type="button"
               onClick={() => addIngredient(staple)}
-              className="pressable inline-flex items-center gap-1 rounded-ctl border border-line bg-surface px-2.5 py-1 text-label font-medium text-ink-2 hover:border-accent hover:text-accent"
+              className="pressable inline-flex items-center gap-1 rounded-ctl border border-line bg-surface px-2.5 py-1 text-label font-medium text-ink-2 hover:border-accent hover:text-accent-text"
             >
               <IconPlus size={12} />
               {staple}

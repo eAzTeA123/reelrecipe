@@ -10,18 +10,20 @@ import { RecipeCardSkeleton } from "@/components/RecipeCardSkeleton";
 import { EmptyState } from "@/components/EmptyState";
 import { ErrorState } from "@/components/ErrorState";
 import { Button } from "@/components/Button";
-import { Input } from "@/components/Input";
+import { ExtractionLoader } from "@/components/ExtractionLoader";
 import { IconClipboard, IconFridge, IconLink, IconSettings, IconX, IconDice } from "@/components/Icons";
 import { extractRecipeLinkFromText, parseRecipeLink } from "@/lib/socialSource";
 import { looksLikeShareCode } from "@/lib/shareCode";
-import { fetchRecipeImage, fetchWebRecipe } from "@/lib/webImport";
 import { useToast } from "@/components/Toast";
 import { useI18n } from "@/lib/i18n/context";
-import { OnboardingModal } from "@/components/OnboardingModal";
-import { parseRecipe } from "@/parser";
+import dynamic from "next/dynamic";
 import { getRecipeRepository } from "@/data";
-import { Spinner } from "@/components/Spinner";
 import type { Recipe, RecipeInput } from "@/domain/types";
+
+const OnboardingModal = dynamic(
+  () => import("@/components/OnboardingModal").then((m) => m.OnboardingModal),
+  { ssr: false },
+);
 
 export default function HomePage() {
   const router = useRouter();
@@ -66,6 +68,8 @@ export default function HomePage() {
 
   /** Rezeptseiten: universeller Parser; nur sichere Ergebnisse direkt speichern, sonst prüfen lassen */
   async function importWeb(link: string) {
+    // Parser und Webimport erst hier laden – sie gehören nicht ins Startbundle.
+    const { fetchWebRecipe, fetchRecipeImage } = await import("@/lib/webImport");
     const res = await fetchWebRecipe(link);
     const r = res.recipe;
     if (res.status === "success" && r && r.highConfidence) {
@@ -130,6 +134,11 @@ export default function HomePage() {
       };
 
       if (data.ok && data.caption && data.caption.trim().length >= 15) {
+        // Beide Pakete erst beim echten Bedarf laden (Bundle-Größe der Startseite).
+        const [{ parseRecipe }, { fetchRecipeImage }] = await Promise.all([
+          import("@/parser"),
+          import("@/lib/webImport"),
+        ]);
         const recipeData = parseRecipe(data.caption.trim());
         if (recipeData && (recipeData.ingredients.length > 0 || recipeData.steps.length > 0)) {
           const pendingImage = data.image ? await fetchRecipeImage(data.image, "social") : undefined;
@@ -197,13 +206,13 @@ export default function HomePage() {
         <Link
           href="/settings"
           aria-label={t("settings.title")}
-          className="pressable absolute right-4 top-4 z-20 inline-flex h-10 w-10 items-center justify-center rounded-pill bg-surface/70 text-ink-2 backdrop-blur hover:text-ink"
+          className="pressable absolute right-4 top-4 z-20 inline-flex h-11 w-11 items-center justify-center rounded-pill bg-surface/70 text-ink-2 backdrop-blur hover:text-ink"
         >
           <IconSettings size={20} />
         </Link>
         <div className="relative z-10 grid gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-stretch lg:gap-12">
           <div>
-            <p className="text-label font-semibold uppercase text-accent">
+            <p className="text-label font-semibold uppercase text-accent-text">
               {recipes.length > 0
                 ? `${recipes.length} ${recipes.length === 1 ? t("recipes.countSingular") : t("recipes.countPlural")}`
                 : t("brand.name")}
@@ -211,7 +220,7 @@ export default function HomePage() {
             <h1 id="import-heading" className="mt-3 font-display text-display text-ink">
               Rezept-Link
               <br />
-              <span className="text-accent">einfügen &amp; kochen.</span>
+              <span className="text-accent-text">einfügen &amp; kochen.</span>
             </h1>
             <p className="mt-4 max-w-[46ch] text-h3 font-medium text-ink-2">
               {t("home.importSubtitle")}
@@ -220,14 +229,15 @@ export default function HomePage() {
             <form
               id="tour-import"
               onSubmit={submit}
-              className="mt-6 flex flex-col gap-3 sm:flex-row"
+              className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-stretch"
               noValidate
             >
-              <div className="relative flex-1">
-                <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-ink-3">
+              {/* Eine Glas-Kapsel für Feld und Einfügen-Knopf – wie eine Suchleiste */}
+              <div className="glass flex min-h-14 flex-1 items-center gap-2 rounded-ctl border border-line pl-4 pr-2 shadow-card focus-within:border-accent focus-within:ring-[3px] focus-within:ring-accent/25">
+                <span className="pointer-events-none shrink-0 text-ink-3">
                   <IconLink size={20} />
                 </span>
-                <Input
+                <input
                   type="url"
                   inputMode="url"
                   autoComplete="url"
@@ -241,34 +251,32 @@ export default function HomePage() {
                     if (urlError) setUrlError(undefined);
                   }}
                   placeholder={t("home.importPlaceholder")}
-                  className="h-14 bg-surface pl-12 pr-24 shadow-card"
+                  className="h-14 min-w-0 flex-1 bg-transparent text-[16px] text-ink placeholder:text-ink-3 focus:outline-none disabled:opacity-50"
                 />
                 <button
                   type="button"
                   disabled={importing}
                   onClick={() => void pasteFromClipboard()}
-                  className="pressable absolute bottom-2 right-2 top-2 flex items-center justify-center gap-1.5 rounded-ctl bg-surface-2 px-3 text-meta font-semibold text-ink-2 transition-colors hover:text-ink disabled:opacity-50"
+                  className="pressable inline-flex h-11 shrink-0 items-center gap-1.5 rounded-ctl bg-surface-2 px-3 text-meta font-semibold text-ink-2 transition-colors hover:text-ink disabled:opacity-50"
                   aria-label={t("home.paste")}
                 >
                   <IconClipboard size={15} />
                   {t("home.paste")}
                 </button>
               </div>
-              <Button type="submit" size="lg" disabled={importing} className="h-14 sm:w-auto">
-                {importing ? (
-                  <>
-                    <Spinner size={18} />
-                    <span>{t("home.importing")}</span>
-                  </>
-                ) : (
-                  t("home.importButton")
-                )}
+              <Button type="submit" size="lg" disabled={importing} className="sm:w-auto">
+                {importing ? t("home.importing") : t("home.importButton")}
               </Button>
             </form>
             {urlError && (
               <p id="url-error" role="alert" className="mt-3 text-body font-medium text-danger">
                 {urlError}
               </p>
+            )}
+            {importing && (
+              <div className="mt-5">
+                <ExtractionLoader label={t("home.importing")} />
+              </div>
             )}
           </div>
 
@@ -283,13 +291,13 @@ export default function HomePage() {
           className="relative mb-12 flex flex-col gap-4 rounded-card border border-line bg-surface p-4 shadow-card sm:flex-row sm:items-center sm:justify-between sm:p-5"
         >
           <div className="flex items-start gap-3.5 pr-8 sm:items-center sm:pr-0">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-ctl bg-accent-soft text-accent">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-ctl bg-accent-soft text-accent-text">
               <IconDice size={24} />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-label font-semibold uppercase text-accent">Neu</span>
-                <h3 className="text-h3 font-bold text-ink">Keine Idee, was du kochen sollst?</h3>
+                <span className="text-label font-semibold uppercase text-accent-text">Neu</span>
+                <h2 className="text-h3 font-bold text-ink">Keine Idee, was du kochen sollst?</h2>
               </div>
               <p className="mt-0.5 text-meta text-ink-2">
                 Lass den Zufall entscheiden: Spiel eine Runde Rezept-Bingo.
@@ -304,7 +312,7 @@ export default function HomePage() {
               type="button"
               onClick={dismissBingoBanner}
               aria-label="Hinweis schließen"
-              className="pressable absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-pill text-ink-3 transition-colors hover:bg-surface-2 hover:text-ink sm:static"
+              className="pressable absolute right-3 top-3 flex h-11 w-11 items-center justify-center rounded-pill text-ink-3 transition-colors hover:bg-surface-2 hover:text-ink sm:static"
             >
               <IconX size={16} />
             </button>

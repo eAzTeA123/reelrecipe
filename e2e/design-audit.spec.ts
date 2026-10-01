@@ -132,19 +132,28 @@ test("Design-Audit: Home, Liste, Sammlung, Detail", async ({ page }) => {
   for (const width of [390, 1440]) {
     await page.setViewportSize({ width, height: width === 390 ? 844 : 900 });
 
-    for (const [name, url] of [
-      ["home", "/"],
-      ["recipes", "/recipes"],
-      ["collections", "/collections"],
-      ["detail", "/recipes/22222222-2222-4222-8222-000000000000"],
-      ["shopping", "/shopping"],
-    ] as const) {
-      await page.goto(url);
-      await page.waitForTimeout(1400);
-      await page.screenshot({ path: `e2e/screenshots/design/${width}-${name}.png` });
+    for (const theme of ["light", "dark"] as const) {
+      // Hell/Dunkel über die Systemeinstellung prüfen – genau der Weg, den CSS geht.
+      await page.emulateMedia({ colorScheme: theme });
+
+      for (const [name, url] of [
+        ["home", "/"],
+        ["recipes", "/recipes"],
+        ["collections", "/collections"],
+        ["detail", "/recipes/22222222-2222-4222-8222-000000000000"],
+        ["shopping", "/shopping"],
+      ] as const) {
+        await page.goto(url);
+        await page.waitForTimeout(1400);
+        await page.screenshot({ path: `e2e/screenshots/design/${width}-${theme}-${name}.png` });
+      }
+
+      await page.goto("/recipes");
+      await page.waitForTimeout(1200);
+      await page.screenshot({
+        path: `e2e/screenshots/design/${width}-${theme}-recipes-full.png`,
+        fullPage: true,
+      });
     }
-    await page.goto("/recipes");
-    await page.waitForTimeout(1200);
-    await page.screenshot({ path: `e2e/screenshots/design/${width}-recipes-full.png`, fullPage: true });
   }
 });

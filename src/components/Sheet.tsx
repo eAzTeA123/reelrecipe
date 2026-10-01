@@ -90,13 +90,15 @@ export function Sheet({ open, onClose, title, children }: SheetProps) {
         role="dialog"
         aria-modal="true"
         aria-label={title}
-        className={`relative w-full max-w-lg rounded-t-card bg-surface px-5 pb-8 pt-3 shadow-pop md:rounded-card md:p-6 ${
+        className={`relative w-full max-w-lg overflow-hidden rounded-t-sheet bg-surface px-5 pb-8 pt-3 shadow-pop md:rounded-sheet md:p-6 ${
           closing ? "sheet-down" : "sheet-up"
         }`}
         style={{ paddingBottom: "calc(1.5rem + env(safe-area-inset-bottom))" }}
       >
-        <div className="mx-auto mb-4 h-1.5 w-10 rounded-full bg-ink-3/40 md:hidden" aria-hidden />
-        <h2 className="mb-4 text-center font-display text-h1 md:text-left">{title}</h2>
+        <div className="mx-auto mb-3 h-1.5 w-10 rounded-pill bg-ink-3/40 md:hidden" aria-hidden />
+        <h2 className="mb-4 border-b border-line pb-3 text-center font-display text-h1 md:text-left">
+          {title}
+        </h2>
         {children}
       </div>
     </div>,

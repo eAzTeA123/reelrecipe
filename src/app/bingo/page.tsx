@@ -135,7 +135,7 @@ export default function BingoPage() {
 
           {winner && !cycling && (
             <div className="w-full flex flex-col gap-4 animate-in fade-in zoom-in duration-500">
-              <h2 className="text-2xl font-bold text-center text-accent mb-2">{t("bingo.winner")}</h2>
+              <h2 className="text-2xl font-bold text-center text-accent-text mb-2">{t("bingo.winner")}</h2>
               <RecipeCard recipe={winner} />
               <Link href={`/recipes/${winner.id}`} className="w-full mt-4 block">
                 <Button variant="primary" className="w-full h-14 text-h3">{t("bingo.toRecipe")}</Button>

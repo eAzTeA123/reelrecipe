@@ -12,6 +12,8 @@ import { Sheet } from "@/components/Sheet";
 import { Spinner } from "@/components/Spinner";
 import { useToast } from "@/components/Toast";
 import { IconDownload, IconUpload } from "@/components/Icons";
+import { Segmented } from "@/components/Segmented";
+import { setThemeChoice, useThemeChoice } from "@/lib/theme";
 import { useRecipes } from "@/hooks/useRecipes";
 
 interface ImportPreview {
@@ -38,6 +40,7 @@ export default function SettingsPage() {
   const [exportingCorrections, setExportingCorrections] = useState(false);
   const [confirmClearCorrections, setConfirmClearCorrections] = useState(false);
   const [aisleOrderDone, setAisleOrderDone] = useState(false);
+  const theme = useThemeChoice();
 
   useEffect(() => {
     void getCorrectionRepository()
@@ -185,26 +188,38 @@ export default function SettingsPage() {
     <>
       <PageHeader title={t("settings.title")} />
 
-      <section className="mb-6 rounded-card bg-surface p-5 shadow-card" aria-labelledby="lang-h">
-        <h2 id="lang-h" className="mb-1 text-h3 font-bold">{t("settings.language")}</h2>
-        <div className="flex gap-4 mt-3">
-          <Button
-            variant={lang === "de" ? "primary" : "secondary"}
-            onClick={() => setLang("de")}
-          >
-            Deutsch
-          </Button>
-          <Button
-            variant={lang === "en" ? "primary" : "secondary"}
-            onClick={() => setLang("en")}
-          >
-            English
-          </Button>
-        </div>
+      <section className="mb-6 rounded-card border border-line bg-surface p-5 shadow-card" aria-labelledby="theme-h">
+        <h2 id="theme-h" className="mb-1 font-display text-h2">{t("settings.appearance")}</h2>
+        <p className="mb-4 text-meta leading-relaxed text-ink-2">{t("settings.appearanceDesc")}</p>
+        <Segmented
+          ariaLabel={t("settings.appearance")}
+          className="max-w-sm"
+          value={theme}
+          onChange={setThemeChoice}
+          options={[
+            { value: "system", label: t("settings.themeSystem") },
+            { value: "light", label: t("settings.themeLight") },
+            { value: "dark", label: t("settings.themeDark") },
+          ]}
+        />
       </section>
 
-      <section className="mb-6 rounded-card bg-surface p-5 shadow-card" aria-labelledby="storage-h">
-        <h2 id="storage-h" className="mb-1 text-h3 font-bold">Lokale Daten</h2>
+      <section className="mb-6 rounded-card border border-line bg-surface p-5 shadow-card" aria-labelledby="lang-h">
+        <h2 id="lang-h" className="mb-1 font-display text-h2">{t("settings.language")}</h2>
+        <Segmented
+          ariaLabel={t("settings.language")}
+          className="mt-3 max-w-xs"
+          value={lang}
+          onChange={setLang}
+          options={[
+            { value: "de", label: "Deutsch" },
+            { value: "en", label: "English" },
+          ]}
+        />
+      </section>
+
+      <section className="mb-6 rounded-card border border-line bg-surface p-5 shadow-card" aria-labelledby="storage-h">
+        <h2 id="storage-h" className="mb-1 font-display text-h2">Lokale Daten</h2>
         <p className="mb-4 text-[14px] leading-relaxed text-ink-2">
           {recipes.length} {recipes.length === 1 ? t("recipes.countSingular") : t("recipes.countPlural")} werden aktuell nur in
           diesem Browser gespeichert (IndexedDB). Exportiere regelmäßig ein Backup, damit nichts
@@ -243,8 +258,8 @@ export default function SettingsPage() {
         )}
       </section>
 
-      <section className="mb-6 rounded-card bg-surface p-5 shadow-card" aria-labelledby="parser-h">
-        <h2 id="parser-h" className="mb-1 text-h3 font-bold">Parser-Testfälle</h2>
+      <section className="mb-6 rounded-card border border-line bg-surface p-5 shadow-card" aria-labelledby="parser-h">
+        <h2 id="parser-h" className="mb-1 font-display text-h2">Parser-Testfälle</h2>
         <p className="mb-4 text-[14px] leading-relaxed text-ink-2">
           Wenn du beim Import Zutaten oder Schritte korrigierst, wird die Korrektur anonym lokal
           gespeichert ({correctionCount} {correctionCount === 1 ? "Eintrag" : "Einträge"}). Über den
@@ -273,8 +288,8 @@ export default function SettingsPage() {
         </div>
       </section>
 
-      <section className="mb-6 rounded-card bg-surface p-5 shadow-card" aria-labelledby="aisle-h">
-        <h2 id="aisle-h" className="mb-1 text-h3 font-bold">
+      <section className="mb-6 rounded-card border border-line bg-surface p-5 shadow-card" aria-labelledby="aisle-h">
+        <h2 id="aisle-h" className="mb-1 font-display text-h2">
           {t("settings.aisleOrderTitle")}
         </h2>
         <p className="mb-4 text-[14px] leading-relaxed text-ink-2">
@@ -290,8 +305,8 @@ export default function SettingsPage() {
         )}
       </section>
 
-      <section className="mb-6 rounded-card bg-surface p-5 shadow-card" aria-labelledby="onboarding-h">
-        <h2 id="onboarding-h" className="mb-1 text-h3 font-bold">{t("onboarding.restart")}</h2>
+      <section className="mb-6 rounded-card border border-line bg-surface p-5 shadow-card" aria-labelledby="onboarding-h">
+        <h2 id="onboarding-h" className="mb-1 font-display text-h2">{t("onboarding.restart")}</h2>
         <p className="mb-4 text-[14px] leading-relaxed text-ink-2">
           {t("onboarding.restartDesc")}
         </p>
@@ -308,8 +323,8 @@ export default function SettingsPage() {
         </Button>
       </section>
 
-      <section className="rounded-card bg-surface p-5 shadow-card" aria-labelledby="about-h">
-        <h2 id="about-h" className="mb-1 text-h3 font-bold">{t("settings.about")}</h2>
+      <section className="rounded-card border border-line bg-surface p-5 shadow-card" aria-labelledby="about-h">
+        <h2 id="about-h" className="mb-1 font-display text-h2">{t("settings.about")}</h2>
         <p className="text-[14px] leading-relaxed text-ink-2">
           {t("settings.aboutDesc")}
         </p>

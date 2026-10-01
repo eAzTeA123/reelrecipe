@@ -120,14 +120,14 @@ function ActiveTimersOverlay({ timers, removeTimer }: { timers: Timer[], removeT
         return (
           <div key={timer.id} className="bg-surface/90 backdrop-blur shadow-pop rounded-ctl p-3 flex items-center gap-3 border border-line pointer-events-auto">
             <div className="flex flex-col">
-              <span className="text-xs text-stone-500 font-medium truncate max-w-[120px]">{timer.label}</span>
-              <span className="font-mono font-bold text-stone-800 text-lg">
+              <span className="max-w-[120px] truncate text-label font-medium text-ink-3">{timer.label}</span>
+              <span className="nums text-h3 font-bold text-ink">
                 {m}:{s.toString().padStart(2, "0")}
               </span>
             </div>
             <button 
               onClick={() => removeTimer(timer.id)}
-              className="w-8 h-8 flex items-center justify-center bg-stone-100 hover:bg-stone-200 rounded-full text-stone-600 transition-colors"
+              className="pressable flex h-11 w-11 items-center justify-center rounded-pill bg-surface-2 text-ink-2 transition-colors hover:bg-surface-3 hover:text-ink"
             >
               ✕
             </button>

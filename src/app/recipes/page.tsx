@@ -145,7 +145,7 @@ function RecipesContent() {
         <button
           type="button"
           onClick={() => setMode("all")}
-          className={`pressable flex flex-1 items-center justify-center gap-2 rounded-ctl py-2.5 text-body font-semibold transition-all ${
+          className={`pressable flex flex-1 items-center justify-center gap-2 min-h-11 rounded-ctl text-body font-semibold transition-all ${
             mode === "all"
               ? "bg-surface text-ink shadow-card"
               : "text-ink-2 hover:text-ink"
@@ -157,9 +157,9 @@ function RecipesContent() {
         <button
           type="button"
           onClick={() => setMode("fridge")}
-          className={`pressable flex flex-1 items-center justify-center gap-2 rounded-ctl py-2.5 text-body font-semibold transition-all ${
+          className={`pressable flex flex-1 items-center justify-center gap-2 min-h-11 rounded-ctl text-body font-semibold transition-all ${
             mode === "fridge"
-              ? "bg-surface text-accent shadow-card"
+              ? "bg-surface text-accent-text shadow-card"
               : "text-ink-2 hover:text-ink"
           }`}
         >
@@ -192,7 +192,7 @@ function RecipesContent() {
               aria-controls="recipe-filters"
               className={`pressable inline-flex h-11 items-center gap-2 rounded-ctl border px-3.5 text-[14px] font-semibold md:hidden ${
                 activeFilterCount > 0
-                  ? "border-accent bg-accent-soft text-accent"
+                  ? "border-accent bg-accent-soft text-accent-text"
                   : "border-line bg-surface text-ink-2"
               }`}
             >
@@ -278,7 +278,7 @@ function RecipesContent() {
         </div>
       ) : mode === "fridge" && fridgeIngredients.length === 0 ? (
         <div className="rounded-card border border-dashed border-line bg-surface/50 p-12 text-center">
-          <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-card bg-accent-soft text-accent">
+          <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-card bg-accent-soft text-accent-text">
             <IconFridge size={30} />
           </div>
           <h3 className="font-display text-h2 text-ink">Dein Kühlschrank wartet auf Zutaten</h3>
@@ -329,7 +329,7 @@ function ActiveFilterChip({ label, onRemove }: { label: string; onRemove: () => 
     <button
       type="button"
       onClick={onRemove}
-      className="pressable inline-flex h-8 items-center gap-1.5 rounded-full border border-accent bg-accent-soft px-3 text-meta font-medium text-accent"
+      className="pressable inline-flex h-8 items-center gap-1.5 rounded-full border border-accent bg-accent-soft px-3 text-meta font-medium text-accent-text"
     >
       {label}
       <IconX size={13} />

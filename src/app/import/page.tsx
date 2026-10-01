@@ -658,7 +658,7 @@ function ImportFlow() {
           className="flex flex-col items-center gap-4 rounded-card bg-surface py-16 shadow-card"
           aria-live="polite"
         >
-          <Spinner size={30} className="text-accent" />
+          <Spinner size={30} className="text-accent-text" />
           <p className="px-6 text-center text-body text-ink-2">
             {loadingHost ? t("import.loadingWeb").replace("{host}", loadingHost) : t("import.loading")}
           </p>
@@ -749,7 +749,7 @@ export default function ImportPage() {
     <Suspense
       fallback={
         <div className="flex justify-center py-20">
-          <Spinner size={28} className="text-accent" />
+          <Spinner size={28} className="text-accent-text" />
         </div>
       }
     >

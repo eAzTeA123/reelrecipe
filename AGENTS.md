@@ -61,11 +61,17 @@ werden dafür nicht verschlagwortet:
 
 - **Design:** Markenvertrag in [`DESIGN.md`](DESIGN.md), Tokens in `src/app/globals.css`
   (`@theme`). Keine willkürlichen `text-[Npx]`-Werte und kein hartkodiertes
-  `bg-white`/`text-black` – immer Tokens (`text-body`, `bg-surface`, `text-ink-2`,
-  `rounded-ctl`, `rounded-card`, `shadow-card`). Eingabefelder bleiben bei 16px
-  (iOS zoomt sonst). Zahlen in Listen bekommen `nums` (tabellarische Ziffern).
-  Vor Designrunden: `npx playwright test e2e/design-audit.spec.ts` erzeugt
-  Screenshots in `e2e/screenshots/design/`.
+  `bg-white`/`text-black`/`bg-blue-50` – immer Tokens (`text-body`, `bg-surface`,
+  `text-ink-2`, `rounded-ctl`, `rounded-card`, `shadow-card`). Eingabefelder bleiben
+  bei 16px (iOS zoomt sonst). Zahlen in Listen bekommen `nums` (tabellarische Ziffern).
+- **Dark Mode:** läuft **ausschließlich** über die `--color-*`-Variablen. `dark:`-Klassen
+  im Markup sind verboten – neue Farben als Token in `globals.css` anlegen und dort für
+  `.dark` überschreiben. Die Theme-Wahl (System/Hell/Dunkel) liegt in `src/lib/theme.ts`
+  (externer Store, `useSyncExternalStore`), das FOUC-Script in `layout.tsx`.
+- **Bedienziele:** mindestens **44 × 44 px** auf dem Handy. Höhen als `min-h-11`
+  statt fester `h-*`. Geprüft von `npx playwright test e2e/a11y.spec.ts` (hell + dunkel).
+- Vor Designrunden: `npx playwright test e2e/design-audit.spec.ts` erzeugt Screenshots
+  in hell und dunkel (390/1440) unter `e2e/screenshots/design/`.
 
 - Bilder werden als `local-image:<uuid>`-Referenz in `Recipe.image` gespeichert (Blob in Tabelle `images`).
 - Mengen-Inputs akzeptieren `1 1/2`, `2,5`, `0.5` → `parseAmountString` aus `src/parser`.

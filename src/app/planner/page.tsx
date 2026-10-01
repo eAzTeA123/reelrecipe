@@ -298,7 +298,7 @@ export default function PlannerPage() {
 
                       <button
                         onClick={() => removeEntry(entry)}
-                        className="h-10 w-10 shrink-0 flex items-center justify-center rounded-full text-ink-3 hover:bg-red-50 hover:text-red-500 transition-colors"
+                        className="pressable flex h-11 w-11 shrink-0 items-center justify-center rounded-pill text-ink-3 transition-colors hover:bg-danger/10 hover:text-danger"
                         aria-label="Aus Plan entfernen"
                       >
                         <IconTrash size={20} />
@@ -312,7 +312,7 @@ export default function PlannerPage() {
 
                 {/* Add Button with Native Select Overlay */}
                 <div className="relative mt-2">
-                  <button className="flex w-full items-center justify-center gap-2 rounded-ctl border border-dashed border-line py-3 text-body font-medium text-ink-3 transition-colors hover:border-accent hover:bg-accent/5 hover:text-accent">
+                  <button className="flex w-full items-center justify-center gap-2 rounded-ctl border border-dashed border-line py-3 text-body font-medium text-ink-3 transition-colors hover:border-accent hover:bg-accent/5 hover:text-accent-text">
                     <IconPlus size={18} />
                     <span>Rezept hinzufügen</span>
                   </button>

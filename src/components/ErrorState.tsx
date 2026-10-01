@@ -12,12 +12,19 @@ export function ErrorState({
   onRetry?: () => void;
 }) {
   return (
-    <div className="rounded-card bg-surface shadow-card" role="alert">
+    <div className="rounded-card border border-line bg-surface shadow-card" role="alert">
       <EmptyState
-        icon={<IconX size={38} />}
+        iconTone="danger"
+        icon={<IconX size={30} />}
         title={title}
         subtitle={message ?? "Bitte versuche es erneut."}
-        action={onRetry ? <Button variant="secondary" onClick={onRetry}>Erneut versuchen</Button> : undefined}
+        action={
+          onRetry ? (
+            <Button variant="secondary" onClick={onRetry}>
+              Erneut versuchen
+            </Button>
+          ) : undefined
+        }
       />
     </div>
   );

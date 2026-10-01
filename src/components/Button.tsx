@@ -10,19 +10,21 @@ interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variants: Record<Variant, string> = {
-  primary:
-    "bg-accent text-accent-ink shadow-[0_1px_2px_rgba(58,38,24,0.16)] hover:bg-[#a8452c]",
-  secondary:
-    "bg-surface text-ink border border-line hover:border-ink-3/60 hover:bg-surface-2/60",
-  ghost: "bg-transparent text-ink-2 hover:text-ink hover:bg-surface-2/70",
-  quiet: "bg-surface-2 text-ink-2 hover:bg-line/70 hover:text-ink",
-  danger: "bg-[#f7e3e0] text-danger hover:bg-[#f1d3ce]",
+  primary: "bg-accent text-accent-ink shadow-card hover:bg-accent-hover",
+  secondary: "bg-surface text-ink border border-line hover:border-line-2 hover:bg-surface-2",
+  ghost: "bg-transparent text-ink-2 hover:bg-surface-2 hover:text-ink",
+  quiet: "bg-surface-2 text-ink-2 hover:bg-surface-3 hover:text-ink",
+  danger: "bg-danger/10 text-danger hover:bg-danger/15",
 };
 
+/*
+ * Höhen als min-h: die Fläche darf bei langen Beschriftungen wachsen, bleibt
+ * aber immer über der 44-px-Daumenregel.
+ */
 const sizes: Record<Size, string> = {
-  sm: "h-9 px-3.5 text-meta rounded-ctl",
-  md: "h-11 px-5 text-body rounded-ctl",
-  lg: "h-[52px] px-6 text-h3 rounded-card",
+  sm: "min-h-11 px-4 text-meta rounded-ctl",
+  md: "min-h-[52px] px-5 text-body rounded-ctl",
+  lg: "min-h-14 px-6 text-h3 rounded-card",
 };
 
 export const Button = forwardRef<HTMLButtonElement, Props>(function Button(

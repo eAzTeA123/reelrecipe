@@ -167,6 +167,11 @@ export const dictionaries = {
     // Settings
     "settings.title": "Einstellungen",
     "settings.language": "Sprache / Language",
+    "settings.appearance": "Darstellung",
+    "settings.appearanceDesc": "Hell, dunkel oder wie dein Gerät eingestellt ist.",
+    "settings.themeSystem": "System",
+    "settings.themeLight": "Hell",
+    "settings.themeDark": "Dunkel",
     "settings.aisleOrderTitle": "Einkaufs-Reihenfolge",
     "settings.aisleOrderDesc": "Die Einkaufsliste sortiert Abteilungen nach deinem Abhak-Verhalten: Sobald du eine Abteilung drei Mal abgehakt hast, merkt sie sich, wann sie bei dir dran war. Unbekanntes bleibt alphabetisch – „Sonstiges“ kommt immer zuletzt.",
     "settings.aisleOrderReset": "Gelernte Reihenfolge zurücksetzen",
@@ -519,6 +524,11 @@ export const dictionaries = {
     // Settings
     "settings.title": "Settings",
     "settings.language": "Language / Sprache",
+    "settings.appearance": "Appearance",
+    "settings.appearanceDesc": "Light, dark, or whatever your device is set to.",
+    "settings.themeSystem": "System",
+    "settings.themeLight": "Light",
+    "settings.themeDark": "Dark",
     "settings.aisleOrderTitle": "Shopping order",
     "settings.aisleOrderDesc": "The list sorts aisles by how you tick them off: once you have completed an aisle three times, the app remembers when it was your turn. Anything it does not know yet stays alphabetical – “Sonstiges” always comes last.",
     "settings.aisleOrderReset": "Reset learned order",

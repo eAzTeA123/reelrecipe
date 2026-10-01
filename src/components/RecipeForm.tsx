@@ -238,8 +238,8 @@ export function RecipeForm({
   return (
     <div className="flex flex-col gap-7">
       {hasDraft && (
-        <div className="rounded-ctl bg-blue-50 dark:bg-blue-950/30 p-4 border border-blue-100 dark:border-blue-900/50">
-          <p className="font-semibold text-blue-900 dark:text-blue-100 mb-3 text-body">
+        <div className="rounded-ctl border border-accent/20 bg-accent-soft p-4">
+          <p className="mb-3 text-body font-semibold text-ink">
             Du hast einen ungespeicherten Rezept-Entwurf.
           </p>
           <div className="flex gap-2">
@@ -264,31 +264,31 @@ export function RecipeForm({
 
       {initial.sourceCaption && (
         <div className="flex flex-col gap-4">
-          <div className="rounded-ctl bg-blue-50 dark:bg-blue-950/30 p-3 text-sm text-blue-800 dark:text-blue-200">
-            <p className="font-semibold">{t("form.previewBanner")}</p>
-            <p className="mt-1 text-blue-700/80 dark:text-blue-300/80">{t("form.previewBannerHint")}</p>
+          <div className="rounded-ctl border border-accent/20 bg-accent-soft p-3 text-meta text-ink-2">
+            <p className="font-semibold text-ink">{t("form.previewBanner")}</p>
+            <p className="mt-1">{t("form.previewBannerHint")}</p>
           </div>
           
           <div className="flex gap-2">
             <button
               type="button"
-              className="text-xs px-3 py-1.5 rounded-full bg-red-50 text-red-600 dark:bg-red-950/30 dark:text-red-400 font-medium"
+              className="pressable inline-flex min-h-11 items-center rounded-pill bg-danger/10 px-4 text-meta font-medium text-danger hover:bg-danger/15"
               onClick={() => {
                 setDraft(prev => ({ ...prev, ingredients: prev.ingredients.filter(i => !i.uncertain) }));
               }}
             >{t("form.previewUncertainRemove")}</button>
             <button
               type="button"
-              className="text-xs px-3 py-1.5 rounded-full bg-green-50 text-green-600 dark:bg-green-950/30 dark:text-green-400 font-medium"
+              className="pressable inline-flex min-h-11 items-center rounded-pill bg-good/10 px-4 text-meta font-medium text-good hover:bg-good/15"
               onClick={() => {
                 setDraft(prev => ({ ...prev, ingredients: prev.ingredients.map(i => ({ ...i, uncertain: false })) }));
               }}
             >{t("form.previewUncertainAccept")}</button>
           </div>
 
-          <details className="rounded-ctl bg-gray-50 dark:bg-gray-900/30 p-3">
-            <summary className="cursor-pointer text-sm font-medium text-ink/60">{t("form.previewOriginal")}</summary>
-            <pre className="mt-2 text-xs text-ink/50 whitespace-pre-wrap font-mono leading-relaxed max-h-48 overflow-y-auto">
+          <details className="rounded-ctl border border-line bg-surface-2 p-3">
+            <summary className="cursor-pointer text-meta font-medium text-ink-2">{t("form.previewOriginal")}</summary>
+            <pre className="mt-2 max-h-48 overflow-y-auto whitespace-pre-wrap font-mono text-label leading-relaxed text-ink-3">
               {initial.sourceCaption}
             </pre>
           </details>
@@ -493,7 +493,7 @@ export function RecipeForm({
         <legend className="mb-1 text-body font-semibold text-ink">{t("recipe.steps")}</legend>
         {draft.steps.map((step, i) => (
           <div key={step.id} className="flex items-start gap-2">
-            <span className="mt-2.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-accent-soft text-meta font-bold text-accent">
+            <span className="mt-2.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-accent-soft text-meta font-bold text-accent-text">
               {i + 1}
             </span>
             <label className="sr-only" htmlFor={`step-${step.id}`}>Schritt {i + 1}</label>

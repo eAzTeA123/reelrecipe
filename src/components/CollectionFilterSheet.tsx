@@ -150,7 +150,7 @@ export function CollectionFilterSheet({
             onClick={() => patch({ favoritesOnly: active.favoritesOnly ? undefined : true })}
             className={`pressable flex min-h-11 items-center gap-3 rounded-ctl border px-4 text-left text-body font-medium ${
               active.favoritesOnly
-                ? "border-accent bg-accent-soft text-accent"
+                ? "border-accent bg-accent-soft text-accent-text"
                 : "border-line bg-surface text-ink-2"
             }`}
           >
@@ -198,7 +198,7 @@ export function CollectionFilterSheet({
                       key={tag}
                       type="button"
                       onClick={() => toggleTag(tag)}
-                      className="pressable inline-flex h-9 items-center gap-1.5 rounded-full border border-accent bg-accent-soft px-3 text-meta font-medium text-accent"
+                      className="pressable inline-flex h-9 items-center gap-1.5 rounded-full border border-accent bg-accent-soft px-3 text-meta font-medium text-accent-text"
                     >
                       {tag}
                       <IconX size={13} />

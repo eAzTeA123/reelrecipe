@@ -14,7 +14,7 @@ export function PageHeader({
     <header className="mb-7 flex items-start justify-between gap-4">
       <div className="min-w-0">
         {eyebrow && (
-          <p className="mb-1.5 text-label font-semibold uppercase text-accent">{eyebrow}</p>
+          <p className="mb-1.5 text-label font-semibold uppercase text-accent-text">{eyebrow}</p>
         )}
         <h1 className="font-display text-title text-ink">{title}</h1>
         {subtitle && <p className="mt-2 max-w-prose text-body text-ink-2">{subtitle}</p>}

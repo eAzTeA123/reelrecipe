@@ -25,7 +25,7 @@ function BottomNav() {
   return (
     <nav
       aria-label="Hauptnavigation"
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-surface/90 backdrop-blur-xl md:hidden transform-gpu"
+      className="glass fixed inset-x-0 bottom-0 z-40 border-t border-line md:hidden transform-gpu"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
       <div className="mx-auto grid max-w-lg grid-cols-5">
@@ -38,7 +38,7 @@ function BottomNav() {
               data-tour={href.replace("/", "") || "home"}
               aria-current={active ? "page" : undefined}
               className={`flex min-h-[52px] flex-col items-center justify-center gap-0.5 py-1.5 text-[11px] font-medium transition-colors ${
-                active ? "text-accent" : "text-ink-3"
+                active ? "text-accent-text" : "text-ink-3"
               }`}
             >
               {active && label === t("nav.favorites") ? (
@@ -59,7 +59,7 @@ function TopNav() {
   const { t } = useI18n();
   const pathname = usePathname();
   return (
-    <header className="sticky top-0 z-40 hidden border-b border-line bg-bg/85 backdrop-blur-xl md:block">
+    <header className="glass sticky top-0 z-40 hidden border-b border-line md:block">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
         <Link href="/" className="flex items-center gap-2.5">
           <img src="/icon.svg" alt="Scroll2Cook Logo" width={32} height={32} className="rounded-ctl" />
@@ -75,7 +75,7 @@ function TopNav() {
                 data-tour={href.replace("/", "") || "home"}
                 aria-current={active ? "page" : undefined}
                 className={`pressable rounded-full px-4 py-2 text-body font-medium ${
-                  active ? "bg-accent-soft text-accent" : "text-ink-2 hover:text-ink"
+                  active ? "bg-accent-soft text-accent-text" : "text-ink-2 hover:text-ink"
                 }`}
               >
                 {label}
@@ -149,8 +149,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <button
                 type="button"
                 onClick={dismissStorageHint}
-                aria-label="Hinweis schließen"
-                className="pressable shrink-0 rounded-ctl px-2 py-1 text-meta font-semibold text-ink underline underline-offset-2"
+                className="pressable inline-flex min-h-11 shrink-0 items-center rounded-ctl px-3 text-meta font-semibold text-ink underline underline-offset-2"
               >
                 Verstanden
               </button>

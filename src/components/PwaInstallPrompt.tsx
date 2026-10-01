@@ -42,8 +42,8 @@ export function PwaInstallPrompt() {
       <button
         id="tour-pwa"
         onClick={() => setShowPrompt(true)}
-        className={`fixed z-30 bottom-24 right-4 md:bottom-6 md:right-6 flex items-center justify-center gap-2 rounded-ctl bg-ink text-white px-4 py-2.5 shadow-[0_8px_30px_rgb(0,0,0,0.12)] transition-transform hover:scale-105 active:scale-95 ${
-          !hasPulsed ? "animate-pulse ring-4 ring-ink/20" : ""
+        className={`fixed bottom-24 right-4 z-30 flex min-h-11 items-center justify-center gap-2 rounded-pill bg-ink px-4 text-bg shadow-pop transition-transform hover:scale-[1.03] active:scale-95 md:bottom-6 md:right-6 ${
+          !hasPulsed ? "ring-4 ring-accent/25" : ""
         }`}
         aria-label={t("pwa.saveMe")}
       >

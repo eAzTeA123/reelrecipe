@@ -177,10 +177,10 @@ export default function ShoppingPage() {
           <div className="flex flex-col gap-6">
             {sortedAisles.map((aisle) => (
               <div key={aisle}>
-                <h2 className="mb-2 px-1 text-lg font-semibold text-ink-2">{aisle}</h2>
-                <ul className="divide-y divide-line overflow-hidden rounded-card bg-surface shadow-card">
+                <h2 className="mb-2.5 px-1 font-display text-h3 text-ink-2">{aisle}</h2>
+                <ul className="divide-y divide-line overflow-hidden rounded-card border border-line bg-surface shadow-card">
                   {groupedItems[aisle].map((item) => (
-                    <li key={item.id} className="flex items-center gap-3 px-3 py-1.5">
+                    <li key={item.id} className="flex items-center gap-3 px-4 py-1">
                       <label className="flex min-h-[44px] min-w-0 flex-1 cursor-pointer items-center gap-3">
                         <input
                           type="checkbox"
@@ -202,9 +202,9 @@ export default function ShoppingPage() {
                         />
                         <span
                           aria-hidden
-                          className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-ink-3/50 text-transparent transition-colors peer-checked:border-accent peer-checked:bg-accent peer-checked:text-white"
+                          className="tick-box flex h-7 w-7 shrink-0 items-center justify-center rounded-xs border-2 border-ink-3/50 text-transparent transition-colors peer-checked:border-accent peer-checked:bg-accent peer-checked:text-accent-ink"
                         >
-                          <IconCheck size={14} />
+                          <IconCheck size={16} />
                         </span>
                         <span className={`min-w-0 flex-1 break-words hyphens-auto text-body ${item.checked ? "text-ink-3 line-through" : ""}`}>
                           {formatAmount(item.amount, item.unit) && (

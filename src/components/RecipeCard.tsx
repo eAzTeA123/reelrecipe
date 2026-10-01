@@ -78,9 +78,9 @@ export function RecipeCard({
 
         <div className="mt-3.5 flex flex-col gap-1.5">
           {recipe.category && (
-            <span className="text-label font-semibold text-accent">{recipe.category}</span>
+            <span className="text-label font-semibold text-accent-text">{recipe.category}</span>
           )}
-          <h3 className="font-display text-card text-ink transition-colors group-hover:text-accent">
+          <h3 className="font-display text-card text-ink transition-colors group-hover:text-accent-text">
             {recipe.title}
           </h3>
 
@@ -149,7 +149,7 @@ export function RecipeCard({
         aria-pressed={recipe.favorite}
         className={`pressable absolute right-3 top-3 flex h-11 w-11 items-center justify-center rounded-pill backdrop-blur transition-colors ${
           recipe.favorite
-            ? "bg-surface/90 text-accent"
+            ? "bg-surface/90 text-accent-text"
             : "bg-surface/80 text-ink/70 hover:bg-surface hover:text-ink"
         }`}
       >

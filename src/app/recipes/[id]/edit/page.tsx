@@ -30,7 +30,7 @@ export default function EditRecipePage({ params }: { params: Promise<{ id: strin
   if (loading) {
     return (
       <div className="flex justify-center py-24">
-        <Spinner size={30} className="text-accent" />
+        <Spinner size={30} className="text-accent-text" />
       </div>
     );
   }
