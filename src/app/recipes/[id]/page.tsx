@@ -225,7 +225,7 @@ export default function RecipeDetailPage({ params }: { params: Promise<{ id: str
         />
       )}
       <article className="mx-auto max-w-5xl relative">
-        <div className="no-print glass sticky top-0 z-30 -mx-4 mb-5 flex items-center justify-between border-b border-line px-4 py-1.5 md:-mx-6 md:top-16 md:px-6">
+        <div className="no-print glass sticky top-0 z-30 -mx-4 mb-5 flex items-start justify-between gap-2 border-b border-line px-4 py-1.5 md:-mx-6 md:top-16 md:px-6">
         <button
           onClick={() => {
             if (window.history.length > 1) {
