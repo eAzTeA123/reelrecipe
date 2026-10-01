@@ -15,6 +15,14 @@ npm run test       # Vitest (Parser-Unit-Tests)
 npm run test:e2e   # Playwright E2E (braucht vorher `npm run build`; startet Server auf :3100 selbst)
 ```
 
+**Leistungsurteile nur gegen den Produktions-Build.** `next dev` kompiliert jede
+Route beim ersten Aufruf neu; Navigationen dauern dadurch Sekunden und sehen wie
+Bedienfehler aus („ich muss mehrmals tippen"). Gemessen mit
+`npx playwright test e2e/perf.spec.ts` – die Spec legt 120 Rezepte an und
+protokolliert Liste, Scroll-Last und Tab-Wechsel gegen `next start`. Stand:
+erste Karte ~0,6 s, alle 120 Karten ~0,7 s, Tippen→Detail ~0,2 s, Tab-Wechsel
+0,2–0,7 s, keine langlaufenden Aufgaben beim Scrollen.
+
 ## Architektur
 
 - `src/domain/` – Typen (`Recipe`, `Ingredient`, `RecipeStep`, `ShoppingItem`, `Collection`, `BackupFile`), Kategorien.
