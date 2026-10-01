@@ -18,7 +18,7 @@ import { UnitToggle } from "@/components/UnitToggle";
 import { useToast } from "@/components/Toast";
 import {
   IconBack, IconCart, IconClock, IconHeart, IconHeartFill,
-  IconCopy, IconLink, IconMinus, IconPencil, IconPlay, IconPlus, IconPrint,
+  IconCopy, IconLink, IconMinus, IconPencil, IconPlay, IconPlus,
   IconShare, IconTrash, IconUsers,
 } from "@/components/Icons";
 
@@ -225,7 +225,16 @@ export default function RecipeDetailPage({ params }: { params: Promise<{ id: str
         />
       )}
       <article className="mx-auto max-w-5xl relative">
-        <div className="no-print sticky top-0 z-30 -mx-4 mb-5 flex items-start justify-between gap-2 border-b border-line bg-bg/95 px-4 py-1.5 md:-mx-6 md:top-16 md:px-6">
+        {/* Aktionsleiste: kein Rand und keine flache Fläche, sondern ein weicher
+            Verlauf in die Seitenfarbe – dadurch gibt es keine harte Kante und
+            der Inhalt löst sich beim Scrollen darunter auf. */}
+        <div
+          className="no-print sticky top-0 z-30 -mx-4 mb-4 flex items-center justify-between gap-2 px-4 pt-1.5 pb-4 md:-mx-6 md:top-16 md:px-6"
+          style={{
+            background:
+              "linear-gradient(to bottom, var(--color-bg) 0%, var(--color-bg) 68%, var(--scrim) 100%)",
+          }}
+        >
         <button
           onClick={() => {
             if (window.history.length > 1) {
@@ -249,13 +258,6 @@ export default function RecipeDetailPage({ params }: { params: Promise<{ id: str
             className="pressable inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-pill text-ink-2 hover:bg-surface-2 hover:text-ink"
           >
             <IconShare size={21} />
-          </button>
-          <button
-            onClick={() => window.print()}
-            aria-label={t("recipe.print")}
-            className="pressable inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-pill text-ink-2 hover:bg-surface-2 hover:text-ink"
-          >
-            <IconPrint size={21} />
           </button>
           <button
             onClick={() => void getRecipeRepository().toggleFavorite(id)}

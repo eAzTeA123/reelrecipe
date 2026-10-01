@@ -10,7 +10,8 @@
  */
 @theme {
   /* Flächen und Schrift (Light) */
-  --color-bg: #faf7f2; /* warmes Papier */
+  --color-bg: #faf7f2;
+  --scrim: rgba(250, 247, 242, 0); /* warmes Papier */
   --color-surface: #ffffff;
   --color-surface-2: #f3eee7;
   --color-surface-3: #eae4da; /* Vertiefungen, Wells */
@@ -103,6 +104,7 @@
   :root:not([data-theme="light"]) {
     color-scheme: dark;
     --color-bg: #131110;
+  --scrim: rgba(19, 17, 16, 0);
     --color-surface: #1c1917;
     --color-surface-2: #241f1c;
     --color-surface-3: #2d2723;
@@ -131,6 +133,7 @@
 [data-theme="dark"] {
   color-scheme: dark;
   --color-bg: #131110;
+  --scrim: rgba(19, 17, 16, 0);
   --color-surface: #1c1917;
   --color-surface-2: #241f1c;
   --color-surface-3: #2d2723;

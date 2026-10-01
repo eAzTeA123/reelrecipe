@@ -55,6 +55,10 @@ test("Untere Navigation bleibt beim Scrollen am unteren Rand", async ({ page }) 
   const scrolled = await page.evaluate(() => window.scrollY);
   expect(scrolled, "Seite war nicht scrollbar – Test wäre wertlos").toBeGreaterThan(200);
 
+  // Belegbild für die schwebende Aktionsleiste über gescrolltem Inhalt:
+  // dort zeigt sich, ob der Verlauf wirklich ohne harte Kante ausläuft.
+  await page.screenshot({ path: "e2e/screenshots/design/390-detail-scrolled.png" });
+
   // Absicherung gegen die beiden iOS-Fallen: eine Verankerung, die auf `auto`
   // zurückfallen kann, und ein Weichzeichner auf der fixierten Leiste.
   const styles = await nav.evaluate((el) => {
