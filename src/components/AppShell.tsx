@@ -41,8 +41,8 @@ function BottomNav() {
      */
     <nav
       aria-label="Hauptnavigation"
-      className="fixed bottom-3 left-3 right-3 z-40 flex items-stretch gap-1 rounded-pill border border-line bg-surface p-1.5 shadow-lift md:hidden"
-      style={{ marginBottom: "env(safe-area-inset-bottom)" }}
+      className="fixed bottom-1.5 left-3 right-3 z-40 flex items-stretch gap-1 rounded-pill border border-line bg-surface p-1.5 shadow-lift md:hidden"
+      style={{ marginBottom: "calc(env(safe-area-inset-bottom) / 2)" }}
     >
       {getNavItems(t).map(({ href, label, icon: Icon }) => {
         const active = isActive(pathname, href);
