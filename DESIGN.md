@@ -164,6 +164,20 @@ localStorage). Ein Inline-Script in [layout.tsx](src/app/layout.tsx) setzt die
 Wahl **vor** dem ersten Paint, damit nichts aufblitzt. `viewport.themeColor`
 liefert beide Werte per Media-Query; das Manifest bleibt statisch.
 
+## Navigation (Handy)
+
+Die untere Leiste ist eine **frei schwebende Kapsel** (`rounded-pill`, Rand,
+`shadow-lift`, Abstand zum Rand, `env(safe-area-inset-bottom)`) statt Kante an
+Kante. Der aktive Eintrag trägt eine Pill-Fläche (`bg-accent-soft`) mit Symbol
+und Beschriftung in `text-accent-text`, inaktive Einträge sind `text-ink-3`.
+Jeder Eintrag ist mindestens 48 px hoch. Die Ränder der Kapsel fangen keine
+Taps ab (`pointer-events-none` außen, `pointer-events-auto` innen).
+
+**Harte Regel:** auf `position: fixed`/`sticky` Elementen (und ihren Kindern)
+darf **kein** `backdrop-filter`/`filter`/`transform` liegen – das bricht auf iOS
+`position: fixed`, und die Leiste scrollt mit. Der Material-Eindruck kommt aus
+halbtransparenter Fläche, Rand und Schatten. Die `glass`-Utility ist nur für
+nicht fixierte Flächen gedacht (z. B. die Eingabekapsel auf der Startseite).
 ## Prüfen
 
 ```bash

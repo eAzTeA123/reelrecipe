@@ -70,6 +70,10 @@ werden dafür nicht verschlagwortet:
   (externer Store, `useSyncExternalStore`), das FOUC-Script in `layout.tsx`.
 - **Bedienziele:** mindestens **44 × 44 px** auf dem Handy. Höhen als `min-h-11`
   statt fester `h-*`. Geprüft von `npx playwright test e2e/a11y.spec.ts` (hell + dunkel).
+- **Fixierte Leisten:** kein `backdrop-filter`/`filter`/`transform` auf `fixed`/`sticky`
+  Elementen oder deren Kindern – das bricht `position: fixed` auf iOS (Leiste scrollt mit).
+  Die `glass`-Utility nur auf nicht fixierten Flächen nutzen; die Tab-Leiste ist eine
+  schwebende Kapsel mit Pill-Fläche für den aktiven Eintrag.
 - Vor Designrunden: `npx playwright test e2e/design-audit.spec.ts` erzeugt Screenshots
   in hell und dunkel (390/1440) unter `e2e/screenshots/design/`.
 

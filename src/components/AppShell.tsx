@@ -23,12 +23,23 @@ function BottomNav() {
   const { t } = useI18n();
   const pathname = usePathname();
   return (
+    /*
+     * Schwebende Kapsel wie in Apples Tab Bars: die Leiste ist nicht mehr
+     * Kante an Kante, sondern ein frei liegendes Materialfeld mit Abstand zum
+     * Rand. Der aktive Eintrag bekommt eine Pill-Fläche hinter Symbol und
+     * Beschriftung.
+     *
+     * Wichtig: **kein** `backdrop-filter` auf dieser fixierten Leiste (auch
+     * nicht auf Kindern) – das bricht auf iOS `position: fixed`. Der Material-
+     * Eindruck kommt deshalb aus halbtransparenter Fläche, Rand und Schatten.
+     * Die Ränder der Kapsel fangen keine Taps ab (pointer-events).
+     */
     <nav
       aria-label="Hauptnavigation"
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-surface md:hidden"
-      style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+      className="pointer-events-none fixed inset-x-0 bottom-0 z-40 md:hidden"
+      style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 0.5rem)" }}
     >
-      <div className="mx-auto grid max-w-lg grid-cols-5">
+      <div className="pointer-events-auto mx-3 flex items-stretch gap-1 rounded-pill border border-line bg-surface/95 p-1.5 shadow-lift">
         {getNavItems(t).map(({ href, label, icon: Icon }) => {
           const active = isActive(pathname, href);
           return (
@@ -37,14 +48,16 @@ function BottomNav() {
               href={href}
               data-tour={href.replace("/", "") || "home"}
               aria-current={active ? "page" : undefined}
-              className={`flex min-h-[52px] flex-col items-center justify-center gap-0.5 py-1.5 text-[11px] font-medium transition-colors ${
-                active ? "text-accent-text" : "text-ink-3"
+              className={`pressable flex min-h-12 flex-1 flex-col items-center justify-center gap-0.5 rounded-pill px-1 py-1.5 text-[11px] transition-colors ${
+                active
+                  ? "bg-accent-soft font-semibold text-accent-text"
+                  : "font-medium text-ink-3 hover:text-ink-2"
               }`}
             >
               {active && label === t("nav.favorites") ? (
-                <IconHeartFill size={22} />
+                <IconHeartFill size={21} />
               ) : (
-                <Icon size={22} />
+                <Icon size={21} />
               )}
               {label}
             </Link>
