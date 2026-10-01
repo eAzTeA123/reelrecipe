@@ -67,3 +67,30 @@ test("Bedienziele sind mindestens 44 px groß (hell und dunkel)", async ({ page 
 
   expect(report.join("\n"), "Zu kleine Bedienziele").toEqual("");
 });
+
+
+/**
+ * Die untere Navigation ist fixiert. Auf iOS bricht `position: fixed`, sobald
+ * ein Vorfahre oder das Element selbst `backdrop-filter`/`transform` bekommt –
+ * die Leiste scrollt dann mit. Dieser Test hält das strukturell fest.
+ */
+test("Untere Navigation bleibt beim Scrollen am unteren Rand", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  // Detailseite: lang genug zum Scrollen und enthält zusätzlich die klebrige Aktionsleiste.
+  await createRecipeViaUI(page, DE_CAPTION);
+
+  const nav = page.locator('nav[aria-label="Hauptnavigation"]:visible');
+  const before = await nav.boundingBox();
+  expect(before, "Leiste nicht gefunden").not.toBeNull();
+
+  await page.evaluate(() => window.scrollTo(0, 1200));
+  await page.waitForTimeout(400);
+  const after = await nav.boundingBox();
+  const scrolled = await page.evaluate(() => window.scrollY);
+  expect(scrolled, "Seite war nicht scrollbar – Test wäre wertlos").toBeGreaterThan(200);
+
+  // Sitzt unten am Viewport …
+  expect(Math.round(after!.y + after!.height)).toBeGreaterThanOrEqual(838);
+  // … und bewegt sich beim Scrollen nicht.
+  expect(Math.round(after!.y)).toBe(Math.round(before!.y));
+});

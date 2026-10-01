@@ -49,7 +49,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
         {toasts.map((t) => (
           <div
             key={t.id}
-            className="toast-in glass pointer-events-auto flex items-center gap-2.5 rounded-ctl border border-line px-4 py-3 text-body font-medium text-ink shadow-pop"
+            className="toast-in pointer-events-auto flex items-center gap-2.5 rounded-ctl border border-line bg-surface px-4 py-3 text-body font-medium text-ink shadow-pop"
           >
             {t.type === "error" ? (
               <IconX size={16} className="shrink-0 text-danger" />
