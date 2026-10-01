@@ -78,7 +78,7 @@ function TopNav() {
     <header className="glass sticky top-0 z-40 hidden border-b border-line md:block">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
         <Link href="/" className="flex items-center gap-2.5">
-          <img src="/icon.svg" alt="Scroll2Cook Logo" width={32} height={32} className="rounded-ctl" />
+          <img src="/icon.svg" alt="Scroll2Cook Logo" width={32} height={32} className="rounded-xs" />
           <span className="font-display text-h2 text-ink">{t("brand.name")}</span>
         </Link>
         <nav aria-label="Hauptnavigation" className="flex items-center gap-1">

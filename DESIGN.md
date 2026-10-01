@@ -215,6 +215,29 @@ Zeichnung ist ein Inline-SVG in
   Escape schließt, Fokus kehrt zurück) und Fortschrittspunkte mit 44 px
   Trefferfläche.
 
+## Bildmarke
+
+Der **Topf** ist das Zeichen der App – dieselbe Form wie im Ladezustand und im
+Onboarding. `src/app/icon.svg` ist die einzige Quelle, alle Raster entstehen
+daraus:
+
+```bash
+node scripts/render-icons.mjs     # rendert über Chromium, Playwright ist Dev-Abhängigkeit
+```
+
+- Bewusst **randlos** (full bleed): Android maskiert „any"-Icons selbst, iOS
+  rundet `apple-icon.png` selbst. In der App wird das Zeichen per CSS gerundet
+  (`rounded-xs` an der Navigationsleiste).
+- Die Zeichnung bleibt im Mittelkreis von 80 %; die maskierbare Fassung wird
+  zusätzlich auf 86 % verkleinert, damit aggressive Launcher nichts anschneiden.
+- Flach, ohne Verlauf: Terrakotta als Fläche, Papier für den Topf, ein
+  abgedunkeltes Terrakotta für den Bodenschatten – dieselbe Lichtlogik wie in
+  den Illustrationen.
+- Die Farben stehen fest in der Datei: Ein SVG, das als `<img>` oder Icon
+  geladen wird, hat kein Stylesheet der App. Die Werte entsprechen
+  `--color-accent` `#c9472c`, `--color-bg` `#faf7f2` und einem abgedunkelten
+  Akzent `#8f2f1a`.
+
 ## Prüfen
 
 ```bash

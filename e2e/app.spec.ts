@@ -232,15 +232,16 @@ test("Export und Import des Backups", async ({ page }) => {
   expect(backup.recipes).toHaveLength(1);
   expect(backup.recipes[0].title).toBe("Creamy Garlic Chicken");
 
-  // DB leeren, dann importieren
-  await page.evaluate(
-    () =>
-      new Promise<void>((resolve) => {
-        const req = indexedDB.deleteDatabase("rezept");
-        req.onsuccess = req.onerror = req.onblocked = () => resolve();
-      }),
-  );
+  // Bibliothek über die App leeren – **nicht** per `deleteDatabase`: Das läuft
+  // gegen eine geöffnete Verbindung, löst in `db.ts` ein `versionchange`-Reload
+  // aus und kreuzt die nächste Navigation des Tests
+  // („Navigation … is interrupted by another navigation").
+  // Nach dem Export steht der Test in den Einstellungen, deshalb erst zurück
+  // in die Liste und das Rezept öffnen.
   await page.goto("/recipes");
+  await page.getByText("Creamy Garlic Chicken").first().click();
+  await page.getByRole("button", { name: "Rezept löschen" }).click();
+  await page.getByRole("button", { name: "Löschen", exact: true }).click();
   await expect(page.getByText("Du hast noch keine Rezepte")).toBeVisible();
 
   await page.goto("/settings");
