@@ -89,8 +89,21 @@ test("Untere Navigation bleibt beim Scrollen am unteren Rand", async ({ page }) 
   const scrolled = await page.evaluate(() => window.scrollY);
   expect(scrolled, "Seite war nicht scrollbar – Test wäre wertlos").toBeGreaterThan(200);
 
-  // Sitzt unten am Viewport …
-  expect(Math.round(after!.y + after!.height)).toBeGreaterThanOrEqual(838);
+  // Absicherung gegen die beiden iOS-Fallen: eine Verankerung, die auf `auto`
+  // zurückfallen kann, und ein Weichzeichner auf der fixierten Leiste.
+  const styles = await nav.evaluate((el) => {
+    const s = getComputedStyle(el);
+    return { bottom: s.bottom, filter: s.backdropFilter || s.filter };
+  });
+  expect(styles.bottom, "bottom darf nicht auf auto zurückfallen").not.toBe("auto");
+  expect(["none", ""], "kein backdrop-filter/filter auf fixierten Leisten").toContain(
+    styles.filter,
+  );
+
+  // Sitzt unten am Viewport (schwebende Kapsel, deshalb mit Abstand) …
+  const distanceToBottom = 844 - (after!.y + after!.height);
+  expect(distanceToBottom).toBeGreaterThanOrEqual(0);
+  expect(distanceToBottom, "Leiste klebt nicht am unteren Rand").toBeLessThanOrEqual(40);
   // … und bewegt sich beim Scrollen nicht.
   expect(Math.round(after!.y)).toBe(Math.round(before!.y));
 });

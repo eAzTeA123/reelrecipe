@@ -24,46 +24,49 @@ function BottomNav() {
   const pathname = usePathname();
   return (
     /*
-     * Schwebende Kapsel wie in Apples Tab Bars: die Leiste ist nicht mehr
-     * Kante an Kante, sondern ein frei liegendes Materialfeld mit Abstand zum
-     * Rand. Der aktive Eintrag bekommt eine Pill-Fläche hinter Symbol und
-     * Beschriftung.
+     * Schwebende Kapsel wie in Apples Tab Bars – bewusst so aufgebaut, dass
+     * die Verankerung **nicht** an einem einzelnen Wert hängt:
      *
-     * Wichtig: **kein** `backdrop-filter` auf dieser fixierten Leiste (auch
-     * nicht auf Kindern) – das bricht auf iOS `position: fixed`. Der Material-
-     * Eindruck kommt deshalb aus halbtransparenter Fläche, Rand und Schatten.
-     * Die Ränder der Kapsel fangen keine Taps ab (pointer-events).
+     * - `bottom-3`, `left-3`, `right-3` kommen als Klassen (immer gültig). Der
+     *   Home-Indicator-Abstand liegt zusätzlich als `margin-bottom` daneben –
+     *   wird `env()` nicht verstanden, greift trotzdem `bottom-3`. Hinge `bottom`
+     *   selbst an `calc(env(…))`, fiele es bei einem ungültigen Wert auf `auto`
+     *   zurück und die Leiste würde an ihrer Dokumentposition hängen bleiben
+     *   (scrollt mit, wandert durch die Bildmitte).
+     * - Das fixierte Element ist genau die Kapsel: kein vollbreiter Wrapper,
+     *   keine `pointer-events`-Tricks, dadurch fängt sie auch keine Taps neben
+     *   sich ab.
+     * - Kein `backdrop-filter`, `filter` oder `transform` (auch nicht an
+     *   Vorfahren) – das bricht auf iOS `position: fixed`.
      */
     <nav
       aria-label="Hauptnavigation"
-      className="pointer-events-none fixed inset-x-0 bottom-0 z-40 md:hidden"
-      style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 0.5rem)" }}
+      className="fixed bottom-3 left-3 right-3 z-40 flex items-stretch gap-1 rounded-pill border border-line bg-surface p-1.5 shadow-lift md:hidden"
+      style={{ marginBottom: "env(safe-area-inset-bottom)" }}
     >
-      <div className="pointer-events-auto mx-3 flex items-stretch gap-1 rounded-pill border border-line bg-surface/95 p-1.5 shadow-lift">
-        {getNavItems(t).map(({ href, label, icon: Icon }) => {
-          const active = isActive(pathname, href);
-          return (
-            <Link
-              key={href}
-              href={href}
-              data-tour={href.replace("/", "") || "home"}
-              aria-current={active ? "page" : undefined}
-              className={`pressable flex min-h-12 flex-1 flex-col items-center justify-center gap-0.5 rounded-pill px-1 py-1.5 text-[11px] transition-colors ${
-                active
-                  ? "bg-accent-soft font-semibold text-accent-text"
-                  : "font-medium text-ink-3 hover:text-ink-2"
-              }`}
-            >
-              {active && label === t("nav.favorites") ? (
-                <IconHeartFill size={21} />
-              ) : (
-                <Icon size={21} />
-              )}
-              {label}
-            </Link>
-          );
-        })}
-      </div>
+      {getNavItems(t).map(({ href, label, icon: Icon }) => {
+        const active = isActive(pathname, href);
+        return (
+          <Link
+            key={href}
+            href={href}
+            data-tour={href.replace("/", "") || "home"}
+            aria-current={active ? "page" : undefined}
+            className={`pressable flex min-h-12 flex-1 flex-col items-center justify-center gap-0.5 rounded-pill px-1 py-1.5 text-[11px] transition-colors ${
+              active
+                ? "bg-accent-soft font-semibold text-accent-text"
+                : "font-medium text-ink-3 hover:text-ink-2"
+            }`}
+          >
+            {active && label === t("nav.favorites") ? (
+              <IconHeartFill size={21} />
+            ) : (
+              <Icon size={21} />
+            )}
+            {label}
+          </Link>
+        );
+      })}
     </nav>
   );
 }
@@ -142,7 +145,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      <div className="flex min-h-dvh flex-col">
+      <div className="flex min-h-screen flex-col">
         <a href="#main" className="skip-link">Zum Inhalt springen</a>
         <TopNav />
         <main
