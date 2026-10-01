@@ -178,6 +178,32 @@ darf **kein** `backdrop-filter`/`filter`/`transform` liegen – das bricht auf i
 `position: fixed`, und die Leiste scrollt mit. Der Material-Eindruck kommt aus
 halbtransparenter Fläche, Rand und Schatten. Die `glass`-Utility ist nur für
 nicht fixierte Flächen gedacht (z. B. die Eingabekapsel auf der Startseite).
+
+## Onboarding-Illustrationen
+
+Die Einführung erzählt in fünf Schritten **eine** Geschichte (Rezepte sammeln →
+Link wird Rezept → planen und einkaufen → weitergeben → loskochen). Jede
+Zeichnung ist ein Inline-SVG in
+[OnboardingIllustration.tsx](src/components/OnboardingIllustration.tsx):
+
+- Farbe **nur** über die Klassen `.i-*` in `globals.css`, die auf Tokens
+  zeigen. Dadurch genügt eine Zeichnung für hell und dunkel.
+- Keine Fremd-Assets, kein Raster: scharf auf jedem Display, wenige Kilobyte –
+  und das Onboarding wird erst bei Bedarf geladen (0 KB im Startbundle).
+- Bewegung ausschließlich als `translate`/`opacity` bzw. `stroke-dashoffset`.
+  **Kein** `scale`/`rotate` in Keyframes: in SVG hängt das am
+  `transform-origin` der viewBox und verschiebt die Figuren.
+- Jede Zeichnung ist **ohne** Bewegung vollständig – der Ruhezustand ist das
+  Endbild, nie ein `opacity: 0` im Markup. `prefers-reduced-motion` schaltet
+  nur die Keyframes ab.
+- Bildgrammatik: Papierkarten mit großem Radius, 2–2,5-px-Linien, Terrakotta
+  nur für das aktive Element, Tiefe über `surface` / `surface-3`. Der Topf
+  zitiert bewusst den Ladezustand (`ExtractionLoader`), damit man ihn beim
+  ersten Import wiedererkennt.
+- Der Dialog hat eine **Fokusfalle** (Fokus wandert hinein, Tab bleibt darin,
+  Escape schließt, Fokus kehrt zurück) und Fortschrittspunkte mit 44 px
+  Trefferfläche.
+
 ## Prüfen
 
 ```bash

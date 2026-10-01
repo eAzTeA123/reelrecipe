@@ -10,12 +10,11 @@ import { getSampleRecipes } from "@/lib/sampleRecipes";
 import { useToast } from "@/components/Toast";
 import { useHaptic } from "@/hooks/useHaptic";
 import confetti from "canvas-confetti";
-import { IconCheck, IconLink, IconCalendar, IconSparkle } from "@/components/Icons";
+import { OnboardingIllustration } from "@/components/OnboardingIllustration";
 
 type StepNo = 1 | 2 | 3 | 4 | 5;
 
 interface SlideData {
-  icon: "sparkle" | "link" | "calendar" | "check";
   badge: string;
   titleKey: `onboarding.step${StepNo}Title`;
   subtitleKey: `onboarding.step${StepNo}Subtitle`;
@@ -37,14 +36,15 @@ export function OnboardingModal() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [loadingSamples, setLoadingSamples] = useState(false);
   const closeTimer = useRef<number | undefined>(undefined);
+  const dialogRef = useRef<HTMLDivElement>(null);
 
   const slides: SlideData[] = (
     [
-      { icon: "check", badge: "Scroll2Cook" },
-      { icon: "link", badge: "Import" },
-      { icon: "calendar", badge: lang === "de" ? "Küche" : "Kitchen" },
-      { icon: "link", badge: lang === "de" ? "Weitergeben" : "Sharing" },
-      { icon: "sparkle", badge: lang === "de" ? "Los geht's" : "Let's go" },
+      { badge: "Scroll2Cook" },
+      { badge: "Import" },
+      { badge: lang === "de" ? "Küche" : "Kitchen" },
+      { badge: lang === "de" ? "Weitergeben" : "Sharing" },
+      { badge: lang === "de" ? "Los geht's" : "Let's go" },
     ] as const
   ).map((s, i) => {
     const n = (i + 1) as StepNo;
@@ -88,6 +88,48 @@ export function OnboardingModal() {
       }
     }, EXIT_MS);
   }, [closing, searchParams, router]);
+
+  /*
+   * Fokusfalle: Ein `aria-modal`-Dialog darf den Fokus nicht entlassen – sonst
+   * landet der erste Tab auf Elementen hinter dem Overlay. Beim Öffnen wandert
+   * der Fokus in den Dialog, Tab bleibt darin, Escape schließt, und beim
+   * Schließen kehrt der Fokus zum vorherigen Element zurück.
+   */
+  useEffect(() => {
+    if (!open && !closing) return;
+    const previous = document.activeElement as HTMLElement | null;
+    const node = dialogRef.current;
+    node?.focus();
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        handleClose();
+        return;
+      }
+      if (event.key !== "Tab" || !node) return;
+      const focusables = Array.from(
+        node.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), input:not([disabled]), select, textarea, [tabindex]:not([tabindex="-1"])',
+        ),
+      );
+      if (focusables.length === 0) return;
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      previous?.focus?.();
+    };
+  }, [open, closing, handleClose]);
 
   const handleNext = () => {
     haptic("light");
@@ -150,19 +192,6 @@ export function OnboardingModal() {
   const slide = slides[currentSlide];
   const isLast = currentSlide === slides.length - 1;
 
-  const renderIcon = () => {
-    switch (slide.icon) {
-      case "link":
-        return <IconLink size={30} />;
-      case "calendar":
-        return <IconCalendar size={30} />;
-      case "sparkle":
-        return <IconSparkle size={30} />;
-      default:
-        return <IconCheck size={30} />;
-    }
-  };
-
   return createPortal(
     <div
       className="fixed inset-0 z-50 flex items-end justify-center md:items-center"
@@ -178,10 +207,12 @@ export function OnboardingModal() {
 
       {/* Sheet Content (Responsive: Bottom Sheet on Mobile, Centered Modal on Desktop) */}
       <div
+        ref={dialogRef}
+        tabIndex={-1}
         role="dialog"
         aria-modal="true"
         aria-label={t(slide.titleKey)}
-        className={`relative w-full max-w-lg rounded-t-3xl bg-surface p-6 shadow-pop md:rounded-card md:p-7 border border-line ${
+        className={`relative w-full max-w-lg rounded-t-sheet bg-surface p-6 shadow-pop md:rounded-sheet md:p-7 border border-line outline-none ${
           closing ? "sheet-down" : "sheet-up"
         } max-h-[90dvh] overflow-y-auto flex flex-col justify-between`}
         style={{ paddingBottom: "calc(1.5rem + env(safe-area-inset-bottom))" }}
@@ -191,41 +222,42 @@ export function OnboardingModal() {
 
         {/* Top Header / Badge & Skip Button */}
         <div className="flex items-center justify-between mb-4">
-          <span className="text-label font-semibold text-accent-text">
+          <span className="text-label font-semibold uppercase tracking-[0.14em] text-accent-text">
             {slide.badge}
           </span>
           <button
             type="button"
             onClick={handleClose}
-            className="pressable text-meta font-medium text-ink-3 hover:text-ink px-2 py-1 rounded-lg transition-colors"
+            className="pressable inline-flex min-h-11 items-center rounded-ctl px-3 text-meta font-medium text-ink-3 transition-colors hover:bg-surface-2 hover:text-ink"
           >
             {t("onboarding.skip")}
           </button>
         </div>
 
         {/* Center Content */}
-        <div className="my-auto py-3 flex flex-col items-center text-center">
-          {/* Theme-aligned Icon Container */}
-          <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-card bg-accent-soft text-accent-text shadow-card">
-            {renderIcon()}
+        <div key={currentSlide} className="page-enter my-auto flex flex-col items-center py-3 text-center">
+          {/* Die Illustration trägt den Schritt – deshalb bekommt sie Fläche
+              und Höhe, nicht nur ein Symbolkästchen. */}
+          <div className="mb-5 aspect-[3/2] w-full max-w-[260px] sm:max-w-[288px]">
+            <OnboardingIllustration step={(currentSlide + 1) as StepNo} />
           </div>
 
-          <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-ink mb-2 leading-snug">
+          <h2 className="mb-2 font-display text-h1 leading-[1.15] text-ink">
             {t(slide.titleKey)}
           </h2>
 
-          <p className="text-[14px] sm:text-body text-ink-2 leading-relaxed max-w-sm mb-5">
+          <p className="mb-5 max-w-sm text-meta leading-relaxed text-ink-2 sm:text-body">
             {t(slide.subtitleKey)}
           </p>
 
-          {/* Highlights Chips */}
+          {/* Eigenschaften als leise Chips */}
           <div className="flex flex-wrap justify-center gap-1.5">
             {t(slide.highlightsKey).split("|").map((h, i) => (
               <span
                 key={i}
-                className="inline-flex items-center gap-1.5 rounded-ctl bg-surface-2 px-3 py-1.5 text-label font-medium text-ink-2 border border-line/60"
+                className="inline-flex items-center gap-1.5 rounded-ctl border border-line bg-surface-2 px-3 py-1.5 text-label font-medium text-ink-2"
               >
-                <span className="text-accent-text font-bold">✓</span>
+                <span className="font-bold text-accent-text">✓</span>
                 {h}
               </span>
             ))}
@@ -233,9 +265,9 @@ export function OnboardingModal() {
         </div>
 
         {/* Bottom Actions & Pagination */}
-        <div className="mt-6 pt-4 border-t border-line/60">
+        <div className="mt-5 border-t border-line pt-4">
           {isLast ? (
-            <div className="flex flex-col gap-2.5 w-full">
+            <div className="flex w-full flex-col gap-2.5">
               <Button
                 variant="primary"
                 size="lg"
@@ -249,55 +281,60 @@ export function OnboardingModal() {
                 variant="secondary"
                 size="lg"
                 onClick={handleStartOwn}
-                className="w-full text-[14px]"
+                className="w-full text-meta"
               >
                 {t("onboarding.startEmpty")}
               </Button>
             </div>
           ) : (
-            <div className="flex items-center justify-between w-full">
-              {currentSlide > 0 ? (
-                <Button
-                  variant="secondary"
-                  size="md"
-                  onClick={handlePrev}
-                  className="text-ink-2 text-xs"
-                >
-                  ← {t("onboarding.back")}
-                </Button>
-              ) : (
-                <div className="w-16" />
-              )}
-
-              {/* Progress Dots */}
-              <div className="flex items-center gap-1.5">
+            <>
+              {/* Punkte wie in Apples Tab-Bars: der aktive Punkt ist eine Pille.
+                  Jeder Punkt hat trotzdem 44 px Trefferfläche. */}
+              <div className="mb-1 flex items-center justify-center gap-1">
                 {slides.map((_, idx) => (
                   <button
                     key={idx}
                     type="button"
-                    aria-label={`Slide ${idx + 1}`}
+                    aria-current={currentSlide === idx ? "step" : undefined}
+                    aria-label={t("onboarding.stepProgress")
+                      .replace("{current}", String(idx + 1))
+                      .replace("{total}", String(slides.length))}
                     onClick={() => {
                       haptic("light");
                       setCurrentSlide(idx);
                     }}
-                    className={`h-1.5 transition-all rounded-full ${
-                      currentSlide === idx
-                        ? "w-6 bg-accent"
-                        : "w-2 bg-line hover:bg-ink-3/40"
-                    }`}
-                  />
+                    className="pressable flex h-11 w-11 items-center justify-center"
+                  >
+                    <span
+                      className={`block h-2 rounded-pill transition-all duration-200 ${
+                        currentSlide === idx ? "w-6 bg-accent" : "w-2 bg-line-2"
+                      }`}
+                    />
+                  </button>
                 ))}
               </div>
 
-              <Button
-                variant="primary"
-                size="md"
-                onClick={handleNext}
-                className="min-w-20 text-xs"
-              >
-                {t("onboarding.next")} →
-              </Button>
-            </div>
+              <div className="flex w-full items-center justify-between gap-3">
+                <Button
+                  variant="secondary"
+                  size="md"
+                  onClick={handlePrev}
+                  disabled={currentSlide === 0}
+                  className="min-w-24 text-meta"
+                >
+                  ← {t("onboarding.back")}
+                </Button>
+
+                <Button
+                  variant="primary"
+                  size="md"
+                  onClick={handleNext}
+                  className="min-w-24 text-meta"
+                >
+                  {t("onboarding.next")} →
+                </Button>
+              </div>
+            </>
           )}
         </div>
       </div>

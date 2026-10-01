@@ -43,6 +43,49 @@ export async function createRecipeViaUI(page: Page, caption: string): Promise<vo
   await expect(page).toHaveURL(/\/recipes\/[0-9a-f-]{36}/, { timeout: 15_000 });
 }
 
+/** Von der Daumenregel: jedes Bedienziel mindestens 44 × 44 px. */
+export const MIN_TAP = 44;
+
+/**
+ * Sammelt Bedienziele, die kleiner als 44 × 44 px sind – optional auf einen
+ * Teilbaum begrenzt (z. B. `[role="dialog"]`).
+ *
+ * Bewusste Ausnahmen: Links im Fließtext (`display: inline innerhalb eines
+ * Absatzes`) sind keine Daumenziele, Unsichtbares zählt nicht, und der
+ * Skip-Link wird übergangen.
+ */
+export async function smallTapTargets(page: Page, rootSelector?: string): Promise<string[]> {
+  return page.evaluate(
+    ({ min, selector }) => {
+      const targets =
+        'a[href], button, [role="radio"], select, summary, label:has(input[type="checkbox"])';
+      const root = selector ? document.querySelector(selector) : document;
+      if (!root) return [`Wurzel ${selector} nicht gefunden`];
+
+      const offenders: string[] = [];
+      for (const el of Array.from(root.querySelectorAll<HTMLElement>(targets))) {
+        if (el.classList.contains("skip-link")) continue;
+        if (el.closest(".sr-only")) continue;
+
+        const style = getComputedStyle(el);
+        if (style.display === "none" || style.visibility === "hidden") continue;
+        if (el.tagName === "A" && style.display === "inline") continue;
+
+        const rect = el.getBoundingClientRect();
+        if (rect.width === 0 || rect.height === 0) continue;
+        if (rect.height >= min && rect.width >= min) continue;
+
+        const label = (el.getAttribute("aria-label") || el.textContent || "").trim().slice(0, 40);
+        offenders.push(
+          `<${el.tagName.toLowerCase()}> "${label}" ${Math.round(rect.width)}×${Math.round(rect.height)}`,
+        );
+      }
+      return offenders;
+    },
+    { min: MIN_TAP, selector: rootSelector },
+  );
+}
+
 export async function clearStorage(page: Page) {
   await page.goto("/");
   await page.evaluate(
