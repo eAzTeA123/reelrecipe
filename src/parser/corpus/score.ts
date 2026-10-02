@@ -130,11 +130,11 @@ export function isPlausibleTitleText(title: string): boolean {
   return true;
 }
 
-function normUnit(unit?: string | null): string {
+export function normUnit(unit?: string | null): string {
   return (unit ?? "").toLowerCase().replace(/\.$/, "").trim();
 }
 
-function amountEquals(expected?: number | null, actual?: number, expectedMax?: number | null): boolean {
+export function amountEquals(expected?: number | null, actual?: number, expectedMax?: number | null): boolean {
   if (expected === null || expected === undefined) return true; // nicht bewertet
   if (actual === undefined) return false;
   const upper = expectedMax ?? expected;

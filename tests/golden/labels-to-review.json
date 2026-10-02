@@ -1,0 +1,1091 @@
+{
+  "schemaVersion": 1,
+  "instructions": "Nur die Abschnitte unten prüfen. Zutatenzeilen gelten als bestätigt, weil ihre Labels aus deiner geprüften Bibliothek stammen (sie stehen vollständig in ingredients.v1.json → items[]). Zu tun ist: (1) defekte Labels korrigieren, (2) Labels ohne Caption-Zeile korrigieren, (3) bei den Zeilen-Vorschlägen die Nicht-Zutaten prüfen – dort drohen falsch Positive.",
+  "sections": {
+    "defekteLabels": {
+      "hint": "Labels, die im Corpus fehlerhaft sind (z. B. „Saft of Zitrone\"). Bitte korrekten Namen eintragen oder skip setzen.",
+      "rows": [
+        {
+          "itemId": "lib-da70q7nqgx_#7:* 30 g Erythrit",
+          "fixtureId": "lib-da70q7nqgx_",
+          "label": "* 30 g Erythrit",
+          "menge": null,
+          "einheit": null,
+          "defekt": "bullet-im-namen+menge-im-namen",
+          "korrekturName": null,
+          "skip": false
+        },
+        {
+          "itemId": "lib-da70q7nqgx_#unmatched:Saft of Zitrone",
+          "fixtureId": "lib-da70q7nqgx_",
+          "label": "Saft of Zitrone",
+          "menge": 0.5,
+          "einheit": null,
+          "defekt": "of-statt-von",
+          "korrekturName": null,
+          "skip": false
+        },
+        {
+          "itemId": "lib-daw4krusc4l#unmatched:Quark ca. 200 ml Milch",
+          "fixtureId": "lib-daw4krusc4l",
+          "label": "Quark ca. 200 ml Milch",
+          "menge": 150,
+          "einheit": "g",
+          "defekt": "menge-im-namen",
+          "korrekturName": null,
+          "skip": false
+        },
+        {
+          "itemId": "lib-dbd7eldrupt#21:Passierte Tomaten + 100ml Wasser",
+          "fixtureId": "lib-dbd7eldrupt",
+          "label": "Passierte Tomaten + 100ml Wasser",
+          "menge": 400,
+          "einheit": "ml",
+          "defekt": "menge-im-namen",
+          "korrekturName": null,
+          "skip": false
+        },
+        {
+          "itemId": "lib-dbxltnpiq5i#unmatched:Saft of Zitrone",
+          "fixtureId": "lib-dbxltnpiq5i",
+          "label": "Saft of Zitrone",
+          "menge": 0.5,
+          "einheit": null,
+          "defekt": "of-statt-von",
+          "korrekturName": null,
+          "skip": false
+        },
+        {
+          "itemId": "lib-dby8vmdyoi-#unmatched:heap tsp Dijon Senf Resting juices of the Hähnchen",
+          "fixtureId": "lib-dby8vmdyoi-",
+          "label": "heap tsp Dijon Senf Resting juices of the Hähnchen",
+          "menge": 1,
+          "einheit": null,
+          "defekt": "of-statt-von+unuebersetzt",
+          "korrekturName": null,
+          "skip": false
+        },
+        {
+          "itemId": "lib-dc0eafrivrf#17:* 1 TL geräuchertes Paprikapulver",
+          "fixtureId": "lib-dc0eafrivrf",
+          "label": "* 1 TL geräuchertes Paprikapulver",
+          "menge": null,
+          "einheit": null,
+          "defekt": "bullet-im-namen+menge-im-namen",
+          "korrekturName": null,
+          "skip": false
+        },
+        {
+          "itemId": "lib-dcq9ivdripm#13:Block (226g) Fat Free Cream Cheese",
+          "fixtureId": "lib-dcq9ivdripm",
+          "label": "Block (226g) Fat Free Cream Cheese",
+          "menge": 1,
+          "einheit": null,
+          "defekt": "unuebersetzt+menge-im-namen",
+          "korrekturName": null,
+          "skip": false
+        },
+        {
+          "itemId": "lib-dcq9ivdripm#14:Large Eggs",
+          "fixtureId": "lib-dcq9ivdripm",
+          "label": "Large Eggs",
+          "menge": 2,
+          "einheit": null,
+          "defekt": "unuebersetzt",
+          "korrekturName": null,
+          "skip": false
+        },
+        {
+          "itemId": "lib-dcq9ivdripm#17:Vanilla Whey/Casein Blend Protein Powder",
+          "fixtureId": "lib-dcq9ivdripm",
+          "label": "Vanilla Whey/Casein Blend Protein Powder",
+          "menge": 100,
+          "einheit": "g",
+          "defekt": "unuebersetzt",
+          "korrekturName": null,
+          "skip": false
+        },
+        {
+          "itemId": "lib-dcq9ivdripm#17:Vanilla Whey/Casein Blend Protein Powder",
+          "fixtureId": "lib-dcq9ivdripm",
+          "label": "Vanilla Whey/Casein Blend Protein Powder",
+          "menge": 20,
+          "einheit": "g",
+          "defekt": "unuebersetzt",
+          "korrekturName": null,
+          "skip": false
+        },
+        {
+          "itemId": "lib-dcq9ivdripm#18:Sugar Free/Fat Free Cheesecake Pudding",
+          "fixtureId": "lib-dcq9ivdripm",
+          "label": "Sugar Free/Fat Free Cheesecake Pudding",
+          "menge": 28,
+          "einheit": "g",
+          "defekt": "unuebersetzt",
+          "korrekturName": null,
+          "skip": false
+        }
+      ]
+    },
+    "labelsOhneZeile": {
+      "hint": "Erwartete Zutat ließ sich keiner Caption-Zeile zuordnen – meist dieselbe Ursache.",
+      "rows": [
+        {
+          "itemId": "lib-da70q7nqgx_#unmatched:Saft of Zitrone",
+          "fixtureId": "lib-da70q7nqgx_",
+          "label": "Saft of Zitrone",
+          "defekt": "of-statt-von",
+          "korrekturName": null,
+          "skip": false
+        },
+        {
+          "itemId": "lib-daw4krusc4l#unmatched:Quark ca. 200 ml Milch",
+          "fixtureId": "lib-daw4krusc4l",
+          "label": "Quark ca. 200 ml Milch",
+          "defekt": "menge-im-namen",
+          "korrekturName": null,
+          "skip": false
+        },
+        {
+          "itemId": "lib-dbxltnpiq5i#unmatched:Saft of Zitrone",
+          "fixtureId": "lib-dbxltnpiq5i",
+          "label": "Saft of Zitrone",
+          "defekt": "of-statt-von",
+          "korrekturName": null,
+          "skip": false
+        },
+        {
+          "itemId": "lib-dby8vmdyoi-#unmatched:Hähnchen Breasts",
+          "fixtureId": "lib-dby8vmdyoi-",
+          "label": "Hähnchen Breasts",
+          "defekt": null,
+          "korrekturName": null,
+          "skip": false
+        },
+        {
+          "itemId": "lib-dby8vmdyoi-#unmatched:smoked Paprikapulver",
+          "fixtureId": "lib-dby8vmdyoi-",
+          "label": "smoked Paprikapulver",
+          "defekt": null,
+          "korrekturName": null,
+          "skip": false
+        },
+        {
+          "itemId": "lib-dby8vmdyoi-#unmatched:Olivenöl",
+          "fixtureId": "lib-dby8vmdyoi-",
+          "label": "Olivenöl",
+          "defekt": null,
+          "korrekturName": null,
+          "skip": false
+        },
+        {
+          "itemId": "lib-dby8vmdyoi-#unmatched:Hähnchen Brühe",
+          "fixtureId": "lib-dby8vmdyoi-",
+          "label": "Hähnchen Brühe",
+          "defekt": null,
+          "korrekturName": null,
+          "skip": false
+        },
+        {
+          "itemId": "lib-dby8vmdyoi-#unmatched:light Frischkäse",
+          "fixtureId": "lib-dby8vmdyoi-",
+          "label": "light Frischkäse",
+          "defekt": null,
+          "korrekturName": null,
+          "skip": false
+        },
+        {
+          "itemId": "lib-dby8vmdyoi-#unmatched:heap tsp Dijon Senf Resting juices of the Hähnchen",
+          "fixtureId": "lib-dby8vmdyoi-",
+          "label": "heap tsp Dijon Senf Resting juices of the Hähnchen",
+          "defekt": "of-statt-von+unuebersetzt",
+          "korrekturName": null,
+          "skip": false
+        },
+        {
+          "itemId": "lib-dcgdvyls97b#unmatched:Salz FÜLLUNG",
+          "fixtureId": "lib-dcgdvyls97b",
+          "label": "Salz FÜLLUNG",
+          "defekt": null,
+          "korrekturName": null,
+          "skip": false
+        },
+        {
+          "itemId": "lib-dcgdvyls97b#unmatched:Zimt FRISCHKÄSE-GUSS",
+          "fixtureId": "lib-dcgdvyls97b",
+          "label": "Zimt FRISCHKÄSE-GUSS",
+          "defekt": null,
+          "korrekturName": null,
+          "skip": false
+        },
+        {
+          "itemId": "lib-dcgdvyls97b#unmatched:Milch SO GEHT’S",
+          "fixtureId": "lib-dcgdvyls97b",
+          "label": "Milch SO GEHT’S",
+          "defekt": null,
+          "korrekturName": null,
+          "skip": false
+        },
+        {
+          "itemId": "lib-ddrknxunezq#unmatched:Ei Süße nach Wahl",
+          "fixtureId": "lib-ddrknxunezq",
+          "label": "Ei Süße nach Wahl",
+          "defekt": null,
+          "korrekturName": null,
+          "skip": false
+        },
+        {
+          "itemId": "lib-dykavkksrvy#unmatched:Schmelzkäse 🍔 Sonstiges",
+          "fixtureId": "lib-dykavkksrvy",
+          "label": "Schmelzkäse 🍔 Sonstiges",
+          "defekt": null,
+          "korrekturName": null,
+          "skip": false
+        },
+        {
+          "itemId": "lib-dzz15atmdl6#unmatched:schwarzer Pfeffer Burgersoße",
+          "fixtureId": "lib-dzz15atmdl6",
+          "label": "schwarzer Pfeffer Burgersoße",
+          "defekt": null,
+          "korrekturName": null,
+          "skip": false
+        }
+      ]
+    },
+    "zeilen": {
+      "hint": "Zeilen-Vorschläge für `ist_zutat`. Zutatenzeilen vollständig, Nicht-Zutaten stichprobenartig je Klasse.",
+      "rows": [
+        {
+          "lineId": "chefkoch-dd1pednxyen#6",
+          "text": "Zutaten für 4–6 Portionen:",
+          "vorschlagIstZutat": false,
+          "klasse": "heading+range",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "chefkoch-dd1pednxyen#7",
+          "text": "Suppe:",
+          "vorschlagIstZutat": false,
+          "klasse": "heading",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "chefkoch-dd1pednxyen#16",
+          "text": "Ananas-Chutney:",
+          "vorschlagIstZutat": false,
+          "klasse": "heading",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "chefkoch-dd1pednxyen#21",
+          "text": "Salz und 1 Prise Zucker",
+          "vorschlagIstZutat": false,
+          "klasse": "nutrition+unquantified-unit",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "chefkoch-dd1pednxyen#23",
+          "text": "Zubereitung:",
+          "vorschlagIstZutat": false,
+          "klasse": "heading",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "chefkoch-dd1pednxyen#26",
+          "text": "2️⃣ Ananas, Paprika und Schalotte fein würfeln. Mit Olivenöl vermengen und mit Salz und Zucker abschmecken.",
+          "vorschlagIstZutat": false,
+          "klasse": "nutrition",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "chefkoch-ddwfyxrlay#23",
+          "text": "Noch einmal abschmecken und mit einem Klacks Crème fraîche und etwas geriebenem Parmesan servieren.",
+          "vorschlagIstZutat": false,
+          "klasse": "unquantified-unit",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "einfachbacken-dd11fhxffoz#4",
+          "text": "ZUTATEN (Für 32 Stücke)",
+          "vorschlagIstZutat": false,
+          "klasse": "heading",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "einfachbacken-dd11fhxffoz#5",
+          "text": "Für den Teig",
+          "vorschlagIstZutat": false,
+          "klasse": "heading",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "einfachbacken-dd11fhxffoz#11",
+          "text": "Für die Panade",
+          "vorschlagIstZutat": false,
+          "klasse": "heading",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "einfachbacken-dd11fhxffoz#12",
+          "text": "50 g Zucker",
+          "vorschlagIstZutat": false,
+          "klasse": "nutrition",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "einfachbacken-dd11fhxffoz#18",
+          "text": "ZUBEREITUNG",
+          "vorschlagIstZutat": false,
+          "klasse": "heading",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "einfachbacken-dd11fhxffoz#19",
+          "text": "1. Schritt",
+          "vorschlagIstZutat": false,
+          "klasse": "step",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "einfachbacken-dd11fhxffoz#20",
+          "text": "Für den Teig Mehl, Butter, Frischkäse und Zucker mit den Knethaken des Handrührgeräts mehrere Minuten zu einem glatten Teig verkneten. Teig zu einer Kugel formen und in Frischhaltefolie gewickelt mindestens 2 Stunden kalt stellen.",
+          "vorschlagIstZutat": false,
+          "klasse": "heading+nutrition",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "einfachbacken-dd11fhxffoz#22",
+          "text": "2. Schritt",
+          "vorschlagIstZutat": false,
+          "klasse": "step",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "einfachbacken-dd11fhxffoz#25",
+          "text": "3. Schritt",
+          "vorschlagIstZutat": false,
+          "klasse": "step",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "einfachbacken-dd11fhxffoz#28",
+          "text": "4. Schritt",
+          "vorschlagIstZutat": false,
+          "klasse": "step",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "einfachbacken-dd11fhxffoz#31",
+          "text": "5. Schritt",
+          "vorschlagIstZutat": false,
+          "klasse": "step",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "einfachbacken-dd11fhxffoz#32",
+          "text": "Jedes Kuchenstück von der breiten Außenseite zur Spitze hin aufrollen, sodass die typische Hörnchen-Form entsteht. Hörnchen nach Belieben nochmal in der Zucker-Nuss-Mischung wälzen, damit sie lückenlos bedeckt sind.",
+          "vorschlagIstZutat": false,
+          "klasse": "to-taste",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "einfachbacken-dd1g64bipaw#4",
+          "text": "ZUTATEN (Für 12 Stücke)",
+          "vorschlagIstZutat": false,
+          "klasse": "heading",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "einfachbacken-dd1g64bipaw#5",
+          "text": "Für den Teig",
+          "vorschlagIstZutat": false,
+          "klasse": "heading",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "einfachbacken-dd1g64bipaw#15",
+          "text": "Außerdem",
+          "vorschlagIstZutat": false,
+          "klasse": "heading",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "einfachbacken-dd1g64bipaw#18",
+          "text": "ZUBEREITUNG",
+          "vorschlagIstZutat": false,
+          "klasse": "heading",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "einfachbacken-dd1g64bipaw#19",
+          "text": "1. Schritt",
+          "vorschlagIstZutat": false,
+          "klasse": "step",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "einfachbacken-dd1g64bipaw#20",
+          "text": "Backofen auf 180 Grad Ober-/Unterhitze (Umluft: 160 Grad) vorheizen. Schokolinsen grob hacken. Für den Teig Butter, Zucker und braunen Zucker mit einem Rührgerät cremig aufschlagen, dann das Ei hinzugeben und unterrühren. Mehl, Natron und Salz in einer separaten Schüssel mischen, dann mit der Buttermischung verrühren. Anschließend die gehackten Schokolinsen unterheben.",
+          "vorschlagIstZutat": false,
+          "klasse": "nutrition",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "einfachbacken-dd1g64bipaw#22",
+          "text": "2. Schritt",
+          "vorschlagIstZutat": false,
+          "klasse": "step",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "essenspause-ddzajowqaro#0",
+          "text": "OFENPFANNKUCHEN FETA-KÜRBIS | 115 KCAL 🥞",
+          "vorschlagIstZutat": false,
+          "klasse": "nutrition",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "essenspause-ddzajowqaro#14",
+          "text": "Nährwerte pro Stück (1/9):",
+          "vorschlagIstZutat": false,
+          "klasse": "heading+fraction",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "essenspause-ddzajowqaro#16",
+          "text": "115 kcal | 12,9g KH | 9,1g E | 2,7g F",
+          "vorschlagIstZutat": false,
+          "klasse": "nutrition",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "linasfitfood-ddmazzeoh0o#6",
+          "text": "Nährwerte auf einem Blick:",
+          "vorschlagIstZutat": false,
+          "klasse": "heading",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "linasfitfood-ddmazzeoh0o#8",
+          "text": "454 Kalorien",
+          "vorschlagIstZutat": false,
+          "klasse": "nutrition",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "linasfitfood-ddmazzeoh0o#10",
+          "text": "44 g Protein",
+          "vorschlagIstZutat": false,
+          "klasse": "nutrition",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "marvin-dc0eafrivrf#4",
+          "text": "👉 Folge mir für täglich einfache High Protein Rezepte zum Abnehmen & schicke es an jemanden der keine Lust hat zu kochen 😬",
+          "vorschlagIstZutat": false,
+          "klasse": "promo",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "marvin-dc0eafrivrf#21",
+          "text": "Pro Portion (4 Portionen):",
+          "vorschlagIstZutat": false,
+          "klasse": "heading",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "marvin-dc0eafrivrf#23",
+          "text": "* 464 kcal",
+          "vorschlagIstZutat": false,
+          "klasse": "nutrition",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "marvin-dc0eafrivrf#24",
+          "text": "* 46 g Protein",
+          "vorschlagIstZutat": false,
+          "klasse": "nutrition",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "marvin-dc0eafrivrf#25",
+          "text": "* 47 g Kohlenhydrate",
+          "vorschlagIstZutat": false,
+          "klasse": "nutrition",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "marvin-dc0eafrivrf#26",
+          "text": "*  8,5 g Fett",
+          "vorschlagIstZutat": false,
+          "klasse": "nutrition",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "marvin-ddip48zo3th#2",
+          "text": "Ich wollte eigentlich nur Tacos machen, die man während der Diät essen kann aber was dabei rausgekommen ist, sieht so krank lecker aus, dass ich selbst nicht glauben konnte, dass ein Taco nur ca. 200 kcal hat. 🤯",
+          "vorschlagIstZutat": false,
+          "klasse": "nutrition",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "marvin-ddip48zo3th#27",
+          "text": "🔥 ca. 203 kcal",
+          "vorschlagIstZutat": false,
+          "klasse": "nutrition",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "marvin-ddip48zo3th#28",
+          "text": "💪 ca. 19 g Protein",
+          "vorschlagIstZutat": false,
+          "klasse": "nutrition",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "marvin-ddip48zo3th#29",
+          "text": "🍚 ca. 18,5 g Kohlenhydrate",
+          "vorschlagIstZutat": false,
+          "klasse": "nutrition",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "marvin-ddip48zo3th#30",
+          "text": "🥑 ca. 5,8 g Fett",
+          "vorschlagIstZutat": false,
+          "klasse": "nutrition",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "marvin-ddip48zo3th#32",
+          "text": "👉 Schick das Rezept an jemanden, der sagt, Tacos kann man während der Diät nicht essen, und folge mir für mehr High Protein Rezepte zum Abnehmen! 🫶🏻",
+          "vorschlagIstZutat": false,
+          "klasse": "promo",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "marvin-ddyyzx5ipqj#40",
+          "text": "🔥 ca. 1.970 kcal",
+          "vorschlagIstZutat": false,
+          "klasse": "nutrition",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "marvin-ddyyzx5ipqj#41",
+          "text": "💪 ca. 150 g Protein",
+          "vorschlagIstZutat": false,
+          "klasse": "nutrition",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "marvin-ddyyzx5ipqj#42",
+          "text": "🍚 ca. 282 g Kohlenhydrate",
+          "vorschlagIstZutat": false,
+          "klasse": "nutrition",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "marvin-ddyyzx5ipqj#43",
+          "text": "🥑 ca. 22 g Fett",
+          "vorschlagIstZutat": false,
+          "klasse": "nutrition",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "marvin-ddyyzx5ipqj#51",
+          "text": "❤️ Folge mir für mehr einfache High Protein Rezepte für deine Diät und schicke es an jemanden, der das unbedingt ausprobieren muss!",
+          "vorschlagIstZutat": false,
+          "klasse": "promo",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "medusas-dc879w_t4f6#2",
+          "text": "Wenn du Cheeseburger liebst, aber mal etwas anderes als den klassischen Burger möchtest: Dieser Cheeseburger-Auflauf ist genau das Richtige. 🤤🍔",
+          "vorschlagIstZutat": false,
+          "klasse": "unquantified-unit",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "medusas-dc879w_t4f6#6",
+          "text": "Das Beste: maximal 𝙪𝙣𝙠𝙤𝙢𝙥𝙡𝙞𝙯𝙞𝙚𝙧𝙩, richtig schön 𝙘𝙝𝙚𝙚𝙨𝙮 und 𝙥𝙚𝙧𝙛𝙚𝙠𝙩 für ein gemütliches Abendessen. Und ja – auch beim Abnehmen darf so etwas auf dem Teller landen. 😏",
+          "vorschlagIstZutat": false,
+          "klasse": "unquantified-unit",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "medusas-dc879w_t4f6#12",
+          "text": "1 𝙱𝚞𝚛𝚐𝚎𝚛:",
+          "vorschlagIstZutat": false,
+          "klasse": "heading",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "medusas-dc879w_t4f6#16",
+          "text": "𝚉𝚞𝚝𝚊𝚝𝚎𝚗:",
+          "vorschlagIstZutat": false,
+          "klasse": "heading",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "medusas-dc879w_t4f6#38",
+          "text": "𝚉𝚞𝚋𝚎𝚛𝚎𝚒𝚝𝚞𝚗𝚐:",
+          "vorschlagIstZutat": false,
+          "klasse": "heading",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "medusas-dcnjnqynwwk#8",
+          "text": "🛒 𝙕𝙪𝙩𝙖𝙩𝙚𝙣 𝙛ü𝙧 2 𝙋𝙤𝙧𝙩𝙞𝙤𝙣𝙚𝙣:",
+          "vorschlagIstZutat": false,
+          "klasse": "heading",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "medusas-dcnjnqynwwk#10",
+          "text": "𝘍ü𝘳 𝘥𝘢𝘴 𝘎𝘺𝘳𝘰𝘴:",
+          "vorschlagIstZutat": false,
+          "klasse": "heading",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "medusas-dcnjnqynwwk#24",
+          "text": "𝘍ü𝘳 𝘥𝘪𝘦 𝘗𝘪𝘵𝘢-𝘊𝘩𝘪𝘱𝘴:",
+          "vorschlagIstZutat": false,
+          "klasse": "heading",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "medusas-dcnjnqynwwk#30",
+          "text": "🫓etwas Oregano",
+          "vorschlagIstZutat": false,
+          "klasse": "unquantified-unit",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "medusas-dcnjnqynwwk#32",
+          "text": "🫓etwas Knoblauch",
+          "vorschlagIstZutat": false,
+          "klasse": "unquantified-unit",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "medusas-dcnjnqynwwk#34",
+          "text": "🫓etwas Salz",
+          "vorschlagIstZutat": false,
+          "klasse": "unquantified-unit",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "medusas-dcnjnqynwwk#36",
+          "text": "𝘍ü𝘳 𝘥𝘢𝘴 𝘛𝘻𝘢𝘵𝘻𝘪𝘬𝘪:",
+          "vorschlagIstZutat": false,
+          "klasse": "heading",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "medusas-dcnjnqynwwk#66",
+          "text": "1. Hähnchen in sehr dünne Streifen schneiden, mit Öl und Gewürzen vermengen. In einer heißen beschichteten Pfanne kräftig anbraten, bis es schön gebräunt und leicht knusprig ist.",
+          "vorschlagIstZutat": false,
+          "klasse": "step",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "medusas-dcnjnqynwwk#68",
+          "text": "2. Pita klein schneiden, mit Öl, Oregano, Knoblauch & Salz vermengen und bei 180–190 °C ca. 4–6 Min. im Airfryer goldbraun rösten. Alternativ in der Pfanne rösten.",
+          "vorschlagIstZutat": false,
+          "klasse": "step+range",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "medusas-dcnjnqynwwk#70",
+          "text": "3. Gurke raspeln, mit Salz bestreuen und kurz stehen lassen und dann sehr gut ausdrücken. Mit Joghurt, Knoblauch, Zitronensaft & Dill verrühren und mit Salz und Pfeffer abschmecken.",
+          "vorschlagIstZutat": false,
+          "klasse": "step",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "medusas-dcnjnqynwwk#72",
+          "text": "4. Salat, Tomate, Gurke & Zwiebel in eine Bowl geben. Gyros darauf verteilen, Pita-Chips darübergeben und großzügig mit Tzatziki toppen. Mit Feta, Petersilie & Oregano garnieren. 🥙✨",
+          "vorschlagIstZutat": false,
+          "klasse": "step",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "medusas-ddb7e3ets9c#52",
+          "text": "1. 𝙃𝙖𝙨𝙚𝙡𝙣𝙪𝙨𝙨-𝘾𝙧𝙚𝙢𝙚 🤍",
+          "vorschlagIstZutat": false,
+          "klasse": "step",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "medusas-ddb7e3ets9c#54",
+          "text": "Skyr, Magerquark & Haselnusscreme miteinander verrühren. Milch & das Mark der Vanilleschote dazugeben und mit Süßstoff abschmecken. Eine kleine Prise Salz dazugeben – das verstärkt den Haselnuss- und Schokoladengeschmack.",
+          "vorschlagIstZutat": false,
+          "klasse": "unquantified-unit",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "medusas-ddb7e3ets9c#56",
+          "text": "2. 𝙎𝙘𝙝𝙤𝙠𝙤-𝘾𝙧𝙚𝙢𝙚 🍫",
+          "vorschlagIstZutat": false,
+          "klasse": "step",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "medusas-ddb7e3ets9c#58",
+          "text": "Kakao und Schoko-Proteinpulver mit der Milch verrühren. Nach Geschmack süßen. Die Creme sollte eher dickflüssig sein.",
+          "vorschlagIstZutat": false,
+          "klasse": "to-taste",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "medusas-ddb7e3ets9c#80",
+          "text": "Jeweils 1 Bueno-Riegel grob in Stücke brechen und auf die Creme setzen. Mit Haselnüssen bestreuen und etwas Schoko-Creme verzieren.",
+          "vorschlagIstZutat": false,
+          "klasse": "unquantified-unit",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "medusas-ddb7e3ets9c#86",
+          "text": "Ich habe für das Protein Pulver \"Double Chocolate\" von @officialbodylab24 genommen. 𝙆𝙡𝙚𝙞𝙣𝙚𝙧 𝙏𝙞𝙥𝙥: Wenn ihr noch mehr Bueno Geschmack haben möchtet dann nutzt für die Creme noch ein paar Tropfen \"Bueno Queen\" von @gymqueen.de",
+          "vorschlagIstZutat": false,
+          "klasse": "nutrition+unquantified-unit",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "noel-dd0-4wriewb#6",
+          "text": "Rabattcode: ❗️👉🏼NOEL👈🏼❗️",
+          "vorschlagIstZutat": false,
+          "klasse": "promo",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "noel-ddgk0lsiq8j#6",
+          "text": "Rabattcode: ❗️👉🏼NOEL👈🏼❗️",
+          "vorschlagIstZutat": false,
+          "klasse": "promo",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "noel-ddqtwtqpmrd#6",
+          "text": "Rabattcode: ❗️👉🏼NOEL👈🏼❗️",
+          "vorschlagIstZutat": false,
+          "klasse": "promo",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "noel-ddvv5nziycv#6",
+          "text": "Rabattcode: ❗️👉🏼NOEL👈🏼❗️",
+          "vorschlagIstZutat": false,
+          "klasse": "promo",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "noel-ddvv5nziycv#36",
+          "text": "- optional verdünnen mit einem Schluck Wasser und einen Teelöffel Flohsamenschalen dazugeben",
+          "vorschlagIstZutat": false,
+          "klasse": "to-taste",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "lib-da70q7nqgx_#27",
+          "text": "5. Das Zitronen-Frosting auf dem noch lauwarmen Kuchen verstreichen und nach Belieben mit Zitronenscheiben dekorieren.",
+          "vorschlagIstZutat": false,
+          "klasse": "step+to-taste",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "lib-daw4krusc4l#4",
+          "text": "📌Speicher dir das Rezept unbedingt ab – das wirst du garantiert öfter machen!",
+          "vorschlagIstZutat": false,
+          "klasse": "promo",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "lib-daw4krusc4l#16",
+          "text": "• 1 Handvoll Lauchzwiebeln, in feine Ringe geschnitten",
+          "vorschlagIstZutat": false,
+          "klasse": "unquantified-unit",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "lib-dbd7eldrupt#4",
+          "text": "Wenn du das nicht verpassen willst, dann folge mir ✅💪🏼",
+          "vorschlagIstZutat": false,
+          "klasse": "promo",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "lib-dbd7eldrupt#20",
+          "text": "🌮Salz, Pfeffer, Paprikapulver, Tomatengewürz & ein paar Chiliflocken",
+          "vorschlagIstZutat": false,
+          "klasse": "unquantified-unit",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "lib-dbxltnpiq5i#30",
+          "text": "Folge mir für High Protein Rezepte, die perfekt für die Diät geeignet sind & Speichere dir das Rezept für später damit du es nicht wieder suchen musst 😬",
+          "vorschlagIstZutat": false,
+          "klasse": "promo",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
+          "lineId": "lib-dcvzerymzzn#21",
+          "text": "Mit Salz abschmecken und zum Servieren noch etwas Kokosmilch darübergeben. Mit frischem Koriander und Chiliöl toppen. Wer mag, gibt zum Schluss noch etwas frischen Limettensaft darüber – passt richtig gut zur cremigen Kokosmilch und der leichten Schärfe vom Gochujang. 🌶️🥥",
+          "vorschlagIstZutat": false,
+          "klasse": "unquantified-unit+to-taste",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        }
+      ]
+    }
+  }
+}

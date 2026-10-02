@@ -11,7 +11,11 @@
     "test": "vitest run",
     "test:corpus": "vitest run src/parser/corpus.test.ts",
     "recipe:benchmark": "vitest run src/parser/universal.test.ts",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "eval": "node scripts/eval-price.mjs",
+    "eval:final": "node scripts/eval-price.mjs --final",
+    "eval:live": "node scripts/eval-price.mjs --live",
+    "golden:build": "node scripts/build-golden-set.mjs"
   },
   "dependencies": {
     "canvas-confetti": "^1.9.4",
@@ -31,6 +35,7 @@
     "@types/node": "^24.0.0",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
+    "esbuild": "^0.28.0",
     "eslint": "^9.39.0",
     "eslint-config-next": "^16.0.0",
     "tailwindcss": "^4.1.0",

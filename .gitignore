@@ -14,3 +14,5 @@ e2e/screenshots/
 PRICE_NUTRITION_ARCHIVE.md
 # lokale Scratch-/Messwerkzeuge (kein App-Code)
 tmp/
+# Maschinenausgabe des Evals (die Final-Läufe selbst werden protokolliert)
+tests/golden/last-run.json

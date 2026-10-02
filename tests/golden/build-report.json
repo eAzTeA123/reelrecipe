@@ -1,0 +1,62 @@
+{
+  "generatedAt": "2026-10-02T11:20:35.026Z",
+  "fixtures": 42,
+  "lines": 1279,
+  "items": 463,
+  "split": {
+    "fixtures": {
+      "dev": 29,
+      "test": 13
+    },
+    "items": {
+      "dev": 304,
+      "test": 136,
+      "excluded": 23
+    },
+    "lines": {
+      "dev": 954,
+      "test": 325
+    }
+  },
+  "problemClasses": {
+    "no-expected-item": 880,
+    "multi-item-line": 28,
+    "has-item": 399,
+    "heading": 95,
+    "range": 25,
+    "unquantified-unit": 32,
+    "to-taste": 14,
+    "nutrition": 104,
+    "fraction": 30,
+    "step": 30,
+    "hashtag": 35,
+    "promo": 24
+  },
+  "labelDefects": 12,
+  "labelDefectsByName": [
+    "lib-da70q7nqgx_ :: * 30 g Erythrit << bullet-im-namen+menge-im-namen",
+    "lib-da70q7nqgx_ :: Saft of Zitrone << of-statt-von",
+    "lib-daw4krusc4l :: Quark ca. 200 ml Milch << menge-im-namen",
+    "lib-dbd7eldrupt :: Passierte Tomaten + 100ml Wasser << menge-im-namen",
+    "lib-dbxltnpiq5i :: Saft of Zitrone << of-statt-von",
+    "lib-dby8vmdyoi- :: heap tsp Dijon Senf Resting juices of the Hähnchen << of-statt-von+unuebersetzt",
+    "lib-dc0eafrivrf :: * 1 TL geräuchertes Paprikapulver << bullet-im-namen+menge-im-namen",
+    "lib-dcq9ivdripm :: Block (226g) Fat Free Cream Cheese << unuebersetzt+menge-im-namen",
+    "lib-dcq9ivdripm :: Large Eggs << unuebersetzt",
+    "lib-dcq9ivdripm :: Vanilla Whey/Casein Blend Protein Powder << unuebersetzt",
+    "lib-dcq9ivdripm :: Vanilla Whey/Casein Blend Protein Powder << unuebersetzt",
+    "lib-dcq9ivdripm :: Sugar Free/Fat Free Cheesecake Pudding << unuebersetzt"
+  ],
+  "priceability": {
+    "quantified": 318,
+    "unquantified": 145,
+    "unknownUnit": 0,
+    "pantry": 34,
+    "distinctPriceableNames": 192
+  },
+  "reviewRows": {
+    "defects": 12,
+    "unmatched": 15,
+    "lines": 83
+  }
+}

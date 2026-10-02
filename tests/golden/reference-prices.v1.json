@@ -1,0 +1,2726 @@
+{
+  "schemaVersion": 1,
+  "instructions": "Je Zeile den belegten Referenzpreis eintragen: pricePerBaseUnit (EUR je kg, l oder Stück), shop (z. B. Lidl), date (JJJJ-MM-TT) und url. Zeilen ohne Beleg auf skip=true. Mindestens 100 Zutaten müssen ausgefüllt sein.",
+  "requiredFilled": 100,
+  "candidates": 150,
+  "prices": [
+    {
+      "name": "Olivenöl",
+      "occurrences": 11,
+      "dimensions": [
+        "volume",
+        "mass",
+        "unquantified"
+      ],
+      "mostCommonQuantity": "2 TL",
+      "note": "mehrere Dimensionen – Referenz je Dimension nötig",
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Knoblauch",
+      "occurrences": 9,
+      "dimensions": [
+        "count",
+        "volume",
+        "unquantified"
+      ],
+      "mostCommonQuantity": "1 Zehe",
+      "note": "mehrere Dimensionen – Referenz je Dimension nötig",
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Oregano",
+      "occurrences": 8,
+      "dimensions": [
+        "volume",
+        "mass",
+        "unquantified"
+      ],
+      "mostCommonQuantity": "1 TL",
+      "note": "mehrere Dimensionen – Referenz je Dimension nötig",
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Magerquark",
+      "occurrences": 7,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "100 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "rote Zwiebel",
+      "occurrences": 7,
+      "dimensions": [
+        "mass",
+        "unquantified"
+      ],
+      "mostCommonQuantity": "0.5 (ohne)",
+      "note": "mehrere Dimensionen – Referenz je Dimension nötig",
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Tomatenmark",
+      "occurrences": 6,
+      "dimensions": [
+        "volume"
+      ],
+      "mostCommonQuantity": "8 TL",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Zucker",
+      "occurrences": 6,
+      "dimensions": [
+        "unquantified",
+        "volume",
+        "mass"
+      ],
+      "mostCommonQuantity": "50 g",
+      "note": "mehrere Dimensionen – Referenz je Dimension nötig",
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Hähnchenbrustfilet",
+      "occurrences": 6,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "500 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Light Streukäse",
+      "occurrences": 4,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "150 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "geräuchertes Paprikapulver",
+      "occurrences": 4,
+      "dimensions": [
+        "volume"
+      ],
+      "mostCommonQuantity": "1 TL",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Knoblauchpulver",
+      "occurrences": 4,
+      "dimensions": [
+        "volume"
+      ],
+      "mostCommonQuantity": "2 TL",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Skyr",
+      "occurrences": 4,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "250 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "brauner Zucker",
+      "occurrences": 3,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "50 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Butter",
+      "occurrences": 3,
+      "dimensions": [
+        "mass",
+        "volume"
+      ],
+      "mostCommonQuantity": "100 g",
+      "note": "mehrere Dimensionen – Referenz je Dimension nötig",
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Dinkelmehl",
+      "occurrences": 3,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "60 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Hühnerbrühe",
+      "occurrences": 3,
+      "dimensions": [
+        "volume"
+      ],
+      "mostCommonQuantity": "400 ml",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Cherrytomaten",
+      "occurrences": 3,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "300 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Petersilie",
+      "occurrences": 3,
+      "dimensions": [
+        "volume",
+        "unquantified"
+      ],
+      "mostCommonQuantity": "1 TL",
+      "note": "mehrere Dimensionen – Referenz je Dimension nötig",
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Schinkenwürfel",
+      "occurrences": 3,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "150 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Paprikapulver",
+      "occurrences": 3,
+      "dimensions": [
+        "volume"
+      ],
+      "mostCommonQuantity": "1 TL",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Gouda gerieben",
+      "occurrences": 3,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "100 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "weiche Butter",
+      "occurrences": 3,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "100 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Frischkäse",
+      "occurrences": 3,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "200 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Philadelphia „so leicht“",
+      "occurrences": 3,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "25 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Kokosmilch",
+      "occurrences": 2,
+      "dimensions": [
+        "volume"
+      ],
+      "mostCommonQuantity": "400 ml",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Thymian",
+      "occurrences": 2,
+      "dimensions": [
+        "volume",
+        "unquantified"
+      ],
+      "mostCommonQuantity": "1 TL",
+      "note": "mehrere Dimensionen – Referenz je Dimension nötig",
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Weizenmehl (Type 405)",
+      "occurrences": 2,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "170 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Zimt",
+      "occurrences": 2,
+      "dimensions": [
+        "volume"
+      ],
+      "mostCommonQuantity": "1 TL",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Pesto Rosso",
+      "occurrences": 2,
+      "dimensions": [
+        "volume"
+      ],
+      "mostCommonQuantity": "1 EL",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Jasminreis",
+      "occurrences": 2,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "200 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "TK-Brokkoli",
+      "occurrences": 2,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "200 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Tomatengewürz",
+      "occurrences": 2,
+      "dimensions": [
+        "volume"
+      ],
+      "mostCommonQuantity": "1.5 TL",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Mais pro Taco",
+      "occurrences": 2,
+      "dimensions": [
+        "volume"
+      ],
+      "mostCommonQuantity": "1 TL",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Paprikapulver geräuchert",
+      "occurrences": 2,
+      "dimensions": [
+        "volume"
+      ],
+      "mostCommonQuantity": "4 TL",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Currypulver",
+      "occurrences": 2,
+      "dimensions": [
+        "volume"
+      ],
+      "mostCommonQuantity": "1 TL",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Kurkuma",
+      "occurrences": 2,
+      "dimensions": [
+        "volume"
+      ],
+      "mostCommonQuantity": "2 TL",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Schmelzkäse",
+      "occurrences": 2,
+      "dimensions": [
+        "count"
+      ],
+      "mostCommonQuantity": "6 Scheibe",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Tomaten",
+      "occurrences": 2,
+      "dimensions": [
+        "unquantified",
+        "mass"
+      ],
+      "mostCommonQuantity": "2 (ohne)",
+      "note": "mehrere Dimensionen – Referenz je Dimension nötig",
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Senf",
+      "occurrences": 2,
+      "dimensions": [
+        "volume",
+        "mass"
+      ],
+      "mostCommonQuantity": "1 EL",
+      "note": "mehrere Dimensionen – Referenz je Dimension nötig",
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "schwarzer Pfeffer",
+      "occurrences": 2,
+      "dimensions": [
+        "mass",
+        "volume"
+      ],
+      "mostCommonQuantity": "2 g",
+      "note": "mehrere Dimensionen – Referenz je Dimension nötig",
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Salatgurke",
+      "occurrences": 2,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "130 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Milch, 1,5 % Fett",
+      "occurrences": 2,
+      "dimensions": [
+        "volume"
+      ],
+      "mostCommonQuantity": "30 ml",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "magere Schinkenwürfel",
+      "occurrences": 2,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "150 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Mais",
+      "occurrences": 2,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "50 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Flohsamenschalen",
+      "occurrences": 2,
+      "dimensions": [
+        "volume"
+      ],
+      "mostCommonQuantity": "0.5 TL",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Frischkäse 0,2% Fett",
+      "occurrences": 2,
+      "dimensions": [
+        "count"
+      ],
+      "mostCommonQuantity": "1 Packung",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Tomate",
+      "occurrences": 2,
+      "dimensions": [
+        "count",
+        "mass"
+      ],
+      "mostCommonQuantity": "1 Scheibe",
+      "note": "mehrere Dimensionen – Referenz je Dimension nötig",
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Backpulver",
+      "occurrences": 2,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "3 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Erythrit",
+      "occurrences": 2,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "60 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Mehl",
+      "occurrences": 2,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "150 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Hähnchenbrust",
+      "occurrences": 2,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "650 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "passierte Tomaten",
+      "occurrences": 2,
+      "dimensions": [
+        "mass",
+        "volume"
+      ],
+      "mostCommonQuantity": "150 g",
+      "note": "mehrere Dimensionen – Referenz je Dimension nötig",
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Puddingpulver",
+      "occurrences": 2,
+      "dimensions": [
+        "mass",
+        "count"
+      ],
+      "mostCommonQuantity": "20 g",
+      "note": "mehrere Dimensionen – Referenz je Dimension nötig",
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Erbsen",
+      "occurrences": 1,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "150 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Hühnerbrust",
+      "occurrences": 1,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "600 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Hühnerfond",
+      "occurrences": 1,
+      "dimensions": [
+        "volume"
+      ],
+      "mostCommonQuantity": "400 ml",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "rote Currypaste",
+      "occurrences": 1,
+      "dimensions": [
+        "volume"
+      ],
+      "mostCommonQuantity": "1 EL",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "eingelegte rote Paprika",
+      "occurrences": 1,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "150 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Hackfleisch, gemischtes",
+      "occurrences": 1,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "500 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Rinderbrühe",
+      "occurrences": 1,
+      "dimensions": [
+        "volume"
+      ],
+      "mostCommonQuantity": "1 l",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Tomaten, stückige",
+      "occurrences": 1,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "800 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Crème fraîche",
+      "occurrences": 1,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "150 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Butter (zimmerwarm)",
+      "occurrences": 1,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "100 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Frischkäse (zimmerwarm)",
+      "occurrences": 1,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "100 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "gemahlene Haselnüsse",
+      "occurrences": 1,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "50 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Zitronenabrieb",
+      "occurrences": 1,
+      "dimensions": [
+        "volume"
+      ],
+      "mostCommonQuantity": "0.5 TL",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Schokolinsen",
+      "occurrences": 1,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "100 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Natron",
+      "occurrences": 1,
+      "dimensions": [
+        "volume"
+      ],
+      "mostCommonQuantity": "0.5 TL",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Schokolinsen als Dekoration",
+      "occurrences": 1,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "50 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Backpulvet",
+      "occurrences": 1,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "5 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Feta/Hirtenkäse Light",
+      "occurrences": 1,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "100 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Hokkaido Kürbis",
+      "occurrences": 1,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "230 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Paella-Reis (Rundkorn Reis)",
+      "occurrences": 1,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "300 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "TK-Erbsen",
+      "occurrences": 1,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "150 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Geflügelhack",
+      "occurrences": 1,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "400 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Hackfleischgewürz",
+      "occurrences": 1,
+      "dimensions": [
+        "volume"
+      ],
+      "mostCommonQuantity": "1 TL",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Mayonnaise light",
+      "occurrences": 1,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "30 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Ketchup, zuckerreduziert",
+      "occurrences": 1,
+      "dimensions": [
+        "volume"
+      ],
+      "mostCommonQuantity": "3 EL",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Paprikapulver, edelsüß",
+      "occurrences": 1,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "1 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "griechischer Joghurt High Protein 0 %",
+      "occurrences": 1,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "200 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Zitronensaft",
+      "occurrences": 1,
+      "dimensions": [
+        "volume"
+      ],
+      "mostCommonQuantity": "1 TL",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "frischer Dill",
+      "occurrences": 1,
+      "dimensions": [
+        "volume"
+      ],
+      "mostCommonQuantity": "0.5 TL",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Feta light",
+      "occurrences": 1,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "50 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Eisbergsalat",
+      "occurrences": 1,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "150 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Bueno Creme",
+      "occurrences": 1,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "20 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Backkakao",
+      "occurrences": 1,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "10 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Proteinpulver Double Chocolate",
+      "occurrences": 1,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "10 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "gehackte & geröstete Haselnüsse",
+      "occurrences": 1,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "20 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "„Eat lean“ Käse",
+      "occurrences": 1,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "180 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Instant Rice Flour",
+      "occurrences": 1,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "45 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "vegan Protein",
+      "occurrences": 1,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "45 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "kochendes Wasser",
+      "occurrences": 1,
+      "dimensions": [
+        "volume"
+      ],
+      "mostCommonQuantity": "500 ml",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "TK Obst",
+      "occurrences": 1,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "150 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "frisches Obst",
+      "occurrences": 1,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "150 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "fettfreie Kellogs",
+      "occurrences": 1,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "15 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Zero Ahornsirup",
+      "occurrences": 1,
+      "dimensions": [
+        "volume"
+      ],
+      "mostCommonQuantity": "1 EL",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Eat Lean Käse",
+      "occurrences": 1,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "120 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Hähnchen Filet",
+      "occurrences": 1,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "400 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Zero Protein Chips",
+      "occurrences": 1,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "25 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Ketchup Zero",
+      "occurrences": 1,
+      "dimensions": [
+        "volume"
+      ],
+      "mostCommonQuantity": "3 EL",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Miracle Whip Balance",
+      "occurrences": 1,
+      "dimensions": [
+        "volume"
+      ],
+      "mostCommonQuantity": "3 EL",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Gurkenwasser",
+      "occurrences": 1,
+      "dimensions": [
+        "volume"
+      ],
+      "mostCommonQuantity": "2 EL",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Sriracha Mayo",
+      "occurrences": 1,
+      "dimensions": [
+        "volume"
+      ],
+      "mostCommonQuantity": "2 EL",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Eiklar",
+      "occurrences": 1,
+      "dimensions": [
+        "volume"
+      ],
+      "mostCommonQuantity": "100 ml",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Vanille Protein Pudding",
+      "occurrences": 1,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "100 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Real Flavor Süßungsmittel",
+      "occurrences": 1,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "8 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Whey Vanille",
+      "occurrences": 1,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "45 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Zitronenschalen Abrieb",
+      "occurrences": 1,
+      "dimensions": [
+        "volume"
+      ],
+      "mostCommonQuantity": "1 TL",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Milch",
+      "occurrences": 1,
+      "dimensions": [
+        "volume"
+      ],
+      "mostCommonQuantity": "200 ml",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Pasta nach Wahl",
+      "occurrences": 1,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "200 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Light Streußelkäse",
+      "occurrences": 1,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "80 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "fettarmer Frischkäse",
+      "occurrences": 1,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "200 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Wasser ausspülen",
+      "occurrences": 1,
+      "dimensions": [
+        "volume"
+      ],
+      "mostCommonQuantity": "100 ml",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "gepresster Knoblauch",
+      "occurrences": 1,
+      "dimensions": [
+        "volume"
+      ],
+      "mostCommonQuantity": "1 TL",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Philadelphia Balance",
+      "occurrences": 1,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "150 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "fettarmes Rinderhackfleisch",
+      "occurrences": 1,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "600 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "ungekochte Nudeln",
+      "occurrences": 1,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "250 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Kartoffeln",
+      "occurrences": 1,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "600 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Gurke",
+      "occurrences": 1,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "100 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Krautsalat",
+      "occurrences": 1,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "100 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "stichfester Joghurt 1,5 % Fett",
+      "occurrences": 1,
+      "dimensions": [
+        "volume"
+      ],
+      "mostCommonQuantity": "2 EL",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Daily",
+      "occurrences": 1,
+      "dimensions": [
+        "volume"
+      ],
+      "mostCommonQuantity": "2 TL",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "SpiceX Bella",
+      "occurrences": 1,
+      "dimensions": [
+        "volume"
+      ],
+      "mostCommonQuantity": "1 TL",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Hähnchen Breasts",
+      "occurrences": 1,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "1 Pfund",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "smoked Paprikapulver",
+      "occurrences": 1,
+      "dimensions": [
+        "volume"
+      ],
+      "mostCommonQuantity": "1 TL",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Hähnchen Brühe",
+      "occurrences": 1,
+      "dimensions": [
+        "volume"
+      ],
+      "mostCommonQuantity": "0.75 Tasse",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "light Frischkäse",
+      "occurrences": 1,
+      "dimensions": [
+        "volume"
+      ],
+      "mostCommonQuantity": "4 EL",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Hahnchen",
+      "occurrences": 1,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "300 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "lauwarme Milch",
+      "occurrences": 1,
+      "dimensions": [
+        "volume"
+      ],
+      "mostCommonQuantity": "240 ml",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Trockenhefe",
+      "occurrences": 1,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "7 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Puderzucker",
+      "occurrences": 1,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "120 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Vanille",
+      "occurrences": 1,
+      "dimensions": [
+        "volume"
+      ],
+      "mostCommonQuantity": "0.5 TL",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Salz FÜLLUNG",
+      "occurrences": 1,
+      "dimensions": [
+        "volume"
+      ],
+      "mostCommonQuantity": "1 TL",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Zimt FRISCHKÄSE-GUSS",
+      "occurrences": 1,
+      "dimensions": [
+        "volume"
+      ],
+      "mostCommonQuantity": "2 EL",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Milch SO GEHT’S",
+      "occurrences": 1,
+      "dimensions": [
+        "volume"
+      ],
+      "mostCommonQuantity": "37.5 ml",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Pudding Pulver",
+      "occurrences": 1,
+      "dimensions": [
+        "count"
+      ],
+      "mostCommonQuantity": "1 Packung",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Real Flavor",
+      "occurrences": 1,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "10 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Mandelmilch ungesüßt",
+      "occurrences": 1,
+      "dimensions": [
+        "volume"
+      ],
+      "mostCommonQuantity": "100 ml",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Sofort Gelatine",
+      "occurrences": 1,
+      "dimensions": [
+        "volume"
+      ],
+      "mostCommonQuantity": "6 TL",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Protein Pudding Karamell",
+      "occurrences": 1,
+      "dimensions": [
+        "count"
+      ],
+      "mostCommonQuantity": "1 Becher",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Plain Non Fat Greek Yogurt",
+      "occurrences": 1,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "480 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "2% Cottage Cheese",
+      "occurrences": 1,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "240 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Egg Whites",
+      "occurrences": 1,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "100 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Vanilla Extract",
+      "occurrences": 1,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "5 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Zero Cal Sweetener",
+      "occurrences": 1,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "20 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "OREO Thins",
+      "occurrences": 1,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "8 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Powdered Sugar",
+      "occurrences": 1,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "20 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Black Cocoa Powder",
+      "occurrences": 1,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "10 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Gochujang",
+      "occurrences": 1,
+      "dimensions": [
+        "volume"
+      ],
+      "mostCommonQuantity": "1 EL",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "rote Linsen",
+      "occurrences": 1,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "150 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    }
+  ]
+}
