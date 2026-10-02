@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { AppShell } from "@/components/AppShell";
 import { ToastProvider } from "@/components/Toast";
+import { ZoomGuard } from "@/components/ZoomGuard";
 
 export const metadata: Metadata = {
   title: { default: "Scroll2Cook", template: "%s · Scroll2Cook" },
@@ -16,7 +17,15 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  // Kein maximumScale/userScalable: Nutzer müssen zoomen können (WCAG 1.4.4).
+  // **Zoom-Sperre.** Die App soll sich wie eine native App anfühlen; Zoomen und
+  // Doppeltipp-Vergrößerung sind unerwünscht. Das ist eine bewusste Entscheidung
+  // gegen WCAG 1.4.4 („Text lässt sich vergrößern"). Sie ist vertretbar, weil
+  // alle Bedienziele mindestens 44 × 44 px groß sind (Wächter:
+  // `e2e/a11y.spec.ts`) und Eingabefelder bei 16 px bleiben – die App ist also
+  // ohne Zoom bedienbar. `maximumScale` und `userScalable` gehören zusammen:
+  // Chrome ignoriert `user-scalable=no` ohne `maximum-scale=1`.
+  maximumScale: 1,
+  userScalable: false,
   viewportFit: "cover",
   // Passt die Browser-/Systemleiste an den jeweiligen Modus an.
   themeColor: [
@@ -62,6 +71,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     >
       <body suppressHydrationWarning>
         <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
+        <ZoomGuard />
         <I18nProvider>
           <TimerProvider>
             <MigrationRunner />

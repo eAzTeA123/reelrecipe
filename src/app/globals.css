@@ -168,6 +168,13 @@
 html {
   -webkit-text-size-adjust: 100%;
   scroll-behavior: smooth;
+  /*
+   * `manipulation` schaltet den Doppeltipp-Zoom ab (der auf iOS trotz
+   * `user-scalable=no` bleibt) und lässt Scrollen zu. Den Zwei-Finger-Zoom
+   * fängt `src/components/ZoomGuard.tsx` ab, weil CSS ihn hier nicht sperren
+   * kann, ohne das Ziehen im Wochenplan zu stören.
+   */
+  touch-action: manipulation;
 }
 body {
   background: var(--color-bg);

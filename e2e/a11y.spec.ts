@@ -77,3 +77,45 @@ test("Untere Navigation bleibt beim Scrollen am unteren Rand", async ({ page }) 
   // … und bewegt sich beim Scrollen nicht.
   expect(Math.round(after!.y)).toBe(Math.round(before!.y));
 });
+
+test.describe("Zoom-Sperre", () => {
+  // Touch muss aktiv sein, sonst gibt es in Chromium keine `Touch`-Objekte.
+  test.use({ hasTouch: true, viewport: { width: 390, height: 844 } });
+
+  test("Zoomen ist gesperrt (Meta, CSS und iOS-Wächter)", async ({ page }) => {
+    await page.goto("/");
+    await page.waitForSelector("main");
+
+    const content = await page.locator('meta[name="viewport"]').getAttribute("content");
+    expect(content, "Viewport-Meta fehlt").toBeTruthy();
+    expect(content, "ohne maximum-scale ignoriert Chrome user-scalable=no").toContain("maximum-scale=1");
+    expect(content, "Zwei-Finger-Zoom nicht gesperrt").toContain("user-scalable=no");
+    expect(content, "viewport-fit=cover ging verloren").toContain("viewport-fit=cover");
+
+    const touchAction = await page.evaluate(
+      () => getComputedStyle(document.documentElement).touchAction,
+    );
+    expect(touchAction, "Doppeltipp-Zoom nicht unterbunden").toContain("manipulation");
+
+    // Der iOS-Wächter muss wirklich geladen sein: `user-scalable=no` allein wirkt
+    // auf iOS nicht, dort fängt dieses Modul die Gesten ab.
+    const guard = await page.evaluate(() => document.documentElement.dataset.zoomGuard);
+    expect(guard, "iOS-Wächter nicht aktiv").toBe("active");
+
+    // Gegenprobe: eine Zwei-Finger-Bewegung darf das Standardverhalten nicht
+    // auslösen. Playwright kennt keine echten Pinch-Gesten, deshalb wird das
+    // Ereignis synthetisch ausgelöst und geprüft, dass es abgefangen wird.
+    const prevented = await page.evaluate(() => {
+      const touch = (id: number, x: number, y: number) =>
+        new Touch({ identifier: id, target: document.body, clientX: x, clientY: y });
+      const event = new TouchEvent("touchmove", {
+        cancelable: true,
+        bubbles: true,
+        touches: [touch(1, 100, 100), touch(2, 200, 200)],
+      });
+      document.body.dispatchEvent(event);
+      return event.defaultPrevented;
+    });
+    expect(prevented, "Zwei-Finger-Bewegung wurde nicht abgefangen").toBe(true);
+  });
+});
