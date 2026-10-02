@@ -140,6 +140,32 @@ const TITLE_STRIP_PHRASES = [
   /\s*[⬇️👇⤵️↓🔽]\uFE0F?\s*/gu,
 ];
 
+/**
+ * Anpreisungen am **Anfang** eines Titels („Geiler Flammkuchen" → „Flammkuchen").
+ *
+ * Bewusst nur am Anfang: mitten im Titel beschreibt so ein Wort das Gericht
+ * („Cremige Gochujang-Linsen") und bleibt stehen. Ebenso bleiben Ernährungs- und
+ * Zubereitungsangaben („High Protein", „Low Carb", „Bulking", „One Pot") – sie
+ * gehören für den Betreiber zum Rezept. Freigegeben am Beispiel
+ * „🔥 Geiler Flammkuchen" → „Flammkuchen".
+ */
+const TITLE_PRAISE_PHRASE_RE =
+  /^(?:das\s+sind\s+(?:mit\s+abstand\s+)?die\s+besten|mit\s+abstand\s+die\s+besten|die\s+besten|die\s+beste|der\s+beste|das\s+beste)\s+/i;
+
+/** Einzelne Anpreisungen – werden mehrfach angewandt („Mega geiler Flammkuchen"). */
+const TITLE_PRAISE_WORD_RE =
+  /^(?:beste[nrs]?|leckerste[nrs]?|lecker(?:e|er|es|en)?|geil(?:e|er|es|en)?|mega|super|ultra|hammer|krass(?:e|er)?|perfekt(?:e|er)?|schnellste[nrs]?|einfachste[nrs]?|cremigste[nrs]?|gesündeste[nrs]?|saftigste[nrs]?)\s+/i;
+
+/** Nutzen-Floskeln am **Ende**: kein Titel, sondern ein Versprechen. */
+const TITLE_BENEFIT_RE = /\s*(?:zum\s+abnehmen|für\s+die\s+figur|aller\s+zeiten|überhaupt|der\s+welt|ever)\s*$/i;
+
+/** Hinweisende Fürwörter am Anfang: „Dieser herzhafte Ofenpfannkuchen" → „Herzhafte Ofenpfannkuchen" */
+const TITLE_DEMONSTRATIVE_RE = /^(?:dieser|diese|dieses|diesen|diesem|das\s+ist|hier\s+ist|so\s+geht)\s+/i;
+
+/** Emojis samt Varianten-Selektoren und Hautton-Modifier (sonst bleibt „🏻" stehen). */
+const TITLE_EMOJI_LEAD_RE = /^[\p{Emoji_Presentation}\p{Extended_Pictographic}\u{1F3FB}-\u{1F3FF}\u{FE0F}\u{200D}\s*|:-]+/gu;
+const TITLE_EMOJI_TRAIL_RE = /[\p{Extended_Pictographic}\u{1F3FB}-\u{1F3FF}\u{FE0F}\u{200D}\s]+$/u;
+
 /** Bereinigt einen Titel-Kandidaten von Intro-Boilerplate und kürzt überlange Titel intelligent */
 export function cleanTitle(raw: string): string {
   let t = raw;
@@ -154,18 +180,36 @@ export function cleanTitle(raw: string): string {
       }
     }
     // Leading Emojis und Sonderzeichen entfernen
-    const noLeading = t.replace(/^[\p{Emoji_Presentation}\p{Extended_Pictographic}\s*\|:-]+/gu, "").trim();
+    const noLeading = t.replace(TITLE_EMOJI_LEAD_RE, "").trim();
     if (noLeading !== t) {
       t = noLeading;
       changed = true;
     }
   }
 
-  // Trailing Emojis entfernen
-  t = t.replace(/[\p{Extended_Pictographic}\u{FE0F}\u{200D}\s]+$/u, "").trim();
+  // Trailing Emojis entfernen (samt Hautton-Modifier: „Zitronenkuchen☝🏽")
+  t = t.replace(TITLE_EMOJI_TRAIL_RE, "").trim();
 
   // Werbung / Anzeige Marker entfernen (z.B. "*Anzeige Churros sind lecker", "*ANZElGE")
   t = t.replace(/\*?an[zs]e[il1|]ge\s*[:|-]?\s*/gi, "").trim();
+
+  // Anpreisungen am Anfang und Nutzen-Floskeln am Ende entfernen.
+  // Die Schleife fängt Ketten ab: „Mega geiler Flammkuchen" → „Flammkuchen".
+  let trimmed = true;
+  while (trimmed) {
+    trimmed = false;
+    for (const re of [TITLE_PRAISE_PHRASE_RE, TITLE_PRAISE_WORD_RE, TITLE_DEMONSTRATIVE_RE]) {
+      const next = t.replace(re, "").trim();
+      if (next !== t) {
+        t = next;
+        trimmed = true;
+      }
+    }
+  }
+  t = t.replace(TITLE_BENEFIT_RE, "").trim();
+
+  // Nach dem Abschneiden beginnt der Titel wieder mit einem Großbuchstaben
+  if (t.length > 1 && /^[a-zäöüß]/.test(t)) t = t.charAt(0).toUpperCase() + t.slice(1);
 
   // Smart Truncation: Wenn der Titel extrem lang ist (Fließtext), ersten sinnvollen Satz nehmen
   if (t.length > 70) {
@@ -189,22 +233,57 @@ export function cleanTitle(raw: string): string {
 }
 
 /**
- * Titel aus einer Marketing-Headline ableiten:
- * "Die beste Lasagne-Suppe aller Zeiten: Der Party-Trend …" → "Lasagne-Suppe".
+ * Titel aus einer Marketing-Headline ableiten.
+ *
+ * Zwei Fälle, beide aus echten Captions belegt:
+ * - „Die beste Lasagne-Suppe aller Zeiten: Der Party-Trend …" → „Lasagne-Suppe"
+ *   (Gericht steht **vor** dem Doppelpunkt)
+ * - „Wenn's schnell gehen muss …: Dieser herzhafte Ofenpfannkuchen" →
+ *   „Herzhafte Ofenpfannkuchen" (Gericht steht **hinter** dem Doppelpunkt)
+ *
+ * Deshalb werden beide Seiten geprüft und die brauchbarere gewählt: keine
+ * Ansprache („wenn", „du", „muss"), höchstens sechs Wörter, und bei Gleichstand
+ * die kürzere Fassung.
  */
 export function extractTitleFromHeadline(line: string): string | undefined {
-  const head = line.split(/[!:?]|\s+–\s+|\s+-\s+/)[0]?.trim();
-  if (!head) return undefined;
+  // Werbe-Zeilen sind als Titelquelle unbrauchbar – auch der Teil hinter einem
+  // Doppelpunkt. Ohne diese Prüfung auf der **ganzen** Zeile wurde aus
+  // „Rabattcode: ❗️👉🏼NOEL👈🏼❗️" der Titel „NOEL" (gemessen).
+  // Achtung: NICHT die Zeile mit `TITLE_BAD` prüfen – die fängt „Wenn's …" ab
+  // und würde genau die Headlines verwerfen, deren Gericht hinter dem
+  // Doppelpunkt steht. `TITLE_BAD` gilt für den Kandidaten (in `isPlausibleTitle`).
+  if (TITLE_PROMO_RE.test(line)) return undefined;
 
-  let candidate = head.replace(
-    /^(?:die|der|das|mein|meine|unser|unsere)\s+(?:beste[nrs]?|leckerste[nrs]?|einfachste[nrs]?|schnellste[nrs]?|gesündeste[nrs]?|cremigste[nrs]?)\s+/i,
-    "",
-  );
-  candidate = candidate.replace(/\s+(?:aller\s+zeiten|überhaupt|ever)$/i, "").trim();
+  const parts = line
+    .split(/[:!?]|\s+–\s+|\s+-\s+/)
+    .map((part) => part.trim())
+    .filter((part) => part.length > 2);
+  if (parts.length === 0) return undefined;
 
-  if (candidate.split(/\s+/).filter(Boolean).length > 6) return undefined;
-  const cleaned = cleanTitle(candidate);
-  return isPlausibleTitle(cleaned) ? cleaned : undefined;
+  // **Alle** Teile prüfen, nicht nur den ersten und letzten: In echten Headlines
+  // steht das Gericht oft in der Mitte, eingerahmt von Ansprache und Behauptung
+  // („Wenn's schnell gehen muss …: Dieser herzhafte Ofenpfannkuchen ist ein
+  // absoluter Gamechanger! Und zudem …").
+  let best: { text: string; score: number } | undefined;
+
+  for (const part of parts) {
+    // Behauptungen abschneiden: „<Gericht> ist/schmeckt/wird <Versprechen>"
+    const withoutClaim = part.split(/\s+(?:ist|sind|war|waren|bleibt|wird|schmeckt|schmecken)\s+/i)[0] ?? part;
+    const cleaned = cleanTitle(withoutClaim);
+    if (cleaned.length < 3) continue;
+    // Ein einzelnes Kürzel in Großbuchstaben ist ein Code, kein Gericht.
+    if (!cleaned.includes(" ") && /^[A-ZÄÖÜ0-9!?&.\-]+$/.test(cleaned)) continue;
+    const words = cleaned.split(/\s+/).filter(Boolean).length;
+    if (words > 6) continue;
+    // Marketingsatz statt Gericht ("Wenn's schnell gehen muss …")
+    if (TITLE_SENTENCE_RE.test(cleaned)) continue;
+    if (!isPlausibleTitle(cleaned)) continue;
+    // Kürzere Fassungen sind eher ein Gericht als ein Satz
+    const score = 7 - words;
+    if (!best || score > best.score) best = { text: cleaned, score };
+  }
+
+  return best?.text;
 }
 
 /** Erste sinnvolle Zeile als Titel: keine Überschrift, keine Zutat, 2–80 Zeichen. */
