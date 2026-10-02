@@ -17,18 +17,23 @@
  */
 import { appendFileSync, existsSync, readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { createHash } from "node:crypto";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
 import { parseRecipe } from "@/parser";
 import { ensembleStrategy } from "@/parser/strategies/ensemble";
-import { loadCorpus } from "@/parser/corpus/loader";
-import { amountEquals, normUnit, scoreCase, summarize } from "@/parser/corpus/score";
+import { amountEquals, nameMatchScore, normUnit, scoreCase, summarize } from "@/parser/corpus/score";
 import type { CaseScore, IngredientPair } from "@/parser/corpus/score";
 import type { ActualRecipe, CorpusFixture, CorpusIngredient } from "@/parser/corpus/types";
 
 const MODE = process.argv.includes("--final") ? "final" : "dev";
 const LIVE = process.argv.includes("--live");
 const ROOT = process.cwd();
-const GOLDEN_DIR = join(ROOT, "tests", "golden");
+/** Erlaubt eine abweichende Golden-Set-Ablage, z. B. eine lokale Messung auf
+ *  einer echten Sicherungskopie (`tests/golden/local/`, nicht im Repo). */
+const goldenArg = (() => {
+  const index = process.argv.indexOf("--golden");
+  return index >= 0 ? process.argv[index + 1] : undefined;
+})();
+const GOLDEN_DIR = goldenArg ? resolve(ROOT, goldenArg) : join(ROOT, "tests", "golden");
 
 const THRESHOLDS = {
   precision: 0.95,
@@ -66,8 +71,26 @@ interface GoldenLine {
   classes: string[];
   split: "dev" | "test";
 }
+interface GoldenFixture {
+  id: string;
+  account: string | null;
+  language: string | null;
+  style: string | null;
+  origin: string;
+  excluded: boolean;
+  split: "dev" | "test";
+  caption: string;
+  expected: {
+    title: string | null;
+    servings: number | null;
+    servingsMax: number | null;
+    stepsCount: number;
+    stepsUnreliable: string | null;
+    negative: boolean;
+  };
+}
 interface GoldenFile {
-  fixtures: { id: string; split: "dev" | "test"; excluded: boolean }[];
+  fixtures: GoldenFixture[];
   lines: GoldenLine[];
   items: GoldenItem[];
   counts: { lines: number; items: number; itemsWithDefect: number; itemsWithoutLine: number };
@@ -78,10 +101,30 @@ function readJson<T>(file: string): T {
 }
 
 const golden = readJson<GoldenFile>("ingredients.v1.json");
-// **Beide** Corpora laden: ohne Argument liest `loadCorpus()` nur `fixtures/`.
-// Dann fiele die eigene Bibliothek (24 Rezepte, über die Hälfte der Labels) aus
-// der Messung – genau das ist beim ersten Lauf passiert.
-const corpus = [...loadCorpus(), ...loadCorpus("src/parser/corpus/fixtures-user")];
+
+/**
+ * Der Corpus wird **aus dem Golden Set** gebaut, nicht aus den Corpus-Ordnern.
+ * Dadurch ist die Messung selbsttragend: sie funktioniert auch für eine lokale
+ * Ablage (echte Sicherungskopie), ohne dass dort dieselben Fixture-IDs liegen.
+ */
+const corpus: CorpusFixture[] = golden.fixtures.map((f) => ({
+  id: f.id,
+  source: f.origin,
+  account: f.account ?? undefined,
+  language: (f.language === "en" ? "en" : "de") as "de" | "en",
+  style: f.style ?? undefined,
+  caption: f.caption,
+  expected: {
+    title: f.expected.title,
+    servings: f.expected.servings,
+    servingsMax: f.expected.servingsMax,
+    ingredients: [],
+    stepsCount: f.expected.stepsCount,
+  },
+  negative: f.expected.negative || undefined,
+  stepsUnreliable: f.expected.stepsUnreliable ?? undefined,
+  exclude: f.excluded ? "ausgeschlossen" : undefined,
+}));
 
 // ---------------------------------------------------------------- Vorprüfungen
 const problems: string[] = [];
@@ -94,13 +137,26 @@ check(golden.lines.length === golden.counts.lines, "ingredients.v1.json ist vera
 
 const goldenFixtureIds = new Set(golden.fixtures.map((f) => f.id));
 check(goldenFixtureIds.size === golden.fixtures.length, "doppelte Fixture-IDs im Golden Set");
-for (const f of corpus) check(goldenFixtureIds.has(f.id), `Fixture ${f.id} fehlt im Golden Set`);
+for (const fixture of golden.fixtures) {
+  if (fixture.caption.trim().length === 0) problems.push(`Fixture ${fixture.id} hat keine Caption`);
+  const items = golden.items.filter((i) => i.fixtureId === fixture.id);
+  if (fixture.expected.negative) {
+    check(items.length === 0, `Negativfall ${fixture.id} darf keine Labels haben`);
+  } else if (!fixture.excluded) {
+    check(items.length > 0, `Fixture ${fixture.id} hat keine Labels`);
+  }
+}
 
 const splitOf = new Map(golden.fixtures.map((f) => [f.id, f.split]));
 const devFixtures = golden.fixtures.filter((f) => !f.excluded && f.split === "dev").length;
 const testFixtures = golden.fixtures.filter((f) => !f.excluded && f.split === "test").length;
 const testShare = testFixtures / (devFixtures + testFixtures);
-check(testShare >= 0.2 && testShare <= 0.4, `Testanteil außerhalb 20–40 % (ist ${pct(testShare)})`);
+// Die Split-Regel gilt für das versionierte Golden Set. Eine lokale Messung auf
+// einer echten Sicherungskopie hat keinen Tuning-Split und darf sie nicht
+// verletzen.
+if (!goldenArg) {
+  check(testShare >= 0.2 && testShare <= 0.4, `Testanteil außerhalb 20–40 % (ist ${pct(testShare)})`);
+}
 
 function isValidSplit(value: string): boolean {
   return value === "dev" || value === "test" || value === "excluded";
@@ -109,9 +165,15 @@ for (const item of golden.items) check(isValidSplit(item.split), `ungültiger Sp
 for (const line of golden.lines) check(line.split === "dev" || line.split === "test", `ungültiger Split bei ${line.id}`);
 
 // Erwartete Zutaten je Fixture aus dem Golden Set (Single Source of Truth).
-// Defekte Labels und ausgeschlossene Fixtures zählen nicht zu den Schwellen.
+// Nicht bewertet werden:
+// - defekte Labels (nachweislich falsch geschrieben),
+// - ausgeschlossene Fixtures,
+// - Labels, die im Caption-Text gar nicht vorkommen (`noLine`). Was nicht im
+//   Text steht, kann der Parser nicht finden; das zu bewerten würde die
+//   Handbearbeitung der Bibliothek messen, nicht den Parser.
 const expectedByFixture = new Map<string, CorpusIngredient[]>();
 const defectsByFixture = new Map<string, string[]>();
+let notInText = 0;
 for (const item of golden.items) {
   if (item.labelDefect) {
     const list = defectsByFixture.get(item.fixtureId) ?? [];
@@ -119,6 +181,10 @@ for (const item of golden.items) {
     defectsByFixture.set(item.fixtureId, list);
   }
   if (item.excluded || item.labelDefect) continue;
+  if (item.noLine) {
+    notInText++;
+    continue;
+  }
   const list = expectedByFixture.get(item.fixtureId) ?? [];
   list.push({ name: item.name, amount: item.amount, amountMax: item.amountMax, unit: item.unit });
   expectedByFixture.set(item.fixtureId, list);
@@ -148,6 +214,27 @@ function evaluate(fixture: CorpusFixture): CaseScore {
         strategy,
       }
     : null;
+
+  // Defekte Labels sind auf **beiden** Seiten nicht bewertbar. Würde man nur die
+  // Erwartung streichen, zählte die korrekte Parser-Ausgabe als falsch positiv
+  // (genau das passierte bei „Saft of Zitrone": erwartet war der Tippfehler,
+  // gelesen wurde „Saft von Zitrone"). Deshalb wird zu jedem defekten Label auch
+  // die passende Parser-Zutat entfernt.
+  if (actual) {
+    for (const defectName of defectsByFixture.get(fixture.id) ?? []) {
+      let bestIndex = -1;
+      let bestScore = 0.7;
+      actual.ingredients.forEach((ing, index) => {
+        const score = nameMatchScore(defectName, ing.name);
+        if (score >= bestScore) {
+          bestScore = score;
+          bestIndex = index;
+        }
+      });
+      if (bestIndex >= 0) actual.ingredients.splice(bestIndex, 1);
+    }
+  }
+
   const expectedIngredients = expectedByFixture.get(fixture.id) ?? [];
   const filtered: CorpusFixture = { ...fixture, expected: { ...fixture.expected, ingredients: expectedIngredients } };
   return scoreCase(filtered, actual);
@@ -313,6 +400,7 @@ const verdicts: { label: string; value: string; ok: boolean | null }[] = [];
 lines.push(`GOLDEN-SET-EVAL · Modus ${MODE.toUpperCase()}${LIVE ? " · live" : ""}`);
 lines.push(`Golden Set: ${golden.fixtures.length} Rezepte, ${golden.lines.length} Zeilen, ${golden.items.length} Labels`);
 lines.push(`Corpus geladen: ${corpus.length} Rezepte · Split: ${devFixtures} dev / ${testFixtures} test (ausgeschlossen: ${golden.fixtures.filter((f) => f.excluded).length})`);
+lines.push(`Nicht bewertet: ${golden.items.filter((i) => i.labelDefect).length} defekte Labels · ${notInText} Labels ohne Textstelle`);
 lines.push(`Vorprüfungen: ${problems.length === 0 ? "alle bestanden" : `${problems.length} VERLETZT`}`);
 for (const p of problems) lines.push(`  ✗ ${p}`);
 lines.push("");
@@ -330,6 +418,12 @@ for (const split of splitsToScore) {
       `(Menge ${m.amountTotal ? pct(m.amountHits / m.amountTotal) : "–"}, Einheit ${m.unitTotal ? pct(m.unitHits / m.unitTotal) : "–"})`,
   );
   lines.push(`        Fehlend ${m.missing} · Zuviel ${m.extra} · Treffer ${m.matched}`);
+  const top = summarize(scores);
+  const fmt = (list: [string, number][], n: number) =>
+    list.length === 0 ? "–" : list.slice(0, n).map(([name, count]) => `${name} (${count}×)`).join(", ");
+  lines.push(`        fehlt am häufigsten:  ${fmt(top.topMissing, 6)}`);
+  lines.push(`        zuviel am häufigsten: ${fmt(top.topExtra, 6)}`);
+  if (top.failedCases.length > 0) lines.push(`        Rezepte mit Fehlern: ${top.failedCases.length}`);
   if (split === (MODE === "final" ? "test" : "dev")) {
     verdicts.push({ label: "A1 Precision", value: pct(m.precision), ok: m.precision >= THRESHOLDS.precision });
     verdicts.push({ label: "A2 Recall", value: pct(m.recall), ok: m.recall >= THRESHOLDS.recall });

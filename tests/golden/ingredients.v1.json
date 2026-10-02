@@ -17,7 +17,16 @@
       "style": "keycap-numbered-steps+grouped-ingredients+question-cta",
       "origin": "reference-corpus",
       "excluded": false,
-      "split": "dev"
+      "split": "dev",
+      "caption": "🔥 Ofensuppe\n\nDiese Ofensuppe kommt nicht in den Ofen. 👀 Der Chefkoch-Klassiker gart normalerweise zwei Stunden bei 200 °C. Meine Version ist nach etwa 20 Minuten auf dem Herd fertig – das spart Zeit und Energie.\n\nCurryketchup wird durch Currypaste und Tomatenmark ersetzt, die Ananas kommt als Chutney obendrauf und statt Dosenerbsen gibt es frische oder TK-Erbsen. Cremig, würzig, leicht scharf und fruchtig!\n\nZutaten für 4–6 Portionen:\nSuppe:\n600 g Hühnerbrust\n400 ml Kokosmilch\n400 ml Hühnerfond\n1–2 EL rote Currypaste\n2 EL Tomatenmark\n150–200 g Erbsen\nSalz und optional etwas Zucker\n\nAnanas-Chutney:\n1 kleine Ananas\n150 g eingelegte rote Paprika\n1 Schalotte\n1–2 EL Olivenöl\nSalz und 1 Prise Zucker\n\nZubereitung:\n1️⃣ Hühnerbrust würfeln. Kokosmilch, Fond, Currypaste und Tomatenmark im Topf verrühren. Fleisch dazugeben und 15–20 Minuten sanft köcheln lassen.\n\n2️⃣ Ananas, Paprika und Schalotte fein würfeln. Mit Olivenöl vermengen und mit Salz und Zucker abschmecken.\n\n3️⃣ Erbsen kurz garen. Suppe abschmecken, anrichten und mit Chutney und Erbsen toppen.\n\nWürdest du sie noch Ofensuppe nennen oder braucht sie einen neuen Namen?",
+      "expected": {
+        "title": "Ofensuppe",
+        "servings": 4,
+        "servingsMax": 6,
+        "stepsCount": 3,
+        "stepsUnreliable": null,
+        "negative": false
+      }
     },
     {
       "id": "chefkoch-ddwfyxrlay",
@@ -26,7 +35,16 @@
       "style": "numbered-ingredients+multi-sentence-steps+engagement-cta",
       "origin": "reference-corpus",
       "excluded": false,
-      "split": "test"
+      "split": "test",
+      "caption": "Die beste Lasagne-Suppe aller Zeiten: Der Party-Trend, den JEDER lieben wird! 😋🥣\n\nHast du schon mal Lasagneplatten für eine Suppe zerbrochen? 🤔 Schreib mir in die Kommentare, ob du diesen viralen Trend schon ausprobiert hast oder ob du ihn am Wochenende kochen wirst! Markiere jemanden, der dir diese cremig-würzige Party-Suppe unbedingt kochen MUSS! 👇🔥\n\n👨‍🍳 Zutaten\n2 EL Olivenöl\n500g Hackfleisch, gemischtes\n1 Zwiebel(n)\n3 Zehe/n Knoblauch\n1 Liter Rinderbrühe\n800 g Tomaten, stückige\n3 EL Tomatenmark\n1 TL Oregano\n1 TL Thymian\n10 Lasagneplatte(n)\n150 g Crème fraîche\nSalz und Pfeffer\nParmesan\n\n👨‍🍳 Und so geht’s\n1 EL Olivenöl in einem großen Topf bei mittlerer bis hoher Hitze erhitzen. Das Hackfleisch hineinkrümeln, mit Salz und Pfeffer würzen und knusprig braten. Zwiebel würfeln und Knoblauch hacken.\nDas restliche Olivenöl in den Topf geben und die Zwiebel darin unter gelegentlichem Rühren circa zwei Minuten glasig anschwitzen. Den Knoblauch hinzugeben und weitere 30 Sekunden dünsten.\nDie Lasagneplatten in mundgerechte Stücke brechen. Rinderbrühe, gehackte Tomaten, Tomatenmark, Lasagneplatten, Oregano, Thymian, Rosmarin, Salz und Pfeffer hinzufügen und bei kleiner Hitze so lange köcheln lassen, bis die Lasagneplatten gegart sind.\nNoch einmal abschmecken und mit einem Klacks Crème fraîche und etwas geriebenem Parmesan servieren.\n\nViel Spaß beim Nachkochen!",
+      "expected": {
+        "title": "Lasagne-Suppe",
+        "servings": null,
+        "servingsMax": null,
+        "stepsCount": 5,
+        "stepsUnreliable": null,
+        "negative": false
+      }
     },
     {
       "id": "einfachbacken-dd11fhxffoz",
@@ -35,7 +53,16 @@
       "style": "numbered-steps+prose+back-section",
       "origin": "reference-corpus",
       "excluded": false,
-      "split": "test"
+      "split": "test",
+      "caption": "Nusshörnchen📌 Rezept zum Speichern\n\nNusshörnchen wie vom Bäcker – das gelingt dir mit unserem Rezept. Die saftigen Hörnchen mit Frischkäse und Haselnuss wirst du ab sofort nur noch selber backen. Das schmeckt am besten!\n\nZUTATEN (Für 32 Stücke)\nFür den Teig\n170 g Weizenmehl (Type 405)\n100 g Butter (zimmerwarm)\n100 g Frischkäse (zimmerwarm)\n1 EL Zucker\n\nFür die Panade\n50 g Zucker\n50 g brauner Zucker\n50 g gemahlene Haselnüsse\n1 TL Zimt\n½ TL Zitronenabrieb\n\nZUBEREITUNG\n1. Schritt\nFür den Teig Mehl, Butter, Frischkäse und Zucker mit den Knethaken des Handrührgeräts mehrere Minuten zu einem glatten Teig verkneten. Teig zu einer Kugel formen und in Frischhaltefolie gewickelt mindestens 2 Stunden kalt stellen.\n\n2. Schritt\nInzwischen für die Panade Zucker, braunen Zucker, Haselnüsse, Zimt und Zitronenabrieb in einer flachen Schüssel miteinander vermischen.\n\n3. Schritt\nDurchgekühlten Teig halbieren. Jede Teighälfte zu einer Kugel formen. Panade auf der Arbeitsfläche verteilen, eine Teigkugel darauf legen und mit einer Teigrolle rund ausrollen (Ø ca. 26 cm).\n\n4. Schritt\nDen Teig beim Ausrollen hin und wieder wenden. Dabei die Arbeitsplatte nochmal mit der Panade bestreuen, damit der Teig von beiden Seiten mit der Mischung bedeckt ist. Den ausgerollten Teig mit einem Pizzaschneider oder einem scharfen Messer in 16 Stücke schneiden (wie Kuchenstücke).\n\n5. Schritt\nJedes Kuchenstück von der breiten Außenseite zur Spitze hin aufrollen, sodass die typische Hörnchen-Form entsteht. Hörnchen nach Belieben nochmal in der Zucker-Nuss-Mischung wälzen, damit sie lückenlos bedeckt sind.\n\nWeitere Zubereitungs-Schritte gibt's auf der Website @einfachbacken. Hier war leider zu wenig Platz. 🙏\n\nhttps://www.einfachbacken.de/rezepte/nusshoernchen-so-lecker-ganz-einfach-selbstgemacht\n\nDas ganze Video findest du jetzt auf unserem YouTube-Kanal!\nhttps://youtu.be/1UssbyVGBbc\n\nProtagonistin: Fabiana\n@hallohueftgold\n\n#einfachbacken #backen #nusshoernchen #nüsse #hoernchen",
+      "expected": {
+        "title": "Nusshörnchen",
+        "servings": 32,
+        "servingsMax": null,
+        "stepsCount": 6,
+        "stepsUnreliable": null,
+        "negative": false
+      }
     },
     {
       "id": "einfachbacken-dd1g64bipaw",
@@ -44,7 +71,16 @@
       "style": "dessert-recipe+numbered-steps+section-headings",
       "origin": "reference-corpus",
       "excluded": false,
-      "split": "test"
+      "split": "test",
+      "caption": "M&M Cookies! 🍪\nMit Rezept 📌\nM&M Cookies gelingen dir mit meinem Rezept ganz leicht. 🧑🏽‍🍳 Die weiche Konsistenz und die bunten Schokolinsen machen die Kekse unwiderstehlich. Unbedingt ausprobieren! ✨\n\nZUTATEN (Für 12 Stücke)\nFür den Teig\n100 g Schokolinsen\n100 g Butter\n50 g Zucker\n100 g brauner Zucker\n1 Ei (Größe M)\n160 g Weizenmehl (Type 405)\n½ TL Natron\n1 Prise Salz\n\nAußerdem\n50 g Schokolinsen als Dekoration\n\nZUBEREITUNG\n1. Schritt\nBackofen auf 180 Grad Ober-/Unterhitze (Umluft: 160 Grad) vorheizen. Schokolinsen grob hacken. Für den Teig Butter, Zucker und braunen Zucker mit einem Rührgerät cremig aufschlagen, dann das Ei hinzugeben und unterrühren. Mehl, Natron und Salz in einer separaten Schüssel mischen, dann mit der Buttermischung verrühren. Anschließend die gehackten Schokolinsen unterheben.\n\n2. Schritt\nCookieteig mit ausreichend Abstand mithilfe eines Eisportionierers auf ein mit Backpapier belegtes Backblech setzen. Cookies im vorgeheizten Ofen ca. 12 Minuten backen, bis der Rand leicht gebräunt ist. Restliche Schokolinsen auf den noch warmen Cookies verteilen und ganz leicht eindrücken. Der Teig ergibt ca. 12 Cookies, die sich luftdicht verpackt rund 1 Woche bei Zimmertemperatur halten.\n\nyoutube.com/c/einfachbacken\nFacebook.com/einfachbacken.de\npinterest.de/einfachbacken\n\nFOTO: @maria.panzer 🌷\nREZEPT: Lie-Hong 🌷\n\n#einfachbacken #cookies #mundm #schokolinsen",
+      "expected": {
+        "title": "M&M Cookies",
+        "servings": 12,
+        "servingsMax": null,
+        "stepsCount": 2,
+        "stepsUnreliable": null,
+        "negative": false
+      }
     },
     {
       "id": "einfachbacken-dd1wyj6dg8t",
@@ -53,7 +89,16 @@
       "style": "prose-only+dm-gate+no-ingredients",
       "origin": "reference-corpus",
       "excluded": false,
-      "split": "dev"
+      "split": "dev",
+      "caption": "Kommentiere „Sizilianischer Kuchen“ ✨🍋 und wir senden dir das Rezept per DM! 😍\n\nDas einfache Rezept landet in nur 25 Minuten im Ofen ⏰ und verwöhnt dich mit seinem fruchtig-frischen Aroma. Jeder Bissen schmeckt wie ein kleiner Kurzurlaub unter der Sonne Siziliens 🌞🍰🍋.",
+      "expected": {
+        "title": "Sizilianischer Kuchen",
+        "servings": null,
+        "servingsMax": null,
+        "stepsCount": 0,
+        "stepsUnreliable": null,
+        "negative": true
+      }
     },
     {
       "id": "essenspause-ddzajowqaro",
@@ -62,7 +107,16 @@
       "style": "arrow-prose-steps+compact-units+no-title-case",
       "origin": "reference-corpus",
       "excluded": false,
-      "split": "test"
+      "split": "test",
+      "caption": "OFENPFANNKUCHEN FETA-KÜRBIS | 115 KCAL 🥞\n\n(9 „Stück“)\n\n➡️300g Magerquark, 2 Eier, 100g Dinkelmehl, 5g Backpulvet, Salz & 80ml Wasser vermengen.\n\n➡️auf einem Backblech ausstreichen\n\n➡️mit 100g Feta/Hirtenkäse Light & 230g Hokkaido Kürbis (in dünnen Streifen)  belegen.\n\n➡️ etwas schwarzen Pfeffer darüber streuen.\n\n➡️ ca. 25 Minuten bei 180 Grad Umluft backen lassen & in 9 Stücke schneiden.\n\nNährwerte pro Stück (1/9):\n\n115 kcal | 12,9g KH | 9,1g E | 2,7g F\n\n#rezept #magerquark #proteinpizza",
+      "expected": {
+        "title": "Ofenpfannkuchen Feta-Kürbis",
+        "servings": 9,
+        "servingsMax": null,
+        "stepsCount": 5,
+        "stepsUnreliable": null,
+        "negative": false
+      }
     },
     {
       "id": "linasfitfood-ddmazzeoh0o",
@@ -71,7 +125,16 @@
       "style": "narrative-prose+english-remnants+nutrition-only+no-ingredient-list",
       "origin": "reference-corpus",
       "excluded": false,
-      "split": "dev"
+      "split": "dev",
+      "caption": "Gnocchi Hähnchen Feta Salat 😋\n\nKein Bock auf langweiligen Salat? Try this! 🤤✨\n\nKnusprig, frisch & volle Protein-Power für dein Post-Workout-Meal!\n\nNährwerte auf einem Blick:\n\n454 Kalorien\n\n44 g Protein\n\n#highprotein #abbehmenohnezuhungern #abnehmenohneverzicht #proteinmeals",
+      "expected": {
+        "title": "Gnocchi Hähnchen Feta Salat",
+        "servings": null,
+        "servingsMax": null,
+        "stepsCount": 0,
+        "stepsUnreliable": null,
+        "negative": true
+      }
     },
     {
       "id": "marvin-dc0eafrivrf",
@@ -80,7 +143,16 @@
       "style": "emoji-sections+asterisk-bullets+nutrition",
       "origin": "reference-corpus",
       "excluded": false,
-      "split": "dev"
+      "split": "dev",
+      "caption": "🍅 Pesto Rosso Hähnchen Reis One Pot\n\n30 Tage – 30 Rezepte | Abnehmen leichter gemacht \n\n👉 Folge mir für täglich einfache High Protein Rezepte zum Abnehmen & schicke es an jemanden der keine Lust hat zu kochen 😬\n\n🛒 Zutaten\n\n* 200 g Jasminreis\n* 500 g Hähnchenbrustfilet\n* 1 EL Pesto Rosso\n* 400 ml Hühnerbrühe\n* 200 g TK-Brokkoli\n* 150 g Light Streukäse\n* 300 g Cherrytomaten\n* 1½ TL Knoblauch\n* 1½ TL Tomatengewürz\n* 1 TL geräuchertes Paprikapulver\n\n📊 Nährwerte\n\nPro Portion (4 Portionen):\n\n* 464 kcal\n* 46 g Protein\n* 47 g Kohlenhydrate\n*  8,5 g Fett\n\n👨🏻‍🍳 Zubereitung\n\nHähnchen und Brokkoli kleinschneiden.\n\nAlle Zutaten bis auf den Käse zusammen in eine Auflaufform geben und gut miteinander vermengen.\n\nAnschließend mit dem Light-Käse toppen und die Auflaufform mit Alufolie abdecken.\n\n🔥 45 Minuten bei 190 °C in den vorgeheizten Ofen geben.\n\nDanach die Alufolie entfernen und nochmal ca. 5 Minuten backen, bis der Käse schön goldbraun ist. 🧀🔥\n\nFertig! Einfache Zutaten, wenig Aufwand und richtig viel Protein. 💪🏻\n\n#highprotein #abnehmen #rezept #diät \n#onepot muskelaufbau Fitness",
+      "expected": {
+        "title": "Pesto Rosso Hähnchen Reis One Pot",
+        "servings": 4,
+        "servingsMax": null,
+        "stepsCount": 5,
+        "stepsUnreliable": null,
+        "negative": false
+      }
     },
     {
       "id": "marvin-ddip48zo3th",
@@ -89,7 +161,16 @@
       "style": "emoji-sections+bullet-bullets+numbered-steps+nutrition",
       "origin": "reference-corpus",
       "excluded": false,
-      "split": "dev"
+      "split": "dev",
+      "caption": "🌮 HIGH PROTEIN TACOS ZUM ABNEHMEN\n\nIch wollte eigentlich nur Tacos machen, die man während der Diät essen kann aber was dabei rausgekommen ist, sieht so krank lecker aus, dass ich selbst nicht glauben konnte, dass ein Taco nur ca. 200 kcal hat. 🤯\n\n🥙 Zutaten\n• 8 Mini Tacos\n• 500 g Hähnchenbrustfilet\n• 1 x rote Paprika\n• 1 x gelbe Paprika\n• 1 x grüne Paprika\n• 1 x Zwiebel\n• 70 g Light Streukäse\n• ca. 1 TL Mais pro Taco\n• 2 TL Olivenöl\n\nGewürze\n• 4 TL Paprikapulver geräuchert\n• 1 TL Salz\n• 1 TL Currypulver\n• 1/2 TL Pfeffer\n• 2 TL Knoblauchpulver\n• 1 TL Petersilie\n\n1️⃣ Bei 180 °C für 25–30 Minuten in den Ofen.\n2️⃣ Anschließend bei 180 °C weiterbacken, bis der Käse schön geschmolzen und goldbraun ist.\n\n📊 Nährwerte pro Taco\n🔥 ca. 203 kcal\n💪 ca. 19 g Protein\n🍚 ca. 18,5 g Kohlenhydrate\n🥑 ca. 5,8 g Fett\n\n👉 Schick das Rezept an jemanden, der sagt, Tacos kann man während der Diät nicht essen, und folge mir für mehr High Protein Rezepte zum Abnehmen! 🫶🏻\n\n#highprotein #abnehmen #rezept #diät #tacos",
+      "expected": {
+        "title": "High Protein Tacos zum Abnehmen",
+        "servings": null,
+        "servingsMax": null,
+        "stepsCount": 2,
+        "stepsUnreliable": null,
+        "negative": false
+      }
     },
     {
       "id": "marvin-ddyyzx5ipqj",
@@ -98,7 +179,16 @@
       "style": "emoji-sections+bullet-bullets+split-spices+nutrition",
       "origin": "reference-corpus",
       "excluded": false,
-      "split": "dev"
+      "split": "dev",
+      "caption": "🍗 HIGH PROTEIN OFEN PAELLA ONE POT\n\n🥗 Abnehmen muss nicht langweilig sein! Diese Paella kommt komplett aus dem Ofen, ist super einfach gemacht und liefert ordentlich Protein 🤝\n\n🛒 ZUTATEN\n• 500 g Hähnchenbrustfilet\n• 300 g Paella-Reis (Rundkorn Reis)\n• 150 g TK-Erbsen\n• 2 rote Paprika\n• 1 Zwiebel\n• 3 Knoblauchzehen\n• 2 TL Olivenöl\n• 700 ml Hühnerbrühe\n\n🌶️ GEWÜRZE FÜR DAS HÄHNCHEN\n• 2 TL Kurkuma\n• 3 TL geräuchertes Paprikapulver\n• 1 TL Salz\n• 2 TL Olivenöl\n\n🌶️ GEWÜRZE FÜR DIE PAELLA\n• 1 TL Kurkuma\n• ½ TL Pfeffer\n• 2 TL geräuchertes Paprikapulver\n• ½ TL Salz\n\n👨‍🍳 ZUBEREITUNG\nPaella-Reis, Paprika, Zwiebel, Knoblauch, Gewürze und Brühe in eine Auflaufform geben und gut miteinander vermengen.\n\nDas gewürzte Hähnchen oben drauflegen – NICHT mit unterrühren!\n\nDie Auflaufform mit Alufolie gut abdecken und bei 180 °C für 35 Minuten in den Ofen geben.\n\nAnschließend die Folie entfernen und die TK-Erbsen unter die Paella mischen. Auch hier darauf achten, dass das Hähnchen nicht nach unten gedrückt wird.\n\nDanach nochmal für ca. 20–25 Minuten in den Ofen geben.\n\nFertig! 🔥\n\n📊 NÄHRWERTE GESAMT\n🔥 ca. 1.970 kcal\n💪 ca. 150 g Protein\n🍚 ca. 282 g Kohlenhydrate\n🥑 ca. 22 g Fett\n\n🍽️ PRO PORTION (1/4)\n🔥 ca. 493 kcal\n💪 ca. 37,5 g Protein\n🍚 ca. 70,5 g Kohlenhydrate\n🥑 ca. 5,5 g Fett\n\n❤️ Folge mir für mehr einfache High Protein Rezepte für deine Diät und schicke es an jemanden, der das unbedingt ausprobieren muss!\n\n#highprotein #abnehmen #rezept #diät\n#onepot muskelaufbau Fitness Paella",
+      "expected": {
+        "title": "High Protein Ofen Paella One Pot",
+        "servings": 4,
+        "servingsMax": null,
+        "stepsCount": 5,
+        "stepsUnreliable": null,
+        "negative": false
+      }
     },
     {
       "id": "medusas-dc879w_t4f6",
@@ -107,7 +197,16 @@
       "style": "prose-paragraph-steps+emoji-bullets+nutrition",
       "origin": "reference-corpus",
       "excluded": false,
-      "split": "dev"
+      "split": "dev",
+      "caption": "🍔 𝗖𝗵𝗲𝗲𝘀𝗲𝗯𝘂𝗿𝗴𝗲𝗿-𝗔𝘂𝗳𝗹𝗮𝘂𝗳 – 𝗕𝘂𝗿𝗴𝗲𝗿-𝗟𝗶𝗲𝗯𝗲 𝗮𝘂𝘀 𝗱𝗲𝗺 𝗢𝗳𝗲𝗻! 🧀\n\nWenn du Cheeseburger liebst, aber mal etwas anderes als den klassischen Burger möchtest: Dieser Cheeseburger-Auflauf ist genau das Richtige. 🤤🍔\n\nSaftiges Hackfleisch, geschmolzener Käse, würzige Burgersauce und natürlich Sesam-Buns – alles zusammen aus dem Ofen und anschließend einfach nur noch genießen. 🥹❤️\n\nDas Beste: maximal 𝙪𝙣𝙠𝙤𝙢𝙥𝙡𝙞𝙯𝙞𝙚𝙧𝙩, richtig schön 𝙘𝙝𝙚𝙚𝙨𝙮 und 𝙥𝙚𝙧𝙛𝙚𝙠𝙩 für ein gemütliches Abendessen. Und ja – auch beim Abnehmen darf so etwas auf dem Teller landen. 😏\n\n💾 𝙎𝙥𝙚𝙞𝙘𝙝𝙚𝙧 dir das Rezept ab, wenn du Cheeseburger genauso liebst wie ich!\n\n👇𝙏𝙚𝙖𝙢 𝘾𝙝𝙚𝙚𝙨𝙚𝙗𝙪𝙧𝙜𝙚𝙧 𝙤𝙙𝙚𝙧 𝙏𝙚𝙖𝙢 𝙋𝙞𝙯𝙯𝙖?\n\n1 𝙱𝚞𝚛𝚐𝚎𝚛:\n\n🔥362 kcal | 🌾 36,5 g | 🥚26,0 g | 🧈 11,6 g\n\n𝚉𝚞𝚝𝚊𝚝𝚎𝚗:\n\n🍔6 Burger Buns\n\n🍔400 g Geflügelhack\n\n🍔1-2 TL Hackfleischgewürz\n\n🍔6 Scheiben Schmelzkäse\n\n🍔4 Gewürzgurken\n\n🍔2 Tomaten\n\n🍔1 Zwiebel\n\n🍔30 g Mayonnaise light\n\n🍔1 EL Senf\n\n🍔3 EL Ketchup, zuckerreduziert\n\n𝚉𝚞𝚋𝚎𝚛𝚎𝚒𝚝𝚞𝚗𝚐:\n\nZwiebeln schneiden und in einer beschichteten Pfanne glasig dünsten. Hackfleisch anbraten und würzen. Ketchup, Senf und Mayonnaise zu einer Sauce verrühren. In eine Auflaufform die untere Brötchenhälfte geben. Die Hälfte der Sauce darauf verteilen. Hackfleisch darüber geben. Mit geschnittenen Tomaten und Essigkurken sowie gedünsteten Zwiebeln belegen. Die restliche Sauce sowie Käse darauf verteilen und im Backofen bei 180°C 15 Minuten backen. Die oberen Brötchenhälften drauf legen und nochmal ca. 4 Minuten im Ofen backen.",
+      "expected": {
+        "title": "Cheeseburger-Auflauf",
+        "servings": null,
+        "servingsMax": null,
+        "stepsCount": 9,
+        "stepsUnreliable": null,
+        "negative": false
+      }
     },
     {
       "id": "medusas-dcnjnqynwwk",
@@ -116,7 +215,16 @@
       "style": "numbered-steps+emoji-bullets+grouped-sections",
       "origin": "reference-corpus",
       "excluded": false,
-      "split": "dev"
+      "split": "dev",
+      "caption": "🥙 𝐇𝐢𝐠𝐡 𝐏𝐫𝐨𝐭𝐞𝐢𝐧 𝐏𝐢𝐭𝐚-𝐆𝐲𝐫𝐨𝐬-𝐁𝐨𝐰𝐥\n\nGyros-Feeling, aber als 𝘽𝙤𝙬𝙡 – mit knusprigen Pita-Chips, cremigem Knoblauch-Tzatziki und einer ordentlichen Portion 𝙋𝙧𝙤𝙩𝙚𝙞𝙣. 🤤🥒\n\n𝙐𝙣𝙙 𝙙𝙖𝙨 𝘽𝙚𝙨𝙩𝙚: 460 kcal & 52,9 g Protein pro Portion!\n\nPerfekt, wenn du beim Abnehmen nicht auf richtig gutes Essen verzichten möchtest. 🫶🏻\n\n🛒 𝙕𝙪𝙩𝙖𝙩𝙚𝙣 𝙛ü𝙧 2 𝙋𝙤𝙧𝙩𝙞𝙤𝙣𝙚𝙣:\n\n𝘍ü𝘳 𝘥𝘢𝘴 𝘎𝘺𝘳𝘰𝘴:\n\n🍗 300 g Hähnchenbrustfilet\n\n🍗10 g Olivenöl\n\n🍗1 g Paprikapulver, edelsüß\n\n🍗1 g Oregano\n\n🍗2 g schwarzer Pfeffer\n\n🍗Salz nach Geschmack\n\n𝘍ü𝘳 𝘥𝘪𝘦 𝘗𝘪𝘵𝘢-𝘊𝘩𝘪𝘱𝘴:\n\n🫓1 Pita-Brottasche (80 g)\n\n🫓½ TL Olivenöl\n\n🫓etwas Oregano\n\n🫓etwas Knoblauch\n\n🫓etwas Salz\n\n𝘍ü𝘳 𝘥𝘢𝘴 𝘛𝘻𝘢𝘵𝘻𝘪𝘬𝘪:\n\n🥣200 g griechischer Joghurt High Protein 0 %\n\n🥣130 g Salatgurke\n\n🥣1 Knoblauchzehe\n\n🥣1 TL Zitronensaft\n\n🥣½ TL frischer Dill\n\n🥣Salz & Pfeffer\n\n𝘍ü𝘳 𝘥𝘪𝘦 𝘉𝘰𝘸𝘭:\n\n🥗150 g Tomaten\n\n🥗150 g Salatgurke\n\n🥗56 g rote Zwiebel\n\n🥗50 g Feta light\n\n🥗150 g Eisbergsalat\n\n🥗Petersilie & Oregano zum Garnieren\n\n👩🏻‍🍳 𝘡𝘶𝘣𝘦𝘳𝘦𝘪𝘵𝘶𝘯𝘨:\n\n1. Hähnchen in sehr dünne Streifen schneiden, mit Öl und Gewürzen vermengen. In einer heißen beschichteten Pfanne kräftig anbraten, bis es schön gebräunt und leicht knusprig ist.\n\n2. Pita klein schneiden, mit Öl, Oregano, Knoblauch & Salz vermengen und bei 180–190 °C ca. 4–6 Min. im Airfryer goldbraun rösten. Alternativ in der Pfanne rösten.\n\n3. Gurke raspeln, mit Salz bestreuen und kurz stehen lassen und dann sehr gut ausdrücken. Mit Joghurt, Knoblauch, Zitronensaft & Dill verrühren und mit Salz und Pfeffer abschmecken.\n\n4. Salat, Tomate, Gurke & Zwiebel in eine Bowl geben. Gyros darauf verteilen, Pita-Chips darübergeben und großzügig mit Tzatziki toppen. Mit Feta, Petersilie & Oregano garnieren. 🥙✨\n\n💕 𝙉ä𝙝𝙧𝙬𝙚𝙧𝙩𝙚 𝙥𝙧𝙤 𝙋𝙤𝙧𝙩𝙞𝙤𝙣:\n\n🔥460 kcal\n\n🥚52,9 g Protein\n\n🌾32,5 g Kohlenhydrate\n\n🧈10,6 g Fett\n\nWenn du Gyros liebst, aber eine leichtere & proteinreiche Variante suchst, musst du diese Bowl unbedingt ausprobieren. 😍\n\n𝙎𝙥𝙚𝙞𝙘𝙝𝙚𝙧𝙣 & 𝙣𝙖𝙘𝙝𝙢𝙖𝙘𝙝𝙚𝙣! 🫶🏻\n\n#highprotein #proteinrezept #pitagyros #abnehmenmitgenuss #proteinreich",
+      "expected": {
+        "title": "High Protein Pita-Gyros-Bowl",
+        "servings": 2,
+        "servingsMax": null,
+        "stepsCount": 4,
+        "stepsUnreliable": null,
+        "negative": false
+      }
     },
     {
       "id": "medusas-ddb7e3ets9c",
@@ -125,7 +233,16 @@
       "style": "numbered-steps+bullet-bullets+grouped-sections+promo",
       "origin": "reference-corpus",
       "excluded": false,
-      "split": "dev"
+      "split": "dev",
+      "caption": "🤎 𝐁𝐮𝐞𝐧𝐨 𝐃𝐞𝐬𝐬𝐞𝐫𝐭 🤎\n\nCremig, schokoladig, nussig und mit ordentlich Crunch – dieses Bueno Dessert ist einfach purer Genuss im Glas. 😍🍫🌰\n\nNährwerte pro Portion:\n\n🔥 494 kcal\n\n🍚 34,8 g Kohlenhydrate\n\n💪 30,2 g Eiweiß\n\n🥜 24,4 g Fett\n\n𝚉𝚞𝚝𝚊𝚝𝚎𝚗 (2 𝙿𝚘𝚛𝚝𝚒𝚘𝚗𝚎𝚗):\n\n🤍 𝙃𝙖𝙨𝙚𝙡𝙣𝙪𝙨𝙨-𝘾𝙧𝙚𝙢𝙚\n\n• 250 g Skyr\n\n• 100 g Magerquark\n\n• 20 g Bueno Creme\n\n• 30 ml Milch, 1,5 % Fett\n\n• 1 Vanilleschote\n\n• 1 Prise Salz\n\n🍫 𝙎𝙘𝙝𝙤𝙠𝙤-𝘾𝙧𝙚𝙢𝙚\n\n• 10 g Backkakao\n\n• 10 g Proteinpulver Double Chocolate\n\n• 30 ml Milch, 1,5 % Fett\n\n🌰 𝘾𝙧𝙪𝙣𝙘𝙝\n\n• 20 g gehackte & geröstete Haselnüsse\n\n• 2 Vanille-Waffeln\n\n🤎 𝙏𝙤𝙥𝙥𝙞𝙣𝙜\n\n• 2 Bueno-Riegel (Werbung)\n\n• Reste von der Schoko-Creme\n\n👩🏻‍🍳 𝚉𝚞𝚋𝚎𝚛𝚎𝚒𝚝𝚞𝚗𝚐:\n\n1. 𝙃𝙖𝙨𝙚𝙡𝙣𝙪𝙨𝙨-𝘾𝙧𝙚𝙢𝙚 🤍\n\nSkyr, Magerquark & Haselnusscreme miteinander verrühren. Milch & das Mark der Vanilleschote dazugeben und mit Süßstoff abschmecken. Eine kleine Prise Salz dazugeben – das verstärkt den Haselnuss- und Schokoladengeschmack.\n\n2. 𝙎𝙘𝙝𝙤𝙠𝙤-𝘾𝙧𝙚𝙢𝙚 🍫\n\nKakao und Schoko-Proteinpulver mit der Milch verrühren. Nach Geschmack süßen. Die Creme sollte eher dickflüssig sein.\n\n3. 𝘾𝙧𝙪𝙣𝙘𝙝 🌰\n\nHaselnüsse kurz in einer beschichteten Pfanne ohne Öl anrösten. Anschließend mit den zerbröselten Waffeln vermischen.\n\n4. 𝘿𝙚𝙨𝙨𝙚𝙧𝙩 𝙨𝙘𝙝𝙞𝙘𝙝𝙩𝙚𝙣 🤎\n\nIn zwei Gläser geben:\n\n🤍 Haselnuss-Creme\n\n→ 🌰 Waffel-Haselnuss-Crunch\n\n→ 🍫 Schoko-Creme\n\n→ 🤍 Haselnuss-Creme\n\nDie Schoko-Creme mit einem Löffel leicht in die obere Schicht einziehen, sodass ein schöner Swirl entsteht.\n\n5. 𝘽𝙪𝙚𝙣𝙤-𝙁𝙞𝙣𝙞𝙨𝙝 🤎\n\nJeweils 1 Bueno-Riegel grob in Stücke brechen und auf die Creme setzen. Mit Haselnüssen bestreuen und etwas Schoko-Creme verzieren.\n\nFür etwa 30 Minuten kalt stellen und genießen 🤤🤎\n\n𝐖𝐞𝐫𝐛𝐮𝐧𝐠 / 𝐊𝐨𝐨𝐩𝐞𝐫𝐚𝐭𝐢𝐨𝐧:\n\nIch habe für das Protein Pulver \"Double Chocolate\" von @officialbodylab24 genommen. 𝙆𝙡𝙚𝙞𝙣𝙚𝙧 𝙏𝙞𝙥𝙥: Wenn ihr noch mehr Bueno Geschmack haben möchtet dann nutzt für die Creme noch ein paar Tropfen \"Bueno Queen\" von @gymqueen.de\n\n𝙍𝙖𝙗𝙖𝙩𝙩𝙘𝙤𝙙𝙚 👉🏻 𝙈𝙚𝙙𝙪𝙨𝙖\n\n#kinderbuenodessert #kinderbueno #highproteindessert #abnehmenmitgenuss",
+      "expected": {
+        "title": "Bueno Dessert",
+        "servings": 2,
+        "servingsMax": null,
+        "stepsCount": 6,
+        "stepsUnreliable": null,
+        "negative": false
+      }
     },
     {
       "id": "noel-dd0-4wriewb",
@@ -134,7 +251,16 @@
       "style": "compact-bullets+promo+nutrition+oven-note",
       "origin": "reference-corpus",
       "excluded": false,
-      "split": "dev"
+      "split": "dev",
+      "caption": "ZUM REZEPT ⬇️\n.\n.\n❤️🧡💛\nWenn euch meine Rezepte gefallen und ihr mich unterstützen wollt,\ndann könnt ihr gerne bei PROZIS den\nRabattcode: ❗️👉🏼NOEL👈🏼❗️\nbenutzen um immer Rabatte und Gratis Produkte zu erhalten\n❤️🧡💛\n*ANZElGE\n.\n.\n.\n🥗🍳🥑\nNährwerte (alle 8 zusammen)\n1472kcal, 175g K, 153g E, 15g F\n🥗🍳🥑\n.\n❗️bei der Tonaufnahme habe ich mich verrechnet, hier sind die korrekten Nährwert, sogar mit mehr Eiweiß☝🏼\n.\n.\n.\n⚖️🔢⏳⏲️\nMengenangaben:\n.\n- 180g „Eat lean“ Käse l Alternativ Gouda, leicht\n- 150g magere Schinkenwürfel\n- 100g Magerquark\n- 50g Mais\n- 1/2 rote Zwiebel\n- 1 Knoblauch Zehe\n- 1 TL Oregano\n.\n- 8x Kaiserbrötchen ausgehöhlt\n( die ausgehöhlte Masse kann man gut mit in ein porridge geben )\n.\n- 8TL Tomatenmark\n- (( die fertige Masse ))\n.\n- BACKOFEN: 200 Grad O/U-Hitze ~ 20min\n.\n⚖️🔢⏳⏲️\n.\n.\n.\n.\n.\n.\n.\n.\n.\n.\n#highprotein #lecker #eiweiß #protein #leckerschmecker essen mealprep eiweiss rezept",
+      "expected": {
+        "title": null,
+        "servings": null,
+        "servingsMax": null,
+        "stepsCount": 2,
+        "stepsUnreliable": null,
+        "negative": false
+      }
     },
     {
       "id": "noel-dd1luuyoqqy",
@@ -143,7 +269,16 @@
       "style": "emoji-bullets+promo-code+nutrition+mikrowelle",
       "origin": "reference-corpus",
       "excluded": false,
-      "split": "dev"
+      "split": "dev",
+      "caption": "574kcal - 90g K - 42g E - 4g F\n( für 800g Futter ) 🫪\n.\n@prozis Code: NOEL\n❌ = bei Prozis erhältlich\n.\n.\n.\n❌ 45g Instant Rice Flour (Prozis)\n❌ 45g vegan Protein (Prozis)\n( das beste vegane, was ich je probiert habe )\n✖️ 1g Salz\n✖️ 1/2 TL Flohsamenschalen\n✖️ 500ml kochendes Wasser\n⏰ 3 bis 5 Minuten Mikrowelle ~ 700 W\n❌ Yummy Drops (Prozis)\n✖️ 150g TK Obst\n✖️ 150g frisches Obst\n✖️ 15g fettfreie Kellogs\n❌ 1 EL Zero Ahornsirup (Prozis)\n.\n@prozis Code: NOEL",
+      "expected": {
+        "title": null,
+        "servings": null,
+        "servingsMax": null,
+        "stepsCount": 1,
+        "stepsUnreliable": null,
+        "negative": false
+      }
     },
     {
       "id": "noel-ddgk0lsiq8j",
@@ -152,7 +287,16 @@
       "style": "compact-bullets+promo+nutrition+oven-note",
       "origin": "reference-corpus",
       "excluded": false,
-      "split": "dev"
+      "split": "dev",
+      "caption": "ZUM REZEPT ⬇️\n.\n.\n❤️🧡💛\nWenn euch meine Rezepte gefallen und ihr mich unterstützen wollt, \ndann könnt ihr gerne bei PROZIS den \nRabattcode: ❗️👉🏼NOEL👈🏼❗️\nbenutzen um immer Rabatte und Gratis Produkte zu erhalten \n❤️🧡💛\n*ANZElGE\n.\n.\n.\n🥗🍳🥑\nNährwerte (alle 10 Hälften zsm) \n1818kcal, 222g K, 145g E, 37g F\n🥗🍳🥑\n.\n.\n.\n⚖️🔢⏳⏲️\nMengenangaben:\n.\n- 5x Laugenstangen -> jeweils 100g\nEntweder aus der Backabteilung oder Tiefgekühlt, diese allerdings vorher im Backofen so lange backen, bis sie gerade so durch sind \n.\n- 1 Packung (200g) Frischkäse 0,2% Fett\n- 2 rohe Eier \n- 150g Schinkenwürfel, mager \n- 120g „Eat Lean“ Käse - erhältlich bei Kaufland \n ( alternativ Gouda, leicht )\n- 1/2 rote Zwiebel \n- 1 Frühlingszwiebel\n.\n- BACKOFEN: 200 Grad Umluft ~ 15-20min\n.\n⚖️🔢⏳⏲️\n.\n. \n.\n.\n.\n.\n.\n.\n.\n.\n#highprotein #lecker #eiweiß #protein leckerschmecker essen mealprep eiweiss rezept",
+      "expected": {
+        "title": "Laugenstangen",
+        "servings": null,
+        "servingsMax": null,
+        "stepsCount": 2,
+        "stepsUnreliable": null,
+        "negative": false
+      }
     },
     {
       "id": "noel-ddqtwtqpmrd",
@@ -161,7 +305,16 @@
       "style": "compact-bullets+promo+nutrition+oven-note+assembly-list",
       "origin": "reference-corpus",
       "excluded": false,
-      "split": "dev"
+      "split": "dev",
+      "caption": "ZUM REZEPT ⬇️\n.\n.\n❤️🧡💛\nWenn euch meine Rezepte gefallen und ihr mich unterstützen wollt,\ndann könnt ihr gerne bei PROZIS den\nRabattcode: ❗️👉🏼NOEL👈🏼❗️\nbenutzen um immer Rabatte und Gratis Produkte zu erhalten\n❤️🧡💛\n*ANZElGE\n.\n.\n.\n🥗🍳🥑\nNährwerte (alles insgesamt)\n1497kcal, 169g K, 131g E, 29g F\n🥗🍳🥑\n.\n.\n.\n⚖️🔢⏳⏲️\nMengenangaben:\n.\n- 4x 100g Hähnchen Filet\n- ein paar Sprühstöße Öl\n- circa 2g Salz\n.\n- 25g Zero, Protein Chips\n( erhältlich bei Prozis - Code: NOEL ) ❤️\n- alternativ 25g Ofen Chips, 60% weniger Fett\n.\n- BACKOFEN: 180 Grad Umluft ~ 20min\n.\n- 3EL Ketchup Zero\n- 3EL Miracle Whip, Balance\n- 2EL Gurkenwasser\n- 2EL Sriracha Mayo (Orange)\n.\n- 4x:\n- Burger Brötchen\n- Sauce\n- eine Hand Salat\n- das Hähnchen\n- eine Scheibe Tomate\n- Sauce\n- Burger Brötchen\n.\n⚖️🔢⏳⏲️\n.\n.\n.\n.\n.\n.\n.\n.\n.\n.\n#highprotein #lecker #eiweiß #protein leckerschmecker essen mealprep eiweiss rezept",
+      "expected": {
+        "title": null,
+        "servings": null,
+        "servingsMax": null,
+        "stepsCount": 2,
+        "stepsUnreliable": null,
+        "negative": false
+      }
     },
     {
       "id": "noel-ddvv5nziycv",
@@ -170,7 +323,16 @@
       "style": "compact-bullets+promo+nutrition+oven-note+topping-note",
       "origin": "reference-corpus",
       "excluded": false,
-      "split": "dev"
+      "split": "dev",
+      "caption": "ZUM REZEPT ⬇️\n.\n.\n❤️🧡💛\nWenn euch meine Rezepte gefallen und ihr mich unterstützen wollt,\ndann könnt ihr gerne bei PROZIS den\nRabattcode: ❗️👉🏼NOEL👈🏼❗️\nbenutzen um immer Rabatte und Gratis Produkte zu erhalten\n❤️🧡💛\n*ANZElGE\n.\n.\n.\n🥗🍳🥑\nNährwerte (alles insgesamt)\n743kcal, 90g K, 80g E, 5g F\n🥗🍳🥑\n.\n.\n.\n⚖️🔢⏳⏲️\nMengenangaben:\n.\n- 1 großer Apfel\n.\n- 60g Dinkelmehl\n- 100ml Eiklar l Alternativ 2 rohe Eier\n- 350g Magerquark\n- 100g Vanille Protein Pudding\n- 3g Backpulver\n- 8g Real Flavor - Süßungsmittel\n( erhältlich bei Prozis - Code: NOEL ) ❤️\n.\n- BACKOFEN: 200 Grad O/U-Hitze ~ 30min\n.\n- restlichen 100g Vanille Protein Pudding\n- optional verdünnen mit einem Schluck Wasser und einen Teelöffel Flohsamenschalen dazugeben\n.\n- 1/2 TL Zimt\n.\n⚖️🔢⏳⏲️\n.\n.\n.\n.\n.\n.\n.\n.\n.\n.\n#highprotein #lecker #eiweiß #protein leckerschmecker essen mealprep eiweiss rezept",
+      "expected": {
+        "title": null,
+        "servings": null,
+        "servingsMax": null,
+        "stepsCount": 2,
+        "stepsUnreliable": null,
+        "negative": false
+      }
     },
     {
       "id": "lib-da70q7nqgx_",
@@ -179,7 +341,16 @@
       "style": "real-instagram-nutzerfassung",
       "origin": "user-stored",
       "excluded": false,
-      "split": "dev"
+      "split": "dev",
+      "caption": "Episode 2: Zitronenkuchen☝🏽\n\nDieses Mal wirklich der perfekte Kuchen für den Sommer 🍰🍋\n\nZutaten:\n* 60 g Dinkelmehl\n* 3 Eier \n* 60g Erythrit\n* 45 g Whey Vanille\n* 2-3 Scoops Flavor Powder Vanille\n* 4 g Backpulver\n* 1 Prise Salz\n* Saft von 1 Zitrone (für den Teig)\n* 1 TL Zitronenschalen Abrieb \n\nFür das Frosting:\n\n* 30 g Erythrit (im Mixer zu Puder verarbeiten)\n* Saft von ½ Zitrone\n* Optional: Zitronenscheiben zum Dekorieren\n\nZubereitung:\n\n1. Eier und Erythrit mindestens 6 Minuten schaumig aufschlagen, bis eine helle, cremige Masse entsteht.\n2. Dinkelmehl, Whey, Flavor Powder, Backpulver, Salz und den Zitronensaft vorsichtig unterheben und alles zu einem glatten Teig verrühren.\n3. Den Teig in eine vorbereitete Backform geben und bei 175 °C Ober-/Unterhitze ca. 25 Minuten backen.\n4. Während der Kuchen abkühlt, 30 g Erythrit mit dem Saft einer halben Zitrone verrühren.\n5. Das Zitronen-Frosting auf dem noch lauwarmen Kuchen verstreichen und nach Belieben mit Zitronenscheiben dekorieren.\n\n#lowcaloriehighprotein #lowcaloriedessert #highproteinlowcalories #highproteinrezepte #highproteinkuchen",
+      "expected": {
+        "title": "Episode 2: Zitronenkuchen☝🏽",
+        "servings": null,
+        "servingsMax": null,
+        "stepsCount": 7,
+        "stepsUnreliable": null,
+        "negative": false
+      }
     },
     {
       "id": "lib-daw4krusc4l",
@@ -188,7 +359,16 @@
       "style": "real-instagram-nutzerfassung",
       "origin": "user-stored",
       "excluded": false,
-      "split": "test"
+      "split": "test",
+      "caption": "Wenn’s schnell gehen muss, aber trotzdem richtig lecker sein soll: Dieser herzhafte Ofenpfannkuchen ist ein absoluter Gamechanger! Und zudem hat er noch eine extra Ladung Protein im Teig.\n\n👉 Kein Pfannkuchen-Wenden, kaum Aufwand und in weniger als 30 Minuten steht ein herrlich fluffiger Ofenpfannkuchen auf dem Tisch. Mit saftigem Schinken, würzigen Lauchzwiebeln und geschmolzenem Mozzarella wird daraus ein schnelles Mittag- oder Abendessen, das garantiert der ganzen Familie schmeckt. ❤️\n\n📌Speicher dir das Rezept unbedingt ab – das wirst du garantiert öfter machen!\n\n➡️ Rezept:\n\n4 Eier \n150 g Mehl\n150 g Quark\nca. 200 ml Milch\n1 gute Prise Salz\n\nBelag:\n• 2 Hände voll klein geschnittener Schinken (ca. 200 g)\n• 1 Handvoll Lauchzwiebeln, in feine Ringe geschnitten\n• 2 Hände voll geriebener Mozzarella (ca. 200 g)\n• Salz & Pfeffer nach Geschmack\n\nZubereitung:\n\nDen Ofen auf 170 °C Umluft (190 °C Ober-/Unterhitze) vorheizen und ein Backblech mit Backpapier auslegen.\n\nQuark, Eier, Mehl, Milch und Salz zu einem glatten Teig verrühren. Nicht zu lange rühren, damit der Pfannkuchen schön locker bleibt.\n\nDen Teig auf das Backblech gießen. Schinken, Lauchzwiebeln und Mozzarella darauf verteilen und alles mit Salz und Pfeffer würzen.\n\nIm vorgeheizten Ofen 20–25 Minuten backen, bis der Ofenpfannkuchen goldbraun aufgegangen ist und der Käse schön gebräunt ist.\n\nNach dem Backen fällt er leicht zusammen – das ist ganz normal. Am besten direkt heiß genießen. 😍\n\n#ofenpfannkuchen",
+      "expected": {
+        "title": null,
+        "servings": null,
+        "servingsMax": null,
+        "stepsCount": 5,
+        "stepsUnreliable": null,
+        "negative": false
+      }
     },
     {
       "id": "lib-dbd7eldrupt",
@@ -197,7 +377,16 @@
       "style": "real-instagram-nutzerfassung",
       "origin": "user-stored",
       "excluded": false,
-      "split": "test"
+      "split": "test",
+      "caption": "228g Eiweiß -  FAJITA PASTA ONEPOT 🍝⬇️\n\nIch teste jetzt jede Woche solche High Protein Meal Prep Fitnessrezepte & schau ob sie wirklich eure Zeit wert sind \n\nWenn du das nicht verpassen willst, dann folge mir ✅💪🏼\n\n🔷Nährwerte (pro Portion):\n551 kcal\n57 g Protein\n55 g Carbs\n13 g Fett\n\nZutaten:\n🍝 200 g Pasta nach Wahl (trocken)\n🍗 650 g Hähnchenbrust\n🧀 80 g Light Streußelkäse\n🧅 1 Zwiebel\n🫑 2 Paprika\n🥛 200 g fettarmer Frischkäse\n🧄 5 Zehen Knoblauch (oder 4)\n🌮Salz, Pfeffer, Paprikapulver, Tomatengewürz & ein paar Chiliflocken\n🍅 400 ml Passierte Tomaten + 100ml Wasser \n\nZubereitung:\n1️⃣ Ofen auf 190 °C vorheizen\n2️⃣ Hähnchen, Zwiebel & Paprika würfeln\n3️⃣ Alle Zutaten außer den Light Käse in eine große ofenfeste Form geben\n4️⃣ Tomatenpackung mit 100 ml Wasser ausspülen, dazugeben & gut vermengen\n5️⃣ Mit Light Käse toppen, mit Alufolie abdecken & 50 Min backen\n ➡️ 45 Min abgedeckt, 5 Min offen\n6️⃣ 5–10 Min ruhen lassen, damit alles schön bindet\n7️⃣ Servieren & genießen 😋🔥\n\nPerfekt fürs Mealprep & ultra sättigend 💪\n\nOrginalrezeot von @davefellfitness \n\n#highprotein #mealprep #pasta #fajitachicken #schnellerezepte",
+      "expected": {
+        "title": null,
+        "servings": null,
+        "servingsMax": null,
+        "stepsCount": 11,
+        "stepsUnreliable": null,
+        "negative": false
+      }
     },
     {
       "id": "lib-dbltb-bsnwy",
@@ -206,7 +395,16 @@
       "style": "real-instagram-nutzerfassung",
       "origin": "user-stored",
       "excluded": false,
-      "split": "test"
+      "split": "test",
+      "caption": "Bulking Nudelpfanne 🍝🔥\n\nNährwerte pro 100 g\n\nKalorien ca. 145 kcal\nEiweiß ca. 12 g\nKohlenhydrate ca. 11 g\nFett ca. 4 g\n\nZutaten\n\n½ Zwiebel\n1 Paprika\n1 TL gepresster Knoblauch\n150 g passierte Tomaten\nGewürze: je 1 TL Salz, 1 TL Pfeffer, 1 TL Paprikapulver, 1 TL Oregano\n150 g Philadelphia Balance\n½ Kelle Nudelwasser\n600 g fettarmes Rinderhackfleisch, max. 5 % Fett\nGewürze: je 1 TL Salz, 1 TL Pfeffer, 1 TL Paprikapulver, 1 TL Oregano\n250 g ungekochte Nudeln\nÖlspray\n\nZubereitung\n\nZuerst die Zwiebel klein schneiden und mit etwas Ölspray in der Pfanne anbraten. Dann den gepressten Knoblauch und die klein geschnittene Paprika dazu. Jetzt die Gewürze und die passierten Tomaten rein und alles ein paar Minuten köcheln lassen.\n\nNebenbei die Nudeln nach Packungsanleitung kochen.\n\nDie fertige Soße mit dem Philadelphia Balance und der halben Kelle Nudelwasser in den Mixer geben und cremig mixen.\n\nIn derselben Pfanne das fettarme Rinderhackfleisch scharf anbraten, bis es komplett durch ist. Davor die zweite Hälfte der Gewürze ans Fleisch.\n\nZum Schluss die gekochten Nudeln zum Fleisch geben, die pürierte Soße drüber verteilen und alles gut vermengen. Direkt servieren.",
+      "expected": {
+        "title": "Bulking Nudelpfanne",
+        "servings": null,
+        "servingsMax": null,
+        "stepsCount": 7,
+        "stepsUnreliable": null,
+        "negative": false
+      }
     },
     {
       "id": "lib-dbxltnpiq5i",
@@ -215,7 +413,16 @@
       "style": "real-instagram-nutzerfassung",
       "origin": "user-stored",
       "excluded": false,
-      "split": "dev"
+      "split": "dev",
+      "caption": "🥙 DÖNERTELLER zum abnehmen 💪🏻\n\nZutaten für 2 Portionen:\n\n🥔 Für den Dönerteller\n\n* 600 g Kartoffeln\n* 300 g Hähnchenbrust\n* 100 g Gurke\n* 100 g Tomate\n* 1 Zwiebel\n* 100 g Krautsalat\n* Petersilie\n* Gyrosgewürz\n\n🥣 Gesunde Joghurtsoße\n\n* Saft von ½ Zitrone\n* 2 EL stichfester Joghurt 1,5 % Fett\n* Salz\n* Thymian\n* Knoblauch\n\n📊 Nährwerte pro Dönerteller\n\n🔥 ca. 498 kcal\n💪 ca. 48 g Protein\n🍚 ca. 55 g Kohlenhydrate\n🥑 ca. 8 g Fett\n\nFolge mir für High Protein Rezepte, die perfekt für die Diät geeignet sind & Speichere dir das Rezept für später damit du es nicht wieder suchen musst 😬\nschick es an jemanden, der einfache Rezepte liebt 💪🏻\n\n#highprotein #dönerteller #abnehmen #diät #rezept",
+      "expected": {
+        "title": "DÖNERTELLER zum abnehmen 💪🏻",
+        "servings": 2,
+        "servingsMax": null,
+        "stepsCount": 0,
+        "stepsUnreliable": null,
+        "negative": false
+      }
     },
     {
       "id": "lib-dby8vmdyoi-",
@@ -224,7 +431,16 @@
       "style": "real-instagram-nutzerfassung",
       "origin": "user-stored",
       "excluded": true,
-      "split": "test"
+      "split": "test",
+      "caption": "SAVE THIS ‼️ Easy Healthier Cream Cheese Chicken (only 20 minutes!) 🥰\n\nAnnouncements:\n✅ Want to lose weight without eating boring food? My digital cookbooks include 180+ high-protein recipes with calories and macros included! Grab yours today on my site! 😊\n✅ OR Comment “cookbook” and I’ll send you the link! (Macros and Calories Included) 💪🏽\n✅ I developed new seasonings for everyday cooking! @spicexseasoning OUT now! 👀\n\nMacros per serving Rice NOT included (makes x2): 410 Calories | 56g P | 2g C | 19g F\n\nFor the Chicken:\n1lb Chicken Breasts\n2 tsp Daily Blend (SPG) \n1 tsp smoked paprika Powder, \n1 tsp SpiceX Bella Blend (dried herbs)\n2 teaspoon Butter\n2 teaspoon Olive Oil\n\nFor the sauce:\n2 Shallots, finely diced\n3/4 cup Chicken Stock\n4 tbsp light Cream Cheese\n1 heap tsp Dijon mustard\nResting juices of the chicken 🐓 \nfinely diced Fresh Chives, to serve\n\nENJOY 🥰\n.\n.\n.\n#icekarim #healthyrecipes #easyrecipes #mealprep #cooking",
+      "expected": {
+        "title": null,
+        "servings": null,
+        "servingsMax": null,
+        "stepsCount": 1,
+        "stepsUnreliable": null,
+        "negative": false
+      }
     },
     {
       "id": "lib-dbyghfqi37d",
@@ -233,7 +449,16 @@
       "style": "real-instagram-nutzerfassung",
       "origin": "user-stored",
       "excluded": false,
-      "split": "dev"
+      "split": "dev",
+      "caption": "ZUM REZEPT ⬇️\n.\n.\n❤️🧡💛\nWenn euch meine Rezepte gefallen und ihr mich unterstützen wollt, \ndann könnt ihr gerne bei PROZIS den \nRabattcode: ❗️👉🏼NOEL👈🏼❗️\nbenutzen um immer Rabatte und Gratis Produkte zu erhalten \n❤️🧡💛\n*ANZElGE\n.\n.\n.\n🥗🍳🥑\nNährwerte (alles insgesamt)\n1384kcal, 32g K, 198g E, 48g F\n🥗🍳🥑\n.\n.\n.\n⚖️🔢⏳⏲️\nMengenangaben:\n.\n- 500g Magerquark\n- 4 verquirlte Eier\n- 50g Gouda gerieben, leicht\n- 1 EL Tomatenmark\n- 1 EL Flohsamenschalen\n- 1g Salz\n.\n- 1 rote Zwiebel\n- 300g (roh gewogen) Hahnchen\nangebraten\n- 100g Gouda gerieben, leicht\n.\n⚖️🔢⏳⏲️\n.\n. \n- BACKOFEN: 220 Grad O/U-Hitze ~ 25-30min\n.\n.\n.\n.\n.\n.\n.\n.\n#highprotein #lecker #eiweiß #protein #leckerschmecker essen mealprep eiweiss rezept",
+      "expected": {
+        "title": "Flammkuchen (Chicken)",
+        "servings": null,
+        "servingsMax": null,
+        "stepsCount": 1,
+        "stepsUnreliable": null,
+        "negative": false
+      }
     },
     {
       "id": "lib-dc0eafrivrf",
@@ -242,7 +467,16 @@
       "style": "real-instagram-nutzerfassung",
       "origin": "user-stored",
       "excluded": false,
-      "split": "test"
+      "split": "test",
+      "caption": "🍅 Pesto Rosso Hähnchen Reis One Pot\n\n30 Tage – 30 Rezepte | Abnehmen leichter gemacht \n\n👉 Folge mir für täglich einfache High Protein Rezepte zum Abnehmen & schicke es an jemanden der keine Lust hat zu kochen 😬\n\n🛒 Zutaten\n\n* 200 g Jasminreis\n* 500 g Hähnchenbrustfilet\n* 1 EL Pesto Rosso\n* 400 ml Hühnerbrühe\n* 200 g TK-Brokkoli\n* 150 g Light Streukäse\n* 300 g Cherrytomaten\n* 1½ TL Knoblauch\n* 1½ TL Tomatengewürz\n* 1 TL geräuchertes Paprikapulver\n\n📊 Nährwerte\n\nPro Portion (4 Portionen):\n\n* 464 kcal\n* 46 g Protein\n* 47 g Kohlenhydrate\n*  8,5 g Fett\n\n👨🏻‍🍳 Zubereitung\n\nHähnchen und Brokkoli kleinschneiden.\n\nAlle Zutaten bis auf den Käse zusammen in eine Auflaufform geben und gut miteinander vermengen.\n\nAnschließend mit dem Light-Käse toppen und die Auflaufform mit Alufolie abdecken.\n\n🔥 45 Minuten bei 190 °C in den vorgeheizten Ofen geben.\n\nDanach die Alufolie entfernen und nochmal ca. 5 Minuten backen, bis der Käse schön goldbraun ist. 🧀🔥\n\nFertig! Einfache Zutaten, wenig Aufwand und richtig viel Protein. 💪🏻\n\n#highprotein #abnehmen #rezept #diät \n#onepot muskelaufbau Fitness",
+      "expected": {
+        "title": "Pesto Rosso Hähnchen Reis One Pot",
+        "servings": 4,
+        "servingsMax": null,
+        "stepsCount": 5,
+        "stepsUnreliable": null,
+        "negative": false
+      }
     },
     {
       "id": "lib-dcgdvyls97b",
@@ -251,7 +485,16 @@
       "style": "real-instagram-nutzerfassung",
       "origin": "user-stored",
       "excluded": true,
-      "split": "dev"
+      "split": "dev",
+      "caption": "🍂 Zimt-Zupfbrot\n\nWenn draußen die ersten Blätter von den Bäumen fallen…\n\nSpeichern & nachbacken 👇\n\nTEIG\n• 500 g Mehl (Type 550)\n• 240 ml lauwarme Milch\n• 60 g Zucker\n• 1 Ei\n• 60 g weiche Butter\n• 7 g Trockenhefe\n• 1 TL Salz\n\nFÜLLUNG\n• 100 g weiche Butter\n• 150 g brauner Zucker\n• 2 EL Zimt\n\nFRISCHKÄSE-GUSS\n• 60 g Frischkäse\n• 30 g Butter\n• 120 g Puderzucker\n• ½ TL Vanille\n• 1 Prise Salz\n• 30–45 ml Milch\n\nSO GEHT’S\n1️⃣ Teigzutaten verkneten, ca. 45–60 Min gehen lassen (bis doppelt so groß).\n\n2️⃣ Rechteckig ausrollen (ca. 40 × 30 cm), Füllung draufstreichen.\n\n3️⃣ In ~10 cm Quadrate schneiden, aufeinanderstapeln\n.\n4️⃣ Hochkant in eine ausgelegte Kastenform setzen, nochmal 25–30 Min gehen lassen.\n\n5️⃣ Bei 180 °C (O/U) ca. 35–40 Min backen.\n\n6️⃣ Kurz abkühlen, Guss glatt rühren, drübergießen. Warm genießen. 🤤\n\nLass mal ein paar 🍂 da, wenn du’s nachbackst!\n\n#zimtzupfbrot #zupfbrot #zimtschnecken #hefeteig #backenmachtglücklich",
+      "expected": {
+        "title": "Zimt-Zupfbrot",
+        "servings": null,
+        "servingsMax": null,
+        "stepsCount": 6,
+        "stepsUnreliable": null,
+        "negative": false
+      }
     },
     {
       "id": "lib-dciitfgoalo",
@@ -260,7 +503,16 @@
       "style": "real-instagram-nutzerfassung",
       "origin": "user-stored",
       "excluded": false,
-      "split": "test"
+      "split": "test",
+      "caption": "ZUM REZEPT ⬇️\n.\n.\n❤️🧡💛\nWenn euch meine Rezepte gefallen und ihr mich unterstützen wollt, \ndann könnt ihr gerne bei PROZIS den \nRabattcode: ❗️👉🏼NOEL👈🏼❗️\nbenutzen um immer Rabatte und Gratis Produkte zu erhalten \n❤️🧡💛\nANZElGE\n.\n.\n.\n🥗🍳🥑\nNährwerte (alles insgesamt) \n1166kcal, 60g K, 156g E, 28g F\n🥗🍳🥑\n.\n.\n.\n⚖️🔢⏳⏲️\nMengenangaben:\n.\n- 750g Magerquark \n- 200g Frischkäse (0,2% Fett)\n- 4 verquirlte Eier \n- 1 Packung (37g) Pudding Pulver\n- 10g Real Flavor (Prozis - Code: NOEL)\n.\n- BACKOFEN: 170 Grad O/U-Hitze \n  mit Alufolie - 60min, dann entfernen \n  ohne Alufolie weitere 35 - 40min \n.\n- circa 2 Stunden abkühlen lassen\n.\n- 100ml Mandelmilch ungesüßt \n- 6 TL Sofort Gelatine\n- 1 Becher (200g) Protein Pudding Karamell\n.\n- über Nacht in den Kühlschrank \n- optional mit Meersalz toppen \n.\n⚖️🔢⏳⏲️\n.\n. \n.\n.\n.\n.\n.\n.\n.\n.\n#highprotein #lecker #eiweiß #protein #leckerschmecker essen",
+      "expected": {
+        "title": "Magerquark",
+        "servings": null,
+        "servingsMax": null,
+        "stepsCount": 3,
+        "stepsUnreliable": null,
+        "negative": false
+      }
     },
     {
       "id": "lib-dcq9ivdripm",
@@ -269,7 +521,16 @@
       "style": "real-instagram-nutzerfassung",
       "origin": "user-stored",
       "excluded": true,
-      "split": "dev"
+      "split": "dev",
+      "caption": "😮‍💨 172 Cal OREO Protein Cheesecake\n\n📍Comment “Cheesecake” and I’ll dm you my Sunday Meal Prep Blueprint for FREE!\n\n✅ Macros per Slice w/out toppings (makes 8):\n172 Cals, 15g Carbs, 3.5g Fat, 22g Protein\n\nMacros per slice w/toppings:\n206 Cals, 20g Carbs, 4g Fat, 24g Protein\n\n✳️ Ingredients (makes 1 Big Cheesecake):\n480g Plain Non Fat Greek Yogurt\n240g 2% Cottage Cheese\n1 Block (226g) Fat Free Cream Cheese (I get from Wal-Mart)\n2 Large Eggs\n100g Egg Whites\n5g Vanilla Extract\n100g Vanilla Whey/Casein Blend Protein Powder\n28g Sugar Free/Fat Free Cheesecake Pudding Mix\n20g Zero Cal Sweetener\n8g OREO Thins\n\nOREO Protein Icing:\n20g Vanilla Whey/Casein Blend Protein Powder\n20g Powdered Sugar\n10g Black Cocoa Powder\n\n❇️ Directions:\n1️⃣ Add all your ingredients into a blender and blend on low until smooth.\n2️⃣ Take your 9in Springform Cheesecake Pan and wrap the outside with aluminum foil. This is important for when we do the bain marie.\n3️⃣ Spray inside of the pan with non stick cooking spray and then add all of your cheesecake batter. Mix into 8 crushed OREO thins.\n4️⃣ Now add your cheesecake to a sheet pan with edges at least 2in high. This is for our water bath (bain marie) so the cheesecake cooks evenly.\n5️⃣ Pour warm water into the pan. You want it about 1-1.5 in high.\n6️⃣ Add to a preheated oven on 300 degrees F for 55 minutes. Then turn the oven off and slightly open the oven door. Cook for another 35 minutes.\n7️⃣ Then take out your cheesecake, take off the aluminum foil and let cool at room temp for an hour. Then add to the fridge overnight to fully set.\n8️⃣ The next day, make your protein icing by adding all the ingredients into a bowl. Mix to avoid clumping. Then slowly add cold water and mix tlll you have an icing consistency. Be careful not to add too much water!\n9️⃣ Then take out a slice of cheesecake, add your icing, whipped cream and crushed oreos and enjoy!\n\n#proteincheesecake #OREO #proteinrecipes #mealprep #highprotein",
+      "expected": {
+        "title": "‍💨 172 Cal OREO Protein Cheesecake",
+        "servings": null,
+        "servingsMax": null,
+        "stepsCount": 9,
+        "stepsUnreliable": null,
+        "negative": false
+      }
     },
     {
       "id": "lib-dcvzerymzzn",
@@ -278,7 +539,16 @@
       "style": "real-instagram-nutzerfassung",
       "origin": "user-stored",
       "excluded": false,
-      "split": "dev"
+      "split": "dev",
+      "caption": "Cremige Gochujang-Kokos-Linsen 🌶️🥥\n\nCremig, leicht scharf und super unkompliziert – alles kommt einfach zusammen in eine Pfanne. Perfekt, wenn’s schnell gehen soll. 🌿\n\nZutaten:\n• 150 g rote Linsen\n• 1 große Handvoll TK-Blattspinat\n• 1 große Tomate\n• 1 EL Gochujang\n• 400 ml Kokosmilch\n• etwas Salz\n• etwas Kokosmilch zum Toppen\n• frischer Koriander\n• Chiliöl\n• optional: ½ Limette\n\nZubereitung:\nDie roten Linsen gründlich waschen und in eine Pfanne geben. TK-Blattspinat und die klein geschnittene Tomate dazugeben.\n\nGochujang und 400 ml Kokosmilch dazugeben, alles gut verrühren und bei mittlerer Hitze köcheln lassen, bis die Linsen weich sind und alles schön cremig eingekocht ist. Zwischendurch umrühren und bei Bedarf einen kleinen Schluck Wasser dazugeben.\n\nMit Salz abschmecken und zum Servieren noch etwas Kokosmilch darübergeben. Mit frischem Koriander und Chiliöl toppen. Wer mag, gibt zum Schluss noch etwas frischen Limettensaft darüber – passt richtig gut zur cremigen Kokosmilch und der leichten Schärfe vom Gochujang. 🌶️🥥\n\n#linsen #gochujang #onepan #vegetarisch #schnellerezepte",
+      "expected": {
+        "title": "Cremige Gochujang-Kokos-Linsen",
+        "servings": null,
+        "servingsMax": null,
+        "stepsCount": 3,
+        "stepsUnreliable": null,
+        "negative": false
+      }
     },
     {
       "id": "lib-dd0-4wriewb",
@@ -287,7 +557,16 @@
       "style": "real-instagram-nutzerfassung",
       "origin": "user-stored",
       "excluded": false,
-      "split": "dev"
+      "split": "dev",
+      "caption": "ZUM REZEPT ⬇️\n.\n.\n❤️🧡💛\nWenn euch meine Rezepte gefallen und ihr mich unterstützen wollt, \ndann könnt ihr gerne bei PROZIS den \nRabattcode: ❗️👉🏼NOEL👈🏼❗️\nbenutzen um immer Rabatte und Gratis Produkte zu erhalten \n❤️🧡💛\n*ANZElGE\n.\n.\n.\n🥗🍳🥑\nNährwerte (alle 8 zusammen) \n1472kcal, 175g K, 153g E, 15g F\n🥗🍳🥑\n.\n❗️bei der Tonaufnahme habe ich mich verrechnet, hier sind die korrekten Nährwert, sogar mit mehr Eiweiß☝🏼\n.\n.\n.\n⚖️🔢⏳⏲️\nMengenangaben:\n.\n- 180g „Eat lean“ Käse l Alternativ Gouda, leicht \n- 150g magere Schinkenwürfel \n- 100g Magerquark \n- 50g Mais \n- 1/2 rote Zwiebel\n- 1 Knoblauch Zehe \n- 1 TL Oregano \n.\n- 8x Kaiserbrötchen ausgehöhlt \n ( die ausgehöhlte Masse kann man gut mit in ein porridge geben )\n.\n- 8TL Tomatenmark \n- (( die fertige Masse ))\n.\n- BACKOFEN: 200 Grad O/U-Hitze ~ 20min \n.\n⚖️🔢⏳⏲️\n.\n. \n.\n.\n.\n.\n.\n.\n.\n.\n#highprotein #lecker #eiweiß #protein #leckerschmecker essen mealprep eiweiss rezept",
+      "expected": {
+        "title": null,
+        "servings": null,
+        "servingsMax": null,
+        "stepsCount": 4,
+        "stepsUnreliable": "Die Caption enthält keine Anleitung; die Schritte wurden von Hand ergänzt.",
+        "negative": false
+      }
     },
     {
       "id": "lib-ddgk0lsiq8j",
@@ -296,7 +575,16 @@
       "style": "real-instagram-nutzerfassung",
       "origin": "user-stored",
       "excluded": false,
-      "split": "dev"
+      "split": "dev",
+      "caption": "ZUM REZEPT ⬇️\n.\n.\n❤️🧡💛\nWenn euch meine Rezepte gefallen und ihr mich unterstützen wollt, \ndann könnt ihr gerne bei PROZIS den \nRabattcode: ❗️👉🏼NOEL👈🏼❗️\nbenutzen um immer Rabatte und Gratis Produkte zu erhalten \n❤️🧡💛\n*ANZElGE\n.\n.\n.\n🥗🍳🥑\nNährwerte (alle 10 Hälften zsm) \n1818kcal, 222g K, 145g E, 37g F\n🥗🍳🥑\n.\n.\n.\n⚖️🔢⏳⏲️\nMengenangaben:\n.\n- 5x Laugenstangen -> jeweils 100g\nEntweder aus der Backabteilung oder Tiefgekühlt, diese allerdings vorher im Backofen so lange backen, bis sie gerade so durch sind \n.\n- 1 Packung (200g) Frischkäse 0,2% Fett\n- 2 rohe Eier \n- 150g Schinkenwürfel, mager \n- 120g „Eat Lean“ Käse - erhältlich bei Kaufland \n ( alternativ Gouda, leicht )\n- 1/2 rote Zwiebel \n- 1 Frühlingszwiebel\n.\n- BACKOFEN: 200 Grad Umluft ~ 15-20min\n.\n⚖️🔢⏳⏲️\n.\n. \n.\n.\n.\n.\n.\n.\n.\n.\n#highprotein #lecker #eiweiß #protein leckerschmecker essen mealprep eiweiss rezept",
+      "expected": {
+        "title": "Laugenstangen",
+        "servings": null,
+        "servingsMax": null,
+        "stepsCount": 2,
+        "stepsUnreliable": null,
+        "negative": false
+      }
     },
     {
       "id": "lib-ddgwqihkuuu",
@@ -305,7 +593,16 @@
       "style": "real-instagram-nutzerfassung",
       "origin": "user-stored",
       "excluded": false,
-      "split": "dev"
+      "split": "dev",
+      "caption": "🥞 HIGH PROTEIN SKYR-CRÊPES •anzeige•\n\nSuper weich, fluffig & mit extra Protein – perfekt zum Frühstück oder als süßer Snack! 🤍\nErgibt: ca. 8–10 Crêpes\n\n⸻\n\n🛒 Zutaten\n\n* 200 g Weizenmehl Type 405\n* 250 g Skyr\n* 3 frische Eier\n* 1 EL No More Sugar von MORE\n* 2 Scoops Chunky Flavour Milchreis Zimt von MORE\n* 1 Scoop Chunky Flavour Vanilla Perfection von MORE\n* 250 ml Sprudelwasser\n* Etwas Ölspray zum Ausbacken\n\n✨ Mit dem Code JJ könnt ihr bei @morenutrition.de maximal sparen ✨\n\n⸻\n\n👩‍🍳 Zubereitung\n\n1️⃣ Teig anrühren 🥣\nMehl und No More Sugar in eine Schüssel geben. Eier dazugeben und vorsichtig mit einem Schneebesen verrühren.\n\n⸻\n\n2️⃣ Skyr dazugeben 🤍\nDie Hälfte des Sprudelwassers dazugeben und zu einem klümpchenfreien Teig verrühren.\n\nAnschließend den Skyr unterrühren.\n\n⸻\n\n3️⃣ Verfeinern ✨\nDas restliche Sprudelwasser und beide Chunky Flavour Sorten dazugeben und alles gründlich verrühren.\n\nDen Teig am besten 1 Stunde ruhen lassen – wenn es schnell gehen muss, kannst du ihn aber auch direkt verwenden.\n\n⸻\n\n4️⃣ Crêpes ausbacken 🥞\nEine Pfanne gut erhitzen und leicht mit Ölspray einfetten.\n\nEine Kelle Teig hineingeben, dünn verteilen und von beiden Seiten goldbraun backen.\n\nSo weitermachen, bis der gesamte Teig aufgebraucht ist.\n\n➡️ mit Nomoresugar & Zimt bestreuen\n\n✨🎀 Abspeichern, nachmachen & für mehr High-Protein-Rezepte gerne folgen!\n\n*Anzeige da Markennennung\n\nNährwerte pro Crepe:\nKalorien 110 kcal |  Protein: 9g | Carbs 15g | Fett: 2g\n\nabnehmenohneverzicht highprotein protein frühstück Abnehmen ohne verzicht genießen kaloriesparen highprotein ernährung high protein rezepte fitness rezepte explorepage fitnessrezepte soeinfachistgesund",
+      "expected": {
+        "title": "HIGH PROTEIN SKYR-CRÊPES ••",
+        "servings": 8,
+        "servingsMax": null,
+        "stepsCount": 18,
+        "stepsUnreliable": null,
+        "negative": false
+      }
     },
     {
       "id": "lib-ddip48zo3th",
@@ -314,7 +611,16 @@
       "style": "real-instagram-nutzerfassung",
       "origin": "user-stored",
       "excluded": false,
-      "split": "dev"
+      "split": "dev",
+      "caption": "🌮 HIGH PROTEIN TACOS ZUM ABNEHMEN\n\nIch wollte eigentlich nur Tacos machen, die man während der Diät essen kann aber was dabei rausgekommen ist, sieht so krank lecker aus, dass ich selbst nicht glauben konnte, dass ein Taco nur ca. 200 kcal hat. 🤯\n\n🥙 Zutaten\n• 8 Mini Tacos\n• 500 g Hähnchenbrustfilet\n• 1 x rote Paprika\n• 1 x gelbe Paprika \n• 1 x grüne Paprika \n• 1 x Zwiebel \n• 70 g Light Streukäse\n• ca. 1 TL Mais pro Taco\n• 2 TL Olivenöl \n \nGewürze \n• 4 TL Paprikapulver geräuchert \n• 1 TL Salz \n• 1 TL Currypulver\n• 1/2 TL Pfeffer \n• 2 TL Knoblauchpulver \n• 1 TL Petersilie \n\n1️⃣ Bei 180 °C für 25–30 Minuten in den Ofen.\n2️⃣ Anschließend bei 180 °C weiterbacken, bis der Käse schön geschmolzen und goldbraun ist.\n\n📊 Nährwerte pro Taco\n🔥 ca. 203 kcal\n💪 ca. 19 g Protein\n🍚 ca. 18,5 g Kohlenhydrate\n🥑 ca. 5,8 g Fett\n\n👉 Schick das Rezept an jemanden, der sagt, Tacos kann man während der Diät nicht essen, und folge mir für mehr High Protein Rezepte zum Abnehmen! 🫶🏻\n\n#highprotein #abnehmen #rezept #diät #tacos",
+      "expected": {
+        "title": "HIGH PROTEIN TACOS ZUM ABNEHMEN",
+        "servings": null,
+        "servingsMax": null,
+        "stepsCount": 2,
+        "stepsUnreliable": null,
+        "negative": false
+      }
     },
     {
       "id": "lib-ddmba5zs4mm",
@@ -323,7 +629,16 @@
       "style": "real-instagram-nutzerfassung",
       "origin": "user-stored",
       "excluded": false,
-      "split": "test"
+      "split": "test",
+      "caption": "Dieses Baguette schmeckt viel zu gut um es nicht zu probieren! 🥖🥷\n\nZutaten:\n\n🥖 1 Baguette \n🥓 150g Schinkenwürfel (mager)\n🧀 100g geriebener Light-Käse\n🥛 200g Creme fraiche Light\n🧅 1/2 rote Zwiebel\n🌱 Schnittlauch\n🧂 Salz, Pfeffer, Knoblauchpulver\n\nFolgt uns gerne für mehr! 🫶🏻\n\n#highprotein #baguette #lecker",
+      "expected": {
+        "title": null,
+        "servings": null,
+        "servingsMax": null,
+        "stepsCount": 0,
+        "stepsUnreliable": null,
+        "negative": false
+      }
     },
     {
       "id": "lib-ddrknxunezq",
@@ -332,7 +647,16 @@
       "style": "real-instagram-nutzerfassung",
       "origin": "user-stored",
       "excluded": false,
-      "split": "dev"
+      "split": "dev",
+      "caption": "High Protein Lotus Cheesecake😍🍰\nVertraut mir, der Spaß schmeckt crazyyy lecker💪\nZum Nachmachen:\n300g Skyr\n100g Philadelphia „so leicht“\n20g Puddingpulver (bspw. Vanille)\n20g Whey (auch Vanille)\n1 Ei\nSüße nach Wahl (bspw. Erythrit)\n-\nOfen:\n155 Grad Ober-/Unterhitze für 30-35 Minuten🔥\n-\nTopping:\n10g Keks-Caramellcreme\n25g Philadelphia „so leicht“\n20g ungesüßte Mandelmilch\n1 Biscoff Keks\n-\nNährwerte:\n593 Kcal\n46g Kohlenhydrate\n16g Fett\n65g Protein\n-\n➡️MAHLZEIT🫵\n#aufbauseminar #cheesecake #highprotein #fürdich #gym",
+      "expected": {
+        "title": "High Protein Lotus Cheesecake",
+        "servings": null,
+        "servingsMax": null,
+        "stepsCount": 1,
+        "stepsUnreliable": null,
+        "negative": false
+      }
     },
     {
       "id": "lib-ddy8hkcytgx",
@@ -341,7 +665,16 @@
       "style": "real-instagram-nutzerfassung",
       "origin": "user-stored",
       "excluded": false,
-      "split": "test"
+      "split": "test",
+      "caption": "High Protein Gnocchi Hühnchen OnePot 🥔🔥\n\nSpeichere dir das Rezept direkt ab, damit du es später nicht ewig suchen musst.\n\nZutaten (4 Portionen)\n600 g Gnocchi\n600 g Hühnchenbrustfilet\n200 ml Light Sahne\n15 g Pesto\n250 g Cherrytomaten\n350 g Kaisergemüse (TK)\n250 g Gemüsebrühe\n100 g Gratin-Käse Light\n\nZubereitung\n1)Alle Zutaten bis auf den Light Käse in eine große Auflaufform geben und gut miteinander vermengen.\n2) Den Light Käse gleichmäßig darüber verteilen.\n3) Im vorgeheizten Backofen bei 180 °C Umluft ca. 40 Minuten (mit Alu abgedeckt) backen, bis das Hähnchen durchgegart ist\n\n🔥Nährwerte pro Portion:\nKalorien: 565 kcal\nKohlenhydrate: 56,5 g\nEiweiß: 48,9 g\nFett: 14,4 g",
+      "expected": {
+        "title": "High Protein Gnocchi Hühnchen OnePot",
+        "servings": 4,
+        "servingsMax": null,
+        "stepsCount": 3,
+        "stepsUnreliable": null,
+        "negative": false
+      }
     },
     {
       "id": "lib-dvytmngjb7n",
@@ -350,7 +683,16 @@
       "style": "real-instagram-nutzerfassung",
       "origin": "user-stored",
       "excluded": false,
-      "split": "dev"
+      "split": "dev",
+      "caption": "Harissa Linsen Feta Tacos mit Hummus & Zitronen-Minz-Joghurt 😍\n\nHigh Protein Mittagessen in unter 10 Minuten ⭐️\n\nFür 4 Stück: \n- 4 Protein Wraps \n- 250g gekochte Linsen aus der Dose, angeschüttet und abgespült \n- 1 TL Harissa-Paste\n- 1 EL Tomatenmarkt\n- 250g Cherry Tomaten, geviertelt\n- 200g Feta (geht auch vegan) \n- 4 EL Hummus\n\nFür den Zitronen-Minz-Joghurt:\n- 200g Sojajoghurt\n- Saft 1 Zitrone\n- 1 kleine Handvoll frische Minze, gehackt \n- Salz & Pfeffer \n\n1️⃣ In einer Pfanne die Linsen mit der Harissa-Paste, dem Tomatenmark, den Kirschtomaten und dem zerbröseltem Feta vermengen und 2 Minuten anbraten. \n2️⃣ Hummus auf die Wraps streichen, die Linsenmischung auf eine Hälfte geben und die Tacos zusammenklappen. \n3️⃣ Joghurt mit Zitronensaft, gehackter Minze und einer Prise Salz zu einem Dip verrühren. \n4️⃣ Etwas Olivenöl in einer Pfanne erhitzen und die Tacos von beiden Seiten goldbraun und knusprig braten. \n5️⃣ Die Tacos heiß mit dem Minzjoghurt servieren. \n\n#gesunderezepte #veganerezepte #schnellerezepte #einfacherezepte",
+      "expected": {
+        "title": "Harissa Linsen Feta Tacos mit Hummus & Zitronen-Minz-Joghurt",
+        "servings": 4,
+        "servingsMax": null,
+        "stepsCount": 5,
+        "stepsUnreliable": null,
+        "negative": false
+      }
     },
     {
       "id": "lib-dxukccjicqx",
@@ -359,7 +701,16 @@
       "style": "real-instagram-nutzerfassung",
       "origin": "user-stored",
       "excluded": false,
-      "split": "dev"
+      "split": "dev",
+      "caption": "Low Carb Hühnchen Peperoni Pizza 🍕 ⬇️\n\nSpeicher dir das Rezept direkt ab, damit du es später nicht ewig suchen musst 💾\n\nExtrem Proteinreich ✅\nLow Carb ✅\nUnfassbar lecker ✅\nSchnell & Easy Zubereitet ✅\n\n🛒Zutaten – Chicken-Boden\n\t•\t400g Hackfleisch (Hähnchen)\n\t•\t2 große Eier\n\t•\t60 g geriebener Parmesan\n\t•\t1 TL Knoblauchpulver\n\t•\t1 TL italienische Kräuter\n\t•\t1/2 TL Salz\n\t•\t1/2 TL schwarzer Pfeffer\n\nBelag\n\t•\t120 ml passierte Tomaten\n\t•\t125 g Light-Käse (gerieben)\n\t•\t60 g Putenschinken\n\n🔷Zubereitung:\n\t1.\tBackofen auf 200 °C (Umluft) vorheizen und ein Backblech mit Backpapier auslegen.\n\t2.\tIn einer großen Schüssel Hackfleisch, Eier, Parmesan, Knoblauchpulver, italienische Kräuter, Salz und Pfeffer gut vermengen.\n\t3.\tDie Masse auf das Backblech geben und zu einem dünnen, gleichmäßigen Kreis oder Rechteck formen (wichtig für die Knusprigkeit).\n\t4.\tFür ca. 25 Minuten backen, bis der Boden goldbraun und fest ist. Anschließend 5 Minuten ruhen lassen.\n\t5.\tOfen auf 220 °C erhöhen. Passierte Tomaten, Käse und Putenschinken darauf verteilen.\n\t6.\tWeitere 10 Minuten backen, bis der Käse geschmolzen und leicht gebräunt ist.\n\t7.\tKurz abkühlen lassen, dann genießen 🍕\n\n🔷Nährwerte (Meine Version):\n1428 kcal \n12g KH ‼️\n151g Eiweiß ‼️\n85g Fett \n\nOrginalrezept von @basicswithbails \n.\n.\n.\n#lowcarb #abnehmen #highprotein #schnellerezepte #proteinpizza",
+      "expected": {
+        "title": "Low Carb Hühnchen Peperoni Pizza",
+        "servings": null,
+        "servingsMax": null,
+        "stepsCount": 8,
+        "stepsUnreliable": null,
+        "negative": false
+      }
     },
     {
       "id": "lib-dykavkksrvy",
@@ -368,7 +719,16 @@
       "style": "real-instagram-nutzerfassung",
       "origin": "user-stored",
       "excluded": false,
-      "split": "test"
+      "split": "test",
+      "caption": "DAS SIND MIT ABSTAND DIE BESTEN CHEESEBURGER 🍔 \n\n🧾 Zutaten (für 4 Slider)\n🥩 Fleischfüllung\n350 g Rinderhackfleisch\n1 kleine Zwiebel (fein gewürfelt)\n1 EL Olivenöl\n1 EL Tomatenmark\nca. 30 ml Wasser\n\n🧂 Gewürze\nSalz\nPfeffer\n1 TL Paprikapulver edelsüß\n1 TL Knoblauchpulver\n\n🧀 Käse\n120 g geriebener Mozzarella\n4 Scheiben Schmelzkäse\n\n🍔 Sonstiges\n4 Burger Buns\nJalapeños (optional)\nKräuterbutter oder Knoblauchbutter\n\n#viralreels #viral #reel #food #explore",
+      "expected": {
+        "title": "DAS SIND MIT ABSTAND DIE BESTEN CHEESEBURGER",
+        "servings": null,
+        "servingsMax": null,
+        "stepsCount": 0,
+        "stepsUnreliable": null,
+        "negative": false
+      }
     },
     {
       "id": "lib-dzve8d_sxac",
@@ -377,7 +737,16 @@
       "style": "real-instagram-nutzerfassung",
       "origin": "user-stored",
       "excluded": false,
-      "split": "dev"
+      "split": "dev",
+      "caption": "High Protein Cheesecake \n\nNährwerte pro 100 g (Auch pro Stück bei 8 Stücken)\n\n* Kalorien: ca. 95 kcal\n* Eiweiß: ca. 11 g\n* Kohlenhydrate: ca. 5 g\n* Fett: ca. 3 g\n\nNährwerte gesamt (ganzer Kuchen)\n\n* Kalorien: ca. 780 kcal\n* Eiweiß: ca. 88 g\n* Kohlenhydrate: ca. 40 g\n* Fett: ca. 24 g\n\nZutaten\n\n* 500 g Skyr\n* 200 g Frischkäse (fettreduziert)\n* 2 Eier\n* 1 Päckchen Puddingpulver\n* Zitronen Flavor Powder nach Geschmack\n\n(Für unsere Form haben wir die doppelte Portion verwendet.)\n\nZubereitung\n\nAlle Zutaten in eine große Schüssel geben und gründlich verrühren, bis eine glatte Masse entsteht.\n\nDie Masse anschließend in eine Kuchenform füllen und gleichmäßig verteilen.\n\nDen Cheesecake bei 180 °C für 40–60 Minuten backen.\n\nNach dem Backen aus dem Ofen nehmen und bei Zimmertemperatur vollständig abkühlen lassen.",
+      "expected": {
+        "title": "High Protein Cheesecake",
+        "servings": null,
+        "servingsMax": null,
+        "stepsCount": 5,
+        "stepsUnreliable": null,
+        "negative": false
+      }
     },
     {
       "id": "lib-dzz15atmdl6",
@@ -386,7 +755,16 @@
       "style": "real-instagram-nutzerfassung",
       "origin": "user-stored",
       "excluded": false,
-      "split": "dev"
+      "split": "dev",
+      "caption": "High Protein Smashburger 🍔💪🏾\n\nNährwerte pro Burger\n\n• 545 kcal\n• 56 g Eiweiß\n• 20 g Fett\n• 41 g Kohlenhydrate\n\nZutaten für 4 Burger\n\n• 4 Burger Buns à 62,5 g\n• 700 g mageres Rinderhackfleisch (5 % Fett)\n• 100 g Light-Emmentaler\n• 1 große Zwiebel\n• 1 EL Balsamico-Essig\n• Gewürzgurken\n• 2 bis 3 Sprüher Ölspray\n• Salz und schwarzer Pfeffer\n\nBurgersoße\n\n• 80 g Light-Mayonnaise oder Salatcreme Light\n• 80 g Ketchup\n• 15 g Senf\n• 15 ml Worcestershiresauce\n• 1 EL Sriracha\n\nZubereitung\n\nDie Zwiebel in feine Streifen schneiden. Mit 1 bis 2 Sprühern Ölspray bei niedriger bis mittlerer Hitze etwa 15 bis 20 Minuten anbraten. Anschließend den Balsamico-Essig zugeben und weitere 2 bis 3 Minuten schmoren lassen.\n\nFür die Soße Light-Mayonnaise, Ketchup, Senf, Worcestershiresauce und Sriracha verrühren.\n\nDas Hackfleisch in 8 Kugeln à 87,5 g formen. Eine heiße Pfanne oder Grillplatte leicht mit Ölspray einsprühen. Die Fleischkugeln auf die heiße Fläche geben und sofort sehr dünn zu Smash Patties drücken. Mit Salz und Pfeffer würzen. Nach etwa 1 bis 2 Minuten wenden und jeweils etwas Light-Emmentaler auf die Patties geben.\n\nDie Burger Buns kurz anrösten. Die untere Bun-Hälfte mit der Hälfte der Soße bestreichen. Darauf etwa 4 klein geschnittene Scheiben Gewürzgurke verteilen. Anschließend ein Patty mit Käse auflegen, etwas von den karamellisierten Zwiebeln darauf geben, das zweite Patty mit Käse daraufsetzen und erneut etwas Zwiebel darüber verteilen.\n\nDie obere Bun-Hälfte ebenfalls mit der restlichen Soße bestreichen, aufsetzen und den Burger servieren.",
+      "expected": {
+        "title": "High Protein Smashburger 🍔💪🏾",
+        "servings": null,
+        "servingsMax": null,
+        "stepsCount": 5,
+        "stepsUnreliable": null,
+        "negative": false
+      }
     }
   ],
   "counts": {

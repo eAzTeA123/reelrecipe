@@ -26,11 +26,19 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const OUT_DIR = join(root, "tests", "golden");
-const SOURCES = [
-  { dir: join(root, "src", "parser", "corpus", "fixtures"), origin: "reference-corpus" },
-  { dir: join(root, "src", "parser", "corpus", "fixtures-user"), origin: "user-stored" },
-];
+const argv = process.argv.slice(2);
+const argValue = (name) => {
+  const index = argv.indexOf(name);
+  return index >= 0 ? argv[index + 1] : undefined;
+};
+const BACKUP = argValue("--backup");
+const OUT_DIR = resolve(root, argValue("--out") ?? join("tests", "golden"));
+const SOURCES = BACKUP
+  ? [{ backup: BACKUP, origin: "user-backup" }]
+  : [
+      { dir: join(root, "src", "parser", "corpus", "fixtures"), origin: "reference-corpus" },
+      { dir: join(root, "src", "parser", "corpus", "fixtures-user"), origin: "user-stored" },
+    ];
 
 /** Dimension und Faktor je Einheit – Grundlage der Preisfähigkeit.
  *  In Phase 4 wird das die gemeinsame Tabelle in `src/lib/price/units.ts`. */
@@ -73,6 +81,11 @@ function labelDefects(name) {
   if (/\d+\s*(g|kg|ml|l|tl|el|stk|stück|prise|bund|dose)\b/i.test(n)) defects.push("menge-im-namen");
   if (/\b(ca\.|circa|etwa)\b/i.test(n)) defects.push("circa-im-namen");
   if (n !== n.trim() || /\s{2,}/.test(n)) defects.push("whitespace");
+  // Werbezeilen, die als Zutat gespeichert wurden (in echten Bibliotheken kommt
+  // das vor — die App hat sie beim Import nicht als Floskel erkannt).
+  if (/folg(e|t)\s|link in bio|rabattcode|werbung|anzeige|abonnier|maximal sparen|\bcode\s+[A-ZÄÖÜ]{2,}\b/i.test(n)) {
+    defects.push("werbezeile-als-zutat");
+  }
   return defects;
 }
 
@@ -98,6 +111,33 @@ function classifyLine(text, itemCount) {
 function loadFixtures() {
   const fixtures = [];
   for (const source of SOURCES) {
+    // Sicherungskopie der eigenen Bibliothek: Rezepte mit gespeicherter Fassung
+    // und Roh-Caption. Herkunft `user-backup` – die Labels sind deine Daten.
+    if (source.backup) {
+      const backup = JSON.parse(readFileSync(source.backup, "utf8"));
+      for (const recipe of backup.recipes ?? []) {
+        if (!recipe.sourceCaption) continue;
+        fixtures.push({
+          id: `backup-${String(recipe.id).slice(0, 8)}`,
+          account: "eigene-bibliothek",
+          language: "de",
+          style: "backup-export",
+          caption: recipe.sourceCaption,
+          expected: {
+            title: recipe.title ?? null,
+            servings: recipe.servings ?? null,
+            ingredients: (recipe.ingredients ?? []).map((i) => ({
+              name: i.name,
+              amount: i.amount ?? null,
+              unit: i.unit ?? null,
+            })),
+            stepsCount: (recipe.steps ?? []).length,
+          },
+          origin: source.origin,
+        });
+      }
+      continue;
+    }
     for (const file of readdirSync(source.dir).filter((f) => f.endsWith(".json")).sort()) {
       const raw = JSON.parse(readFileSync(join(source.dir, file), "utf8"));
       for (const fixture of Array.isArray(raw) ? raw : [raw]) {
@@ -287,8 +327,34 @@ writeFileSync(
       schemaVersion: 1,
       purpose:
         "Golden Set für Zutaten-Erkennung und Preise. items[] sind Labels (Herkunft in `origin`), lines[].istZutat ist ein Vorschlag. Einträge mit split=\"excluded\" zählen nicht zu den Schwellen.",
-      generatedFrom: { parserVersion: 15, fixtureCount: fixtures.length, sources: SOURCES.map((s) => s.dir.replace(/\\/g, "/").replace(root.replace(/\\/g, "/") + "/", "")) },
-      fixtures: fixtures.map((f) => ({ id: f.id, account: f.account ?? null, language: f.language ?? null, style: f.style ?? null, origin: f.origin, excluded: typeof f.exclude === "string", split: fixtureSplit.get(f.id) })),
+      generatedFrom: {
+        parserVersion: 15,
+        fixtureCount: fixtures.length,
+        sources: SOURCES.map((s) =>
+          s.backup ? `backup:${s.backup}` : s.dir.replace(/\\/g, "/").replace(root.replace(/\\/g, "/") + "/", ""),
+        ),
+      },
+      fixtures: fixtures.map((f) => ({
+        id: f.id,
+        account: f.account ?? null,
+        language: f.language ?? null,
+        style: f.style ?? null,
+        origin: f.origin,
+        excluded: typeof f.exclude === "string",
+        split: fixtureSplit.get(f.id),
+        // Caption und Erwartungs-Metadaten wandern mit, damit das Golden Set
+        // **selbsttragend** ist: Das Eval liest nur noch diese Datei und hängt
+        // nicht mehr an den Corpus-Verzeichnissen.
+        caption: f.caption,
+        expected: {
+          title: f.expected?.title ?? null,
+          servings: f.expected?.servings ?? null,
+          servingsMax: f.expected?.servingsMax ?? null,
+          stepsCount: f.expected?.stepsCount ?? 0,
+          stepsUnreliable: typeof f.stepsUnreliable === "string" ? f.stepsUnreliable : null,
+          negative: f.negative === true,
+        },
+      })),
       counts: {
         lines: lines.length,
         linesWithItem: lines.filter((l) => l.istZutat).length,

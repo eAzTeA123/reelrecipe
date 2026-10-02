@@ -20,7 +20,7 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const flags = process.argv.slice(2).filter((a) => a.startsWith("--"));
+const flags = process.argv.slice(2);
 const bundlePath = join(root, "tmp", "eval-price.bundle.mjs");
 mkdirSync(join(root, "tmp"), { recursive: true });
 

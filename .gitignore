@@ -16,3 +16,5 @@ PRICE_NUTRITION_ARCHIVE.md
 tmp/
 # Maschinenausgabe des Evals (die Final-Läufe selbst werden protokolliert)
 tests/golden/last-run.json
+# Lokale Messungen auf echten Sicherungskopien (persoenliche Daten, nicht ins Repo)
+tests/golden/local/
