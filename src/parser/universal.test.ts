@@ -249,6 +249,17 @@ describe("rezeptwelt.de", () => {
     expect(joined).not.toContain("d-none");
   });
 
+  it("liefert die Absätze als einzelne Schritte, nicht als Sammelblock", () => {
+    const instructions = scrapeRezeptwelt(html)?.instructions ?? [];
+    // Die Seite liefert die Anleitung zusätzlich als Liste im HowToStep-Umschlag.
+    // Ohne dessen Ausschluss kam die komplette Anleitung als ein Schritt.
+    expect(instructions).toHaveLength(7);
+    expect(instructions[0]).toBe(
+      "Parmesan in den Mixtopf geben, 10 Sek./Stufe 10 zerkleinern, umfüllen und Mixtopf spülen. Zwiebel in den Mixtopf geben und 3 Sek./Stufe 5 zerkleinern.",
+    );
+    expect(instructions[1]).toBe("Olivenöl zugeben und 3 Min./100°/Stufe 1 dünsten.");
+  });
+
   it("liest die Tipps (itemprop=recipeHint) als Beschreibung", () => {
     const description = scrapeRezeptwelt(html)?.description ?? "";
     // Mehrere Tipps werden aufgezählt, damit sie lesbar bleiben
@@ -277,5 +288,60 @@ describe("rezeptwelt.de", () => {
     const web = toWebRecipeResponse(parsed, url);
     expect(web.status).toBe("success");
     expect(web.recipe?.description).toContain("Tiefkühl-Spinat reichen uns 600ml Flüssigkeit");
+  });
+});
+
+/**
+ * rezeptwelt.de **mit Abschnitten** („Teig", „Belag, klassisch").
+ *
+ * Eigene Fixture, weil diese Seite anders aufgebaut ist als das Spinat-Risotto:
+ * - Zutaten: Abschnitts-Überschriften stehen als eigene `<li>` in der Liste.
+ * - Betrag, Einheit und Name kleben in getrennten Spans ohne Leerzeichen
+ *   („30" + " g" + "Sahne or Kondensmilch").
+ * - Die Anleitung steht in Listen innerhalb eines HowToStep-Umschlags; die
+ *   Absätze sind nur die Abschnitts-Überschriften.
+ * - „¼ TL" (Unicode-Bruch) muss als 0,25 TL ankommen.
+ */
+describe("rezeptwelt.de mit Abschnitten", () => {
+  const url =
+    "https://www.rezeptwelt.de/backen-herzhaft-rezepte/flammkuchen-knusprig/9exnygje-e2d56-724631-cfcd2-6ylvtrr7";
+  const html = readFileSync(
+    path.join(process.cwd(), "tests/fixtures/recipes/rezeptwelt-flammkuchen/recipe.html"),
+    "utf8",
+  );
+
+  it("überspringt Abschnitts-Überschriften in der Zutatenliste", () => {
+    const ingredients = scrapeRezeptwelt(html)?.ingredients ?? [];
+    expect(ingredients).toHaveLength(12);
+    expect(ingredients).not.toContain("Teig");
+    expect(ingredients).not.toContain("Belag, klassisch");
+  });
+
+  it("verbindet Betrag, Einheit und Name mit Leerzeichen", () => {
+    const ingredients = scrapeRezeptwelt(html)?.ingredients ?? [];
+    expect(ingredients[0]).toBe("220 g Mehl");
+    // Ohne die Leerzeichen-Regel klebte hier „30 gSahne or Kondensmilch" zusammen
+    expect(ingredients).toContain("30 g Sahne or Kondensmilch");
+    expect(ingredients).toContain("200 g Crème fraîche, or Schmand");
+  });
+
+  it("liest die Schritte aus den Listen und stellt die Überschrift davor", () => {
+    const instructions = scrapeRezeptwelt(html)?.instructions ?? [];
+    expect(instructions).toHaveLength(17);
+    // Ein <li> ohne Blockkinder, mit der Überschrift des Abschnitts davor
+    expect(instructions[0]).toContain("Teig: Alle Teigzutaten in den Mixtopf geben");
+    expect(instructions[3]).toContain("Belag, klassisch: Zwiebeln in den Mixtopf geben");
+    // Reine Überschriften dürfen keine eigenen Schritte sein
+    expect(instructions).not.toContain("Teig:");
+    expect(instructions).not.toContain("Belagvarianten:");
+  });
+
+  it("wandelt den Unicode-Bruch in eine Menge um und liefert keine Überschriften als Zutaten", async () => {
+    const parsed = await parse_recipe(html, url);
+    expect(parsed.status).toBe("success");
+    const ingredients = parsed.recipe?.structuredIngredients ?? [];
+    const salt = ingredients.find((ingredient) => ingredient.name === "Salz" && ingredient.unit === "TL");
+    expect(salt?.amount).toBe(0.25);
+    expect(ingredients.map((ingredient) => ingredient.name)).not.toContain("Teig");
   });
 });

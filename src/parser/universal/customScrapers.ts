@@ -293,6 +293,20 @@ export function scrapeRezeptwelt(html: string): CustomScraperResult | null {
     cleanHtmlText($("h1").first().text()) ||
     undefined;
 
+  /**
+   * Zutaten: Betrag, Einheit und Name stehen in getrennten `<span>`-Elementen.
+   * Beim Verbinden muss ein Leerzeichen eingefügt werden, wenn zwei Teile sonst
+   * zusammenkleben – die Seite liefert „30" + " g" + "Sahne or Kondensmilch",
+   * woraus ohne Regel „30 gSahne or Kondensmilch" wurde (gemessen).
+   *
+   * Abschnitts-Überschriften innerhalb der Liste („Teig", „Belag, klassisch")
+   * sind keine Zutaten: Sie haben genau einen Span, keine Ziffer und passen auf
+   * die Überschriftwörter. Die App kennt keine Zutatengruppen, deshalb werden
+   * sie übersprungen.
+   */
+  const REZEPTWELT_GROUP_RE =
+    /^(?:teig|boden|belag|füllung|fuellung|guss|glasur|topping|sauce|soße|sosse|dressing|streusel|creme|crème|kräuter|kraeuter|gewürze|gewuerze|zutaten|für den|fuer den|für die|für das|sonstiges)\b/i;
+
   const ingredients: string[] = [];
   $('li[itemprop="recipeIngredient"]').each((_, element) => {
     const $item = $(element);
@@ -300,23 +314,71 @@ export function scrapeRezeptwelt(html: string): CustomScraperResult | null {
       .find("span")
       .toArray()
       .map((span) => $(span).text());
-    const text = cleanHtmlTextWithSpacing(spans.length > 0 ? spans.join("") : $item.text());
-    if (text) ingredients.push(text);
+    const raw = spans.length > 0 ? spans : [$item.text()];
+    const joined = raw.reduce((acc, part) => {
+      if (!acc) return part;
+      const needsSpace = /[\p{L}\d]$/u.test(acc) && /^[\p{L}\d]/u.test(part);
+      return acc + (needsSpace ? " " : "") + part;
+    }, "");
+    const text = cleanHtmlTextWithSpacing(joined);
+    if (!text) return;
+    const isGroupHeader =
+      spans.length === 1 && !/\d/.test(text) && (REZEPTWELT_GROUP_RE.test(text) || /:\s*$/.test(text));
+    if (isGroupHeader) return;
+    ingredients.push(text);
   });
 
+  /**
+   * Zubereitung: Abschnitts-Überschriften stehen in `<p>` (fett, mit
+   * Doppelpunkt), die eigentlichen Schritte in `<ul>`/`<ol>`-Listen. Vorher
+   * wurden nur die `<p>` gelesen – dadurch bestand das Rezept ausschließlich aus
+   * Überschriften („Teig:", „Edelvariante:") und die Anleitung fehlte.
+   * Jetzt bekommt jeder Listenschritt seine Überschrift als Präfix, genau wie
+   * die Seite selbst es in `meta[itemprop="name"]` tut („Teig: Alle …").
+   */
   const instructions: string[] = [];
   const seen = new Set<string>();
+  const pushStep = (text: string) => {
+    if (text.length < 3 || seen.has(text)) return;
+    // Manche Seiten liefern die Anleitung zweimal: sichtbar als <p>-Absätze und
+    // zusätzlich (versteckt) als <li>-Liste, deren Einträge abgeschnitten sind
+    // („… Olivenöl "). Ein gemeinsamer Anfang mit einem bereits erfassten Schritt
+    // verrät das Teil-Duplikat.
+    const MIN_SHARED = 40;
+    const duplicate = instructions.some((existing) => {
+      const shared = Math.min(existing.length, text.length);
+      return shared >= MIN_SHARED && existing.slice(0, shared) === text.slice(0, shared);
+    });
+    if (duplicate) return;
+    seen.add(text);
+    instructions.push(text);
+  };
+
   $('[itemprop="recipeInstructions"]').each((_, element) => {
     const $section = $(element);
-    const paragraphs = $section.find("p").toArray();
-    const nodes = paragraphs.length > 0 ? paragraphs : [$section.get(0)];
-    for (const node of nodes) {
-      const text = rezeptweltText($(node).html());
-      if (text.length > 2 && !seen.has(text)) {
-        seen.add(text);
-        instructions.push(text);
+    let heading = "";
+    $section.find("p, li").each((__, node) => {
+      const $node = $(node);
+      const tag = String($node.prop("tagName") ?? "").toLowerCase();
+      const text = rezeptweltText($node.html());
+      if (!text) return;
+      if (tag === "li") {
+        // Ein <li>, das Blockelemente (p/ul/ol) oder weitere <li> enthält, ist der
+        // Umschlag des Abschnitts (HowToStep um die eigentliche Anleitung) – kein
+        // eigener Schritt. Sonst entsteht ein Sammelblock mit der ganzen Anleitung
+        // und die Einzelschritte fehlen (gemessen auf beiden Seiten).
+        if ($node.find("li, p, ul, ol").length > 0) return;
+        pushStep(heading ? `${heading}: ${text}` : text);
+        return;
       }
-    }
+      // Überschrift nur, wenn sie auf einen Doppelpunkt endet. Absätze wie
+      // „Backtemperatur: 250° Backzeit: ca. 20 Min." sind Hinweise, keine Titel.
+      if (/:\s*$/.test(text)) {
+        heading = text.replace(/:\s*$/, "").trim();
+        return;
+      }
+      pushStep(text);
+    });
   });
 
   const image =

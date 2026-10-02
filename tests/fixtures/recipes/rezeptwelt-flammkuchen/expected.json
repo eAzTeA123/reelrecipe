@@ -1,0 +1,39 @@
+{
+  "titel": "Flammkuchen, knusprig",
+  "zutaten": [
+    "220 g Mehl",
+    "2 EL Olivenöl",
+    "120 g Wasser",
+    "¼ TL Salz",
+    "200 g Zwiebeln",
+    "200 g Crème fraîche, or Schmand",
+    "30 g Sahne or Kondensmilch",
+    "3 prisen, Salz",
+    "2 Prisen Pfeffer",
+    "1 Prise Muskat",
+    "100 g Schinkenwürfel",
+    "4 EL Schnittlauchröllchen, (z.B. Katenschinken)"
+  ],
+  "zubereitung": [
+    "Teig: Alle Teigzutaten in den Mixtopf geben und 1 Min./Stufe Modus „Teig kneten“ verarbeiten.",
+    "Teig: Teig entnehmen und mit Klarsichtfolie bedeckt 30 Minuten kalt stellen.",
+    "Teig: Teig auf bemehlter Fläche dünn auf Backblechgröße ausrollen und auf das gefettete Backblech legen.",
+    "Belag, klassisch: Zwiebeln in den Mixtopf geben und 3 Sek./Stufe 5 grob zerkleinern.",
+    "Belag, klassisch: Die restlichen Zutaten bis auf die Schnittlauchröllchen zugeben, 10 Sek./Linkslauf/Stufe 3 verrühren und auf den Teig streichen.",
+    "Belag, klassisch: Im vorgeheizten Backofen knusprig backen und vor dem Servieren mit Schnittlauchröllchen bestreuen.",
+    "Backtemperatur: 250° Backzeit: ca. 20 Min.",
+    "Die Basis ist immer gleich: Teig + Crème-fraîche-Mischung wie oben.",
+    "Belagvarianten: Zusätzlich zu Schinken und Zwiebeln wie beim klassischen Belag nach Geschmack mit Munsterkäse oder Gorgonzola belegen.",
+    "Belagvarianten: 200 g – 250 g Champignons in Scheiben, Mais und 120 g Schafskäse auf die Crème-fraîche-Mischung geben.",
+    "Belagvarianten: Mit gekochtem Schinken und geraspeltem Gouda nach Wunsch belegen.",
+    "Belagvarianten: 100 g zerkleinerter Emmentaler oder Gouda, 3 Frühlingszwiebeln in feinen Röllchen, und 200 g Räucherlachs in Streifen auf dem Guss verteilen.",
+    "Edelvariante: 2 Knoblauchzehen in den Mixtopf geben und 3 Sek./Stufe 8 zerkleinern.",
+    "Edelvariante: 150 g Crème fraîche, 100 g Ziegenfrischkäse, Salz und Pfeffer zugeben und 10 Sek./Stufe 2 verrühren.",
+    "Edelvariante: Belag auf den Teig streichen, 2 kleine rote Zwiebeln in Ringen, 2 – 3 Frühlingszwiebeln in feinen Röllchen, Thymianblättchen von 8 Stielen und 40 g Pinienkerne darauf verteilen.",
+    "Süße Variante: 200 g Schmand mit 30 g Sahne verrührt auf den Teig streichen und mit dünnen Apfelscheiben belegen; 3 EL Zucker mit 1 TL Zimt vermischt darüber streuen und backen.",
+    "Bemerkungen: Reichen Sie den Flammkuchen in kleinen Stücken als Snack zum Wein."
+  ],
+  "portionen": 2,
+  "expectedSource": "site-scraper",
+  "expectedStatus": "success"
+}

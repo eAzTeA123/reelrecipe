@@ -49,12 +49,23 @@ export function stripEmojiModifiers(text: string): string {
   return text.replace(/[\uFE0E\uFE0F]/gu, "").replace(/[\u{1F3FB}-\u{1F3FF}]/gu, "");
 }
 
-export function normalizeCaption(caption: string): string {
-  let text = caption;
+/**
+ * Wandelt Unicode-Brüche in ASCII um: „¼ TL" → „1/4 TL", „1½" → „1 1/2".
+ * Eigene Funktion, weil auch **einzelne Zutatenzeilen** sie brauchen: Der
+ * Seiten-Scraper übergibt Zeilen direkt an `parseIngredientLine`, und dort
+ * scheiterte „¼ TL Salz" vorher (Menge blieb leer).
+ */
+export function normalizeFractions(text: string): string {
+  let out = text;
   for (const [frac, ascii] of Object.entries(UNICODE_FRACTIONS)) {
-    text = text.replace(new RegExp(`(\\d)${frac}`, "g"), `$1 ${ascii}`);
-    text = text.split(frac).join(ascii);
+    out = out.replace(new RegExp(`(\\d)${frac}`, "g"), `$1 ${ascii}`);
+    out = out.split(frac).join(ascii);
   }
+  return out;
+}
+
+export function normalizeCaption(caption: string): string {
+  let text = normalizeFractions(caption);
   
   // Break lines around common section markers if they are buried in text
   const R_COLON = /(?<![\p{L}])(du brauchst|zutaten|zubereitung|so gehts|so geht's|anleitung|ingredients|instructions|directions|method)(?:\s+[a-zA-ZäöüßÄÖÜ\-]+)?\s*:/giu;

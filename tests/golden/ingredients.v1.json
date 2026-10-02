@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "purpose": "Golden Set für Zutaten-Erkennung und Preise. items[] sind Labels (Herkunft in `origin`), lines[].istZutat ist ein Vorschlag. Einträge mit split=\"excluded\" zählen nicht zu den Schwellen.",
   "generatedFrom": {
-    "parserVersion": 17,
+    "parserVersion": 18,
     "fixtureCount": 42,
     "sources": [
       "src/parser/corpus/fixtures",

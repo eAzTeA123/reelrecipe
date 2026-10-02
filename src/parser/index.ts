@@ -35,11 +35,12 @@ export {
  * über den schützenden Merge, eigene Änderungen bleiben also erhalten
  * (Rückmeldung als Toast in `MigrationRunner`).
  *
- * Version 17: Titelbereinigung (Anpreisungen, Nutzen-Floskeln, Emojis), Headlines
- * mit dem Gerichtsnamen hinter dem Doppelpunkt, und Zutatenzeilen mit eigener
- * Menge werden nicht mehr an die vorherige Zutat gehängt („Quark ca. 200 ml Milch").
+ * Version 18: Unicode-Brüche auch in einzelnen Zutatenzeilen („¼ TL" kam vom
+ * Seiten-Scraper und blieb ohne Menge), und rezeptwelt-Seiten mit Abschnitten
+ * („Teig", „Belag") – Überschriften sind keine Zutaten, und die Anleitung steht
+ * in den Listen, nicht in den Absätzen.
  */
-export const PARSER_VERSION = 17;
+export const PARSER_VERSION = 18;
 
 import { isSectionHeader as isSectionHeaderLine } from "./lineFacts";
 

@@ -1,6 +1,6 @@
 import type { Ingredient } from "@/domain/types";
 import { newId } from "@/lib/text";
-import { stripLeadingBullets } from "./normalize";
+import { stripLeadingBullets, normalizeFractions } from "./normalize";
 import { getAllVocab } from "./vocabulary";
 import { UNIT_REGEX, UNIT_START_REGEX, canonicalUnit } from "./units";
 import { AMOUNT_REGEX, parseAmountString, wordToNumber } from "./quantity";
@@ -96,8 +96,10 @@ const NUTRITION_RE = /\b(?:kcal|kalorien|kohlenhydrate|carbs)\b|^(?:eiweiß|prot
 
 /** Parst eine Zeile zu einer Zutat. Gibt null zurück, wenn unmöglich. */
 export function parseIngredientLine(line: string): ParsedIngredient | null {
+  // Unicode-Brüche zuerst: Seiten-Scraper liefern Zeilen wie „¼ TL Salz" direkt
+  // hierher (ohne den Caption-Weg), sonst bliebe die Menge leer.
   // Chefkoch-Pluralschreibweise "Scheibe/n", "Zehe/n", "Ei/er" und "Scheibe(n)" → "Scheiben", "Zehen", "Eier"
-  let rest = line
+  let rest = normalizeFractions(line)
     .trim()
     .replace(/(\p{L})\/(n|en|e|s|er)(?![\p{L}])/gu, "$1$2")
     .replace(/\s*\(\s*n\s*\)/giu, "n");
