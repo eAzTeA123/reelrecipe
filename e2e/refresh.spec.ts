@@ -23,10 +23,20 @@ const CHEFKOCH_URL = "https://www.chefkoch.de/rezepte/123/Toast-Hawaii.html";
 const ID_A = "aaaaaaaa-0000-4000-8000-000000000001";
 const ID_B = "bbbbbbbb-0000-4000-8000-000000000002";
 const ID_C = "cccccccc-0000-4000-8000-000000000003";
+const ID_D = "dddddddd-0000-4000-8000-000000000004";
+
+/** Rezept mit gespeichertem Originaltext (Instagram/TikTok/Textimport). */
+const CAPTION_D = [
+  "Wenn's schnell gehen muss, aber trotzdem richtig lecker sein soll: Dieser herzhafte Ofenpfannkuchen ist ein absoluter Gamechanger!",
+  "",
+  "4 Eier",
+  "150 g Mehl",
+  "150 g Quark",
+].join("\n");
 
 test.use({ hasTouch: true, viewport: { width: 390, height: 844 } });
 
-/** Legt die drei Ausgangsrezepte roh in den Object-Store (wie die App liest). */
+/** Legt die vier Ausgangsrezepte roh in den Object-Store (wie die App liest). */
 async function seed(page: Page): Promise<void> {
   await page.goto("/");
   await page.evaluate(() => {
@@ -36,7 +46,7 @@ async function seed(page: Page): Promise<void> {
   await expect(page.getByText("Du hast noch keine Rezepte")).toBeVisible({ timeout: 30_000 });
 
   await page.evaluate(
-    ({ idA, idB, idC, rezeptweltUrl, chefkochUrl }) => {
+    ({ idA, idB, idC, idD, caption, rezeptweltUrl, chefkochUrl }) => {
       const now = Date.now();
       return new Promise<void>((resolve, reject) => {
         const open = indexedDB.open("rezept");
@@ -92,7 +102,7 @@ async function seed(page: Page): Promise<void> {
             },
           });
 
-          // C) anderer Anbieter – darf nicht angefasst werden
+          // C) anderer Anbieter – wird jetzt ebenfalls über die Seite aktualisiert
           store.put({
             id: idC,
             title: "Toast Hawaii",
@@ -108,6 +118,32 @@ async function seed(page: Page): Promise<void> {
             parserVersion: 15,
           });
 
+          // D) Rezept mit gespeichertem Originaltext: läuft lokal, ohne Abruf.
+          //    parserVersion ist aktuell, damit die Auto-Migration es nicht anfasst –
+          //    hier soll ausschließlich der Knopf wirken.
+          store.put({
+            id: idD,
+            title: "Eier",
+            color: "#4f7a52",
+            sourceCaption: caption,
+            ingredients: [{ id: "d1", amount: 150, unit: "g", name: "Dinkelmehl" }],
+            steps: [{ id: "ds1", order: 1, instruction: "Alles verrühren." }],
+            category: "Hauptgericht",
+            tags: [],
+            favorite: false,
+            createdAt: now - 3000,
+            updatedAt: now - 3000,
+            parserVersion: 18,
+            parseSnapshot: {
+              title: "Eier",
+              ingredients: [
+                { name: "Mehl", amount: 150, unit: "g" },
+                { name: "Quark", amount: 150, unit: "g" },
+              ],
+              steps: ["Alles verrühren."],
+            },
+          });
+
           tx.oncomplete = () => {
             db.close();
             resolve();
@@ -118,13 +154,21 @@ async function seed(page: Page): Promise<void> {
         open.onerror = () => reject(open.error);
       });
     },
-    { idA: ID_A, idB: ID_B, idC: ID_C, rezeptweltUrl: REZEPTWELT_URL, chefkochUrl: CHEFKOCH_URL },
+    {
+      idA: ID_A,
+      idB: ID_B,
+      idC: ID_C,
+      idD: ID_D,
+      caption: CAPTION_D,
+      rezeptweltUrl: REZEPTWELT_URL,
+      chefkochUrl: CHEFKOCH_URL,
+    },
   );
 
   await page.reload();
 }
 
-test("Rezeptwelt-Rezepte neu einlesen, eigene Änderungen bleiben erhalten", async ({ page }) => {
+test("Alle Rezepte neu einlesen, eigene Änderungen bleiben erhalten", async ({ page }) => {
   test.setTimeout(120_000);
   await seed(page);
 
@@ -134,11 +178,27 @@ test("Rezeptwelt-Rezepte neu einlesen, eigene Änderungen bleiben erhalten", asy
     const url = String(body.url ?? "");
     requested.push(url);
 
-    if (!url.includes("rezeptwelt.de")) {
+    // Chefkoch liefert sein eigenes Rezept – der Knopf soll **alle** Anbieter
+    // aktualisieren, nicht nur rezeptwelt.
+    if (url.includes("chefkoch")) {
       await route.fulfill({
         status: 200,
         contentType: "application/json",
-        body: JSON.stringify({ status: "not_a_recipe" }),
+        body: JSON.stringify({
+          status: "success",
+          recipe: {
+            title: "Toast Hawaii",
+            ingredients: [
+              { id: "k1", amount: 8, unit: "Scheiben", name: "Toastbrot" },
+              { id: "k2", amount: 4, unit: "Scheiben", name: "Ananas" },
+            ],
+            steps: [{ id: "ks1", order: 1, instruction: "Toast belegen und überbacken." }],
+            sourceUrl: url,
+            confidence: 0.9,
+            highConfidence: true,
+            fieldSources: {},
+          },
+        }),
       });
       return;
     }
@@ -176,21 +236,23 @@ test("Rezeptwelt-Rezepte neu einlesen, eigene Änderungen bleiben erhalten", asy
 
   await page.goto("/settings");
 
-  // Nur die beiden rezeptwelt-Rezepte werden angeboten
+  // Alle Rezepte werden angeboten: drei über die Seite, eines aus gespeichertem Text
   const button = page.getByRole("button", { name: /neu einlesen/ });
-  await expect(button).toContainText("2 Rezepte neu einlesen");
+  await expect(button).toContainText("Alle 4 Rezepte neu einlesen");
+  await expect(page.getByText(/1 aus gespeichertem Text/)).toBeVisible();
   await button.click();
 
   // Zusammenfassung
-  await expect(page.getByText(/2 aktualisiert · 0 unverändert · 0 fehlgeschlagen/)).toBeVisible({
+  await expect(page.getByText(/4 aktualisiert · 0 unverändert · 0 fehlgeschlagen/)).toBeVisible({
     timeout: 30_000,
   });
+  await expect(page.getByText(/1 aus Text · 3 über Webseite/)).toBeVisible();
   await expect(page.getByText(/Tipps ergänzt: 1/)).toBeVisible();
   await expect(page.getByText(/Eigene Änderungen geschützt:/)).toBeVisible();
 
-  // Der andere Anbieter wurde nicht angefragt
-  expect(requested.filter((url) => url.includes("chefkoch"))).toHaveLength(0);
-  expect(requested).toHaveLength(2);
+  // Drei Abrufe (rezeptwelt ×2, chefkoch ×1) – das Caption-Rezept lief lokal
+  expect(requested).toHaveLength(3);
+  expect(requested.filter((url) => url.includes("chefkoch"))).toHaveLength(1);
 
   // A: Tipps und neue Zutaten sind da
   await page.goto(`/recipes/${ID_A}`);
@@ -205,7 +267,15 @@ test("Rezeptwelt-Rezepte neu einlesen, eigene Änderungen bleiben erhalten", asy
   await expect(page.getByText("Butter")).toHaveCount(0);
   await expect(page.getByText("Tipps: • Gemüsebrühe statt Weißwein.")).toHaveCount(0);
 
-  // C: unangetastet
+  // C: aktualisiert, aber eigener Titel bleibt (der Nutzer hatte ihn gesetzt)
   await page.goto(`/recipes/${ID_C}`);
   await expect(page.getByText("Toastbrot")).toBeVisible();
+  await expect(page.getByText("Ananas")).toBeVisible();
+
+  // D: aus der gespeicherten Caption neu gelesen – Titel korrigiert, eigene
+  //    Umbenennung erhalten, gelöschter Quark kommt nicht zurück
+  await page.goto(`/recipes/${ID_D}`);
+  await expect(page.getByText("Herzhafte Ofenpfannkuchen")).toBeVisible();
+  await expect(page.getByText("Dinkelmehl")).toBeVisible();
+  await expect(page.getByText("Quark")).toHaveCount(0);
 });

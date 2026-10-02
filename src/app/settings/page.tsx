@@ -18,7 +18,7 @@ import { useRecipes } from "@/hooks/useRecipes";
 
 import {
   fetchParsedRecipe,
-  isRefreshableUrl,
+  planRefreshTargets,
   refreshRecipes,
   summarizeRefresh,
   type RefreshOutcome,
@@ -52,7 +52,9 @@ export default function SettingsPage() {
   const [refreshing, setRefreshing] = useState(false);
   const [refreshProgress, setRefreshProgress] = useState<string>();
   const [refreshOutcomes, setRefreshOutcomes] = useState<RefreshOutcome[]>();
-  const refreshable = recipes.filter((recipe) => isRefreshableUrl(recipe.sourceUrl));
+  const refreshable = planRefreshTargets(recipes);
+  const refreshFromCaption = refreshable.filter((target) => target.mode === "caption").length;
+  const refreshFromUrl = refreshable.filter((target) => target.mode === "url").length;
   const refreshSummary = refreshOutcomes ? summarizeRefresh(refreshOutcomes) : undefined;
 
   useEffect(() => {
@@ -73,10 +75,12 @@ export default function SettingsPage() {
   }, []);
 
   /**
-   * Liest die gespeicherten rezeptwelt.de-Rezepte mit dem aktuellen Parser neu
-   * ein. Eigene Änderungen bleiben erhalten (siehe `lib/refreshRecipes.ts`),
-   * fehlende Angaben wie die Tipps werden ergänzt. Nacheinander, damit die
-   * fremden Seiten nicht in einem Schwall abgefragt werden.
+   * Liest **alle** gespeicherten Rezepte mit dem aktuellen Parser neu ein.
+   * Rezepte mit gespeichertem Originaltext laufen lokal und sofort; Rezepte mit
+   * Link werden von der Seite neu abgerufen (siehe `lib/refreshRecipes.ts`).
+   * Eigene Änderungen bleiben erhalten, fehlende Angaben wie Tipps werden
+   * ergänzt. Nacheinander, damit fremde Seiten nicht in einem Schwall angefragt
+   * werden.
    */
   async function doRefresh() {
     if (refreshing || refreshable.length === 0) return;
@@ -302,8 +306,11 @@ export default function SettingsPage() {
         <h2 id="refresh-h" className="mb-1 font-display text-h2">Rezepte aktualisieren</h2>
         <p className="mb-4 text-[14px] leading-relaxed text-ink-2">
           Der Import wird laufend besser – inzwischen liest die App zum Beispiel die Tipps von
-          rezeptwelt.de mit. Hier schickst du gespeicherte Rezepte dieser Seite noch einmal durch den
-          Parser. <strong className="font-medium text-ink">Deine eigenen Änderungen bleiben erhalten</strong>:
+          rezeptwelt.de mit und erkennt Zutatenzeilen genauer. Hier schickst du{" "}
+          <strong className="font-medium text-ink">alle gespeicherten Rezepte</strong> noch einmal durch
+          den Parser. Rezepte mit gespeichertem Originaltext laufen dabei sofort und ohne Internet;
+          Rezepte mit einem Link werden von der Seite neu gelesen.{" "}
+          <strong className="font-medium text-ink">Deine eigenen Änderungen bleiben erhalten</strong>:
           umbenannte oder gelöschte Zutaten, selbst geschriebene Schritte und ein eigener Titel werden
           nicht überschrieben. Ergänzt wird nur, was fehlt.
         </p>
@@ -315,12 +322,13 @@ export default function SettingsPage() {
         >
           {refreshing ? <Spinner size={18} /> : <IconRefresh size={18} />}
           {refreshable.length === 0
-            ? "Keine rezeptwelt.de-Rezepte gespeichert"
-            : `${refreshable.length} ${refreshable.length === 1 ? "Rezept" : "Rezepte"} neu einlesen`}
+            ? "Keine Rezepte zum Aktualisieren"
+            : `Alle ${refreshable.length} Rezepte neu einlesen`}
         </Button>
         {refreshable.length > 0 && (
           <p className="mt-3 text-meta text-ink-3">
-            Betrifft nur gespeicherte Rezepte mit einem rezeptwelt.de-Link.
+            {refreshFromCaption} aus gespeichertem Text (sofort, ohne Internet)
+            {refreshFromUrl > 0 ? ` · ${refreshFromUrl} über die Webseite (Abruf)` : ""}
           </p>
         )}
         {refreshProgress && (
@@ -331,6 +339,10 @@ export default function SettingsPage() {
             <p className="font-medium text-ink">
               {refreshSummary.updated} aktualisiert · {refreshSummary.unchanged} unverändert ·{" "}
               {refreshSummary.failed} fehlgeschlagen
+            </p>
+            <p className="mt-1 text-ink-3">
+              {refreshSummary.fromCaption} aus Text
+              {refreshSummary.fromUrl > 0 ? ` · ${refreshSummary.fromUrl} über Webseite` : ""}
             </p>
             {refreshSummary.tipsFilled > 0 && (
               <p className="mt-1">Tipps ergänzt: {refreshSummary.tipsFilled}</p>

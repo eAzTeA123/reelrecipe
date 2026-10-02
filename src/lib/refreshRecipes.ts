@@ -18,22 +18,72 @@
  * fragt fremde Server ab – kein Burst aus dem Browser.
  */
 
-import { PARSER_VERSION } from "@/parser";
+import { PARSER_VERSION, parseRecipe } from "@/parser";
 import { createParseSnapshot, mergeParsedRecipe } from "@/data/local/parseMerge";
 import type { Ingredient, Recipe, RecipeInput, RecipeStep } from "@/domain/types";
 import type { WebRecipeResponse } from "@/parser/universal/toWebRecipe";
 
-/** Seiten, für die ein erneutes Einlesen vorgesehen ist. */
-export const REFRESHABLE_HOSTS = ["rezeptwelt.de"] as const;
+/** Plattformen, deren Caption bereits lokal liegt – dort wird **nicht** abgerufen. */
+const SOCIAL_HOSTS = ["instagram.com", "tiktok.com", "vm.tiktok.com"] as const;
 
-export function isRefreshableUrl(url?: string | null): boolean {
+export function isSocialUrl(url?: string | null): boolean {
   if (!url) return false;
   try {
     const host = new URL(url).hostname.replace(/^www\./, "").toLowerCase();
-    return REFRESHABLE_HOSTS.some((known) => host === known || host.endsWith(`.${known}`));
+    return SOCIAL_HOSTS.some((known) => host === known || host.endsWith(`.${known}`));
   } catch {
     return false;
   }
+}
+
+export type RefreshMode = "caption" | "url";
+
+export interface RefreshTarget {
+  recipe: Recipe;
+  mode: RefreshMode;
+  /** nur bei mode "url" gesetzt */
+  url?: string;
+}
+
+/**
+ * Entscheidet je Rezept, wie es neu eingelesen wird.
+ *
+ * - `caption`: Die Caption liegt lokal vor (Instagram, TikTok, eingefügter Text)
+ *   → lokal parsen, kein Netzabruf, dauert Millisekunden.
+ * - `url`: Es gibt nur einen Link auf eine Rezeptseite → Seite neu abrufen.
+ * - kein Ziel: weder Caption noch brauchbarer Link → nichts zu tun.
+ *
+ * Soziale Links werden bewusst **nicht** abgerufen: Die Caption liegt bereits
+ * vor, und die Plattform-Schnittstellen (oEmbed/og-Tags) sind langsam und
+ * unzuverlässig. Sie laufen deshalb über den Caption-Weg mit.
+ */
+export function planRefreshTargets(recipes: Recipe[]): RefreshTarget[] {
+  const targets: RefreshTarget[] = [];
+  for (const recipe of recipes) {
+    if (recipe.sourceCaption?.trim()) {
+      targets.push({ recipe, mode: "caption" });
+      continue;
+    }
+    const url = recipe.sourceUrl?.trim() ?? "";
+    if (/^https?:\/\//.test(url) && !isSocialUrl(url)) {
+      targets.push({ recipe, mode: "url", url });
+    }
+  }
+  return targets;
+}
+
+/** Parser-Ergebnis aus der gespeicherten Caption – ohne Netz, für Tests injizierbar. */
+export function parsedFromCaption(caption: string): ParsedForRefresh | null {
+  const parsed = parseRecipe(caption);
+  if (!parsed || (parsed.ingredients.length === 0 && parsed.steps.length === 0)) return null;
+  return {
+    title: parsed.title,
+    ingredients: parsed.ingredients,
+    steps: parsed.steps,
+    servings: parsed.servings,
+    prepTime: parsed.prepTime,
+    cookTime: parsed.cookTime,
+  };
 }
 
 /** Das Parser-Ergebnis, soweit es für eine Aktualisierung gebraucht wird. */
@@ -167,6 +217,8 @@ export interface RefreshOutcome {
   id: string;
   title: string;
   status: "updated" | "unchanged" | "failed";
+  /** Über welchen Weg aktualisiert wurde */
+  mode: RefreshMode;
   /** Klartext-Grund bei Fehlschlägen (nie technische Fehlermeldungen) */
   reason?: string;
   filled: string[];
@@ -189,20 +241,34 @@ export interface RefreshDeps {
   parseUrl: (url: string) => Promise<WebRecipeResponse>;
   update: (id: string, patch: Partial<RecipeInput>) => Promise<unknown>;
   onProgress?: (done: number, total: number, title: string) => void;
+  /** Nur für Tests: Standard ist der lokale Parser (`parsedFromCaption`). */
+  parseCaption?: (caption: string) => ParsedForRefresh | null;
 }
 
-export async function refreshRecipes(recipes: Recipe[], deps: RefreshDeps): Promise<RefreshOutcome[]> {
+/**
+ * Liest die übergebenen Ziele neu ein – je nach Ziel lokal aus der Caption oder
+ * über einen Seitenabruf. Nacheinander, damit fremde Server nicht in einem
+ * Schwall angefragt werden; die Caption-Ziele laufen zuerst, weil sie nichts
+ * kosten. Die Ziele kommen aus `planRefreshTargets`.
+ */
+export async function refreshRecipes(targets: RefreshTarget[], deps: RefreshDeps): Promise<RefreshOutcome[]> {
+  const ordered = [
+    ...targets.filter((target) => target.mode === "caption"),
+    ...targets.filter((target) => target.mode === "url"),
+  ];
+  const parseCaption = deps.parseCaption ?? parsedFromCaption;
   const outcomes: RefreshOutcome[] = [];
   let done = 0;
 
-  for (const recipe of recipes) {
+  for (const target of ordered) {
+    const { recipe, mode } = target;
     done++;
-    deps.onProgress?.(done, recipes.length, recipe.title);
-    const url = recipe.sourceUrl ?? "";
+    deps.onProgress?.(done, ordered.length, recipe.title);
     const empty = (status: RefreshOutcome["status"], reason?: string): RefreshOutcome => ({
       id: recipe.id,
       title: recipe.title,
       status,
+      mode,
       reason,
       filled: [],
       kept: [],
@@ -212,22 +278,33 @@ export async function refreshRecipes(recipes: Recipe[], deps: RefreshDeps): Prom
     });
 
     try {
-      const result = await deps.parseUrl(url);
-      if (result.status !== "success" || !result.recipe) {
-        outcomes.push(empty("failed", STATUS_REASON[result.status] ?? "Import nicht möglich"));
-        continue;
+      let parsed: ParsedForRefresh | null;
+      if (mode === "caption") {
+        parsed = parseCaption(recipe.sourceCaption ?? "");
+        if (!parsed) {
+          outcomes.push(empty("failed", "Im gespeicherten Text war kein Rezept zu erkennen"));
+          continue;
+        }
+      } else {
+        const result = await deps.parseUrl(target.url ?? "");
+        if (result.status !== "success" || !result.recipe) {
+          outcomes.push(empty("failed", STATUS_REASON[result.status] ?? "Import nicht möglich"));
+          continue;
+        }
+        const web = result.recipe;
+        parsed = {
+          title: web.title,
+          ingredients: web.ingredients,
+          steps: web.steps,
+          description: web.description,
+          image: web.image,
+          servings: web.servings,
+          prepTime: web.prepTime,
+          cookTime: web.cookTime,
+        };
       }
-      const web = result.recipe;
-      const plan = planRefresh(recipe, {
-        title: web.title,
-        ingredients: web.ingredients,
-        steps: web.steps,
-        description: web.description,
-        image: web.image,
-        servings: web.servings,
-        prepTime: web.prepTime,
-        cookTime: web.cookTime,
-      });
+
+      const plan = planRefresh(recipe, parsed);
       if (!plan.patch) {
         outcomes.push({
           ...empty("unchanged"),
@@ -242,6 +319,7 @@ export async function refreshRecipes(recipes: Recipe[], deps: RefreshDeps): Prom
         id: recipe.id,
         title: recipe.title,
         status: "updated",
+        mode,
         filled: plan.filled,
         kept: plan.kept,
         respectedEdits: plan.respectedEdits,
@@ -265,6 +343,10 @@ export interface RefreshSummary {
   protectedEdits: number;
   /** Wie oft Tipps ergänzt wurden */
   tipsFilled: number;
+  /** Wie viele Rezepte aus der gespeicherten Caption kamen (ohne Netz) */
+  fromCaption: number;
+  /** Wie viele Rezepte über einen Seitenabruf liefen */
+  fromUrl: number;
 }
 
 export function summarizeRefresh(outcomes: RefreshOutcome[]): RefreshSummary {
@@ -275,5 +357,7 @@ export function summarizeRefresh(outcomes: RefreshOutcome[]): RefreshSummary {
     failed: outcomes.filter((o) => o.status === "failed").length,
     protectedEdits: outcomes.reduce((sum, o) => sum + o.respectedEdits + o.respectedRemovals, 0),
     tipsFilled: outcomes.filter((o) => o.filled.includes("Tipps")).length,
+    fromCaption: outcomes.filter((o) => o.mode === "caption").length,
+    fromUrl: outcomes.filter((o) => o.mode === "url").length,
   };
 }

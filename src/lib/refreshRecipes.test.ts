@@ -1,10 +1,11 @@
 import { describe, expect, it } from "vitest";
-import type { Recipe } from "@/domain/types";
+import type { Recipe, RecipeInput } from "@/domain/types";
 import { PARSER_VERSION } from "@/parser";
 import type { WebRecipeResponse } from "@/parser/universal/toWebRecipe";
 import {
-  isRefreshableUrl,
+  isSocialUrl,
   planRefresh,
+  planRefreshTargets,
   refreshRecipes,
   summarizeRefresh,
   type ParsedForRefresh,
@@ -45,19 +46,37 @@ const parsed: ParsedForRefresh = {
   description: "Tipps: • Wer keinen Weißwein darf, nimmt Gemüsebrühe.",
 };
 
-describe("isRefreshableUrl", () => {
-  it("erkennt rezeptwelt-Links, auch mit www und Unterdomain", () => {
-    expect(isRefreshableUrl(REZEPTWELT_URL)).toBe(true);
-    expect(isRefreshableUrl("https://rezeptwelt.de/rezept/abc")).toBe(true);
-    expect(isRefreshableUrl("https://m.rezeptwelt.de/rezept/abc")).toBe(true);
+describe("planRefreshTargets", () => {
+  it("nimmt Rezepte mit gespeicherter Caption lokal (ohne Netz)", () => {
+    const targets = planRefreshTargets([
+      recipe({ sourceCaption: "Zutaten: 200 g Mehl", sourceUrl: REZEPTWELT_URL }),
+    ]);
+    expect(targets).toHaveLength(1);
+    expect(targets[0].mode).toBe("caption");
   });
 
-  it("lehnt andere Seiten und Unsinn ab", () => {
-    expect(isRefreshableUrl("https://www.chefkoch.de/rezepte/123/Toast.html")).toBe(false);
-    expect(isRefreshableUrl("https://www.instagram.com/p/xyz/")).toBe(false);
-    expect(isRefreshableUrl("https://rezeptwelt.de.example.com/x")).toBe(false);
-    expect(isRefreshableUrl("keine url")).toBe(false);
-    expect(isRefreshableUrl(undefined)).toBe(false);
+  it("nimmt Web-Rezepte über den Link", () => {
+    const targets = planRefreshTargets([recipe({ sourceUrl: REZEPTWELT_URL })]);
+    expect(targets).toHaveLength(1);
+    expect(targets[0].mode).toBe("url");
+    expect(targets[0].url).toBe(REZEPTWELT_URL);
+  });
+
+  it("ruft Instagram und TikTok nicht ab – dort reicht die gespeicherte Caption", () => {
+    for (const url of [
+      "https://www.instagram.com/p/xyz/",
+      "https://www.tiktok.com/@a/video/1",
+      "https://vm.tiktok.com/abc/",
+    ]) {
+      expect(isSocialUrl(url)).toBe(true);
+      expect(planRefreshTargets([recipe({ sourceUrl: url })])).toHaveLength(0);
+    }
+    expect(isSocialUrl("https://www.chefkoch.de/rezepte/123/x.html")).toBe(false);
+  });
+
+  it("überspringt Rezepte ohne Caption und ohne brauchbaren Link", () => {
+    expect(planRefreshTargets([recipe()])).toHaveLength(0);
+    expect(planRefreshTargets([recipe({ sourceUrl: "keine url" })])).toHaveLength(0);
   });
 });
 
@@ -161,7 +180,7 @@ describe("refreshRecipes", () => {
     const blocked = recipe({ id: "r2", title: "Nur mit Anmeldung", sourceUrl: `${REZEPTWELT_URL}/r2` });
     const updated: string[] = [];
 
-    const outcomes = await refreshRecipes([target, blocked], {
+    const outcomes = await refreshRecipes(planRefreshTargets([target, blocked]), {
       parseUrl: async (url): Promise<WebRecipeResponse> => {
         if (url.endsWith("/r2")) return { status: "login_required" };
         return {
@@ -200,5 +219,59 @@ describe("refreshRecipes", () => {
     expect(summary.updated).toBe(1);
     expect(summary.failed).toBe(1);
     expect(summary.tipsFilled).toBe(1);
+    expect(summary.fromUrl).toBe(2);
+    expect(summary.fromCaption).toBe(0);
+  });
+
+  it("liest Rezepte aus der gespeicherten Caption lokal neu ein – ohne jeden Abruf", async () => {
+    // Echte Caption: der Gerichtsname steht hinter dem Doppelpunkt
+    const caption = [
+      "Wenn's schnell gehen muss, aber trotzdem richtig lecker sein soll: Dieser herzhafte Ofenpfannkuchen ist ein absoluter Gamechanger!",
+      "",
+      "4 Eier",
+      "150 g Mehl",
+      "150 g Quark",
+    ].join("\n");
+
+    const stored = recipe({
+      title: "Eier",
+      sourceCaption: caption,
+      // Der Nutzer hat „Mehl" in „Dinkelmehl" umbenannt
+      ingredients: [{ id: "m1", amount: 150, unit: "g", name: "Dinkelmehl" }],
+      steps: [{ id: "ms1", order: 1, instruction: "Alles verrühren." }],
+      parseSnapshot: {
+        title: "Eier",
+        ingredients: [
+          { name: "Mehl", amount: 150, unit: "g" },
+          { name: "Quark", amount: 150, unit: "g" },
+        ],
+        steps: ["Alles verrühren."],
+      },
+    });
+
+    let urlCalls = 0;
+    const patches: Partial<RecipeInput>[] = [];
+    const outcomes = await refreshRecipes(planRefreshTargets([stored]), {
+      parseUrl: async () => {
+        urlCalls++;
+        return { status: "fetch_error" };
+      },
+      update: async (_id, patch) => {
+        patches.push(patch);
+      },
+    });
+
+    // Kein Abruf: die Caption liegt lokal vor
+    expect(urlCalls).toBe(0);
+    expect(outcomes).toHaveLength(1);
+    expect(outcomes[0].mode).toBe("caption");
+    expect(outcomes[0].status).toBe("updated");
+    // Titel kommt jetzt aus der Caption
+    expect(patches[0].title).toBe("Herzhafte Ofenpfannkuchen");
+    // Eigene Umbenennung bleibt, gelöschter Quark kommt nicht zurück
+    const names = (patches[0].ingredients ?? []).map((ingredient) => ingredient.name);
+    expect(names).toContain("Dinkelmehl");
+    expect(names).not.toContain("Quark");
+    expect(summarizeRefresh(outcomes).fromCaption).toBe(1);
   });
 });
