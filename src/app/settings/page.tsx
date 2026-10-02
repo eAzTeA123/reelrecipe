@@ -11,10 +11,18 @@ import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { Sheet } from "@/components/Sheet";
 import { Spinner } from "@/components/Spinner";
 import { useToast } from "@/components/Toast";
-import { IconDownload, IconUpload } from "@/components/Icons";
+import { IconDownload, IconUpload, IconRefresh } from "@/components/Icons";
 import { Segmented } from "@/components/Segmented";
 import { setThemeChoice, useThemeChoice } from "@/lib/theme";
 import { useRecipes } from "@/hooks/useRecipes";
+
+import {
+  fetchParsedRecipe,
+  isRefreshableUrl,
+  refreshRecipes,
+  summarizeRefresh,
+  type RefreshOutcome,
+} from "@/lib/refreshRecipes";
 
 interface ImportPreview {
   backup: ParsedBackup;
@@ -41,6 +49,11 @@ export default function SettingsPage() {
   const [confirmClearCorrections, setConfirmClearCorrections] = useState(false);
   const [aisleOrderDone, setAisleOrderDone] = useState(false);
   const theme = useThemeChoice();
+  const [refreshing, setRefreshing] = useState(false);
+  const [refreshProgress, setRefreshProgress] = useState<string>();
+  const [refreshOutcomes, setRefreshOutcomes] = useState<RefreshOutcome[]>();
+  const refreshable = recipes.filter((recipe) => isRefreshableUrl(recipe.sourceUrl));
+  const refreshSummary = refreshOutcomes ? summarizeRefresh(refreshOutcomes) : undefined;
 
   useEffect(() => {
     void getCorrectionRepository()
@@ -58,6 +71,33 @@ export default function SettingsPage() {
       })
       .catch(() => {});
   }, []);
+
+  /**
+   * Liest die gespeicherten rezeptwelt.de-Rezepte mit dem aktuellen Parser neu
+   * ein. Eigene Änderungen bleiben erhalten (siehe `lib/refreshRecipes.ts`),
+   * fehlende Angaben wie die Tipps werden ergänzt. Nacheinander, damit die
+   * fremden Seiten nicht in einem Schwall abgefragt werden.
+   */
+  async function doRefresh() {
+    if (refreshing || refreshable.length === 0) return;
+    setRefreshing(true);
+    setRefreshOutcomes(undefined);
+    setRefreshProgress("Wird vorbereitet …");
+    try {
+      const repository = getRecipeRepository();
+      const outcomes = await refreshRecipes(refreshable, {
+        parseUrl: fetchParsedRecipe,
+        update: (id, patch) => repository.update(id, patch),
+        onProgress: (done, total, title) => setRefreshProgress(`${done} von ${total}: ${title}`),
+      });
+      setRefreshOutcomes(outcomes);
+      setRefreshProgress(undefined);
+    } catch {
+      setRefreshProgress("Aktualisieren nicht möglich – bitte später erneut versuchen.");
+    } finally {
+      setRefreshing(false);
+    }
+  }
 
   async function doExport() {
     setExporting(true);
@@ -255,6 +295,75 @@ export default function SettingsPage() {
           <p role="alert" className="mt-3 rounded-ctl bg-[#f7e3e0] px-4 py-3 text-[14px] text-danger">
             {importError}
           </p>
+        )}
+      </section>
+
+      <section className="mb-6 rounded-card border border-line bg-surface p-5 shadow-card" aria-labelledby="refresh-h">
+        <h2 id="refresh-h" className="mb-1 font-display text-h2">Rezepte aktualisieren</h2>
+        <p className="mb-4 text-[14px] leading-relaxed text-ink-2">
+          Der Import wird laufend besser – inzwischen liest die App zum Beispiel die Tipps von
+          rezeptwelt.de mit. Hier schickst du gespeicherte Rezepte dieser Seite noch einmal durch den
+          Parser. <strong className="font-medium text-ink">Deine eigenen Änderungen bleiben erhalten</strong>:
+          umbenannte oder gelöschte Zutaten, selbst geschriebene Schritte und ein eigener Titel werden
+          nicht überschrieben. Ergänzt wird nur, was fehlt.
+        </p>
+        <Button
+          onClick={() => void doRefresh()}
+          disabled={refreshing || refreshable.length === 0}
+          size="lg"
+          fullWidth
+        >
+          {refreshing ? <Spinner size={18} /> : <IconRefresh size={18} />}
+          {refreshable.length === 0
+            ? "Keine rezeptwelt.de-Rezepte gespeichert"
+            : `${refreshable.length} ${refreshable.length === 1 ? "Rezept" : "Rezepte"} neu einlesen`}
+        </Button>
+        {refreshable.length > 0 && (
+          <p className="mt-3 text-meta text-ink-3">
+            Betrifft nur gespeicherte Rezepte mit einem rezeptwelt.de-Link.
+          </p>
+        )}
+        {refreshProgress && (
+          <p role="status" className="mt-3 text-meta text-ink-3">{refreshProgress}</p>
+        )}
+        {refreshOutcomes && refreshSummary && (
+          <div className="mt-4 rounded-ctl bg-surface-2 p-4 text-[14px] leading-relaxed text-ink-2">
+            <p className="font-medium text-ink">
+              {refreshSummary.updated} aktualisiert · {refreshSummary.unchanged} unverändert ·{" "}
+              {refreshSummary.failed} fehlgeschlagen
+            </p>
+            {refreshSummary.tipsFilled > 0 && (
+              <p className="mt-1">Tipps ergänzt: {refreshSummary.tipsFilled}</p>
+            )}
+            {refreshSummary.protectedEdits > 0 && (
+              <p className="mt-1">
+                Eigene Änderungen geschützt: {refreshSummary.protectedEdits} (nicht überschrieben)
+              </p>
+            )}
+            {refreshOutcomes.some((outcome) => outcome.filled.length > 0) && (
+              <ul className="mt-2 list-disc space-y-0.5 pl-5">
+                {refreshOutcomes
+                  .filter((outcome) => outcome.filled.length > 0)
+                  .map((outcome) => (
+                    <li key={outcome.id}>
+                      <span className="text-ink">{outcome.title}</span>: ergänzt {outcome.filled.join(", ")}
+                      {outcome.kept.length > 0 ? ` · unangetastet: ${outcome.kept.join(", ")}` : ""}
+                    </li>
+                  ))}
+              </ul>
+            )}
+            {refreshSummary.failed > 0 && (
+              <ul className="mt-3 space-y-0.5 text-danger">
+                {refreshOutcomes
+                  .filter((outcome) => outcome.status === "failed")
+                  .map((outcome) => (
+                    <li key={outcome.id}>
+                      {outcome.title}: {outcome.reason}
+                    </li>
+                  ))}
+              </ul>
+            )}
+          </div>
         )}
       </section>
 

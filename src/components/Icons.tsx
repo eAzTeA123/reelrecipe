@@ -144,3 +144,10 @@ export const IconFolder = (p: P) => (
 export const IconFilter = (p: P) => (
   <svg {...base(p)}><path d="M4 6h16l-6.2 7.3v4.9l-3.6 1.8v-6.7Z" /></svg>
 );
+/** Neu einlesen/aktualisieren: Kreispfeil */
+export const IconRefresh = (p: P) => (
+  <svg {...base(p)}>
+    <path d="M20 12a8 8 0 1 1-2.6-5.9" />
+    <path d="M20 4.5V9h-4.5" />
+  </svg>
+);
