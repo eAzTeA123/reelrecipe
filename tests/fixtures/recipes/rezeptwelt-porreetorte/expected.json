@@ -1,0 +1,35 @@
+{
+  "titel": "Porreetorte",
+  "zutaten": [
+    "200 g Magerquark",
+    "370 g Mehl",
+    "1 Päckchen Backpulver",
+    "1 Ei",
+    "70 g Rapsöl",
+    "1 Prise Salz",
+    "200 g Emmentaler, in Stücken",
+    "150 g Kartoffeln, in Stücken",
+    "1 Zwiebel",
+    "40 g Butter",
+    "200 g Porree, in dünnen Rngen",
+    "200 g Schinkenwürfel, (z.B. Katenschinken)",
+    "200 g Schmand",
+    "2 Eier",
+    "½ TL Salz",
+    "3 Prisen Pfeffer",
+    "2 Prisen Muskat"
+  ],
+  "zubereitung": [
+    "Teig: Alle Teigzutaten in den Mixtopf geben, 2 Min./Stufe Modus „Teig kneten“ kneten, mit den Händen zusammenkneten und zu einer Kugel geformt ca. 30 Minuten ruhen lassen.",
+    "Belag: Käse in den Mixtopf geben, 4 – 5 Sek./Stufe 6 zerkleinern und umfüllen.",
+    "Belag: Kartoffeln in den Mixtopf geben, 2 Sek./Stufe 5 zerkleinern und zu dem Käse geben.",
+    "Belag: Zwiebel in den Mixtopf geben, 3 Sek./Stufe 5 zerkleinern, Butter zugeben und 4 Min./Varoma/Stufe 1 dünsten.",
+    "Belag: Käse, Kartoffeln, Porree, Schinken und die übrigen Zutaten zugeben und ca.30 Sek./Linkslauf/Stufe 3 mithilfe des Spatels vermischen.",
+    "Belag: Teig mit den Händen in eine gefettete Springform (Ø 28 cm) oder eine Quicheform drücken, einen Rand von ca. 3 cm hochziehen und den Boden mit einer Gabel mehrmals einstechen.",
+    "Belag: Belag auf dem Teig verteilen und im vorgeheizten Backofen backen.",
+    "Backtemperatur: 200° Backzeit: 50- 60 Min."
+  ],
+  "portionen": 8,
+  "expectedSource": "site-scraper",
+  "expectedStatus": "success"
+}

@@ -345,3 +345,43 @@ describe("rezeptwelt.de mit Abschnitten", () => {
     expect(ingredients.map((ingredient) => ingredient.name)).not.toContain("Teig");
   });
 });
+
+/**
+ * rezeptwelt.de, dritte Variante: Die Abschnitte stehen **nur in den Schritten**
+ * („Teig:", „Belag:"), die Zutatenliste ist sauber. Gegenprobe zur
+ * Überschriften-Regel – hier darf nichts weggenommen werden.
+ */
+describe("rezeptwelt.de: Abschnitte nur in den Schritten", () => {
+  const url =
+    "https://www.rezeptwelt.de/backen-herzhaft-rezepte/porreetorte/na2ayihf-e2d56-173489-cfcd2-32vmk8kf";
+  const html = readFileSync(
+    path.join(process.cwd(), "tests/fixtures/recipes/rezeptwelt-porreetorte/recipe.html"),
+    "utf8",
+  );
+
+  it("behält alle 17 Zutaten", () => {
+    const ingredients = scrapeRezeptwelt(html)?.ingredients ?? [];
+    expect(ingredients).toHaveLength(17);
+    expect(ingredients[0]).toBe("200 g Magerquark");
+    expect(ingredients).toContain("1 Päckchen Backpulver");
+    // Die Autorin schreibt „Rngen" (Tippfehler) – der Wortlaut bleibt unverändert
+    expect(ingredients).toContain("200 g Porree, in dünnen Rngen");
+  });
+
+  it("setzt die Abschnitts-Überschrift vor die Schritte", () => {
+    const instructions = scrapeRezeptwelt(html)?.instructions ?? [];
+    expect(instructions).toHaveLength(8);
+    expect(instructions[0]).toContain("Teig: Alle Teigzutaten in den Mixtopf geben");
+    expect(instructions[1]).toContain("Belag: Käse in den Mixtopf geben");
+    expect(instructions[7]).toContain("Backtemperatur: 200°");
+  });
+
+  it("wandelt ½ TL in 0,5 TL um und übernimmt die Portionen", async () => {
+    const parsed = await parse_recipe(html, url);
+    expect(parsed.status).toBe("success");
+    const ingredients = parsed.recipe?.structuredIngredients ?? [];
+    const salt = ingredients.find((ingredient) => ingredient.name === "Salz" && ingredient.unit === "TL");
+    expect(salt?.amount).toBe(0.5);
+    expect(parsed.recipe?.portionen.value).toBe(8);
+  });
+});

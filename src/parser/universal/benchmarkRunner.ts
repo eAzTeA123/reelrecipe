@@ -94,6 +94,11 @@ export async function runRecipeBenchmark(): Promise<{ results: FixtureResult[]; 
       parsedRes = await parse_recipe(html, "https://www.bbcgoodfood.com/recipes/classic-scones");
     } else if (dir === "seriouseats") {
       parsedRes = await parse_recipe(html, "https://www.seriouseats.com/crispy-roast-potatoes");
+    } else if (dir === "rezeptwelt-porreetorte") {
+      parsedRes = await parse_recipe(
+        html,
+        "https://www.rezeptwelt.de/backen-herzhaft-rezepte/porreetorte/na2ayihf-e2d56-173489-cfcd2-32vmk8kf",
+      );
     } else if (dir === "rezeptwelt-flammkuchen") {
       parsedRes = await parse_recipe(
         html,
