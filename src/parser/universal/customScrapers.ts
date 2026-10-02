@@ -324,6 +324,28 @@ export function scrapeRezeptwelt(html: string): CustomScraperResult | null {
     ($("img.recipe-main-image").first().attr("src") ?? "").trim() ||
     undefined;
 
+  // Tipps: rezeptwelt zeichnet sie mit `itemprop="recipeHint"` aus (schema.org)
+  // und stellt sie unter die Überschrift „Tipp". Sie sind weder Zutat noch
+  // Schritt, gehören aber ins Rezept – die App zeigt sie als Beschreibung.
+  const hints: string[] = [];
+  const collectHints = (selector: string) => {
+    $(selector).each((_, element) => {
+      const text = rezeptweltText($(element).html());
+      if (text.length > 2 && !hints.includes(text)) hints.push(text);
+    });
+  };
+  collectHints('[itemprop="recipeHint"] p, [itemprop="recipeHint"] li');
+  if (hints.length === 0) {
+    // Rückfall für Rezepte, die nur den Container mit Überschrift nutzen
+    collectHints("div.tips p, div.tips li");
+  }
+  const description =
+    hints.length === 0
+      ? undefined
+      : hints.length === 1
+        ? `Tipp: ${hints[0]}`
+        : `Tipps: ${hints.map((hint) => `• ${hint}`).join(" ")}`;
+
   // Zeiten und Portionen stehen in einem JS-Datenblock der Seite:
   // {"recipe_name":"Spinat Risotto","preparation_time_min":15,"total_time_min":15,"portions":0,…}
   const prep = Number(html.match(/"preparation_time_min"\s*:\s*(\d+)/)?.[1]);
@@ -340,6 +362,7 @@ export function scrapeRezeptwelt(html: string): CustomScraperResult | null {
     ingredients: ingredients.length > 0 ? ingredients : undefined,
     instructions: instructions.length > 0 ? instructions : undefined,
     image,
+    description,
     // `portions: 0` heißt „keine Angabe" – dann lieber nichts setzen als 0.
     servings: Number.isFinite(portions) && portions > 0 ? portions : undefined,
     times: Object.keys(times).length > 0 ? times : undefined,

@@ -12,6 +12,7 @@ import {
   hasSiteScraperForUrl,
 } from "./universal";
 import { scrapeRezeptwelt } from "./universal/customScrapers";
+import { toWebRecipeResponse } from "./universal/toWebRecipe";
 import { generateSyntheticCaption } from "./universal/syntheticCaption";
 import { runRecipeBenchmark } from "./universal/benchmarkRunner";
 import { parseRecipe as captionParser } from "./index";
@@ -246,5 +247,35 @@ describe("rezeptwelt.de", () => {
     // Der versteckte Doppeltext zum Symbol darf nicht im Rezept landen
     expect(joined).not.toContain("Mixtopf geschlossen");
     expect(joined).not.toContain("d-none");
+  });
+
+  it("liest die Tipps (itemprop=recipeHint) als Beschreibung", () => {
+    const description = scrapeRezeptwelt(html)?.description ?? "";
+    // Mehrere Tipps werden aufgezählt, damit sie lesbar bleiben
+    expect(description.startsWith("Tipps: ")).toBe(true);
+    expect(description).toContain("durch Gemüsebrühe erstezen");
+    expect(description).toContain("Tiefkühl-Spinat reichen uns 600ml Flüssigkeit");
+    expect(description).toContain("Parmesan-, Öl- und Flüssigkeitsmenge anpassen");
+    // Die Überschrift „Tipp" selbst ist keine Zutat und kein Tipp-Text
+    expect(description).not.toBe("Tipp");
+  });
+
+  it("kennzeichnet einen einzelnen Tipp als Tipp", () => {
+    // Fallback-Prüfung ohne zweites Fixture: zwei der drei Tipp-Absätze entfernen
+    const onlyOne = html.replace(/<p>Beim verwenden von Tiefkühl-Spinat[\s\S]*?<\/p>/, "").replace(/<p>Viele mögen es[\s\S]*?<\/p>/, "");
+    const description = scrapeRezeptwelt(onlyOne)?.description ?? "";
+    expect(description.startsWith("Tipp: Wer keinen Weißwein")).toBe(true);
+  });
+
+  it("reicht die Tipps bis in die Beschreibung des Imports durch", async () => {
+    const parsed = await parse_recipe(html, url);
+    expect(parsed.status).toBe("success");
+    // Der Seiten-Scraper hat Vorrang vor einer SEO-Beschreibung aus dem Schema
+    expect(parsed.recipe?.sonstiges.source).toBe("site-scraper");
+    expect(parsed.recipe?.sonstiges.value[0]).toContain("Tiefkühl-Spinat");
+
+    const web = toWebRecipeResponse(parsed, url);
+    expect(web.status).toBe("success");
+    expect(web.recipe?.description).toContain("Tiefkühl-Spinat reichen uns 600ml Flüssigkeit");
   });
 });

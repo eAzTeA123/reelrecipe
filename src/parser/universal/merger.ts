@@ -167,9 +167,14 @@ export function mergeRecipeFields(
   };
 
   // 4. Sonstiges (Description / Notes)
+  // Der Seiten-Scraper hat Vorrang: er liest die Tipps gezielt (bei rezeptwelt.de
+  // `itemprop="recipeHint"`), während die Schema-Beschreibung oft nur SEO-Text ist.
   const sonstigesList: string[] = [];
   let sonstigesSrc: ExtractionSource = "heuristik";
-  if (schemaResult?.description) {
+  if (scraperResult?.description) {
+    sonstigesList.push(scraperResult.description);
+    sonstigesSrc = "site-scraper";
+  } else if (schemaResult?.description) {
     sonstigesList.push(schemaResult.description);
     sonstigesSrc = "schema";
   }

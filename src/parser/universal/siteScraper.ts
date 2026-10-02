@@ -11,6 +11,8 @@ export interface ScraperExtractionResult {
   image?: string;
   servings?: number;
   times?: RecipeTimes;
+  /** Zusatztext (bei rezeptwelt.de die Tipps aus `itemprop="recipeHint"`) */
+  description?: string;
   error?: string;
 }
 
@@ -71,6 +73,7 @@ export async function extractWithSiteScraper(
           image: customRes.image,
           servings: customRes.servings,
           times: customRes.times,
+          description: customRes.description,
         };
       }
     } catch (err) {
