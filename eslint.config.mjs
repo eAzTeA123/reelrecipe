@@ -13,5 +13,8 @@ export default defineConfig([
     "playwright-report/**",
     "test-results/**",
     "e2e/**",
+    // Arbeitsverzeichnis für Messungen (gebündelte Prüfskripte, gitignoriert).
+    // Ohne diesen Eintrag lintet `eslint .` die ~70 000 Zeilen der Bündel.
+    "tmp/**",
   ]),
 ]);

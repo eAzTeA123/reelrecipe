@@ -222,6 +222,131 @@ export function scrapeKuechengoetter(html: string): CustomScraperResult | null {
 }
 
 /**
+ * 4. rezeptwelt.de (Thermomix®-Community)
+ *
+ * Warum ein eigener Scraper: Die Seite liefert **kein JSON-LD** (gemessen: 0
+ * Blöcke) – der generische Pfad hat deshalb nur geraten. Sie zeichnet aber
+ * sauber mit Microdata aus:
+ *
+ * - `meta[itemprop="name"]` → Rezeptname („Spinat Risotto"); die `<title>`-Zeile
+ *   hängt Autor, Kategorie und „Thermomix®" an und ist als Titel unbrauchbar.
+ * - `li[itemprop="recipeIngredient"]` → Zutaten. Betrag, Einheit und Name stehen
+ *   in **getrennten** `<span>`-Elementen („150" + " g" + " Parmesan, " +
+ *   "ggf. weniger") und müssen ohne Trennzeichen verbunden werden.
+ * - `[itemprop="recipeInstructions"]` → Zubereitung. Ein Abschnitt enthält
+ *   **mehrere** `<p>`; jeder Absatz ist ein eigener Schritt. Ohne diese Trennung
+ *   landet die ganze Anleitung als ein Klumpen im Rezept.
+ *
+ * Thermomix-Eigenheit: Einstellungen wie „Mixtopf geschlossen" oder „Linkslauf"
+ * stehen als Symbolbild **plus verstecktem Text** (`b.tmrc-custom-buttons-name`,
+ * Bootstrap-Klasse `d-none`). Unbehandelt bleibt entweder eine Lücke im Satz
+ * („Parmesan in den geben") oder doppelter Text. Deshalb wird das Symbol durch
+ * sein sichtbares Wort ersetzt.
+ */
+const REZEPTWELT_SYMBOLS: Record<string, string> = {
+  "mixtopf geschlossen": "Mixtopf",
+  "mixtopf offen": "Mixtopf",
+  linkslauf: "Linkslauf",
+  rühren: "Rühren",
+  ruehren: "Rühren",
+  sanft: "Sanft",
+  softmodus: "Sanft",
+  waage: "",
+  deckel: "",
+  timer: "",
+};
+
+/** Text eines rezeptwelt-Knotens: Symbole ersetzt, versteckte Texte entfernt. */
+function rezeptweltText(html: string | null | undefined): string {
+  if (!html) return "";
+  const $ = cheerio.load(`<div id="rezeptwelt-root">${html}</div>`);
+  const $root = $("#rezeptwelt-root");
+  // Versteckter Doppeltext zum Symbol
+  $root.find("b.tmrc-custom-buttons-name").remove();
+  // Symbol durch sein Wort ersetzen (mit Leerzeichen, damit nichts klebt)
+  $root.find("img.tmrc-icons").each((_, element) => {
+    const $icon = $(element);
+    const label = ($icon.attr("title") ?? $icon.attr("alt") ?? "").trim();
+    const replacement = REZEPTWELT_SYMBOLS[label.toLowerCase()] ?? label;
+    $icon.replaceWith(replacement ? ` ${replacement} ` : " ");
+  });
+  $root.find("br").replaceWith(" ");
+  // `.text()` statt Tag-für-Tag-Ersetzung: Die Seite teilt Zahlen in
+  // verschachtelte Elemente („5" + „0 g") – mit einem Leerzeichen je Tag würde
+  // daraus „5 0 g". `\s` erfasst auch das geschützte Leerzeichen (&nbsp;).
+  return $root
+    .text()
+    .replace(/\s+/g, " ")
+    // Thermomix-Schreibweise zusammenziehen: „100°/ Linkslauf/Stufe 1" → „100°/Linkslauf/Stufe 1"
+    .replace(/\s*\/\s*/g, "/")
+    .replace(/\s+([,.;:!?])/g, "$1")
+    .trim();
+}
+
+export function scrapeRezeptwelt(html: string): CustomScraperResult | null {
+  const $ = cheerio.load(html);
+
+  const title =
+    ($('meta[itemprop="name"]').attr("content") ?? "").trim() ||
+    ($('meta[property="og:title"]').attr("content") ?? "").trim() ||
+    ($("h1 a[title]").first().attr("title") ?? "").trim() ||
+    cleanHtmlText($("h1").first().text()) ||
+    undefined;
+
+  const ingredients: string[] = [];
+  $('li[itemprop="recipeIngredient"]').each((_, element) => {
+    const $item = $(element);
+    const spans = $item
+      .find("span")
+      .toArray()
+      .map((span) => $(span).text());
+    const text = cleanHtmlTextWithSpacing(spans.length > 0 ? spans.join("") : $item.text());
+    if (text) ingredients.push(text);
+  });
+
+  const instructions: string[] = [];
+  const seen = new Set<string>();
+  $('[itemprop="recipeInstructions"]').each((_, element) => {
+    const $section = $(element);
+    const paragraphs = $section.find("p").toArray();
+    const nodes = paragraphs.length > 0 ? paragraphs : [$section.get(0)];
+    for (const node of nodes) {
+      const text = rezeptweltText($(node).html());
+      if (text.length > 2 && !seen.has(text)) {
+        seen.add(text);
+        instructions.push(text);
+      }
+    }
+  });
+
+  const image =
+    ($('meta[property="og:image"]').attr("content") ?? "").trim() ||
+    ($("img.recipe-main-image").first().attr("src") ?? "").trim() ||
+    undefined;
+
+  // Zeiten und Portionen stehen in einem JS-Datenblock der Seite:
+  // {"recipe_name":"Spinat Risotto","preparation_time_min":15,"total_time_min":15,"portions":0,…}
+  const prep = Number(html.match(/"preparation_time_min"\s*:\s*(\d+)/)?.[1]);
+  const total = Number(html.match(/"total_time_min"\s*:\s*(\d+)/)?.[1]);
+  const portions = Number(html.match(/"portions"\s*:\s*(\d+)/)?.[1]);
+  const times: RecipeTimes = {};
+  if (Number.isFinite(prep) && prep > 0) times.prep = prep;
+  if (Number.isFinite(total) && total > 0) times.total = total;
+
+  if (!title && ingredients.length === 0 && instructions.length === 0) return null;
+
+  return {
+    title,
+    ingredients: ingredients.length > 0 ? ingredients : undefined,
+    instructions: instructions.length > 0 ? instructions : undefined,
+    image,
+    // `portions: 0` heißt „keine Angabe" – dann lieber nichts setzen als 0.
+    servings: Number.isFinite(portions) && portions > 0 ? portions : undefined,
+    times: Object.keys(times).length > 0 ? times : undefined,
+  };
+}
+
+/**
  * Registry of custom site-specific scrapers.
  * Host matching supports domains and subdomains.
  */
@@ -229,6 +354,7 @@ export const CUSTOM_SCRAPERS: Record<string, CustomScraperFn> = {
   "chefkoch.de": scrapeChefkoch,
   "essen-und-trinken.de": scrapeEssenUndTrinken,
   "kuechengoetter.de": scrapeKuechengoetter,
+  "rezeptwelt.de": scrapeRezeptwelt,
 };
 
 /**

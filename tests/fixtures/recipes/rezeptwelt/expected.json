@@ -1,0 +1,25 @@
+{
+  "titel": "Spinat Risotto",
+  "zutaten": [
+    "150 g Parmesan, ggf. weniger",
+    "1 Stück Zwiebel",
+    "35 g Olivenöl, ggf. weniger",
+    "250 g Risottoreis",
+    "350 g frischer Spinat, oder TK Spinat geht auch",
+    "150 g Weißwein trocken, ggf. weniger",
+    "600 g Gemüsebrühe heiß, ggf. weniger",
+    "20 g Butter, ggf. weniger"
+  ],
+  "zubereitung": [
+    "Parmesan in den Mixtopf geben, 10 Sek./Stufe 10 zerkleinern, umfüllen und Mixtopf spülen. Zwiebel in den Mixtopf geben und 3 Sek./Stufe 5 zerkleinern.",
+    "Olivenöl zugeben und 3 Min./100°/Stufe 1 dünsten.",
+    "Risottoreis zugeben und 3 Min./100°/Linkslauf/Stufe 1 dünsten.",
+    "In der Zwischenzeit Spinat waschen und grob hacken.",
+    "Mit Weißwein ablöschen und 5 Sek./Linkslauf/Stufe 2 verrühren.",
+    "Heiße Gemüsebrühe und Spinat zugeben und 22 Min./100°/Linkslauf/Stufe Sanftrührstufe garen, dabei den Messbecher nicht aufsetzen. Eventuell noch mit Salz und Pfeffer abschmecken, ist von der Intensität der Gemüsebrühe abhängig.",
+    "Butter und 50 g vom geriebenen Parmesan mithilfe des Spatels unterrühren. Sofort servieren, den restlichen Parmesan dazu reichen."
+  ],
+  "zeiten": { "prep": 15, "total": 15 },
+  "expectedSource": "site-scraper",
+  "expectedStatus": "success"
+}

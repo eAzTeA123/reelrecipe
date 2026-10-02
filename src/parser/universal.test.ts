@@ -1,4 +1,6 @@
 import { describe, it, expect } from "vitest";
+import { readFileSync } from "node:fs";
+import path from "node:path";
 import {
   parse_recipe,
   detectInputType,
@@ -9,6 +11,7 @@ import {
   mergeRecipeFields,
   hasSiteScraperForUrl,
 } from "./universal";
+import { scrapeRezeptwelt } from "./universal/customScrapers";
 import { generateSyntheticCaption } from "./universal/syntheticCaption";
 import { runRecipeBenchmark } from "./universal/benchmarkRunner";
 import { parseRecipe as captionParser } from "./index";
@@ -188,5 +191,60 @@ describe("Recipe Parser Multi-Site Benchmark", () => {
     // Ensure all critical fixtures pass or are correctly recognized
     const passOrBlocked = results.filter((r) => r.passed);
     expect(passOrBlocked.length).toBe(results.length);
+  });
+});
+
+/**
+ * rezeptwelt.de (Thermomix®-Community).
+ *
+ * Diese Seite liefert **kein JSON-LD** (gemessen: 0 Blöcke), sondern nur
+ * Microdata. Vorher lief sie durch den generischen Pfad; Titel, Zutaten und
+ * Zubereitung kamen falsch oder gar nicht an. Der Test hält die drei Dinge
+ * fest, die ein eigener Scraper löst:
+ *
+ * 1. Titel aus `meta[itemprop="name"]` („Spinat Risotto") statt der `<title>`-
+ *    Zeile, die Autor, Kategorie und „Thermomix®" anhängt.
+ * 2. Zutaten aus `li[itemprop="recipeIngredient"]`, deren Betrag, Einheit und
+ *    Name in getrennten `<span>`-Elementen stehen.
+ * 3. Zubereitung: **jeder Absatz ist ein Schritt.** Vorher landete die ganze
+ *    Anleitung als ein Klumpen im Rezept.
+ */
+describe("rezeptwelt.de", () => {
+  const url =
+    "https://www.rezeptwelt.de/hauptgerichte-mit-gemuese-rezepte/spinat-risotto/899ild5b-c6243-476130-cfcd2-he8bv9kb";
+  const html = readFileSync(
+    path.join(process.cwd(), "tests/fixtures/recipes/rezeptwelt/recipe.html"),
+    "utf8",
+  );
+
+  it("ist als eigene Seite registriert", () => {
+    expect(hasSiteScraperForUrl(url)).toBe(true);
+  });
+
+  it("liest Titel, Zutaten, Zubereitung, Zeiten und Bild", () => {
+    const result = scrapeRezeptwelt(html);
+    expect(result?.title).toBe("Spinat Risotto");
+    expect(result?.ingredients).toHaveLength(8);
+    expect(result?.ingredients?.[0]).toBe("150 g Parmesan, ggf. weniger");
+    expect(result?.ingredients?.[4]).toBe("350 g frischer Spinat, oder TK Spinat geht auch");
+    expect(result?.instructions).toHaveLength(7);
+    expect(result?.instructions?.[1]).toBe("Olivenöl zugeben und 3 Min./100°/Stufe 1 dünsten.");
+    expect(result?.times).toEqual({ prep: 15, total: 15 });
+    expect(result?.image).toContain("spinat-risotto.jpg");
+    // `"portions":0` heißt „keine Angabe" – daraus darf keine 0 werden.
+    expect(result?.servings).toBeUndefined();
+  });
+
+  it("übersetzt Thermomix-Symbole und lässt versteckten Text weg", () => {
+    const joined = (scrapeRezeptwelt(html)?.instructions ?? []).join(" ");
+    // Symbol „Mixtopf geschlossen" wird zu „Mixtopf", sonst fehlt das Wort im Satz
+    expect(joined).toContain("Parmesan in den Mixtopf geben");
+    // Einstellungen bleiben in Thermomix-Schreibweise zusammen
+    expect(joined).toContain("100°/Linkslauf/Stufe 1");
+    // Verschachtelte Elemente dürfen Zahlen nicht zerreißen („5 0 g")
+    expect(joined).toContain("50 g vom geriebenen Parmesan");
+    // Der versteckte Doppeltext zum Symbol darf nicht im Rezept landen
+    expect(joined).not.toContain("Mixtopf geschlossen");
+    expect(joined).not.toContain("d-none");
   });
 });

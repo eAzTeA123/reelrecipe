@@ -94,6 +94,11 @@ export async function runRecipeBenchmark(): Promise<{ results: FixtureResult[]; 
       parsedRes = await parse_recipe(html, "https://www.bbcgoodfood.com/recipes/classic-scones");
     } else if (dir === "seriouseats") {
       parsedRes = await parse_recipe(html, "https://www.seriouseats.com/crispy-roast-potatoes");
+    } else if (dir === "rezeptwelt") {
+      parsedRes = await parse_recipe(
+        html,
+        "https://www.rezeptwelt.de/hauptgerichte-mit-gemuese-rezepte/spinat-risotto/899ild5b-c6243-476130-cfcd2-he8bv9kb",
+      );
     } else {
       parsedRes = await parse_recipe(html);
     }
