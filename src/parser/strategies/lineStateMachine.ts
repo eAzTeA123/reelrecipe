@@ -202,9 +202,25 @@ export const lineStateMachineStrategy: ParserStrategy = {
           continue;
         }
 
+        // Zeile mit **eigener** Menge und Einheit ist eine neue Zutat, keine
+        // Fortsetzung: „150 g Quark" + „ca. 200 ml Milch" wurde sonst zu
+        // „Quark ca. 200 ml Milch" verschmolzen (gemessen an echten Captions).
+        // Das Muster wird hier direkt geprüft: `looksLikeIngredient` erkennt
+        // „ca. 200 ml Milch" nicht als Menge (zu wenige Signale).
+        // Ausnahme: eine Zeile, die NUR aus Menge und Einheit besteht
+        // („200 g" unter „Mehl"), gehört weiterhin zur Zeile darüber.
+        const hasOwnAmount =
+          /(?:^|\s)(?:ca\.?|etwa|circa|ungefähr|~)?\s*\d+(?:[.,]\d+)?\s*(?:g|gr|gramm|kg|ml|l|dl|cl|el|tl|tbsp|tsp|stück|stk|prise|bund|dose|packung|zehe|scheiben?|handvoll|tasse|cup|oz|lb)\b/i.test(
+            line,
+          ) &&
+          !/^\s*(?:ca\.?|etwa|circa|ungefähr)?\s*\d+(?:[.,]\d+)?\s*(?:g|gr|gramm|kg|ml|l|dl|cl|el|tl|tbsp|tsp|stück|stk|prise|bund|dose|packung|zehe|scheiben?|handvoll|tasse|cup|oz|lb)\s*\.?\s*$/i.test(
+            line,
+          );
+
         // Check if it's a continuation line (short, no bullet or number at start)
         if (
           !startsNewItem(line) &&
+          !hasOwnAmount &&
           !line.endsWith(":") &&
           !hasStepEmoji(line) &&
           line.length < 40 &&
@@ -224,6 +240,7 @@ export const lineStateMachineStrategy: ParserStrategy = {
         // Check if it's a continuation line (starts with lowercase, no bullet)
         if (
           !startsNewItem(line) &&
+          !hasOwnAmount &&
           /^[a-zäöü]/.test(line) &&
           !line.endsWith(":") &&
           !hasStepEmoji(line) &&

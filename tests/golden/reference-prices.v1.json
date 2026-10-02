@@ -1967,6 +1967,24 @@
       "skip": false
     },
     {
+      "name": "Quark",
+      "occurrences": 1,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "150 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
       "name": "Milch",
       "occurrences": 1,
       "dimensions": [
@@ -2693,24 +2711,6 @@
         "volume"
       ],
       "mostCommonQuantity": "1 EL",
-      "note": null,
-      "reference": {
-        "pricePerBaseUnit": null,
-        "currency": "EUR",
-        "shop": null,
-        "date": null,
-        "url": null,
-        "packageSize": null
-      },
-      "skip": false
-    },
-    {
-      "name": "rote Linsen",
-      "occurrences": 1,
-      "dimensions": [
-        "mass"
-      ],
-      "mostCommonQuantity": "150 g",
       "note": null,
       "reference": {
         "pricePerBaseUnit": null,

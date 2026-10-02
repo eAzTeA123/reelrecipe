@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { Recipe } from "@/domain/types";
+import { PARSER_VERSION } from "@/parser";
 import type { WebRecipeResponse } from "@/parser/universal/toWebRecipe";
 import {
   isRefreshableUrl,
@@ -108,7 +109,7 @@ describe("planRefresh", () => {
         ],
         steps: ["Zwiebel zerkleinern.", "Reis dünsten."],
       },
-      parserVersion: 15,
+      parserVersion: PARSER_VERSION,
     } as Partial<Recipe>);
     const plan = planRefresh(stored, {
       ...parsed,

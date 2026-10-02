@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-02T11:27:32.614Z",
+  "generatedAt": "2026-10-02T15:05:43.735Z",
   "fixtures": 42,
   "lines": 1279,
   "items": 463,
@@ -10,8 +10,8 @@
     },
     "items": {
       "dev": 304,
-      "test": 136,
-      "excluded": 23
+      "test": 137,
+      "excluded": 22
     },
     "lines": {
       "dev": 954,
@@ -19,9 +19,9 @@
     }
   },
   "problemClasses": {
-    "no-expected-item": 880,
+    "no-expected-item": 879,
     "multi-item-line": 28,
-    "has-item": 399,
+    "has-item": 400,
     "heading": 95,
     "range": 25,
     "unquantified-unit": 32,
@@ -32,11 +32,10 @@
     "hashtag": 35,
     "promo": 24
   },
-  "labelDefects": 12,
+  "labelDefects": 11,
   "labelDefectsByName": [
     "lib-da70q7nqgx_ :: * 30 g Erythrit << bullet-im-namen+menge-im-namen",
     "lib-da70q7nqgx_ :: Saft of Zitrone << of-statt-von",
-    "lib-daw4krusc4l :: Quark ca. 200 ml Milch << menge-im-namen",
     "lib-dbd7eldrupt :: Passierte Tomaten + 100ml Wasser << menge-im-namen",
     "lib-dbxltnpiq5i :: Saft of Zitrone << of-statt-von",
     "lib-dby8vmdyoi- :: heap tsp Dijon Senf Resting juices of the Hähnchen << of-statt-von+unuebersetzt",
@@ -52,11 +51,11 @@
     "unquantified": 145,
     "unknownUnit": 0,
     "pantry": 34,
-    "distinctPriceableNames": 192
+    "distinctPriceableNames": 193
   },
   "reviewRows": {
-    "defects": 12,
-    "unmatched": 15,
+    "defects": 11,
+    "unmatched": 14,
     "lines": 83
   }
 }

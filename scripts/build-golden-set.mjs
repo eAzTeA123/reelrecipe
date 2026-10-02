@@ -26,6 +26,10 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+// Version aus der Quelle lesen, damit das Golden Set nicht still veraltet.
+const PARSER_VERSION = Number(
+  /PARSER_VERSION\s*=\s*(\d+)/.exec(readFileSync(join(root, "src", "parser", "index.ts"), "utf8"))?.[1] ?? 0,
+);
 const argv = process.argv.slice(2);
 const argValue = (name) => {
   const index = argv.indexOf(name);
@@ -328,7 +332,7 @@ writeFileSync(
       purpose:
         "Golden Set für Zutaten-Erkennung und Preise. items[] sind Labels (Herkunft in `origin`), lines[].istZutat ist ein Vorschlag. Einträge mit split=\"excluded\" zählen nicht zu den Schwellen.",
       generatedFrom: {
-        parserVersion: 15,
+        parserVersion: PARSER_VERSION,
         fixtureCount: fixtures.length,
         sources: SOURCES.map((s) =>
           s.backup ? `backup:${s.backup}` : s.dir.replace(/\\/g, "/").replace(root.replace(/\\/g, "/") + "/", ""),

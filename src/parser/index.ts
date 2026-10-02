@@ -26,8 +26,20 @@ export {
   ALL_STRATEGIES,
 };
 
-/** Inkrement bei jeder wesentlichen Parser-Änderung */
-export const PARSER_VERSION = 15;
+/**
+ * Inkrement bei jeder wesentlichen Parser-Änderung.
+ *
+ * **Wichtig:** Diese Zahl ist der Auslöser für die Neu-Einlese-Migration
+ * (`data/local/migrationService.ts`): Beim App-Start werden alle Rezepte mit
+ * `parserVersion < PARSER_VERSION` aus ihrer gespeicherten Caption neu geparst –
+ * über den schützenden Merge, eigene Änderungen bleiben also erhalten
+ * (Rückmeldung als Toast in `MigrationRunner`).
+ *
+ * Version 17: Titelbereinigung (Anpreisungen, Nutzen-Floskeln, Emojis), Headlines
+ * mit dem Gerichtsnamen hinter dem Doppelpunkt, und Zutatenzeilen mit eigener
+ * Menge werden nicht mehr an die vorherige Zutat gehängt („Quark ca. 200 ml Milch").
+ */
+export const PARSER_VERSION = 17;
 
 import { isSectionHeader as isSectionHeaderLine } from "./lineFacts";
 

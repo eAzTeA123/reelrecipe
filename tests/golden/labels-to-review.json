@@ -26,16 +26,6 @@
           "skip": false
         },
         {
-          "itemId": "lib-daw4krusc4l#unmatched:Quark ca. 200 ml Milch",
-          "fixtureId": "lib-daw4krusc4l",
-          "label": "Quark ca. 200 ml Milch",
-          "menge": 150,
-          "einheit": "g",
-          "defekt": "menge-im-namen",
-          "korrekturName": null,
-          "skip": false
-        },
-        {
           "itemId": "lib-dbd7eldrupt#21:Passierte Tomaten + 100ml Wasser",
           "fixtureId": "lib-dbd7eldrupt",
           "label": "Passierte Tomaten + 100ml Wasser",
@@ -135,14 +125,6 @@
           "fixtureId": "lib-da70q7nqgx_",
           "label": "Saft of Zitrone",
           "defekt": "of-statt-von",
-          "korrekturName": null,
-          "skip": false
-        },
-        {
-          "itemId": "lib-daw4krusc4l#unmatched:Quark ca. 200 ml Milch",
-          "fixtureId": "lib-daw4krusc4l",
-          "label": "Quark ca. 200 ml Milch",
-          "defekt": "menge-im-namen",
           "korrekturName": null,
           "skip": false
         },

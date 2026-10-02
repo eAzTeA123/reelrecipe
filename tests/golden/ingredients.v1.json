@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "purpose": "Golden Set für Zutaten-Erkennung und Preise. items[] sind Labels (Herkunft in `origin`), lines[].istZutat ist ein Vorschlag. Einträge mit split=\"excluded\" zählen nicht zu den Schwellen.",
   "generatedFrom": {
-    "parserVersion": 15,
+    "parserVersion": 17,
     "fixtureCount": 42,
     "sources": [
       "src/parser/corpus/fixtures",
@@ -769,10 +769,10 @@
   ],
   "counts": {
     "lines": 1279,
-    "linesWithItem": 399,
+    "linesWithItem": 400,
     "items": 463,
-    "itemsWithDefect": 12,
-    "itemsWithoutLine": 15
+    "itemsWithDefect": 11,
+    "itemsWithoutLine": 14
   },
   "lines": [
     {
@@ -9317,12 +9317,12 @@
       "fixtureId": "lib-daw4krusc4l",
       "index": 10,
       "text": "150 g Quark",
-      "istZutat": false,
+      "istZutat": true,
       "istZutatSource": "derived",
       "classes": [
-        "no-expected-item"
+        "has-item"
       ],
-      "reviewPriority": "low",
+      "reviewPriority": "high",
       "split": "test",
       "excluded": false
     },
@@ -21715,6 +21715,19 @@
       "excluded": false
     },
     {
+      "id": "lib-daw4krusc4l#10:Quark",
+      "fixtureId": "lib-daw4krusc4l",
+      "lineId": "lib-daw4krusc4l#10",
+      "name": "Quark",
+      "amount": 150,
+      "amountMax": null,
+      "unit": "g",
+      "origin": "user-stored",
+      "labelDefect": null,
+      "split": "test",
+      "excluded": false
+    },
+    {
       "id": "lib-daw4krusc4l#11:Milch",
       "fixtureId": "lib-daw4krusc4l",
       "lineId": "lib-daw4krusc4l#11",
@@ -21790,20 +21803,6 @@
       "origin": "user-stored",
       "labelDefect": null,
       "split": "test",
-      "excluded": false
-    },
-    {
-      "id": "lib-daw4krusc4l#unmatched:Quark ca. 200 ml Milch",
-      "fixtureId": "lib-daw4krusc4l",
-      "lineId": null,
-      "noLine": true,
-      "name": "Quark ca. 200 ml Milch",
-      "amount": 150,
-      "amountMax": null,
-      "unit": "g",
-      "origin": "user-stored",
-      "labelDefect": "menge-im-namen",
-      "split": "excluded",
       "excluded": false
     },
     {
