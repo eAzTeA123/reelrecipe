@@ -210,14 +210,14 @@ export default function HomePage() {
         >
           <IconSettings size={20} />
         </Link>
-        <div className="relative z-10 grid gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-stretch lg:gap-12">
-          <div>
+        <div className="relative z-10 grid min-w-0 gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-stretch lg:gap-12">
+          <div className="min-w-0">
             <p className="text-label font-semibold uppercase text-accent-text">
               {recipes.length > 0
                 ? `${recipes.length} ${recipes.length === 1 ? t("recipes.countSingular") : t("recipes.countPlural")}`
                 : t("brand.name")}
             </p>
-            <h1 id="import-heading" className="mt-3 font-display text-display text-ink">
+            <h1 id="import-heading" className="mt-3 font-display text-display break-words text-ink">
               Rezept-Link
               <br />
               <span className="text-accent-text">einfügen &amp; kochen.</span>

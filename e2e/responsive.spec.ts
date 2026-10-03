@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { createRecipeViaUI, DE_CAPTION } from "./helpers";
+import { createRecipeViaUI, DE_CAPTION, expectNoHorizontalOverflow } from "./helpers";
 import fs from "fs";
 
 const VIEWPORTS = [
@@ -24,6 +24,17 @@ async function noHorizontalOverflow(page: Page) {
   expect(result.scroll, "horizontaler Overflow").toBeLessThanOrEqual(result.inner);
 }
 
+/**
+ * Frühere Prüfung – bleibt als schnelle Vorprüfung erhalten, greift aber zu kurz:
+ * Ein zu breiter Inhalt in einem `overflow-hidden`-Container scrollt die Seite
+ * nicht, sondern wird abgeschnitten. Deshalb zusätzlich die Prüfung auf
+ * Elementebene aus `helpers.ts`.
+ */
+async function assertNoOverflow(page: Page, context: string) {
+  await noHorizontalOverflow(page);
+  await expectNoHorizontalOverflow(page, context);
+}
+
 for (const vp of VIEWPORTS) {
   test.describe(`Viewport ${vp.name}px`, () => {
     test(`kein Overflow auf allen Seiten`, async ({ page }) => {
@@ -32,7 +43,7 @@ for (const vp of VIEWPORTS) {
       for (const p of PAGES) {
         await page.goto(p);
         await page.waitForLoadState("networkidle");
-        await noHorizontalOverflow(page);
+        await assertNoOverflow(page, `Viewport ${vp.name} – ${p}`);
         fs.mkdirSync("e2e/screenshots", { recursive: true });
         await page.screenshot({
           path: `e2e/screenshots/${vp.name}-${p === "/" ? "home" : p.slice(1)}.png`,
@@ -52,18 +63,18 @@ test.describe("gefüllte App – 390px & 1440px", () => {
       await createRecipeViaUI(page, DE_CAPTION);
       fs.mkdirSync("e2e/screenshots", { recursive: true });
       await page.screenshot({ path: `e2e/screenshots/${vp.name}-detail.png`, fullPage: true });
-      await noHorizontalOverflow(page);
+      await assertNoOverflow(page, `${vp.name} – Detail`);
 
       await page.goto(`/recipes`);
       await page.screenshot({ path: `e2e/screenshots/${vp.name}-list.png` });
-      await noHorizontalOverflow(page);
+      await assertNoOverflow(page, `${vp.name} – Liste`);
 
       // Lösch-Dialog
       await page.goto("/");
       await page.getByText("Creamy Garlic Chicken").first().click();
       await page.getByRole("button", { name: "Rezept löschen" }).click();
       await page.screenshot({ path: `e2e/screenshots/${vp.name}-dialog.png` });
-      await noHorizontalOverflow(page);
+      await assertNoOverflow(page, `${vp.name} – Dialog`);
       await page.getByRole("button", { name: "Abbrechen" }).click();
     });
   }

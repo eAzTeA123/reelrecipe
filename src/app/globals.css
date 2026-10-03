@@ -166,7 +166,15 @@
 }
 
 html {
+  /*
+   * Gegen Androids **Font-Boosting**: Chrome auf Android bläht Text in breiten,
+   * textlastigen Blöcken eigenmächtig auf, wodurch Zeilen und Karten überlaufen.
+   * Die unpräfixte Eigenschaft ist die verlässliche Angabe (Blink führt beide
+   * Namen zusammen, ältere WebViews kennen nur `-webkit-`), deshalb stehen hier
+   * bewusst beide.
+   */
   -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
   scroll-behavior: smooth;
   /*
    * `manipulation` schaltet den Doppeltipp-Zoom ab (der auf iOS trotz
@@ -186,6 +194,21 @@ body {
 }
 h1, h2, h3 { text-wrap: balance; }
 p, li { text-wrap: pretty; }
+
+/*
+ * Sehr schmale Geräte: Viele Android-Handys sind nur 320–360 px breit – schmaler
+ * als jedes iPhone (375/390/430). Dort ist die Display-Schrift breiter als der
+ * verfügbare Platz, und das längste Wort sprengt die Hero-Karte (gemessen: 332 px
+ * Inhalt in 288 px Platz, sichtbar als abgeschnittener Text). Der Token hat zwar
+ * einen `vw`-Anteil, greift aber erst ab etwa 450 px Breite; hier bekommt er für
+ * schmale Geräte eine Untergrenze, die zum Platz passt. Ab 381 px ändert sich
+ * nichts – das iPhone-Layout bleibt unverändert.
+ */
+@media (max-width: 380px) {
+  :root {
+    --text-display: clamp(1.875rem, 11vw, 2.75rem);
+  }
+}
 
 /* Display-Schrift: nur Gewicht 400 – Größe erzeugt Wirkung, nicht Fettung */
 .font-display {
