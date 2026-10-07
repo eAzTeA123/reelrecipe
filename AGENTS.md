@@ -20,8 +20,15 @@ Route beim ersten Aufruf neu; Navigationen dauern dadurch Sekunden und sehen wie
 Bedienfehler aus („ich muss mehrmals tippen"). Gemessen mit
 `npx playwright test e2e/perf.spec.ts` – die Spec legt 120 Rezepte an und
 protokolliert Liste, Scroll-Last und Tab-Wechsel gegen `next start`. Stand:
-erste Karte ~0,6 s, alle 120 Karten ~0,7 s, Tippen→Detail ~0,2 s, Tab-Wechsel
-0,2–0,7 s, keine langlaufenden Aufgaben beim Scrollen.
+erste Karte 0,2 s, Tippen→Detail 0,2 s, Tab-Wechsel 0,07–0,24 s, keine
+langlaufenden Aufgaben beim Scrollen.
+
+Große Bibliotheken misst `npx playwright test e2e/perf-scale.spec.ts`
+(120/400/800 Rezepte, zusätzlich Wochenplan): erste Karte bei 800 Rezepten
+0,26 s. Möglich machen das `useProgressiveList` (Listen rendern in 48er-Scheiben)
+und `.card-lazy` (`content-visibility: auto`), siehe `globals.css`. Vorher baute
+React alle Karten in einem Zug auf: 8,2 s bis zur ersten Karte, 19 093 DOM-Knoten
+und 286 s Hauptthread-Arbeit beim Scrollen.
 
 ## Architektur
 
@@ -153,6 +160,40 @@ der Nutzer nicht überschrieben werden; Verhalten vorher im Testfall festnageln.
 
 Der Parser-Stand misst sich an: `node tmp/tools/run-user-corpus.cjs`
 (Feld-Score + Klassen) und `src/parser/corpus.test.ts` (Schwellen).
+
+## Arbeiten ohne Token zu verbrennen
+
+Gemessen über 16 Sitzungen dieses Projekts (`node scripts/token-report.mjs`):
+**Eingabe/Kontext 915 M Tokens gegen 2,5 M Ausgabe – Verhältnis 1 : 359.** Wer
+sparen will, muss also am Kontext arbeiten, nicht an der Wortzahl. Die Regeln
+gelten für Agenten wie für Menschen:
+
+**Ausgabe knapp halten** (die billigste Schicht, kostet keine Qualität):
+- Ergebnis zuerst, dann Begründung. Keine Einleitungen, keine Wiederholung der
+  Frage, keine Zusammenfassung des gerade Gesagten.
+- Tabellen und Stichpunkte statt Fließtext; keine Aufzählung von Schritten, die
+  schon im Diff oder in der Ausgabe stehen.
+- **Unverkürzt bleiben**: Code, Befehle, Messwerte, Testresultate, Fehlermeldungen,
+  Risiken und Begründungen. Knappheit darf keine Zahl und keine Warnung kosten.
+- Deutsch bleibt Deutsch, inklusive Umlauten.
+
+**Kontext klein halten** (der eigentliche Hebel):
+- Dateien gezielt lesen: `grep` vor `read`, `read` mit `offset`/`limit` statt
+  ganzer Dateien, keine Datei zweimal lesen.
+- Befehlsausgaben begrenzen (`Select-Object -First/-Last`, gezielte Filter) –
+  eine Ausgabe wird bei jeder weiteren Anfrage erneut mitgeschickt.
+- Breite Erkundung an einen Subagenten geben (`subagent`): Dessen Werkzeugausgaben
+  bleiben in seinem Kontext, nicht im Hauptstrang.
+- Lange Sitzungen abschließen statt endlos weiterführen: Stand in die
+  Commit-Nachricht oder eine `HANDOFF.md`, dann in einer neuen Sitzung weiter.
+  Der Kontext wird bei jedem Schritt erneut gelesen – kurze Sitzungen sind der
+  größte Einzelhebel.
+- DSH komprimiert den Kontext selbst (Checkpoints); darauf verlassen statt
+  vorsorglich alles im Kopf zu behalten.
+
+**Messen statt glauben**: `node scripts/token-report.mjs` zeigt je Sitzung
+Ausgabe-, Eingabe- und Cache-Tokens sowie das Verhältnis. Nach einigen Sitzungen
+erneut laufen lassen und vergleichen – nicht schätzen.
 
 <!-- BEGIN:nextjs-agent-rules -->
 
