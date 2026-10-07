@@ -176,3 +176,27 @@ export async function expectNoHorizontalOverflow(page: Page, context: string): P
   problems.push(...report.offenders);
   expect(problems, `${context}: waagerechter Überlauf\n${problems.join("\n")}`).toEqual([]);
 }
+
+/**
+ * Scrollt eine portionsweise aufgebaute Liste bis zum Ende durch.
+ *
+ * Lange Listen rendern zunächst nur einen Ausschnitt und laden beim Scrollen
+ * nach (siehe `useProgressiveList`). Für eine Aussage wie „die ganze Liste ist
+ * benutzbar" muss man deshalb durchscrollen; zurückgegeben werden Dauer und die
+ * erreichte Kartenanzahl.
+ */
+export async function loadWholeList(
+  page: Page,
+  expectedCount: number,
+  { rounds = 400 }: { rounds?: number } = {},
+): Promise<{ ms: number; cards: number }> {
+  const start = Date.now();
+  let cards = 0;
+  for (let i = 0; i < rounds; i++) {
+    cards = await page.locator("article").count();
+    if (cards >= expectedCount) break;
+    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    await page.waitForTimeout(120);
+  }
+  return { ms: Date.now() - start, cards };
+}

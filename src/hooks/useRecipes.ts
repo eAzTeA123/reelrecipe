@@ -13,6 +13,16 @@ interface RecipeListState {
 
 const LOAD_ERROR = "Die Rezepte konnten nicht geladen werden. Bitte versuche es erneut.";
 
+/**
+ * Gemeinsames leeres Ergebnis.
+ *
+ * Wichtig: **eine** Konstante statt `[]` an jeder Stelle. Ein frisches `[]` bei
+ * jedem Rendern hat eine neue Identität; alles, was darauf memoisiert (z. B.
+ * `useMemo` in der Rezeptliste oder `useProgressiveList`), rechnet dann bei
+ * jedem Render neu – im schlimmsten Fall entsteht eine Render-Schleife.
+ */
+const EMPTY_RECIPES: Recipe[] = [];
+
 export function useRecipes(filter?: SearchFilter): {
   recipes: Recipe[];
   loading: boolean;
@@ -22,7 +32,7 @@ export function useRecipes(filter?: SearchFilter): {
   const key = JSON.stringify(filter ?? {});
   const [state, setState] = useState<RecipeListState>({
     key,
-    recipes: [],
+    recipes: EMPTY_RECIPES,
     loading: true,
   });
   const [attempt, setAttempt] = useState(0);
@@ -47,7 +57,7 @@ export function useRecipes(filter?: SearchFilter): {
     }
   }, [key, attempt]);
 
-  const current = state.key === key ? state : { key, recipes: [], loading: true };
+  const current = state.key === key ? state : { key, recipes: EMPTY_RECIPES, loading: true };
   return {
     recipes: current.recipes,
     loading: current.loading,

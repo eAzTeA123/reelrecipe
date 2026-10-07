@@ -5,6 +5,7 @@ import { useState, useMemo, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useRecipes } from "@/hooks/useRecipes";
+import { useProgressiveList } from "@/hooks/useProgressiveList";
 import { PageHeader } from "@/components/PageHeader";
 import { RecipeCard } from "@/components/RecipeCard";
 import { Reveal } from "@/components/Reveal";
@@ -17,6 +18,15 @@ import { Button } from "@/components/Button";
 import { IconPlus, IconFridge, IconGrid, IconDice, IconFolder, IconFilter, IconChevronDown, IconX } from "@/components/Icons";
 import { normalizeForSearch } from "@/lib/text";
 import { FridgeSearch } from "@/components/FridgeSearch";
+import type { Recipe } from "@/domain/types";
+
+/** Ein Listeneintrag: Rezept plus optionale Trefferangaben aus der Kühlschrank-Suche. */
+interface RankedRecipe {
+  recipe: Recipe;
+  matchPercentage?: number;
+  matchedCount?: number;
+  missingIngredients?: string[];
+}
 
 function RecipesContent() {
   const { t } = useI18n();
@@ -44,7 +54,7 @@ function RecipesContent() {
    */
   const recipes = allRecipes;
 
-  const processedRecipes = useMemo(() => {
+  const processedRecipes = useMemo<RankedRecipe[]>(() => {
     if (mode === "all") {
       return [...recipes]
         .sort((a, b) => {
@@ -100,6 +110,14 @@ function RecipesContent() {
 
     return matched;
   }, [recipes, mode, sort, fridgeIngredients]);
+
+  /*
+   * Portionsweises Rendern: Der `resetKey` beschreibt, wann die Liste wieder
+   * oben beginnt – bei neuer Suche, Kategorie, Sortierung oder Modus.
+   */
+  const { shown, hasMore, sentinelRef, total } = useProgressiveList(processedRecipes, {
+    resetKey: `${mode}|${query}|${category ?? ""}|${sort}`,
+  });
 
   return (
     <>
@@ -308,7 +326,7 @@ function RecipesContent() {
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-x-5 gap-y-9 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {processedRecipes.map((r, i) => (
+          {shown.map((r, i) => (
             <Reveal key={r.recipe.id} delay={(i % 4) * 45}>
               <RecipeCard
                 recipe={r.recipe}
@@ -317,6 +335,18 @@ function RecipesContent() {
               />
             </Reveal>
           ))}
+        </div>
+      )}
+      {/*
+       * Nachladen in Scheiben: Bei großen Bibliotheken werden nicht alle Karten
+       * auf einmal aufgebaut. Der Beobachter sitzt am Listenende; der Hinweis ist
+       * für Screenreader und als sichtbares Zeichen, dass es weitergeht.
+       */}
+      {!loading && !error && hasMore && (
+        <div ref={sentinelRef} className="mt-6 flex justify-center">
+          <p role="status" className="nums text-meta text-ink-3">
+            {shown.length} von {total} Rezepten angezeigt – weiter scrollen lädt mehr
+          </p>
         </div>
       )}
     </>

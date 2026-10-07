@@ -5,6 +5,7 @@ import { getCollectionRepository } from "@/data";
 import { useRecipes } from "@/hooks/useRecipes";
 import { PageHeader } from "@/components/PageHeader";
 import { RecipeCard } from "@/components/RecipeCard";
+import { useProgressiveList } from "@/hooks/useProgressiveList";
 import { Button } from "@/components/Button";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { EmptyState } from "@/components/EmptyState";
@@ -79,6 +80,24 @@ export default function CollectionsPage() {
     () => (selected ? resolveCollectionRecipes(selected, recipes) : []),
     [selected, recipes],
   );
+
+  /*
+   * Anzahl je Sammlung einmal berechnen statt in der Darstellung: Vorher lief
+   * `resolveCollectionRecipes` für **jede** Sammlung bei **jedem** Rendern – bei
+   * vielen Sammlungen und einer großen Bibliothek kostet das spürbar.
+   */
+  const countsByCollection = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const collection of collections) {
+      counts.set(collection.id, resolveCollectionRecipes(collection, recipes).length);
+    }
+    return counts;
+  }, [collections, recipes]);
+
+  /** Portionsweises Rendern: Sammlungen können sehr viele Rezepte enthalten. */
+  const { shown: shownContents, hasMore, sentinelRef, total } = useProgressiveList(contents, {
+    resetKey: selectedId ?? "",
+  });
   /** Rezepte, die der Filter der ausgewählten Sammlung schon erfasst. */
   const filterMatches = useMemo(() => {
     if (!selected) return [];
@@ -251,7 +270,7 @@ export default function CollectionsPage() {
           <ul className="mb-6 flex flex-col gap-2">
             {collections.map((collection, index) => {
               const active = collection.id === selectedId;
-              const count = resolveCollectionRecipes(collection, recipes).length;
+              const count = countsByCollection.get(collection.id) ?? 0;
               const labels = filterSummary(collection);
               return (
                 <li
@@ -403,7 +422,7 @@ export default function CollectionsPage() {
             />
           ) : (
             <div className="grid grid-cols-1 gap-x-5 gap-y-9 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {contents.map((recipe) => {
+              {shownContents.map((recipe) => {
                 const removable = manualIds.includes(recipe.id);
                 return (
                   <div key={recipe.id} className="relative">
@@ -424,6 +443,13 @@ export default function CollectionsPage() {
                   </div>
                 );
               })}
+            </div>
+          )}
+          {!loading && contents.length > 0 && hasMore && (
+            <div ref={sentinelRef} className="mt-6 flex justify-center">
+              <p role="status" className="nums text-meta text-ink-3">
+                {shownContents.length} von {total} Rezepten angezeigt – weiter scrollen lädt mehr
+              </p>
             </div>
           )}
         </>

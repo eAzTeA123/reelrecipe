@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useRecipes } from "@/hooks/useRecipes";
+import { useProgressiveList } from "@/hooks/useProgressiveList";
 import { useI18n } from "@/lib/i18n/context";
 import { PageHeader } from "@/components/PageHeader";
 import { RecipeCard } from "@/components/RecipeCard";
@@ -14,6 +15,7 @@ import { IconHeart } from "@/components/Icons";
 export default function FavoritesPage() {
   const { t } = useI18n();
   const { recipes, loading, error, retry } = useRecipes({ favoritesOnly: true });
+  const { shown, hasMore, sentinelRef, total } = useProgressiveList(recipes);
 
   return (
     <>
@@ -40,11 +42,20 @@ export default function FavoritesPage() {
           />
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-x-5 gap-y-9 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {recipes.map((r) => (
-            <RecipeCard key={r.id} recipe={r} />
-          ))}
-        </div>
+        <>
+          <div className="grid grid-cols-1 gap-x-5 gap-y-9 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {shown.map((r) => (
+              <RecipeCard key={r.id} recipe={r} />
+            ))}
+          </div>
+          {hasMore && (
+            <div ref={sentinelRef} className="mt-6 flex justify-center">
+              <p role="status" className="nums text-meta text-ink-3">
+                {shown.length} von {total} Favoriten angezeigt – weiter scrollen lädt mehr
+              </p>
+            </div>
+          )}
+        </>
       )}
     </>
   );

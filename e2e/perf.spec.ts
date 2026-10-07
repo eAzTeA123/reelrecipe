@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { loadWholeList } from "./helpers";
 
 /**
  * Lastmessung mit einer realistisch großen Bibliothek.
@@ -101,8 +102,14 @@ test("Last mit 120 Rezepten: Liste, Scrollen, Detail öffnen", async ({ page }) 
   });
   const listMs = Date.now() - t0;
 
-  await expect(page.locator("article")).toHaveCount(COUNT, { timeout: 30_000 });
+  /*
+   * Die Liste rendert portionsweise: „alle Karten im DOM" entsteht erst, wenn
+   * man bis zum Ende scrollt. Genau das wird hier gemessen (und mit dem Budget
+   * abgesichert), damit die Liste auch vollständig benutzbar bleibt.
+   */
+  const whole = await loadWholeList(page, COUNT);
   const allMs = Date.now() - t0;
+  expect(whole.cards, "alle Karten nach dem Durchscrollen").toBe(COUNT);
 
   // Scrollen durch die ganze Liste. Gemessen wird **nicht** die Dauer des
   // Scrollens (das wäre nur die Dauer der Weich-Scroll-Animation), sondern die
@@ -142,13 +149,13 @@ test("Last mit 120 Rezepten: Liste, Scrollen, Detail öffnen", async ({ page }) 
   const detailMs = Date.now() - t2;
 
   console.log(
-    `PERF · ${COUNT} Rezepte — erste Karte ${listMs} ms · alle Karten ${allMs} ms · ` +
+    `PERF · ${COUNT} Rezepte — erste Karte ${listMs} ms · ganze Liste durchgescrollt ${allMs} ms · ` +
       `Scroll-Last ${jank.count} Aufgaben / ${jank.total} ms (schlimmste ${jank.worst} ms) · ` +
       `Tippen→Detail ${detailMs} ms`,
   );
 
   expect(listMs, "erste Karte sichtbar").toBeLessThan(BUDGET_MS.list);
-  expect(allMs, "alle Karten im DOM").toBeLessThan(BUDGET_MS.all);
+  expect(allMs, "gesamte Liste durchgescrollt").toBeLessThan(BUDGET_MS.all);
   expect(detailMs, "Tippen bis Detailseite steht").toBeLessThan(BUDGET_MS.detail);
   expect(jank.total, "langlaufende Aufgaben beim Scrollen").toBeLessThan(BUDGET_MS.jankTotal);
 });

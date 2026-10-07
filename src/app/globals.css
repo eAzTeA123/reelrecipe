@@ -196,6 +196,21 @@ h1, h2, h3 { text-wrap: balance; }
 p, li { text-wrap: pretty; }
 
 /*
+ * Karten in langen Listen: Der Browser darf Karten außerhalb des Sichtbereichs
+ * beim Layouten und Zeichnen überspringen (`content-visibility: auto`). Das
+ * nimmt Rechenlast beim ersten Aufbau und beim Scrollen heraus – gemessen
+ * erzeugte eine Liste mit 800 Karten sonst 12 Sekunden Hauptthread-Arbeit beim
+ * Scrollen. `contain-intrinsic-size` gibt eine Höhenschätzung, damit die
+ * Scrollleiste stabil bleibt; das `auto` davor merkt sich die zuletzt gemessene
+ * Höhe. Browser ohne Unterstützung ignorieren beides und verhalten sich wie
+ * bisher.
+ */
+.card-lazy {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 380px;
+}
+
+/*
  * Sehr schmale Geräte: Viele Android-Handys sind nur 320–360 px breit – schmaler
  * als jedes iPhone (375/390/430). Dort ist die Display-Schrift breiter als der
  * verfügbare Platz, und das längste Wort sprengt die Hero-Karte (gemessen: 332 px

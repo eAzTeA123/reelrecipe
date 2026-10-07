@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { memo } from "react";
 import type { Recipe } from "@/domain/types";
 import { getRecipeRepository } from "@/data";
 import { RecipeImage } from "./RecipeImage";
@@ -56,7 +57,16 @@ export function RecipeCover({
   );
 }
 
-export function RecipeCard({
+/**
+ * Eine Rezeptkarte.
+ *
+ * `memo`: In langen Listen wird die Karte bei jeder Änderung der Seite sonst
+ * erneut aufgebaut – beim Umschalten eines Favoriten wären das alle Karten.
+ * `card-lazy`: Der Browser darf Karten außerhalb des Sichtbereichs überspringen
+ * (siehe `globals.css`) – ohne das kostete eine Liste mit 800 Karten gemessen
+ * 12 Sekunden Hauptthread-Arbeit beim Scrollen.
+ */
+export const RecipeCard = memo(function RecipeCard({
   recipe,
   matchPercentage,
   missingIngredients,
@@ -67,7 +77,7 @@ export function RecipeCard({
 }) {
   const time = totalTime(recipe);
   return (
-    <article className="group relative flex flex-col">
+    <article className="card-lazy group relative flex flex-col">
       <Link href={`/recipes/${recipe.id}`} className="block pressable" aria-label={recipe.title}>
         <RecipeCover
           recipe={recipe}
@@ -157,4 +167,4 @@ export function RecipeCard({
       </button>
     </article>
   );
-}
+});
