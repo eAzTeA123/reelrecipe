@@ -12,9 +12,14 @@ playwright-report/
 test-results/
 e2e/screenshots/
 PRICE_NUTRITION_ARCHIVE.md
+# Machbarkeitsbericht Preise (lokal, wie das Archiv – kein App-Code)
+PRICE_FEASIBILITY.md
 # lokale Scratch-/Messwerkzeuge (kein App-Code)
 tmp/
 # Maschinenausgabe des Evals (die Final-Läufe selbst werden protokolliert)
 tests/golden/last-run.json
 # Lokale Messungen auf echten Sicherungskopien (persoenliche Daten, nicht ins Repo)
 tests/golden/local/
+# Maschinenausgabe der Live-Preismessung (Gate-Messung, kein App-Code)
+tests/golden/price-results.json
+tests/golden/final-run.log
