@@ -94,6 +94,53 @@ const COMPACT_REGEX = new RegExp(`^(\\d+[.,]?\\d*(?:\\s+\\d+\\/\\d+|\\/\\d+)?)\\
 const TRAILING_REGEX = new RegExp(`^(.{2,80}?)\\s+(\\d+[.,]?\\d*(?:\\s+\\d+\\/\\d+|\\/\\d+)?)\\s*(${UNIT_REGEX.source})$`, "iu");
 const NUTRITION_RE = /\b(?:kcal|kalorien|kohlenhydrate|carbs)\b|^(?:eiweiß|protein|fett|fat)\s*(?:ca\.?|approx\.?|:|-)?\s*\d+\s*g\b|\b\d+\s*g\s*(?:eiweiß|protein|fett|fat)\b/i;
 
+/** Vorsilben, die vor einer Menge stehen dürfen („ca. 200 ml Milch"). */
+const LEADING_QUALIFIER_RE = /^(?:ca\.?|etwa|circa|ungefähr|rund|~)\s*/iu;
+
+/**
+ * Beginnt die Zeile mit einer **eigenen** Menge? Dann ist sie eine neue Zutat und
+ * keine Fortsetzung der Zeile darüber.
+ *
+ * Anlass (gemeldete Caption, Instagram DdgIhNnA3RI): „250 g gewürfelten Speck" und
+ * „Halben Bund Lauch oder 1 Stange Porree" wurden zu einer Zutat verschmolzen.
+ * Die frühere Prüfung verlangte eine **Ziffer** vor der Einheit – „Halben Bund"
+ * hat keine, und „Stange" fehlte in ihrer engen Einheitenliste.
+ *
+ * Erkannt werden drei Formen, alle über die zentrale Einheitenliste (`units.ts`):
+ *   1. Ziffer + Name/Einheit   „250 g gewürfelten Speck", „10 Laugenbrezel"
+ *   2. Einheit + Name          „Bund Petersilie", „Prise Salz"
+ *   3. Zahlwort + Einheit      „Halben Bund Lauch", „Ein Bund Petersilie"
+ *
+ * Eine Zeile, die **nur** aus Menge und Einheit besteht („200 g" unter „Mehl"),
+ * zählt bewusst nicht: Sie gehört zur Zeile darüber.
+ */
+export function startsWithOwnQuantity(line: string): boolean {
+  const text = stripLeadingBullets(line).trim().replace(LEADING_QUALIFIER_RE, "").trimStart();
+  if (!text) return false;
+
+  // 1. Ziffer am Anfang
+  if (AMOUNT_REGEX.test(text)) {
+    const afterAmount = text.replace(AMOUNT_REGEX, "").trimStart();
+    const afterUnit = afterAmount.replace(UNIT_START_REGEX, "").trim();
+    return afterAmount.length > 0 && afterUnit.length > 0;
+  }
+
+  // 2. Einheit am Anfang
+  if (UNIT_START_REGEX.test(text)) {
+    return text.replace(UNIT_START_REGEX, "").trim().length > 0;
+  }
+
+  // 3. Zahlwort + Einheit („Halben Bund Lauch")
+  const firstWord = text.match(/^[\p{L}]+/u)?.[0];
+  if (firstWord && wordToNumber(firstWord) !== undefined) {
+    const afterWord = text.slice(firstWord.length).trimStart();
+    if (!UNIT_START_REGEX.test(afterWord)) return false;
+    return afterWord.replace(UNIT_START_REGEX, "").trim().length > 0;
+  }
+
+  return false;
+}
+
 /** Parst eine Zeile zu einer Zutat. Gibt null zurück, wenn unmöglich. */
 export function parseIngredientLine(line: string): ParsedIngredient | null {
   // Unicode-Brüche zuerst: Seiten-Scraper liefern Zeilen wie „¼ TL Salz" direkt

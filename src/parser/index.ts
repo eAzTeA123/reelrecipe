@@ -35,12 +35,17 @@ export {
  * über den schützenden Merge, eigene Änderungen bleiben also erhalten
  * (Rückmeldung als Toast in `MigrationRunner`).
  *
+ * Version 19: Eine Zeile mit **eigener** Menge ohne Ziffer ist eine neue Zutat,
+ * keine Fortsetzung der Zeile darüber – „Halben Bund Lauch oder 1 Stange Porree"
+ * wurde sonst an „250 g gewürfelten Speck" gehängt (gemeldeter Fall). Ebenso
+ * zählen Zeilen, die mit einer Einheit beginnen („Bund Petersilie").
+ *
  * Version 18: Unicode-Brüche auch in einzelnen Zutatenzeilen („¼ TL" kam vom
  * Seiten-Scraper und blieb ohne Menge), und rezeptwelt-Seiten mit Abschnitten
  * („Teig", „Belag") – Überschriften sind keine Zutaten, und die Anleitung steht
  * in den Listen, nicht in den Absätzen.
  */
-export const PARSER_VERSION = 18;
+export const PARSER_VERSION = 19;
 
 import { isSectionHeader as isSectionHeaderLine } from "./lineFacts";
 

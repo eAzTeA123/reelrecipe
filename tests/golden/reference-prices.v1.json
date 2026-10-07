@@ -1319,6 +1319,60 @@
       "skip": false
     },
     {
+      "name": "Creme Fraiche",
+      "occurrences": 1,
+      "dimensions": [
+        "count"
+      ],
+      "mostCommonQuantity": "1 Becher",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "Körnigerfrischkäse",
+      "occurrences": 1,
+      "dimensions": [
+        "count"
+      ],
+      "mostCommonQuantity": "1 Becher",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
+      "name": "gewürfelten Speck",
+      "occurrences": 1,
+      "dimensions": [
+        "mass"
+      ],
+      "mostCommonQuantity": "250 g",
+      "note": null,
+      "reference": {
+        "pricePerBaseUnit": null,
+        "currency": "EUR",
+        "shop": null,
+        "date": null,
+        "url": null,
+        "packageSize": null
+      },
+      "skip": false
+    },
+    {
       "name": "Paella-Reis (Rundkorn Reis)",
       "occurrences": 1,
       "dimensions": [
@@ -2657,60 +2711,6 @@
         "mass"
       ],
       "mostCommonQuantity": "8 g",
-      "note": null,
-      "reference": {
-        "pricePerBaseUnit": null,
-        "currency": "EUR",
-        "shop": null,
-        "date": null,
-        "url": null,
-        "packageSize": null
-      },
-      "skip": false
-    },
-    {
-      "name": "Powdered Sugar",
-      "occurrences": 1,
-      "dimensions": [
-        "mass"
-      ],
-      "mostCommonQuantity": "20 g",
-      "note": null,
-      "reference": {
-        "pricePerBaseUnit": null,
-        "currency": "EUR",
-        "shop": null,
-        "date": null,
-        "url": null,
-        "packageSize": null
-      },
-      "skip": false
-    },
-    {
-      "name": "Black Cocoa Powder",
-      "occurrences": 1,
-      "dimensions": [
-        "mass"
-      ],
-      "mostCommonQuantity": "10 g",
-      "note": null,
-      "reference": {
-        "pricePerBaseUnit": null,
-        "currency": "EUR",
-        "shop": null,
-        "date": null,
-        "url": null,
-        "packageSize": null
-      },
-      "skip": false
-    },
-    {
-      "name": "Gochujang",
-      "occurrences": 1,
-      "dimensions": [
-        "volume"
-      ],
-      "mostCommonQuantity": "1 EL",
       "note": null,
       "reference": {
         "pricePerBaseUnit": null,

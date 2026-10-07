@@ -1,0 +1,61 @@
+{
+  "id": "gentianas-ddgihnna3ri",
+  "source": "https://www.instagram.com/reel/DdgIhNnA3RI/",
+  "account": "gentianas_foodhouse",
+  "language": "de",
+  "style": "reel-mit-zutatenliste",
+  "caption": "Flammkuchen Laugenbrezel 🥨🥨🥨 der Renner wie jedes Jahr\n\nEinfach @gentianas_foodhouse für weitere Rezepte folgen ✨🫶🏻\n\nIhr braucht:\n10 Laugenbrezel\n1 Becher Creme Fraiche\n1 Becher Körnigerfrischkäse\n3 Eier\n250 g gewürfelten Speck\nHalben Bund Lauch oder 1 Stange Porree\n2 volle Hände geriebenen Käse\n2 volle Hände geröstete Zwiebeln\nEtwas Salz, Pfeffer, Knoblauchpulver, Papirka edelsüß\n\nGefrorene Brezel auf ein Backblech legen. Alle Zutaten in eine Schüssel geben und die Löcher der Brezeln damit befüllen.\nBei 170 Grad für ca 17-20 Minuten goldbraun backen.\n\n#laugenbrezel #einfacherezepte #flammkuchen #ozapftis #schnellerezepte",
+  "expected": {
+    "title": "Flammkuchen Laugenbrezel",
+    "servings": null,
+    "ingredients": [
+      {
+        "amount": 10,
+        "unit": null,
+        "name": "Laugenbrezel"
+      },
+      {
+        "amount": 1,
+        "unit": "Becher",
+        "name": "Creme Fraiche"
+      },
+      {
+        "amount": 1,
+        "unit": "Becher",
+        "name": "Körnigerfrischkäse"
+      },
+      {
+        "amount": 3,
+        "unit": null,
+        "name": "Eier"
+      },
+      {
+        "amount": 250,
+        "unit": "g",
+        "name": "gewürfelten Speck"
+      },
+      {
+        "amount": 0.5,
+        "unit": "Bund",
+        "name": "Lauch"
+      },
+      {
+        "amount": 2,
+        "unit": null,
+        "name": "volle Hände geriebenen Käse"
+      },
+      {
+        "amount": 2,
+        "unit": null,
+        "name": "volle Hände geröstete Zwiebeln"
+      },
+      {
+        "amount": null,
+        "unit": null,
+        "name": "Salz, Pfeffer, Knoblauchpulver, Papirka edelsüß"
+      }
+    ],
+    "stepsCount": 2
+  },
+  "notes": "Gemeldeter Fall des Betreibers (Speck und Lauch wurden zu einer Zutat verschmolzen, ohne Ziffer vor 'Halben Bund'). Erwartung ist die menschliche Wahrheit aus der Caption, nicht die Parser-Ausgabe. Gemessen erreicht der Parser 9 von 10 Einträgen: Er trennt Speck und Lauch korrekt (0.5 Bund Lauch) und macht aus der Alternative 'oder 1 Stange Porree' eine ZWEITE Zutat ('1 Stange Porree') statt einer Notiz – das ist vertretbar und wird hier bewusst nicht als Fehler kaschiert. Offen: Der Titel behält '🥨🥨🥨 der Renner wie jedes Jahr', und in der Gewürzzeile geht ein Komma verloren ('Salz Pfeffer, …'). Bekannte, hier bewusst nicht kaschierte Schwäche: Die letzte Zeile enthält vier Gewürze in einer Zeile und wird als ein Eintrag erwartet (wie in den übrigen Fixtures üblich), weil das ein eigener Fall ist. Rechtschreibung der Quelle ('Papirka') unverändert übernommen."
+}

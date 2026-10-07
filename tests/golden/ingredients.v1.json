@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "purpose": "Golden Set für Zutaten-Erkennung und Preise. items[] sind Labels (Herkunft in `origin`), lines[].istZutat ist ein Vorschlag. Einträge mit split=\"excluded\" zählen nicht zu den Schwellen.",
   "generatedFrom": {
-    "parserVersion": 18,
-    "fixtureCount": 42,
+    "parserVersion": 19,
+    "fixtureCount": 43,
     "sources": [
       "src/parser/corpus/fixtures",
       "src/parser/corpus/fixtures-user"
@@ -114,6 +114,24 @@
         "servings": 9,
         "servingsMax": null,
         "stepsCount": 5,
+        "stepsUnreliable": null,
+        "negative": false
+      }
+    },
+    {
+      "id": "gentianas-ddgihnna3ri",
+      "account": "gentianas_foodhouse",
+      "language": "de",
+      "style": "reel-mit-zutatenliste",
+      "origin": "reference-corpus",
+      "excluded": false,
+      "split": "dev",
+      "caption": "Flammkuchen Laugenbrezel 🥨🥨🥨 der Renner wie jedes Jahr\n\nEinfach @gentianas_foodhouse für weitere Rezepte folgen ✨🫶🏻\n\nIhr braucht:\n10 Laugenbrezel\n1 Becher Creme Fraiche\n1 Becher Körnigerfrischkäse\n3 Eier\n250 g gewürfelten Speck\nHalben Bund Lauch oder 1 Stange Porree\n2 volle Hände geriebenen Käse\n2 volle Hände geröstete Zwiebeln\nEtwas Salz, Pfeffer, Knoblauchpulver, Papirka edelsüß\n\nGefrorene Brezel auf ein Backblech legen. Alle Zutaten in eine Schüssel geben und die Löcher der Brezeln damit befüllen.\nBei 170 Grad für ca 17-20 Minuten goldbraun backen.\n\n#laugenbrezel #einfacherezepte #flammkuchen #ozapftis #schnellerezepte",
+      "expected": {
+        "title": "Flammkuchen Laugenbrezel",
+        "servings": null,
+        "servingsMax": null,
+        "stepsCount": 2,
         "stepsUnreliable": null,
         "negative": false
       }
@@ -768,9 +786,9 @@
     }
   ],
   "counts": {
-    "lines": 1279,
-    "linesWithItem": 400,
-    "items": 463,
+    "lines": 1294,
+    "linesWithItem": 409,
+    "items": 472,
     "itemsWithDefect": 11,
     "itemsWithoutLine": 14
   },
@@ -2439,6 +2457,221 @@
       ],
       "reviewPriority": "low",
       "split": "test",
+      "excluded": false
+    },
+    {
+      "id": "gentianas-ddgihnna3ri#0",
+      "fixtureId": "gentianas-ddgihnna3ri",
+      "index": 0,
+      "text": "Flammkuchen Laugenbrezel 🥨🥨🥨 der Renner wie jedes Jahr",
+      "istZutat": true,
+      "istZutatSource": "derived",
+      "classes": [
+        "has-item"
+      ],
+      "reviewPriority": "high",
+      "split": "dev",
+      "excluded": false
+    },
+    {
+      "id": "gentianas-ddgihnna3ri#2",
+      "fixtureId": "gentianas-ddgihnna3ri",
+      "index": 2,
+      "text": "Einfach @gentianas_foodhouse für weitere Rezepte folgen ✨🫶🏻",
+      "istZutat": false,
+      "istZutatSource": "derived",
+      "classes": [
+        "no-expected-item"
+      ],
+      "reviewPriority": "low",
+      "split": "dev",
+      "excluded": false
+    },
+    {
+      "id": "gentianas-ddgihnna3ri#4",
+      "fixtureId": "gentianas-ddgihnna3ri",
+      "index": 4,
+      "text": "Ihr braucht:",
+      "istZutat": false,
+      "istZutatSource": "derived",
+      "classes": [
+        "heading",
+        "no-expected-item"
+      ],
+      "reviewPriority": "high",
+      "split": "dev",
+      "excluded": false
+    },
+    {
+      "id": "gentianas-ddgihnna3ri#5",
+      "fixtureId": "gentianas-ddgihnna3ri",
+      "index": 5,
+      "text": "10 Laugenbrezel",
+      "istZutat": false,
+      "istZutatSource": "derived",
+      "classes": [
+        "no-expected-item"
+      ],
+      "reviewPriority": "low",
+      "split": "dev",
+      "excluded": false
+    },
+    {
+      "id": "gentianas-ddgihnna3ri#6",
+      "fixtureId": "gentianas-ddgihnna3ri",
+      "index": 6,
+      "text": "1 Becher Creme Fraiche",
+      "istZutat": true,
+      "istZutatSource": "derived",
+      "classes": [
+        "has-item"
+      ],
+      "reviewPriority": "high",
+      "split": "dev",
+      "excluded": false
+    },
+    {
+      "id": "gentianas-ddgihnna3ri#7",
+      "fixtureId": "gentianas-ddgihnna3ri",
+      "index": 7,
+      "text": "1 Becher Körnigerfrischkäse",
+      "istZutat": true,
+      "istZutatSource": "derived",
+      "classes": [
+        "has-item"
+      ],
+      "reviewPriority": "high",
+      "split": "dev",
+      "excluded": false
+    },
+    {
+      "id": "gentianas-ddgihnna3ri#8",
+      "fixtureId": "gentianas-ddgihnna3ri",
+      "index": 8,
+      "text": "3 Eier",
+      "istZutat": true,
+      "istZutatSource": "derived",
+      "classes": [
+        "has-item"
+      ],
+      "reviewPriority": "high",
+      "split": "dev",
+      "excluded": false
+    },
+    {
+      "id": "gentianas-ddgihnna3ri#9",
+      "fixtureId": "gentianas-ddgihnna3ri",
+      "index": 9,
+      "text": "250 g gewürfelten Speck",
+      "istZutat": true,
+      "istZutatSource": "derived",
+      "classes": [
+        "has-item"
+      ],
+      "reviewPriority": "high",
+      "split": "dev",
+      "excluded": false
+    },
+    {
+      "id": "gentianas-ddgihnna3ri#10",
+      "fixtureId": "gentianas-ddgihnna3ri",
+      "index": 10,
+      "text": "Halben Bund Lauch oder 1 Stange Porree",
+      "istZutat": true,
+      "istZutatSource": "derived",
+      "classes": [
+        "unquantified-unit",
+        "has-item"
+      ],
+      "reviewPriority": "high",
+      "split": "dev",
+      "excluded": false
+    },
+    {
+      "id": "gentianas-ddgihnna3ri#11",
+      "fixtureId": "gentianas-ddgihnna3ri",
+      "index": 11,
+      "text": "2 volle Hände geriebenen Käse",
+      "istZutat": true,
+      "istZutatSource": "derived",
+      "classes": [
+        "has-item"
+      ],
+      "reviewPriority": "high",
+      "split": "dev",
+      "excluded": false
+    },
+    {
+      "id": "gentianas-ddgihnna3ri#12",
+      "fixtureId": "gentianas-ddgihnna3ri",
+      "index": 12,
+      "text": "2 volle Hände geröstete Zwiebeln",
+      "istZutat": true,
+      "istZutatSource": "derived",
+      "classes": [
+        "has-item"
+      ],
+      "reviewPriority": "high",
+      "split": "dev",
+      "excluded": false
+    },
+    {
+      "id": "gentianas-ddgihnna3ri#13",
+      "fixtureId": "gentianas-ddgihnna3ri",
+      "index": 13,
+      "text": "Etwas Salz, Pfeffer, Knoblauchpulver, Papirka edelsüß",
+      "istZutat": true,
+      "istZutatSource": "derived",
+      "classes": [
+        "unquantified-unit",
+        "has-item"
+      ],
+      "reviewPriority": "high",
+      "split": "dev",
+      "excluded": false
+    },
+    {
+      "id": "gentianas-ddgihnna3ri#15",
+      "fixtureId": "gentianas-ddgihnna3ri",
+      "index": 15,
+      "text": "Gefrorene Brezel auf ein Backblech legen. Alle Zutaten in eine Schüssel geben und die Löcher der Brezeln damit befüllen.",
+      "istZutat": false,
+      "istZutatSource": "derived",
+      "classes": [
+        "no-expected-item"
+      ],
+      "reviewPriority": "low",
+      "split": "dev",
+      "excluded": false
+    },
+    {
+      "id": "gentianas-ddgihnna3ri#16",
+      "fixtureId": "gentianas-ddgihnna3ri",
+      "index": 16,
+      "text": "Bei 170 Grad für ca 17-20 Minuten goldbraun backen.",
+      "istZutat": false,
+      "istZutatSource": "derived",
+      "classes": [
+        "range",
+        "no-expected-item"
+      ],
+      "reviewPriority": "low",
+      "split": "dev",
+      "excluded": false
+    },
+    {
+      "id": "gentianas-ddgihnna3ri#18",
+      "fixtureId": "gentianas-ddgihnna3ri",
+      "index": 18,
+      "text": "#laugenbrezel #einfacherezepte #flammkuchen #ozapftis #schnellerezepte",
+      "istZutat": false,
+      "istZutatSource": "derived",
+      "classes": [
+        "hashtag",
+        "no-expected-item"
+      ],
+      "reviewPriority": "low",
+      "split": "dev",
       "excluded": false
     },
     {
@@ -19800,6 +20033,123 @@
       "origin": "reference-corpus",
       "labelDefect": null,
       "split": "test",
+      "excluded": false
+    },
+    {
+      "id": "gentianas-ddgihnna3ri#0:Laugenbrezel",
+      "fixtureId": "gentianas-ddgihnna3ri",
+      "lineId": "gentianas-ddgihnna3ri#0",
+      "name": "Laugenbrezel",
+      "amount": 10,
+      "amountMax": null,
+      "unit": null,
+      "origin": "reference-corpus",
+      "labelDefect": null,
+      "split": "dev",
+      "excluded": false
+    },
+    {
+      "id": "gentianas-ddgihnna3ri#6:Creme Fraiche",
+      "fixtureId": "gentianas-ddgihnna3ri",
+      "lineId": "gentianas-ddgihnna3ri#6",
+      "name": "Creme Fraiche",
+      "amount": 1,
+      "amountMax": null,
+      "unit": "Becher",
+      "origin": "reference-corpus",
+      "labelDefect": null,
+      "split": "dev",
+      "excluded": false
+    },
+    {
+      "id": "gentianas-ddgihnna3ri#7:Körnigerfrischkäse",
+      "fixtureId": "gentianas-ddgihnna3ri",
+      "lineId": "gentianas-ddgihnna3ri#7",
+      "name": "Körnigerfrischkäse",
+      "amount": 1,
+      "amountMax": null,
+      "unit": "Becher",
+      "origin": "reference-corpus",
+      "labelDefect": null,
+      "split": "dev",
+      "excluded": false
+    },
+    {
+      "id": "gentianas-ddgihnna3ri#8:Eier",
+      "fixtureId": "gentianas-ddgihnna3ri",
+      "lineId": "gentianas-ddgihnna3ri#8",
+      "name": "Eier",
+      "amount": 3,
+      "amountMax": null,
+      "unit": null,
+      "origin": "reference-corpus",
+      "labelDefect": null,
+      "split": "dev",
+      "excluded": false
+    },
+    {
+      "id": "gentianas-ddgihnna3ri#9:gewürfelten Speck",
+      "fixtureId": "gentianas-ddgihnna3ri",
+      "lineId": "gentianas-ddgihnna3ri#9",
+      "name": "gewürfelten Speck",
+      "amount": 250,
+      "amountMax": null,
+      "unit": "g",
+      "origin": "reference-corpus",
+      "labelDefect": null,
+      "split": "dev",
+      "excluded": false
+    },
+    {
+      "id": "gentianas-ddgihnna3ri#10:Lauch",
+      "fixtureId": "gentianas-ddgihnna3ri",
+      "lineId": "gentianas-ddgihnna3ri#10",
+      "name": "Lauch",
+      "amount": 0.5,
+      "amountMax": null,
+      "unit": "Bund",
+      "origin": "reference-corpus",
+      "labelDefect": null,
+      "split": "dev",
+      "excluded": false
+    },
+    {
+      "id": "gentianas-ddgihnna3ri#11:volle Hände geriebenen Käse",
+      "fixtureId": "gentianas-ddgihnna3ri",
+      "lineId": "gentianas-ddgihnna3ri#11",
+      "name": "volle Hände geriebenen Käse",
+      "amount": 2,
+      "amountMax": null,
+      "unit": null,
+      "origin": "reference-corpus",
+      "labelDefect": null,
+      "split": "dev",
+      "excluded": false
+    },
+    {
+      "id": "gentianas-ddgihnna3ri#12:volle Hände geröstete Zwiebeln",
+      "fixtureId": "gentianas-ddgihnna3ri",
+      "lineId": "gentianas-ddgihnna3ri#12",
+      "name": "volle Hände geröstete Zwiebeln",
+      "amount": 2,
+      "amountMax": null,
+      "unit": null,
+      "origin": "reference-corpus",
+      "labelDefect": null,
+      "split": "dev",
+      "excluded": false
+    },
+    {
+      "id": "gentianas-ddgihnna3ri#13:Salz, Pfeffer, Knoblauchpulver, Papirka edelsüß",
+      "fixtureId": "gentianas-ddgihnna3ri",
+      "lineId": "gentianas-ddgihnna3ri#13",
+      "name": "Salz, Pfeffer, Knoblauchpulver, Papirka edelsüß",
+      "amount": null,
+      "amountMax": null,
+      "unit": null,
+      "origin": "reference-corpus",
+      "labelDefect": null,
+      "split": "dev",
       "excluded": false
     },
     {

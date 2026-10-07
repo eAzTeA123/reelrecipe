@@ -256,3 +256,50 @@ describe("Titel-Extraktion", () => {
   });
 });
 
+/**
+ * Gemeldeter Fall (Instagram-Reel DdgIhNnA3RI, @gentianas_foodhouse):
+ * „250 g gewürfelten Speck" und „Halben Bund Lauch oder 1 Stange Porree" wurden
+ * zu EINER Zutat verschmolzen. Ursache: Die Fortsetzungsprüfung verlangte eine
+ * **Ziffer** vor der Einheit – „Halben Bund" hat keine.
+ */
+describe("Zutatenzeilen mit Wort-Menge oder Einheit am Anfang", () => {
+  const reel = [
+    "Flammkuchen Laugenbrezel 🥨🥨🥨 der Renner wie jedes Jahr",
+    "",
+    "Ihr braucht:",
+    "10 Laugenbrezel",
+    "1 Becher Creme Fraiche",
+    "1 Becher Körnigerfrischkäse",
+    "3 Eier",
+    "250 g gewürfelten Speck",
+    "Halben Bund Lauch oder 1 Stange Porree",
+    "2 volle Hände geriebenen Käse",
+    "2 volle Hände geröstete Zwiebeln",
+    "Etwas Salz, Pfeffer, Knoblauchpulver, Papirka edelsüß",
+    "",
+    "Gefrorene Brezel auf ein Backblech legen. Alle Zutaten in eine Schüssel geben.",
+  ].join("\n");
+
+  it("hält Speck und Lauch getrennt", () => {
+    const parsed = parseRecipe(reel)!;
+    const names = parsed.ingredients.map((ingredient) => ingredient.name);
+    expect(names.some((name) => /speck/i.test(name))).toBe(true);
+    expect(names.some((name) => /lauch/i.test(name))).toBe(true);
+    // Keine Zutat darf beide Wörter enthalten – das war der gemeldete Fehler
+    expect(names.filter((name) => /speck/i.test(name) && /lauch/i.test(name))).toEqual([]);
+  });
+
+  it("liest Halben Bund Lauch als halbe Einheit Bund", () => {
+    const parsed = parseRecipe(reel)!;
+    const lauch = parsed.ingredients.find((ingredient) => /^lauch/i.test(ingredient.name));
+    expect(lauch?.amount).toBe(0.5);
+    expect(lauch?.unit).toBe("Bund");
+  });
+
+  it("nimmt eine Zeile mit Einheit am Anfang als eigene Zutat", () => {
+    const parsed = parseRecipe("Zutaten\n200 g Mehl\nBund Petersilie\n3 Eier")!;
+    const names = parsed.ingredients.map((ingredient) => ingredient.name);
+    expect(names).toContain("Petersilie");
+  });
+});
+

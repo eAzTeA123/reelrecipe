@@ -1,35 +1,35 @@
 {
-  "generatedAt": "2026-10-02T15:19:17.314Z",
-  "fixtures": 42,
-  "lines": 1279,
-  "items": 463,
+  "generatedAt": "2026-10-07T07:16:07.167Z",
+  "fixtures": 43,
+  "lines": 1294,
+  "items": 472,
   "split": {
     "fixtures": {
-      "dev": 29,
+      "dev": 30,
       "test": 13
     },
     "items": {
-      "dev": 304,
+      "dev": 313,
       "test": 137,
       "excluded": 22
     },
     "lines": {
-      "dev": 954,
+      "dev": 969,
       "test": 325
     }
   },
   "problemClasses": {
-    "no-expected-item": 879,
+    "no-expected-item": 885,
     "multi-item-line": 28,
-    "has-item": 400,
-    "heading": 95,
-    "range": 25,
-    "unquantified-unit": 32,
+    "has-item": 409,
+    "heading": 96,
+    "range": 26,
+    "unquantified-unit": 34,
     "to-taste": 14,
     "nutrition": 104,
     "fraction": 30,
     "step": 30,
-    "hashtag": 35,
+    "hashtag": 36,
     "promo": 24
   },
   "labelDefects": 11,
@@ -47,11 +47,11 @@
     "lib-dcq9ivdripm :: Sugar Free/Fat Free Cheesecake Pudding << unuebersetzt"
   ],
   "priceability": {
-    "quantified": 318,
-    "unquantified": 145,
+    "quantified": 321,
+    "unquantified": 151,
     "unknownUnit": 0,
     "pantry": 34,
-    "distinctPriceableNames": 193
+    "distinctPriceableNames": 196
   },
   "reviewRows": {
     "defects": 11,

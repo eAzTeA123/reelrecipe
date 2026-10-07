@@ -528,6 +528,16 @@
           "korrekturEinheit": null
         },
         {
+          "lineId": "gentianas-ddgihnna3ri#4",
+          "text": "Ihr braucht:",
+          "vorschlagIstZutat": false,
+          "klasse": "heading",
+          "korrekturIstZutat": null,
+          "korrekturName": null,
+          "korrekturMenge": null,
+          "korrekturEinheit": null
+        },
+        {
           "lineId": "linasfitfood-ddmazzeoh0o#6",
           "text": "Nährwerte auf einem Blick:",
           "vorschlagIstZutat": false,
@@ -832,16 +842,6 @@
           "text": "🫓etwas Salz",
           "vorschlagIstZutat": false,
           "klasse": "unquantified-unit",
-          "korrekturIstZutat": null,
-          "korrekturName": null,
-          "korrekturMenge": null,
-          "korrekturEinheit": null
-        },
-        {
-          "lineId": "medusas-dcnjnqynwwk#36",
-          "text": "𝘍ü𝘳 𝘥𝘢𝘴 𝘛𝘻𝘢𝘵𝘻𝘪𝘬𝘪:",
-          "vorschlagIstZutat": false,
-          "klasse": "heading",
           "korrekturIstZutat": null,
           "korrekturName": null,
           "korrekturMenge": null,

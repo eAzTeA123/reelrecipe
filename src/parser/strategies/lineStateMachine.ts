@@ -1,6 +1,6 @@
 import { getAllVocab } from "../vocabulary";
 import { splitLines } from "../normalize";
-import { looksLikeIngredient } from "../ingredient";
+import { looksLikeIngredient, startsWithOwnQuantity } from "../ingredient";
 import {
   SERVINGS_HEADER_RE,
   containsIngredientMarker,
@@ -202,20 +202,15 @@ export const lineStateMachineStrategy: ParserStrategy = {
           continue;
         }
 
-        // Zeile mit **eigener** Menge und Einheit ist eine neue Zutat, keine
-        // Fortsetzung: „150 g Quark" + „ca. 200 ml Milch" wurde sonst zu
-        // „Quark ca. 200 ml Milch" verschmolzen (gemessen an echten Captions).
-        // Das Muster wird hier direkt geprüft: `looksLikeIngredient` erkennt
-        // „ca. 200 ml Milch" nicht als Menge (zu wenige Signale).
-        // Ausnahme: eine Zeile, die NUR aus Menge und Einheit besteht
+        // Zeile mit **eigener** Menge ist eine neue Zutat, keine Fortsetzung:
+        // „150 g Quark" + „ca. 200 ml Milch" wurde sonst zu „Quark ca. 200 ml Milch"
+        // verschmolzen, und „250 g gewürfelten Speck" + „Halben Bund Lauch oder
+        // 1 Stange Porree" ebenso (beides an echten Captions gemessen).
+        // `startsWithOwnQuantity` erkennt Ziffer+Einheit, Zahlwort+Einheit
+        // („Halben Bund") und Einheit+Name („Bund Petersilie") über die zentrale
+        // Einheitenliste. Eine Zeile, die nur aus Menge und Einheit besteht
         // („200 g" unter „Mehl"), gehört weiterhin zur Zeile darüber.
-        const hasOwnAmount =
-          /(?:^|\s)(?:ca\.?|etwa|circa|ungefähr|~)?\s*\d+(?:[.,]\d+)?\s*(?:g|gr|gramm|kg|ml|l|dl|cl|el|tl|tbsp|tsp|stück|stk|prise|bund|dose|packung|zehe|scheiben?|handvoll|tasse|cup|oz|lb)\b/i.test(
-            line,
-          ) &&
-          !/^\s*(?:ca\.?|etwa|circa|ungefähr)?\s*\d+(?:[.,]\d+)?\s*(?:g|gr|gramm|kg|ml|l|dl|cl|el|tl|tbsp|tsp|stück|stk|prise|bund|dose|packung|zehe|scheiben?|handvoll|tasse|cup|oz|lb)\s*\.?\s*$/i.test(
-            line,
-          );
+        const hasOwnAmount = startsWithOwnQuantity(line);
 
         // Check if it's a continuation line (short, no bullet or number at start)
         if (
