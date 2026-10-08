@@ -1,4 +1,4 @@
-import type { ParsedRecipe } from "@/domain/types";
+import type { Ingredient, ParsedRecipe } from "@/domain/types";
 import { splitLines } from "./normalize";
 import {
   parseIngredientLine,
@@ -35,6 +35,13 @@ export {
  * über den schützenden Merge, eigene Änderungen bleiben also erhalten
  * (Rückmeldung als Toast in `MigrationRunner`).
  *
+ * Version 20: Abschnitts-Ueberschriften in Zutatenlisten (Teig, Belag, FUELLUNG)
+ * sind keine Zutaten mehr, sondern landen im neuen Feld Ingredient.group - Namen
+ * wie 'Salz FUELLUNG' entstehen damit nicht mehr. Zeilen, die Ueberschrift und
+ * Zutaten mischen (Gewuerze: Salz, Pfeffer), bleiben Zutatenzeilen. Ausserdem:
+ * fremde Akzente (Creme fraiche) werden erkannt, und gleiche Zutaten in
+ * verschiedenen Gruppen fasst der Merge nicht mehr zusammen.
+ *
  * Version 19: Eine Zeile mit **eigener** Menge ohne Ziffer ist eine neue Zutat,
  * keine Fortsetzung der Zeile darüber – „Halben Bund Lauch oder 1 Stange Porree"
  * wurde sonst an „250 g gewürfelten Speck" gehängt (gemeldeter Fall). Ebenso
@@ -45,12 +52,39 @@ export {
  * („Teig", „Belag") – Überschriften sind keine Zutaten, und die Anleitung steht
  * in den Listen, nicht in den Absätzen.
  */
-export const PARSER_VERSION = 19;
+export const PARSER_VERSION = 20;
 
-import { isSectionHeader as isSectionHeaderLine } from "./lineFacts";
+import {
+  isSectionHeader as isSectionHeaderLine,
+  isPureGroupHeader,
+  cleanGroupTitle,
+} from "./lineFacts";
 
 function isSectionHeader(l: string): boolean {
   return isSectionHeaderLine(l);
+}
+
+/**
+ * Gruppen je Zutatenzeile direkt aus der Caption lesen.
+ *
+ * Nötig, weil die Ensemble-Pipeline je nach Text eine andere Strategie wählt und
+ * nur die Zustandsmaschine Gruppen liefert. Diese Zuordnung ist unabhängig davon:
+ * Sie läuft einmal über die Zeilen, merkt sich die letzte Überschrift und ordnet
+ * jede Zeile ihrer Gruppe zu (Schlüssel: die Zeile selbst).
+ */
+function groupByLine(caption: string): Map<string, string> {
+  const map = new Map<string, string>();
+  let current: string | undefined;
+  for (const line of splitLines(caption)) {
+    // Nur reine Überschriften wechseln die Gruppe; „Gewürze: Salz, Pfeffer" ist
+    // eine Zutatenzeile und darf die folgende Zeile nicht umbenennen.
+    if (isPureGroupHeader(line)) {
+      current = cleanGroupTitle(line);
+      continue;
+    }
+    if (current) map.set(line, current);
+  }
+  return map;
 }
 
 export function parseRecipe(caption: string): ParsedRecipe | null {
@@ -59,13 +93,46 @@ export function parseRecipe(caption: string): ParsedRecipe | null {
 
   // Nutze die Hybrid-Ensemble-Pipeline
   const raw = ensembleStrategy.parse(caption);
+  const groupsFromCaption = groupByLine(caption);
 
-  const ingredients = stripMultiplierHeaders(raw.ingredients)
-    .flatMap(expandIngredientLine)
-    .map(parseIngredientLine)
-    .filter((i): i is NonNullable<typeof i> => i !== null)
-    .map(toIngredient);
+  /*
+   * Zutatenzeilen wandern mit ihrer **Gruppe** durch die Aufbereitung. Die Gruppe
+   * kommt index-gleich aus der Strategie (siehe `strategies/types.ts`) oder – wenn
+   * die gewählte Strategie keine kennt – aus der Caption selbst.
+   * `expandIngredientLine` kann eine Zeile in mehrere Zutaten zerlegen; alle
+   * erben dieselbe Gruppe.
+   */
+  const linesWithGroups = raw.ingredients.map((line, index) => ({
+    line,
+    group: raw.ingredientGroups?.[index] ?? groupsFromCaption.get(line),
+  }));
+  const keepLines = new Set(stripMultiplierHeaders(linesWithGroups.map((entry) => entry.line)));
 
+  const ingredients: Ingredient[] = [];
+  for (const entry of linesWithGroups) {
+    if (!keepLines.has(entry.line)) continue;
+    /*
+     * Abschnitts-Überschriften sind Gruppen, keine Zutaten. Die Zustandsmaschine
+     * liefert reine Überschriften schon nicht mehr; andere Strategien tun es noch.
+     * Zeilen, die Überschrift **und** Zutaten enthalten („Gewürze: Salz, Pfeffer"),
+     * bleiben Zutatenzeilen – sonst gingen diese Zutaten verloren.
+     */
+    if (isPureGroupHeader(entry.line)) continue;
+    for (const variant of expandIngredientLine(entry.line)) {
+      const parsed = parseIngredientLine(variant);
+      if (!parsed) continue;
+      ingredients.push({ ...toIngredient(parsed), group: entry.group });
+    }
+  }
+
+  /*
+   * Hinweis zur Dubletten-Regel: Der Parser bleibt hier **faithful** und fasst
+   * nichts zusammen (sonst verliert die Korpus-Messung Recall, weil die Messlatte
+   * den gespeicherten Bestand mit Dubletten abbildet – gemessen: F1 0,982 →
+   * 0,976). Zusammengefasst wird erst beim Speichern/Migrieren, und zwar
+   * gruppenbewusst: identische Zeilen derselben Gruppe ja, dieselbe Zutat in
+   * Teig/Füllung/Guss nein (`data/local/parseMerge.ts`, `entryKeyWithGroup`).
+   */
   const steps = makeSteps(raw.steps);
 
   if (ingredients.length === 0 && steps.length === 0) {

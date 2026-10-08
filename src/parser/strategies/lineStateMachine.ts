@@ -18,6 +18,8 @@ import {
   isStepLeadIn,
   isStepMarkerHeading,
   isSubIngredientHeader,
+  cleanGroupTitle,
+  isPureGroupHeader,
   looksLikeHeading,
   normalizeHeader,
   startsNewItem,
@@ -47,9 +49,16 @@ export const lineStateMachineStrategy: ParserStrategy = {
   name: "line_state_machine",
   parse(caption: string): RawParseResult {
     const lines = splitLines(caption);
+    /*
+     * Gruppen laufen **index-gleich** zur Zutatenliste mit. So bleibt die
+     * Zuordnung auch dann korrekt, wenn eine Zutat durch Fortsetzungszeilen
+     * verlängert wird (dort wird nur angehängt, nicht gepusht).
+     */
+    const ingredientGroups: (string | undefined)[] = [];
     const result: RawParseResult = {
       title: "",
       ingredients: [],
+      ingredientGroups,
       steps: [],
       other: [],
       confidence: 0,
@@ -60,6 +69,8 @@ export const lineStateMachineStrategy: ParserStrategy = {
 
     let state: State = "TITEL";
     let hasExplicitStepMarker = false;
+    /** Gruppe aus der letzten Überschrift („Teig", „Belag", „FÜLLUNG"). */
+    let currentGroup: string | undefined;
 
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i].trim();
@@ -137,6 +148,7 @@ export const lineStateMachineStrategy: ParserStrategy = {
         if (looksLikeIngredient(line) >= 2 || /^[-•*+~]\s*\d/.test(line)) {
           state = "ZUTATEN";
           result.ingredients.push(line);
+        ingredientGroups.push(currentGroup);
           continue;
         }
 
@@ -166,9 +178,11 @@ export const lineStateMachineStrategy: ParserStrategy = {
           continue;
         }
 
-        // Schütze Sub-Abschnitte (z.B. "Für die Soße:")
-        if (isSubIngredientHeader(line)) {
-          result.ingredients.push(line);
+        // Sub-Abschnitt (z.B. "Für die Soße:") – wird zur Gruppe, nicht zur Zutat.
+        // Nur **reine** Überschriften: „Gewürze: Salz, Pfeffer" enthält Zutaten
+        // und bleibt deshalb eine Zutatenzeile (gemessen: sonst fehlen die Gewürze).
+        if (isSubIngredientHeader(line) && isPureGroupHeader(line)) {
+          currentGroup = cleanGroupTitle(line);
           continue;
         }
 
@@ -255,6 +269,7 @@ export const lineStateMachineStrategy: ParserStrategy = {
 
         // Ansonsten bleibt es eine Zutat
         result.ingredients.push(line);
+        ingredientGroups.push(currentGroup);
         continue;
       }
 
@@ -273,8 +288,10 @@ export const lineStateMachineStrategy: ParserStrategy = {
         // Falls wir eine Sub-Überschrift finden (z.B. Zubereitung Füllung), geht's wieder in die Zutaten!
         if (isSubIngredientHeader(line)) {
           state = "ZUTATEN";
-          result.ingredients.push(line);
-          continue;
+          if (isPureGroupHeader(line)) {
+            currentGroup = cleanGroupTitle(line);
+            continue;
+          }
         }
 
         // Wenn ein neuer Rezept-Block beginnt (z.B. englische Übersetzung), abbrechen
@@ -309,6 +326,7 @@ export const lineStateMachineStrategy: ParserStrategy = {
           if (isIng) {
             state = "ZUTATEN";
             result.ingredients.push(line);
+            ingredientGroups.push(currentGroup);
             continue;
           }
         }

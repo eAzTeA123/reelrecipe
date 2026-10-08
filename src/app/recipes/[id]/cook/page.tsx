@@ -15,6 +15,7 @@ import { convertRecipeToMetric, convertRecipeToImperial } from "@/lib/unitConver
 import { UnitToggle } from "@/components/UnitToggle";
 import confetti from "canvas-confetti";
 import { useHaptic } from "@/hooks/useHaptic";
+import { groupIngredients } from "@/lib/ingredientGroups";
 
 interface WakeLockSentinelLike {
   release: () => Promise<void>;
@@ -143,38 +144,47 @@ export default function CookModePage({ params }: { params: Promise<{ id: string 
             {checked.size}/{recipe.ingredients.length} bereit
           </span>
         </div>
-        <ul className="grid gap-1.5 sm:grid-cols-2">
-          {recipe.ingredients.map((ing) => {
-            const scaled = targetServings
-              ? scaleAmount(ing.amount, recipe.servings, targetServings)
-              : ing.amount;
-            return (
-              <li key={ing.id}>
-                <label className="flex min-h-11 cursor-pointer items-center gap-2.5 rounded-ctl px-2 text-body hover:bg-surface-2">
-                  <input
-                    type="checkbox"
-                    checked={checked.has(ing.id)}
-                    onChange={() =>
-                      setChecked((old) => {
-                        const next = new Set(old);
-                        if (next.has(ing.id)) next.delete(ing.id);
-                        else next.add(ing.id);
-                        return next;
-                      })
-                    }
-                    className="h-5 w-5 accent-accent"
-                  />
-                  <span>
-                    <strong className="tabular-nums">
-                      {formatAmount(scaled ?? ing.amount, ing.unit)}
-                    </strong>{" "}
-                    {ing.name}
-                  </span>
-                </label>
-              </li>
-            );
-          })}
-        </ul>
+        {groupIngredients(recipe.ingredients).map((section, sectionIndex) => (
+          <div key={`${section.group ?? "ohne"}-${sectionIndex}`} className="mb-4 last:mb-0">
+            {section.group && (
+              <h3 className="mb-1.5 px-2 text-label font-semibold uppercase tracking-wide text-ink-2">
+                {section.group}
+              </h3>
+            )}
+            <ul className="grid gap-1.5 sm:grid-cols-2">
+              {section.items.map((ing) => {
+                const scaled = targetServings
+                  ? scaleAmount(ing.amount, recipe.servings, targetServings)
+                  : ing.amount;
+                return (
+                  <li key={ing.id}>
+                    <label className="flex min-h-11 cursor-pointer items-center gap-2.5 rounded-ctl px-2 text-body hover:bg-surface-2">
+                      <input
+                        type="checkbox"
+                        checked={checked.has(ing.id)}
+                        onChange={() =>
+                          setChecked((old) => {
+                            const next = new Set(old);
+                            if (next.has(ing.id)) next.delete(ing.id);
+                            else next.add(ing.id);
+                            return next;
+                          })
+                        }
+                        className="h-5 w-5 accent-accent"
+                      />
+                      <span>
+                        <strong className="tabular-nums">
+                          {formatAmount(scaled ?? ing.amount, ing.unit)}
+                        </strong>{" "}
+                        {ing.name}
+                      </span>
+                    </label>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        ))}
       </section>
 
       <section className="mt-5 flex flex-1 flex-col rounded-card border border-line/70 bg-surface p-6 shadow-card">

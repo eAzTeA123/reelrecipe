@@ -123,7 +123,19 @@ export function isOutroLine(line: string): boolean {
   return vocab.outroKeywords.some((k) => lower.includes(k));
 }
 
-/** Sub-Kategorie innerhalb der Zutaten ("Für die Soße:", "Gewürze") */
+/**
+ * Nackte Gruppenwörter, wie sie in Back- und Kochrezepten als eigene Zeile
+ * stehen („FÜLLUNG", „Guss", „Topping"). Ohne diese Liste galten sie als
+ * Zutaten und klebten später an Namen (gemessen: „Salz FÜLLUNG").
+ */
+const GROUP_WORDS = new Set([
+  "füllung", "fuellung", "guss", "zuckerguss", "glasur", "topping", "belag", "teig", "boden",
+  "soße", "sosse", "sauce", "creme", "crème", "streusel", "deko", "decor", "frosting",
+  "frischkäse-guss", "frischkäse guss", "frischkäse-glasur", "dip", "dressing", "marinade",
+  "gewürzmischung", "kräutermischung", "garnitur", "obendrauf", "zum bestreichen",
+]);
+
+/** Sub-Kategorie innerhalb der Zutaten ("Für die Soße:", "Gewürze", "FÜLLUNG") */
 export function isSubIngredientHeader(line: string): boolean {
   if (line.length > 40) return false;
   if (/^(?:für|for)\s+(?:den|die|das|diesen|diese|der)/i.test(line)) return true;
@@ -131,7 +143,40 @@ export function isSubIngredientHeader(line: string): boolean {
   if (vocab.ingredientMarkers.some((m) => lower.startsWith(m + " "))) {
     if (!lower.endsWith(" english") && !lower.endsWith(" deutsch")) return true;
   }
+  // Nacktes Gruppenwort als eigene Zeile ("FÜLLUNG", "Guss:")
+  const bare = lower.replace(/[^a-zäöüß\- ]/g, "").trim();
+  if (GROUP_WORDS.has(bare)) return true;
   return vocab.subIngredientPrefixes.some((p) => lower === p || lower === p + "s");
+}
+
+/**
+ * **Reine** Gruppen-Überschrift: keine Zahlen und keine Kommas.
+ *
+ * Nötig, weil manche Captions Überschrift und Zutaten in eine Zeile schreiben
+ * („Gewürze: Salz, Pfeffer, Paprikapulver, Oregano"). Eine solche Zeile ist keine
+ * Gruppe, sondern eine Zutatenzeile – sie wird weiter zerlegt. Gemessen: Ohne
+ * diese Unterscheidung verschwanden alle Gewürze dieses Rezepts (Korpus-Recall
+ * 0,966 → 0,957).
+ */
+export function isPureGroupHeader(line: string): boolean {
+  return isSubIngredientHeader(line) && !/\d/.test(line) && !line.includes(",");
+}
+
+/**
+ * Anzeigename einer Zutatengruppe: Emojis, Aufzählungszeichen, Doppelpunkt und
+ * einleitendes „Für die …" entfernen. „Für die Soße:" → „Soße", „FÜLLUNG" →
+ * „FÜLLUNG".
+ */
+export function cleanGroupTitle(line: string): string {
+  let text = line
+    .replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{FE0F}\u{200D}]/gu, " ")
+    .replace(/[*_`~#>•·]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .replace(/[:.]$/, "")
+    .trim();
+  text = text.replace(/^(?:für|fuer|for)\s+(?:den|die|das|diesen|diese|der|the)\s+/i, "").trim();
+  return text.length > 40 ? text.slice(0, 40).trim() : text;
 }
 
 /** Abschnittsüberschrift (Zutaten/Zubereitung, auch als Emoji-Zeile) */

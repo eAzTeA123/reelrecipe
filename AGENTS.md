@@ -135,8 +135,13 @@ node node_modules/esbuild/bin/esbuild tmp/tools/run-user-corpus.ts \
 node tmp/tools/run-user-corpus.cjs     # beide Corpora + Fall-Details
 ```
 
-Stand nach `PARSER_VERSION` 15: Nutzer-Corpus F1 0.979 (Precision 1.000, Recall
-0.962), Titel 95 %, Schritte ±1 86 %; Referenz-Corpus 0.985 (unverändert).
+Stand nach `PARSER_VERSION` 20: Nutzer-Corpus F1 0.982 (Precision 1.000, Recall
+0.966), Titel 95 %, Schritte ±1 86 %; Referenz-Corpus 0.983. Neu in 20:
+**Zutatengruppen** (`Ingredient.group`) – Abschnitts-Überschriften wie „Teig" oder
+„FÜLLUNG" sind keine Zutaten mehr, sondern eine Gruppe; reine Überschriften werden
+von Mischzeilen („Gewürze: Salz, Pfeffer") unterschieden; der Merge fasst Dubletten
+nur noch innerhalb derselben Gruppe zusammen (`entryKeyWithGroup`); die Anzeige
+macht `src/lib/ingredientGroups.ts` in Rezept und Kochmodus.
 
 **Zwei gemessene Sackgassen – nicht erneut einbauen** (Werte dokumentiert in der
 Commit-Nachricht von `08b33b2`): Zutaten aus Komma-Listen im Anweisungstext

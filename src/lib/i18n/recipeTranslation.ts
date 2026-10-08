@@ -239,15 +239,37 @@ const DE_WORDS_SORTED = Object.keys(ING_DE_TO_EN).sort((a, b) => b.length - a.le
 const EN_TO_DE_REGEX = new RegExp(`(?<![\\p{L}])(${EN_WORDS_SORTED.join('|')})(?![\\p{L}])`, 'giu');
 const DE_TO_EN_REGEX = new RegExp(`(?<![\\p{L}])(${DE_WORDS_SORTED.join('|')})(?![\\p{L}])`, 'giu');
 
+/**
+ * Übersetzt einen Zutatennamen – **ganz oder gar nicht**.
+ *
+ * Anlass (gemessen am eigenen Bestand): Wortweise Übersetzung erzeugte
+ * Mischformen wie „Large Eier" (Large unbekannt → blieb englisch, Eggs bekannt →
+ * wurde deutsch). Ein halb übersetzter Name ist schlechter als ein fremdsprachiger:
+ * Er sieht wie ein Fehler aus und ist schlechter zu lesen.
+ *
+ * Deshalb: Nur wenn **jedes** Wort im Wörterbuch steht, wird ersetzt. Sonst bleibt
+ * der Name unverändert – gemischte Sprachen innerhalb eines Namens gibt es dann
+ * nicht mehr. (Unbekannte Wörter können später im Wörterbuch ergänzt werden; dann
+ * greift die Übersetzung automatisch.)
+ */
 function translateIngredientName(name: string, targetLang: "en" | "de"): string {
   const dict = targetLang === "de" ? ING_EN_TO_DE : ING_DE_TO_EN;
-  
+
   if (dict[name.toLowerCase()]) {
     return translateWord(name, dict);
   }
-  
+
+  const words = name
+    .split(/\s+/)
+    .map((word) => word.replace(/[^\p{L}]/gu, "").toLowerCase())
+    .filter((word) => word.length > 0);
+  if (words.length > 0 && words.some((word) => !dict[word])) {
+    // Mindestens ein Wort ist unbekannt → Name bleibt, wie er ist.
+    return name;
+  }
+
   const regex = targetLang === "de" ? EN_TO_DE_REGEX : DE_TO_EN_REGEX;
-  
+
   return name.replace(regex, (match) => {
     const isCapitalized = match.charAt(0) === match.charAt(0).toUpperCase();
     const lowerMatch = match.toLowerCase();

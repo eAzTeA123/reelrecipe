@@ -303,3 +303,49 @@ describe("Zutatenzeilen mit Wort-Menge oder Einheit am Anfang", () => {
   });
 });
 
+/**
+ * Zutatengruppen: Abschnitts-Überschriften („Teig", „FÜLLUNG", „Guss:") sind
+ * **keine** Zutaten mehr, sondern ein eigenes Feld. Vorher landeten sie in der
+ * Zutatenliste und klebten an Namen (gemessen: „Salz FÜLLUNG").
+ */
+describe("Zutatengruppen", () => {
+  it("macht aus Überschriften Gruppen statt Zutaten", () => {
+    const parsed = parseRecipe(
+      "Zimt-Zupfbrot\nZutaten\n200 g Mehl\nFÜLLUNG\n100 g Butter\nGuss:\n50 g Puderzucker",
+    )!;
+    expect(parsed.ingredients.map((ingredient) => ingredient.name)).toEqual([
+      "Mehl",
+      "Butter",
+      "Puderzucker",
+    ]);
+    expect(parsed.ingredients.map((ingredient) => ingredient.group)).toEqual([
+      undefined,
+      "FÜLLUNG",
+      "Guss",
+    ]);
+  });
+
+  it("behält dieselbe Zutat in verschiedenen Gruppen dreimal", () => {
+    const parsed = parseRecipe(
+      "Zutaten\nTeig:\n100 g Butter\nFüllung:\n100 g Butter\nGuss:\n100 g Butter",
+    )!;
+    expect(parsed.ingredients.filter((ingredient) => ingredient.name === "Butter")).toHaveLength(3);
+  });
+
+  it("fasst wörtlich gleiche Zeilen derselben Gruppe zusammen", () => {
+    /*
+     * Bewusst NICHT im Parser: Er bleibt faithful, damit die Korpus-Messung nicht
+     * Recall verliert (gemessen: F1 0,982 → 0,976). Zusammengefasst wird beim
+     * Speichern gruppenbewusst im Merge – siehe `parseMerge.test.ts`.
+     */
+    const parsed = parseRecipe("Zutaten\nTeig:\n100 g Butter\n100 g Butter")!;
+    expect(parsed.ingredients.filter((ingredient) => ingredient.name === "Butter")).toHaveLength(2);
+  });
+
+  it("entfernt das einleitende Für-die-Wendung aus dem Gruppennamen", () => {
+    const parsed = parseRecipe("Zutaten\n200 g Mehl\nFür die Soße:\n100 ml Sahne")!;
+    const sauce = parsed.ingredients.find((ingredient) => ingredient.name === "Sahne");
+    expect(sauce?.group).toBe("Soße");
+  });
+});
+

@@ -123,6 +123,18 @@ function matchSnapshotToStored(
   return { matches, removed, storedOnly };
 }
 
+/**
+ * Schlüssel für die Dublettenprüfung im Merge: **Gruppe und Name**.
+ *
+ * Anlass (gemessen): Vorher zählte nur der Name, deshalb verschwand eine dritte
+ * „weiche Butter" (Teig, Füllung, Guss) beim Zusammenführen. Identische Zeilen
+ * derselben Gruppe werden weiterhin zusammengefasst.
+ */
+function entryKeyWithGroup(ingredient: Ingredient): string {
+  const group = (ingredient.group ?? "").toLowerCase().trim();
+  return `${group}|${normalizeEntry(ingredient.name)}`;
+}
+
 function mergeIngredients(
   stored: Ingredient[],
   parsed: Ingredient[],
@@ -183,7 +195,7 @@ function mergeIngredients(
         notes: userChangedNotes ? user.notes : ing.notes,
         uncertain: user.uncertain === false ? false : ing.uncertain,
       };
-      const key = normalizeEntry(merged.name);
+      const key = entryKeyWithGroup(merged);
       if (key && !seen.has(key)) {
         seen.add(key);
         result.push(merged);
@@ -193,8 +205,9 @@ function mergeIngredients(
     }
 
     // 3) Wirklich neu erkannt → ergänzen
-    if (name && !seen.has(name)) {
-      seen.add(name);
+    const parsedKey = entryKeyWithGroup(ing);
+    if (parsedKey && !seen.has(parsedKey)) {
+      seen.add(parsedKey);
       result.push({ ...ing });
       addedByParser++;
     }
@@ -203,7 +216,7 @@ function mergeIngredients(
   // 4) Zutaten, die der Nutzer selbst ergänzt hat, bleiben am Ende erhalten
   for (const storedIndex of stored.map((_, i) => i)) {
     const user = stored[storedIndex];
-    const key = normalizeEntry(user.name);
+    const key = entryKeyWithGroup(user);
     if (!key || seen.has(key)) continue;
     const isSnapshotEntry = matches.some((m) => m.storedIndex === storedIndex);
     if (isSnapshotEntry) continue; // wurde oben schon behandelt
@@ -348,7 +361,7 @@ export function mergeParsedRecipe(stored: MergeStoredRecipe, parsed: MergeParsed
 /** Snapshot aus einem Parser-Ergebnis erzeugen (beim Import speichern). */
 export function createParseSnapshot(parsed: {
   title: string;
-  ingredients: { name: string; amount?: number; unit?: string; notes?: string }[];
+  ingredients: { name: string; amount?: number; unit?: string; notes?: string; group?: string }[];
   steps: { instruction: string }[];
 }): ParseSnapshot {
   return {
@@ -358,6 +371,8 @@ export function createParseSnapshot(parsed: {
       amount: i.amount,
       unit: i.unit,
       notes: i.notes,
+      // Gruppe mitschreiben, damit der Merge sie vergleichen kann (Teig ≠ Füllung)
+      group: i.group,
     })),
     steps: parsed.steps.map((s) => s.instruction),
   };

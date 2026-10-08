@@ -6,6 +6,38 @@ function ing(name: string, amount?: number, unit?: string): Ingredient {
   return { id: `id-${name}`, name, amount, unit };
 }
 
+/**
+ * Dubletten-Regel in der Praxis (gemessen: 3× „weiche Butter" wurde zu 2×):
+ * Dieselbe Zutat in **verschiedenen Gruppen** bleibt erhalten, identische Zeilen
+ * derselben Gruppe werden zusammengefasst.
+ */
+describe("parseMerge: Dubletten-Regel mit Zutatengruppen", () => {
+  it("behält dieselbe Zutat in verschiedenen Gruppen dreimal", () => {
+    const three: Ingredient[] = ["Teig", "Füllung", "Guss"].map((group, index) => ({
+      ...ing(`Butter-${index}`, 100, "g"),
+      name: "Butter",
+      group,
+    }));
+    const result = mergeParsedRecipe(
+      { title: "Parser-Titel", ingredients: three, steps: [], parseSnapshot: snapshot(three) },
+      { title: "Parser-Titel", ingredients: three, steps: [] },
+    );
+    expect(result.ingredients.filter((entry) => entry.name === "Butter")).toHaveLength(3);
+  });
+
+  it("fasst identische Zeilen derselben Gruppe zusammen", () => {
+    const two: Ingredient[] = [
+      { ...ing("Butter-a", 100, "g"), name: "Butter", group: "Teig" },
+      { ...ing("Butter-b", 100, "g"), name: "Butter", group: "Teig" },
+    ];
+    const result = mergeParsedRecipe(
+      { title: "Parser-Titel", ingredients: two, steps: [], parseSnapshot: snapshot(two) },
+      { title: "Parser-Titel", ingredients: two, steps: [] },
+    );
+    expect(result.ingredients.filter((entry) => entry.name === "Butter")).toHaveLength(1);
+  });
+});
+
 function step(order: number, instruction: string): RecipeStep {
   return { id: `s-${order}`, order, instruction };
 }

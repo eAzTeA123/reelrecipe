@@ -60,7 +60,7 @@ async function seedRecipes(page: Page, count: number): Promise<void> {
           favorite: i % 7 === 0,
           createdAt: now - i * 1000,
           updatedAt: now - i * 1000,
-          parserVersion: 19,
+          parserVersion: 20,
         });
       }
       tx.oncomplete = () => resolve();

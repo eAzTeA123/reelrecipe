@@ -4,6 +4,12 @@ export interface Ingredient {
   unit?: string;
   name: string;
   notes?: string;
+  /**
+   * Zutatengruppe aus der Caption („Teig", „Belag", „Frischkäse-Guss").
+   * Vorher landeten solche Überschriften **als Zutaten** in der Liste und
+   * klebten an Namen („Salz FÜLLUNG") – jetzt sind sie ein eigenes Feld.
+   */
+  group?: string;
   /** true, wenn der Parser die Zeile nicht eindeutig zuordnen konnte */
   uncertain?: boolean;
 }
@@ -24,6 +30,7 @@ export interface ParseSnapshotIngredient {
   amount?: number;
   unit?: string;
   notes?: string;
+  group?: string;
 }
 
 export interface ParseSnapshot {

@@ -33,6 +33,7 @@ function formatMinutes(min?: number): string | undefined {
 import { useImageUrlWithCache } from "@/hooks/useImageUrlWithCache";
 import { encodeShareCode, recipeToSharePayload } from "@/lib/shareCode";
 import type { TranslationKey } from "@/lib/i18n/dictionaries";
+import { groupIngredients } from "@/lib/ingredientGroups";
 
 function sourceLabel(sourceUrl: string, t: (k: TranslationKey) => string): string {
   let host = "";
@@ -366,28 +367,42 @@ export default function RecipeDetailPage({ params }: { params: Promise<{ id: str
         {recipe.ingredients.length === 0 ? (
           <p className="text-body text-ink-3">{t("recipe.ingredientsEmpty")}</p>
         ) : (
-          <ul className="divide-y divide-line overflow-hidden rounded-card border border-line bg-surface shadow-card">
-            {recipe.ingredients.map((ing) => {
-              const scaled = scaleAmount(ing.amount, recipe.servings, targetServings);
-              const qty = formatAmount(scaled, ing.unit);
-              return (
-                <li key={ing.id} className="flex items-baseline gap-4 px-4 py-3">
-                  <span className="w-20 shrink-0 text-right text-body font-semibold tabular-nums text-accent-text">
-                    {qty || "–"}
-                  </span>
-                  <span className="text-body">
-                    {ing.name}
-                    {ing.notes && <span className="text-ink-2">, {ing.notes}</span>}
-                    {ing.uncertain && (
-                      <span className="ml-2 rounded-xs bg-warn/15 px-2 py-0.5 text-label font-medium text-warn">
-                        nicht eindeutig
-                      </span>
-                    )}
-                  </span>
-                </li>
-              );
-            })}
-          </ul>
+          <div className="overflow-hidden rounded-card border border-line bg-surface shadow-card">
+            {groupIngredients(recipe.ingredients).map((section, sectionIndex) => (
+              <div
+                key={`${section.group ?? "ohne"}-${sectionIndex}`}
+                className="border-b border-line last:border-b-0"
+              >
+                {section.group && (
+                  <h3 className="bg-surface-2 px-4 py-2 text-label font-semibold uppercase tracking-wide text-ink-2">
+                    {section.group}
+                  </h3>
+                )}
+                <ul className="divide-y divide-line">
+                  {section.items.map((ing) => {
+                    const scaled = scaleAmount(ing.amount, recipe.servings, targetServings);
+                    const qty = formatAmount(scaled, ing.unit);
+                    return (
+                      <li key={ing.id} className="flex items-baseline gap-4 px-4 py-3">
+                        <span className="w-20 shrink-0 text-right text-body font-semibold tabular-nums text-accent-text">
+                          {qty || "–"}
+                        </span>
+                        <span className="text-body">
+                          {ing.name}
+                          {ing.notes && <span className="text-ink-2">, {ing.notes}</span>}
+                          {ing.uncertain && (
+                            <span className="ml-2 rounded-xs bg-warn/15 px-2 py-0.5 text-label font-medium text-warn">
+                              nicht eindeutig
+                            </span>
+                          )}
+                        </span>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            ))}
+          </div>
         )}
 
       </section>
