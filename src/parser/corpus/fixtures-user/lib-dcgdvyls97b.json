@@ -42,7 +42,7 @@
       {
         "amount": 1,
         "unit": "TL",
-        "name": "Salz FÜLLUNG"
+        "name": "Salz"
       },
       {
         "amount": 100,
@@ -98,5 +98,5 @@
     "stepsCount": 6
   },
   "exclude": "Gespeicherte Zutaten enthalten englische Namen (Übersetzung) – keine gültige Wahrheit.",
-  "notes": "Aus dem eigenen Backup übernommen: expected = gespeicherte Bibliotheksfassung (von Hand geprüft/gekürzt). Kennung der Vorlage: zimt-zupfbrot Gespeicherte Zutaten enthalten englische Namen (Übersetzung) – keine gültige Wahrheit."
+  "notes": "Aus dem eigenen Backup übernommen: expected = gespeicherte Bibliotheksfassung (von Hand geprüft/gekürzt). Kennung der Vorlage: zimt-zupfbrot Gespeicherte Zutaten enthalten englische Namen (Übersetzung) – keine gültige Wahrheit. Geklebte Ueberschrift entfernt (füllung): der gespeicherte Eintrag war ein Parser-Artefakt aus PARSER_VERSION <= 19, heute liefert der Parser den reinen Namen plus Gruppe."
 }

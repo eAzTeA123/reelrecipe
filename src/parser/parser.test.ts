@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { parseRecipe, parseAmountString, parseIngredientLine } from "./index";
 
@@ -346,6 +348,21 @@ describe("Zutatengruppen", () => {
     const parsed = parseRecipe("Zutaten\n200 g Mehl\nFür die Soße:\n100 ml Sahne")!;
     const sauce = parsed.ingredients.find((ingredient) => ingredient.name === "Sahne");
     expect(sauce?.group).toBe("Soße");
+  });
+
+  /*
+   * Regression mit einem **echten** Fall aus der eigenen Bibliothek
+   * (fixtures-user/lib-dcgdvyls97b.json, Zimt-Zupfbrot): Dort stand gespeichert
+   * „Salz FÜLLUNG", weil der Parser die Überschrift an den Zutatennamen klebte.
+   */
+  it("klebt die Überschrift FÜLLUNG nicht mehr an den Zutatennamen", () => {
+    const fixture = JSON.parse(
+      readFileSync(join(process.cwd(), "src/parser/corpus/fixtures-user/lib-dcgdvyls97b.json"), "utf8"),
+    ) as { caption: string };
+    const parsed = parseRecipe(fixture.caption)!;
+
+    expect(parsed.ingredients.some((ingredient) => /füllung/i.test(ingredient.name))).toBe(false);
+    expect(parsed.ingredients.some((ingredient) => /füllung/i.test(ingredient.group ?? ""))).toBe(true);
   });
 });
 
