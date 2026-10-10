@@ -511,5 +511,27 @@ describe("Zutaten-Qualität: nichts verschmelzen, nichts Fremdes aufnehmen", () 
     expect(names).toContain("Tomaten");
     expect(names.every((name) => !/(?:formen|ausspülen|abnehmen|von den)/i.test(name))).toBe(true);
   });
+
+  it("teilt kurze Komma-Aufzählungen", () => {
+    const parsed = parseRecipe("Zutaten\nSalz, Pfeffer")!;
+    expect(parsed.ingredients.map((ingredient) => ingredient.name)).toEqual(["Salz", "Pfeffer"]);
+  });
+
+  it("zerlegt eine Klammer-Liste nicht in Bruchstücke", () => {
+    const parsed = parseRecipe("Zutaten\nGewürze (Paprika, Knoblauch, Salz & Pfeffer)")!;
+    expect(parsed.ingredients).toHaveLength(1);
+    expect(parsed.ingredients[0].name).toBe("Gewürze");
+    expect(parsed.ingredients[0].notes).toContain("Paprika");
+  });
+
+  it("behält nummerierte Anweisungen vollständig", () => {
+    const parsed = parseRecipe(
+      "Zutaten\n200 g Mehl\nZubereitung\n1️⃣ Ofen auf 190 °C vorheizen\n2️⃣ Teig kneten\n➡️ 10 Min ruhen\n3️⃣ Servieren & genießen",
+    )!;
+    const steps = parsed.steps.map((step) => step.instruction);
+    expect(steps.some((step) => /Ofen auf 190/.test(step))).toBe(true);
+    expect(steps.some((step) => /Teig kneten/.test(step))).toBe(true);
+    expect(steps.some((step) => /Servieren/.test(step))).toBe(true);
+  });
 });
 

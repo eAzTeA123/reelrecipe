@@ -376,11 +376,33 @@ const isQuantity = (segment: string): boolean => SEGMENT_START.test(segment) && 
  * Gibt null zurück, wenn es keine Liste ist – damit Notiz-Konstruktionen
  * ("Hähnchen, in Streifen geschnitten", "Miracle Whip, Balance") heil bleiben.
  */
+/**
+ * Kommas **außerhalb** von Klammern trennen. Redaktionell geprüft (12, 14):
+ * „Gewürze (Paprika, Knoblauch, Salz & Pfeffer)" zerfiel sonst in Bruchstücke.
+ * Dezimalkommas („1,5") bleiben unangetastet.
+ */
+function splitTopLevelCommas(line: string): string[] {
+  const parts: string[] = [];
+  let depth = 0;
+  let current = "";
+  for (let index = 0; index < line.length; index++) {
+    const char = line[index];
+    if (char === "(") depth++;
+    else if (char === ")") depth = Math.max(0, depth - 1);
+    const isDecimalComma = char === "," && depth === 0 && /\d/.test(line[index - 1] ?? "") && /\d/.test(line[index + 1] ?? "");
+    if (char === "," && depth === 0 && !isDecimalComma) {
+      parts.push(current);
+      current = "";
+      continue;
+    }
+    current += char;
+  }
+  parts.push(current);
+  return parts.map((part) => part.trim()).filter(Boolean);
+}
+
 function splitIngredientList(line: string): string[] | null {
-  const commaParts = line
-    .split(/,(?!\d)/)
-    .map((s) => s.trim())
-    .filter(Boolean);
+  const commaParts = splitTopLevelCommas(line);
 
   if (commaParts.length < 2) {
     // Reine "&"-Aufzählung: nur trennen, wenn rechts eine Menge steht
@@ -425,10 +447,20 @@ function splitIngredientList(line: string): string[] | null {
   if (items.length < 2) return null;
   const withQuantity = items.filter(isQuantity).length;
   if (withQuantity >= 2) return items;
-  // Reine Aufzählung ohne jede Menge erst ab **drei** Teilen: „Salz Pfeffer,
-  // Knoblauchpulver, Paprika edelsüß" ist eine Gewürzzeile (gemeldet), „A, B"
-  // bleibt dagegen zusammen (Referenz-Korpus: sonst Phantom-Zutaten).
-  if (withQuantity === 0 && items.length >= 3 && items.every((item) => isPlainItem(item))) return items;
+  /*
+   * Reine Aufzählung ohne jede Menge: mindestens zwei kurze Einträge
+   * („Salz, Pfeffer" oder „Salz Pfeffer, Knoblauchpulver, Paprika edelsüß").
+   * Redaktionell geprüft (22, 30): Vorher blieb „Salz, Pfeffer" ein Eintrag und
+   * verlor das Komma. Längere Einträge bleiben zusammen, damit Notizen wie
+   * „Hähnchen, in Streifen geschnitten" heil bleiben.
+   */
+  if (
+    withQuantity === 0 &&
+    items.length >= 2 &&
+    items.every((item) => isPlainItem(item) && item.split(/\s+/).filter(Boolean).length <= 3)
+  ) {
+    return items;
+  }
   return null;
 }
 
@@ -445,7 +477,9 @@ export function expandIngredientLine(line: string): string[] {
   const hasNoteMarker = /,\s*(?:z\.\s?b\.?|zum beispiel|bspw\.?|beispielsweise|etwa|ca\.|circa|alternativ|optional|nach belieben)/i.test(
     line,
   );
-  const parts = hasNoteMarker
+  // Klammer-Zusatz am Ende („Gewürze (Paprika, Knoblauch & Salz)") nicht zerlegen
+  const hasTrailingParen = /\([^()]{3,120}\)\s*$/.test(line);
+  const parts = hasNoteMarker || hasTrailingParen
     ? [line]
     : line
         .split(CONJUNCTION_SPLIT)
@@ -470,16 +504,31 @@ export function expandIngredientLine(line: string): string[] {
 const TRAILING_NOTE_RE =
   /\s+(optional|alternativ|nach Belieben|nach Geschmack|evtl\.?|ggf\.?|zum Garnieren|to serve|to garnish)\s*:?\s*$/i;
 
+/**
+ * Klammer-Zusatz am Namensende wird zur Notiz: „Gewürze (Paprika, Knoblauch,
+ * Salz & Pfeffer)" → Name „Gewürze", Notiz „Paprika, Knoblauch, Salz & Pfeffer".
+ * Redaktionell geprüft (12, 14): Vorher zerfiel die Zeile in Bruchstücke.
+ */
+const TRAILING_PAREN_RE = /\s*\(([^()]{3,120})\)\s*$/;
+
 export function toIngredient(p: ParsedIngredient): Ingredient {
   const trailing = p.name.match(TRAILING_NOTE_RE);
-  const name = trailing ? p.name.slice(0, trailing.index).trim() : p.name;
+  let name = trailing ? p.name.slice(0, trailing.index).trim() : p.name;
   const note = trailing ? trailing[1].trim() : undefined;
+
+  const paren = name.match(TRAILING_PAREN_RE);
+  let parenNote: string | undefined;
+  if (paren && paren.index !== undefined && paren.index > 0) {
+    parenNote = paren[1].trim();
+    name = name.slice(0, paren.index).trim();
+  }
+
   return {
     id: newId(),
     amount: p.amount,
     unit: p.unit,
     name,
-    notes: [p.notes, note].filter(Boolean).join(", ") || undefined,
+    notes: [p.notes, note, parenNote].filter(Boolean).join(", ") || undefined,
     uncertain: p.uncertain || undefined,
   };
 }

@@ -135,37 +135,35 @@ node node_modules/esbuild/bin/esbuild tmp/tools/run-user-corpus.ts \
 node tmp/tools/run-user-corpus.cjs     # beide Corpora + Fall-Details
 ```
 
-Stand nach `PARSER_VERSION` 24: Nutzer-Corpus F1 0.971 (Precision 0.995, Recall
+Stand nach `PARSER_VERSION` 25: Nutzer-Corpus F1 0.971 (Precision 0.995, Recall
 0.950), Titel 95 %, Schritte ±1 86 %; Referenz-Corpus 0.976 (Schwelle 0.97 hält).
-Der Nutzerwert sinkt gegenüber 23 (0.978), weil der Korpus den **gespeicherten**
+Der Nutzerwert liegt unter 23 (0.978), weil der Korpus den **gespeicherten**
 Bestand als Wahrheit führt und dort Artefakte stehen, die jetzt korrekt entfallen
-(„Wasser ausspülen", „Fleischfüllung", „Sonstiges" – redaktionell als Müll belegt).
+(„Wasser ausspülen", „Fleischfüllung", „Sonstiges").
 
-**Redaktionelle Prüfung aller 45 Rezepte** (Methode: `tmp/review.md` stellt die
-live geholte Caption dem Parser-Ergebnis gegenüber; sechs Lektoren haben die
-Rezepte 1–8, 9–16, 17–24, 25–32, 33–40, 41–45 unabhängig gelesen und nur echte
-Abweichungen gemeldet). Behoben in 24:
+Neu in 25 (zweite Runde der redaktionellen Prüfung, offene Punkte aus 24):
 
-- Instagram-Resttext („Alle 21Kommentare ansehen", auch ohne Leerzeichen) wurde
-  aus Schritten nicht entfernt.
-- Nackte Überschriftenwörter („Backen", „Anrichten") wurden zu Schritten.
-- Zutaten-Phantome aus Anleitungstext („100 ml Wasser ausspülen", „87.5 g formen",
-  „von den karamellisierten Zwiebeln"): Handlungs- und Einleitungswörter sind
-  jetzt ausgeschlossen.
-- Abschnittsangaben mit englischem/besitzanzeigendem Artikel („For the tikka
-  masala sauce", „Für mein Notella") wurden Zutaten; nackte Abschnittswörter
-  („Sonstiges", „Fleischfüllung", „Burgersoße") ebenso.
-- Backofenangaben mit Handlungsverb gelten als Anweisung, auch wenn das Verb in
-  der Mitte steht („Ofen auf 180 °C vorheizen").
+- **Nummerierte Anweisungen sind unantastbar**: In `markerBased` fielen „1️⃣ Ofen
+  auf 190 °C vorheizen", „2️⃣ Hähnchen … würfeln" und „7️⃣ Servieren & genießen"
+  durch die Überschriften-/Lead-in-Prüfungen – das Rezept hatte 5 statt 7 Schritte.
+  Pfeil-Fortsetzungen („➡️ 45 Min abgedeckt") und kurze Zeitangaben werden jetzt an
+  den Schritt darüber gehängt statt eigenen Schritt zu werden.
+- **Strukturzeilen sind keine Schritte** (jetzt dort geprüft, wo der
+  Abschnittskontext bekannt ist, nicht in `makeSteps`): Abschnitts-Überschriften,
+  Etiketten, reine Ofenangaben und Nährwertzeilen wandern nach `other`. Eine
+  Ofenangabe **mit** Handlungsverb bleibt Schritt.
+- **Kurze Komma-Aufzählungen** werden geteilt („Salz, Pfeffer" war ein Eintrag und
+  verlor das Komma).
+- **Klammer-Listen bleiben zusammen** („Gewürze (Paprika, Knoblauch, Salz &
+  Pfeffer)" zerfiel in Bruchstücke); ein Klammer-Zusatz am Namensende wird zur
+  Notiz (`toIngredient`).
 
-**Offen aus der Prüfung** (bewusst nicht in 24, um den Korpus nicht zu brechen):
-Abschnitts-Überschriften und reine Ofenangaben stehen weiterhin als Schritte
-(Schritte ±1 fiel beim Versuch von 86 % auf 81 % – die Prüfung gehört in die
-Strategie, wo der Abschnittskontext bekannt ist, nicht in `makeSteps`);
-Gewürz-Sammelzeilen mit Klammer („Gewürze (Paprika, Knoblauch, Salz & Pfeffer)")
-zerfallen; Komma-Listen verlieren das Komma („Salz, Pfeffer" → „Salz Pfeffer");
-Marken-Zutaten mit Klammerzusatz werden abgeschnitten („Daily Blend" → „Daily");
-Titel stammen teils aus Caption-Fragmenten („Marie", „Handvoll Cherry Tomaten").
+**Weiter offen** (aus den sechs Lektoratsberichten, noch nicht gebaut): Titel aus
+Caption-Fragmenten („Marie", „Handvoll Cherry Tomaten", „Pasta nach Wahl");
+Zutaten, die nur im Anleitungstext stehen (Nutella in 1, 40 g Joghurt in 6, 28 g
+Pudding Mix in 38); eine Zutatenzeile, die als Schritt 1 landet (12); doppelte
+Gruppenläufe bei wiederholten Überschriften (9, 41, 45); abgeschnittene
+Marken-Zutaten mit Klammerzusatz („Daily Blend" → „Daily", 34).
 
 **Zwei gemessene Sackgassen – nicht erneut einbauen** (Werte dokumentiert in der
 Commit-Nachricht von `08b33b2`): Zutaten aus Komma-Listen im Anweisungstext

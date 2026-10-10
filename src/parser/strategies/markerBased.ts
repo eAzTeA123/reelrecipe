@@ -1,7 +1,7 @@
 import { getAllVocab } from "../vocabulary";
 import { splitLines } from "../normalize";
 import { looksLikeIngredient, startsWithOwnQuantity } from "../ingredient";
-import { CONTINUATION_START_RE, isPureGroupHeader } from "../lineFacts";
+import { CONTINUATION_START_RE, isLabelLine, isPureGroupHeader, isTemperatureLine } from "../lineFacts";
 import {
   INGREDIENT_EMOJIS,
   STEP_EMOJIS,
@@ -126,14 +126,40 @@ export const markerBasedStrategy: ParserStrategy = {
           result.ingredients.push(line);
         }
       } else if (currentSection === "steps") {
-        // Überschriften ("Haselnuss-Creme"), aufgezählte Zutaten-Nennungen
-        // ("→ 🍫 Schoko-Creme"), Notizen und Footer-/Linkzeilen sind keine Schritte.
+        /*
+         * Nummerierte Zeilen sind **immer** Schritte („1️⃣ Ofen auf 190 °C
+         * vorheizen", „2️⃣ Hähnchen … würfeln", „7️⃣ Servieren & genießen").
+         * Vorher fielen sie durch die Überschriften-/Lead-in-Prüfungen und die
+         * Anleitung verlor mehrere Schritte (redaktionell geprüft an Rezept 12).
+         */
+        const numberedStep = /^(?:[0-9]\uFE0F?\u20E3|\d{1,2}\s*[.)\]])\s*\S/u.test(line);
+        // Fortsetzungszeile mit Pfeil gehört zum Schritt darüber („➡️ 45 Min abgedeckt")
+        const arrowStripped = line.replace(/^[\u27A1\u2192\uFE0F\s]+/u, "").trim();
+        const isShortTimingNote =
+          result.steps.length > 0 &&
+          line.length < 45 &&
+          /\b\d+\s*(?:min|minuten|std|stunden)\b/i.test(line) &&
+          !/\b(?:backen|kochen|braten|anbraten|vorheizen|erhitzen|mischen|kneten|ruehren)\b/i.test(line);
+        if ((/^[\u27A1\u2192\uFE0F\s]/.test(line) || isShortTimingNote) && arrowStripped.length > 0) {
+          result.steps[result.steps.length - 1] += ` ${arrowStripped}`;
+          continue;
+        }
         if (
-          isCreditOrLinkLine(line) ||
-          looksLikeHeading(line, lines[i + 1]) ||
-          isStepLeadIn(line, lines.slice(i + 1, i + 3)) ||
-          isListItemWithoutVerb(line) ||
-          isNoteLine(line)
+          !numberedStep &&
+          (isCreditOrLinkLine(line) ||
+            looksLikeHeading(line, lines[i + 1]) ||
+            isStepLeadIn(line, lines.slice(i + 1, i + 3)) ||
+            isListItemWithoutVerb(line) ||
+            isNoteLine(line) ||
+            /*
+             * Strukturzeilen sind keine Schritte (redaktionell geprüft an 23 und
+             * 39): „Zum Servieren:", „Anrichten", reine Ofenangaben und
+             * Nährwertzeilen. Eine Ofenangabe **mit** Handlungsverb bleibt Schritt.
+             */
+            isPureGroupHeader(line) ||
+            isLabelLine(line) ||
+            isTemperatureLine(line) ||
+            isNutritionLine(line))
         ) {
           result.other.push(line);
           continue;

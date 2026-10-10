@@ -35,6 +35,12 @@ export {
  * über den schützenden Merge, eigene Änderungen bleiben also erhalten
  * (Rückmeldung als Toast in `MigrationRunner`).
  *
+ * Version 25: Nummerierte Anweisungen sind unantastbar (1, 2, 7 wurden in
+ * marker_based verworfen - Rezept 12 hatte 5 statt 7 Schritte), Pfeil-/Zeitangaben
+ * haengen am Schritt darueber, Strukturzeilen sind in den Strategien keine Schritte
+ * mehr, kurze Komma-Aufzaehlungen werden geteilt und Klammer-Listen bleiben
+ * zusammen (Klammer-Zusatz wird Notiz).
+ *
  * Version 24: Befunde der redaktionellen Pruefung aller 45 Rezepte: Instagram-
  * Resttext wird aus Schritten entfernt (auch 'Alle 21Kommentare ansehen'), nackte
  * Ueberschriftenwoerter sind keine Schritte, Zutaten-Phantome aus Anleitungstext
@@ -79,7 +85,7 @@ export {
  * („Teig", „Belag") – Überschriften sind keine Zutaten, und die Anleitung steht
  * in den Listen, nicht in den Absätzen.
  */
-export const PARSER_VERSION = 24;
+export const PARSER_VERSION = 25;
 
 import {
   isSectionHeader as isSectionHeaderLine,
