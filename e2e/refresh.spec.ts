@@ -133,7 +133,7 @@ async function seed(page: Page): Promise<void> {
             favorite: false,
             createdAt: now - 3000,
             updatedAt: now - 3000,
-            parserVersion: 22,
+            parserVersion: 23,
             parseSnapshot: {
               title: "Eier",
               ingredients: [

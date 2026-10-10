@@ -35,6 +35,12 @@ export {
  * über den schützenden Merge, eigene Änderungen bleiben also erhalten
  * (Rückmeldung als Toast in `MigrationRunner`).
  *
+ * Version 23: Typografische Apostrophe werden vereinheitlicht (SO GEHT'S wurde
+ * sonst nicht als Anleitung erkannt - das Rezept hatte KEINE Schritte).
+ * Gruppenwoerter werden ohne Bindestrich/Leerzeichen verglichen (FRISCHKAESE-GUSS
+ * stand als Zutat in der Liste) und die Gruppenzuordnung ignoriert Listenzeichen
+ * (Bullet), sodass TEIG bei '- 500 g Mehl' nicht mehr verloren ging.
+ *
  * Version 22: Naehrwertzeilen im englischen Meal-Prep-Stil (481 Calories,
  * 43g Protein) sind keine Zutaten mehr, ebenso Etiketten mit Klammerzahl
  * (The Best Buff Chicken Subs (makes 12):). Dazu holt der Import die Caption aus
@@ -66,7 +72,7 @@ export {
  * („Teig", „Belag") – Überschriften sind keine Zutaten, und die Anleitung steht
  * in den Listen, nicht in den Absätzen.
  */
-export const PARSER_VERSION = 22;
+export const PARSER_VERSION = 23;
 
 import {
   isSectionHeader as isSectionHeaderLine,
@@ -88,6 +94,19 @@ function isSectionHeader(l: string): boolean {
  * Sie läuft einmal über die Zeilen, merkt sich die letzte Überschrift und ordnet
  * jede Zeile ihrer Gruppe zu (Schlüssel: die Zeile selbst).
  */
+/**
+ * Zeilenschlüssel für den Gruppenvergleich: ohne Listenzeichen, Emojis und
+ * Groß-/Kleinschreibung (siehe `groupByLine`).
+ */
+function groupKey(value: string): string {
+  return value
+    .replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{FE0F}\u{200D}]/gu, " ")
+    .replace(/^[\s\-*+~#>\u2022\u2705\u2611\uFE0F]+/u, "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .toLowerCase();
+}
+
 function groupByLine(caption: string): Map<string, string> {
   const map = new Map<string, string>();
   let current: string | undefined;
@@ -98,7 +117,7 @@ function groupByLine(caption: string): Map<string, string> {
       current = cleanGroupTitle(line);
       continue;
     }
-    if (current) map.set(line, current);
+    if (current) map.set(groupKey(line), current);
   }
   return map;
 }
@@ -120,7 +139,7 @@ export function parseRecipe(caption: string): ParsedRecipe | null {
    */
   const linesWithGroups = raw.ingredients.map((line, index) => ({
     line,
-    group: raw.ingredientGroups?.[index] ?? groupsFromCaption.get(line),
+    group: raw.ingredientGroups?.[index] ?? groupsFromCaption.get(groupKey(line)),
   }));
   const keepLines = new Set(stripMultiplierHeaders(linesWithGroups.map((entry) => entry.line)));
 

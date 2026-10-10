@@ -33,6 +33,13 @@ export const hasStepEmoji = (line: string): boolean => hasEmoji(line, STEP_EMOJI
 export function normalizeHeader(line: string): string {
   return stripEmojiModifiers(line)
     .replace(/[\p{Emoji_Presentation}\p{Extended_Pictographic}]/gu, "")
+    /*
+     * Typografische Apostrophe vereinheitlichen: Captions schreiben „SO GEHT’S",
+     * der Wortschatz enthält „so geht's". Ohne diesen Schritt wurde die Anleitung
+     * nicht erkannt – das Rezept hatte dann **keine Schritte** (gemessen am
+     * Zimt-Zupfbrot).
+     */
+    .replace(/[\u2018\u2019\u201A\u201B\u00B4\u0060]/g, "'")
     .toLowerCase()
     .replace(/[:\-_#*]/g, "")
     .replace(/\s+/g, " ")
@@ -148,6 +155,16 @@ const GROUP_WORDS = new Set([
   "gewürzmischung", "kräutermischung", "garnitur", "obendrauf", "zum bestreichen",
 ]);
 
+/*
+ * Dieselben Wörter ohne Bindestrich und Leerzeichen. `normalizeHeader` entfernt
+ * Bindestriche ersatzlos („FRISCHKÄSE-GUSS" → „frischkäseguss"), deshalb wurde die
+ * Überschrift nicht erkannt und stand als Zutat in der Liste (gemessen am
+ * Zimt-Zupfbrot, live gegen die Instagram-Caption geprüft).
+ */
+const GROUP_WORDS_NORMALIZED = new Set(
+  [...GROUP_WORDS].map((word) => word.replace(/[^a-zäöüß]/g, "")),
+);
+
 /** Sub-Kategorie innerhalb der Zutaten ("Für die Soße:", "Gewürze", "FÜLLUNG") */
 export function isSubIngredientHeader(line: string): boolean {
   if (line.length > 40) return false;
@@ -156,9 +173,9 @@ export function isSubIngredientHeader(line: string): boolean {
   if (vocab.ingredientMarkers.some((m) => lower.startsWith(m + " "))) {
     if (!lower.endsWith(" english") && !lower.endsWith(" deutsch")) return true;
   }
-  // Nacktes Gruppenwort als eigene Zeile ("FÜLLUNG", "Guss:")
-  const bare = lower.replace(/[^a-zäöüß\- ]/g, "").trim();
-  if (GROUP_WORDS.has(bare)) return true;
+  // Nacktes Gruppenwort als eigene Zeile ("FÜLLUNG", "FRISCHKÄSE-GUSS", "Guss:")
+  const bare = lower.replace(/[^a-zäöüß]/g, "");
+  if (GROUP_WORDS.has(bare) || GROUP_WORDS_NORMALIZED.has(bare)) return true;
   return vocab.subIngredientPrefixes.some((p) => lower === p || lower === p + "s");
 }
 
