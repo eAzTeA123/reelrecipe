@@ -462,13 +462,24 @@ export function expandIngredientLine(line: string): string[] {
   return splitIngredientList(line) ?? [line];
 }
 
+/**
+ * Nachgestellte Notiz im Namen: „Mandeldrink optional:" → Name „Mandeldrink",
+ * Notiz „optional". Gemessen an einer Live-Caption, in der die Notizzeile an die
+ * Zutat darüber gehängt wurde.
+ */
+const TRAILING_NOTE_RE =
+  /\s+(optional|alternativ|nach Belieben|nach Geschmack|evtl\.?|ggf\.?|zum Garnieren|to serve|to garnish)\s*:?\s*$/i;
+
 export function toIngredient(p: ParsedIngredient): Ingredient {
+  const trailing = p.name.match(TRAILING_NOTE_RE);
+  const name = trailing ? p.name.slice(0, trailing.index).trim() : p.name;
+  const note = trailing ? trailing[1].trim() : undefined;
   return {
     id: newId(),
     amount: p.amount,
     unit: p.unit,
-    name: p.name,
-    notes: p.notes,
+    name,
+    notes: [p.notes, note].filter(Boolean).join(", ") || undefined,
     uncertain: p.uncertain || undefined,
   };
 }

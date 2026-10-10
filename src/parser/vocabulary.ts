@@ -264,6 +264,14 @@ export const VOCABULARY: Record<"de" | "en", LanguageVocab> = {
       "for the glaze",
       "for the salad",
       "to garnish",
+      // Gemessen an einer Live-Caption („To serve" ohne Doppelpunkt): wurde als
+      // Zutat gelesen und zerfiel zu „To".
+      "to serve",
+      "to serve with",
+      "for serving",
+      "serve with",
+      "for the chicken",
+      "for the burgers",
       "optional",
       "spices",
       "topping",

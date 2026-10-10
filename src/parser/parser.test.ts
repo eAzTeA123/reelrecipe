@@ -434,5 +434,16 @@ describe("Zutaten-Qualität: nichts verschmelzen, nichts Fremdes aufnehmen", () 
     const parsed = parseRecipe("Zutaten\nThe Best Buff Chicken Subs (makes 12):\n4 Baguettes")!;
     expect(parsed.ingredients.map((ingredient) => ingredient.name)).toEqual(["Baguettes"]);
   });
+
+  it("erkennt eine englische Abschnittsangabe ohne Doppelpunkt", () => {
+    const parsed = parseRecipe("Zutaten\nTo serve\n200 g Joghurt")!;
+    expect(parsed.ingredients.map((ingredient) => ingredient.name)).toEqual(["Joghurt"]);
+  });
+
+  it("macht aus einer nachgestellten Notiz keinen Namensbestandteil", () => {
+    const parsed = parseRecipe("Zutaten\n50-100 ml Mandeldrink\noptional:")!;
+    expect(parsed.ingredients[0].name).toBe("Mandeldrink");
+    expect(parsed.ingredients[0].notes).toContain("optional");
+  });
 });
 

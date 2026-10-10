@@ -135,18 +135,35 @@ node node_modules/esbuild/bin/esbuild tmp/tools/run-user-corpus.ts \
 node tmp/tools/run-user-corpus.cjs     # beide Corpora + Fall-Details
 ```
 
-Stand nach `PARSER_VERSION` 22: Nutzer-Corpus F1 0.978 (Precision 0.993, Recall
+Stand nach `PARSER_VERSION` 23: Nutzer-Corpus F1 0.978 (Precision 0.993, Recall
 0.966), Titel 95 %, Schritte ±1 86 %; Referenz-Corpus 0.976 (Schwelle 0.97 hält).
-Neu in 22: Nährwertzeilen im englischen Meal-Prep-Stil („481 Calories", „43g
-Protein") sind keine Zutaten mehr, ebenso Etiketten mit Klammerzahl („The Best
-Buff Chicken Subs (makes 12):"). Zusätzlich holt der Import die Caption jetzt aus
-der **Embed-Seite** (`/embed/captioned/`, `src/lib/instagramCaption.ts`), weil
-`og:description` abgeschnitten ist – gemessen an Reel `DdtwrLYtOiT` fehlte dort
-die Zeile „43g Protein", die dann in der Bibliothek fehlte. Die längere der beiden
-Fassungen gewinnt. Werkzeuge für die Fehlersuche:
-`tmp/tools/show-source.mjs <backup> <kurzcode|url-teil>` (Caption, gespeicherte
-Zutaten und Parser-Ausgabe nebeneinander) und `tmp/tools/audit-parsed-library.mjs
-<backup>` (Dubletten, Fremdkörper, Gruppen über die ganze Bibliothek).
+Neu in 23: typografische Apostrophe werden vereinheitlicht (Captions schreiben
+„SO GEHT’S", der Wortschatz kennt nur „so geht's" – deshalb wurden Anleitungen
+nicht erkannt und die Rezepte hatten **keine Schritte**), Gruppenwörter werden
+ohne Bindestrich/Leerzeichen verglichen („FRISCHKÄSE-GUSS" stand als Zutat in der
+Liste) und die Gruppenzuordnung ignoriert Listenzeichen (`groupKey`), damit
+„• 500 g Mehl" seine Gruppe „TEIG" findet.
+
+**Live-Prüfung aller Reels** (Methode, die zum Ziel geführt hat):
+
+```bash
+node tmp/tools/compare-captions.mjs <backup.json> --out tmp/caption-compare-<n>.json
+node tmp/tools/analyze-captions.mjs tmp/caption-compare-<n>.json
+node tmp/tools/audit-live.mjs          # Prüfraster über alle gespeicherten Captions
+```
+
+Stand über beide gemeldeten Sicherungen (45 Rezepte, alle Captions live von
+Instagram geholt): 45 von 45 Captions waren abgeschnitten (meist Hashtags; bei
+mehreren fehlten echte Schritte), Abschnitts-Fehler nur 2 von 53 Kandidaten,
+nach den Fixes 3 verdächtige Zutaten von 564 (alles Fehlalarme wie „Ei", „Öl"),
+1 fehlende Anleitungszeile. Werkzeuge für Einzelfälle:
+`tmp/tools/show-source.mjs <backup> <kurzcode>` und
+`tmp/tools/show-recipe.mjs <backup> <titel>`.
+
+**Offen:** Die gespeicherten Captions bleiben abgeschnitten – fehlende Schritte
+kommen nur über einen erneuten Abruf zurück. Genau dafür ist „neu einlesen pro
+Rezept" (unten) gedacht: Es holt die vollständige Caption über die Embed-Seite
+und wendet zugleich die aktuellen Parser-Regeln an.
 
 **Zwei gemessene Sackgassen – nicht erneut einbauen** (Werte dokumentiert in der
 Commit-Nachricht von `08b33b2`): Zutaten aus Komma-Listen im Anweisungstext
