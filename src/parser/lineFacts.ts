@@ -291,14 +291,34 @@ export function isStepSentence(line: string): boolean {
 }
 
 /**
- * Backofen-/Herdangabe („180 °C Ober-/Unterhitze", „200 Grad") – eine Einstellung,
- * keine Zutat. Gemessen: „Ofen:" mit der Temperaturzeile darunter landete beides
- * in den Zutaten.
+ * Backofen-/Herdangabe **ohne Handlung** („180 °C Ober-/Unterhitze") – eine
+ * Einstellung, keine Zutat. Mit Handlungsverb („Preheat oven to 180C") ist es
+ * dagegen eine Anleitung, siehe `isTemperatureInstruction`.
  */
 export function isTemperatureLine(line: string): boolean {
   const trimmed = line.trim();
-  if (/°/.test(trimmed)) return true;
-  return /^\s*(?:ca\.?\s*)?\d{2,3}\s*(?:grad|celsius)\b/i.test(trimmed);
+  if (/:$/.test(trimmed)) return false;
+  const value = /°/.test(trimmed) || /^\s*(?:ca\.?\s*)?\d{2,3}\s*(?:grad|celsius)\b/i.test(trimmed);
+  return value && !isTemperatureInstruction(line);
+}
+
+/**
+ * Backofenangabe **mit** Handlungsverb („Preheat oven to 180C / 360F",
+ * „Vorheizen auf 200 °C") – das ist ein Schritt, keine Einstellung. Gemessen:
+ * Diese Zeile fiel aus der Anleitung heraus.
+ */
+export function isTemperatureInstruction(line: string): boolean {
+  return /^(?:preheat|heat|bake|roast|grill|fry|cook|vorheizen|erhitzen|backen|braten|kochen|grillen)\b/i.test(
+    line.trim(),
+  );
+}
+
+/**
+ * Gefäß-/Formgröße („24 oz Bowl size - 720ml") – Ausstattung, keine Zutat.
+ * Gemessen: stand mit Menge 24 oz in der Zutatenliste.
+ */
+export function isEquipmentLine(line: string): boolean {
+  return /\b(?:bowl|glass|tin|pan|dish|mold|mould|container|jar|form)\s*size\b/i.test(line);
 }
 
 /**

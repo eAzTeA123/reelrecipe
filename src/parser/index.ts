@@ -78,6 +78,8 @@ import {
   isSectionHeader as isSectionHeaderLine,
   isPureGroupHeader,
   isTemperatureLine,
+  isEquipmentLine,
+  isTemperatureInstruction,
   isLabelLine,
   cleanGroupTitle,
 } from "./lineFacts";
@@ -144,6 +146,8 @@ export function parseRecipe(caption: string): ParsedRecipe | null {
   const keepLines = new Set(stripMultiplierHeaders(linesWithGroups.map((entry) => entry.line)));
 
   const ingredients: Ingredient[] = [];
+  // Backofen-Anweisungen mit Verb werden zu Schritten (siehe unten)
+  const instructionLines: string[] = [];
   for (const entry of linesWithGroups) {
     if (!keepLines.has(entry.line)) continue;
     /*
@@ -153,8 +157,21 @@ export function parseRecipe(caption: string): ParsedRecipe | null {
      * bleiben Zutatenzeilen – sonst gingen diese Zutaten verloren.
      */
     if (isPureGroupHeader(entry.line)) continue;
+    /*
+     * Backofenangabe MIT Handlungsverb ("Preheat oven to 180C / 360F") ist eine
+     * Anleitung, keine Einstellung. Zentral hier, weil je nach Caption eine andere
+     * Strategie gewinnt und nur die Zustandsmaschine das sonst kennen wuerde.
+     * Solche Zeilen stehen praktisch immer vor dem ersten Arbeitsschritt.
+     */
+    if (isTemperatureInstruction(entry.line)) {
+      instructionLines.push(entry.line);
+      continue;
+    }
+
     // Backofen-/Herdangabe ist eine Einstellung, keine Zutat
     if (isTemperatureLine(entry.line)) continue;
+    // Gefaessgroesse (24 oz Bowl size) ist Ausstattung, keine Zutat
+    if (isEquipmentLine(entry.line)) continue;
     // Etikett ohne Zutatwort (z.B. The Best Buff Chicken Subs) gehoert nicht in die Liste
     if (isLabelLine(entry.line)) continue;
     for (const variant of expandIngredientLine(entry.line)) {
@@ -172,7 +189,7 @@ export function parseRecipe(caption: string): ParsedRecipe | null {
    * gruppenbewusst: identische Zeilen derselben Gruppe ja, dieselbe Zutat in
    * Teig/Füllung/Guss nein (`data/local/parseMerge.ts`, `entryKeyWithGroup`).
    */
-  const steps = makeSteps(raw.steps);
+  const steps = makeSteps([...instructionLines, ...raw.steps]);
 
   if (ingredients.length === 0 && steps.length === 0) {
     return null;

@@ -12,7 +12,14 @@ import { stripLeadingBullets } from "./normalize";
  * Duplikate, keine Zeit-/Temperaturangaben.
  */
 
-const NAME_STOP = /[.,;:!?()&]|\bund\b|\boder\b|\bmit\b|\bin\b|\bauf\b|\bfür\b/i;
+/*
+ * Stopwörter, an denen ein aus der Anleitung abgeleiteter Name endet. Die
+ * englischen Füllwörter sind gemessen: „add 1 tbsp sugar to a bowl" erzeugte
+ * sonst die Zutat „sugar to a bowl", „mix 1 cup sugar with …" die Zutat
+ * „sugar with".
+ */
+const NAME_STOP =
+  /[.,;:!?()&]|\bund\b|\boder\b|\bmit\b|\bin\b|\bauf\b|\bfür\b|\bto\b|\binto\b|\bwith\b|\band\b|\buntil\b|\bthen\b|\bthe\b/i;
 
 /**
  * Einheiten-Muster ohne eigene Fanggruppe: `UNIT_REGEX.source` bringt eine

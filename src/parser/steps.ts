@@ -41,8 +41,26 @@ export function splitSentences(text: string): string[] {
 const STEP_HEADER_RE = /^(?:zubereitung|anleitung|instructions?|directions?|method|schritte?|so geht'?s?|vorgehensweise):?$/i;
 
 export function makeSteps(lines: string[]): RecipeStep[] {
+  /*
+   * Instagram-Boilerplate („Alle 64 Kommentare ansehen") und Schlussfloskeln
+   * („Lasst es euch schmecken") sind keine Schritte. Gemessen: Sie standen als
+   * letzter Schritt in der Anleitung.
+   */
+  const cleaned = lines
+    .map((line) =>
+      line
+        .replace(/\s*(?:Alle|View all)\s+[\d.\s]*Kommentare?\s+(?:ansehen|an(?:zu)?sehen)\.?$/i, "")
+        .replace(/\s*Alle\s+[\d.\s]*Kommentare\s+ansehen\.?$/i, "")
+        .trim(),
+    )
+    .filter(
+      (line) =>
+        line.length > 0 &&
+        !/^(?:lasst es euch|guten appetit|bon appetit|enjoy|happy cooking|prost|cheers)\b/i.test(line),
+    );
+
   // Wenn es nur 1 einzigen langen Fließtext-Block ohne Nummerierung gibt, an Satzgrenzen aufteilen
-  let effectiveLines = lines;
+  let effectiveLines = cleaned;
   if (
     lines.length === 1 &&
     lines[0].length > 100 &&

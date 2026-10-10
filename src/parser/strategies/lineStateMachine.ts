@@ -23,6 +23,9 @@ import {
   isPureGroupHeader,
   isLabelLine,
   isStepSentence,
+  isTemperatureLine,
+  isTemperatureInstruction,
+  isEquipmentLine,
   looksLikeHeading,
   normalizeHeader,
   startsNewItem,
@@ -194,6 +197,19 @@ export const lineStateMachineStrategy: ParserStrategy = {
         if (isLabelLine(line)) {
           if (isPureGroupHeader(line)) currentGroup = cleanGroupTitle(line);
           else result.other.push(line);
+          continue;
+        }
+        /*
+         * Backofenangabe MIT Handlungsverb ist ein Schritt ("Preheat oven to 180C"),
+         * Gefaessgroessen sind Ausstattung ("24 oz Bowl size") - beides gemessen.
+         */
+        if (isTemperatureInstruction(line)) {
+          result.steps.push(line);
+          state = "ZUBEREITUNG";
+          continue;
+        }
+        if (isEquipmentLine(line) || isTemperatureLine(line)) {
+          result.other.push(line);
           continue;
         }
         if (isStepSentence(line)) {

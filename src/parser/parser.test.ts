@@ -452,5 +452,35 @@ describe("Zutaten-Qualität: nichts verschmelzen, nichts Fremdes aufnehmen", () 
     )!;
     expect(parsed.ingredients.map((ingredient) => ingredient.name)).toEqual(["Magerquark"]);
   });
+
+  /*
+   * Fälle aus der redaktionellen Prüfung (tmp/review.md): Caption selbst gelesen
+   * und mit dem Parser-Ergebnis verglichen.
+   */
+  it("erfindet aus Anleitungssätzen keine Zutaten-Fragmente", () => {
+    const parsed = parseRecipe(
+      "Zutaten\n240 g Mehl\nZubereitung\nAdd 1 tbsp sugar to a bowl and mix. Mix 1 cup sugar with cinnamon.",
+    )!;
+    const names = parsed.ingredients.map((ingredient) => ingredient.name);
+    expect(names).toContain("Mehl");
+    expect(names.every((name) => !/\bto a\b|\bwith\b/i.test(name))).toBe(true);
+  });
+
+  it("nimmt Kommentar-Boilerplate und Schlussfloskeln nicht als Schritt", () => {
+    const parsed = parseRecipe(
+      "Zutaten\n200 g Mehl\nZubereitung\nMehl sieben. Alle 64 Kommentare ansehen\nLasst es euch schmecken",
+    )!;
+    expect(parsed.steps.map((step) => step.instruction)).toEqual(["Mehl sieben."]);
+  });
+
+  it("nimmt eine Backofenangabe mit Handlungsverb als Schritt", () => {
+    const parsed = parseRecipe("Zutaten\n200 g Mehl\nPreheat oven to 180C / 360F")!;
+    expect(parsed.steps.some((step) => /Preheat/.test(step.instruction))).toBe(true);
+  });
+
+  it("nimmt Gefäßgrößen nicht als Zutat", () => {
+    const parsed = parseRecipe("Zutaten\n45 g Wrap\n24 oz Bowl size - 720ml / 24oz")!;
+    expect(parsed.ingredients.map((ingredient) => ingredient.name)).toEqual(["Wrap"]);
+  });
 });
 
