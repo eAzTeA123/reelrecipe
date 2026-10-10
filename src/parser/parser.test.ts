@@ -445,5 +445,12 @@ describe("Zutaten-Qualität: nichts verschmelzen, nichts Fremdes aufnehmen", () 
     expect(parsed.ingredients[0].name).toBe("Mandeldrink");
     expect(parsed.ingredients[0].notes).toContain("optional");
   });
+
+  it("nimmt deutsche Makro-Labels nicht als Zutaten", () => {
+    const parsed = parseRecipe(
+      "Zutaten\n500 g Magerquark\n* Eiweiß: ca. 11 g\n* Fett: ca. 3 g\n* Kalorien: ca. 95 kcal",
+    )!;
+    expect(parsed.ingredients.map((ingredient) => ingredient.name)).toEqual(["Magerquark"]);
+  });
 });
 

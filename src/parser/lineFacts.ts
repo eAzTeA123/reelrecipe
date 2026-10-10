@@ -77,6 +77,19 @@ export function isNutritionLine(line: string): boolean {
 
   if (NUTRITION_OR_PORTION_HEADER_RE.test(stripped)) return true;
   /*
+   * Deutsche Makro-Labels: „Eiweiß: ca. 11 g", „Fett: ca. 3 g",
+   * „Kohlenhydrate: ca. 5 g", „Kalorien: ca. 95 kcal". In den gesicherten
+   * Captions stehen solche Blöcke regelmäßig; bisher wurden sie nur zufällig
+   * über eine andere Regel verworfen.
+   */
+  if (
+    /^(?:kalorien|kcal|energie|brennwert|eiweiß|eiweiss|protein|fett|kohlenhydrate|kh|zucker|ballaststoffe|davon)\s*:/i.test(
+      stripped,
+    )
+  ) {
+    return true;
+  }
+  /*
    * Englische Makro-Blöcke aus Meal-Prep-Captions: „481 Calories", „43g Protein",
    * „39g Carbs", „17g Fat". Gemeldet und gemessen: „481 Calories" stand als Zutat
    * in der Zutatenliste, weil nur „kcal"/„Kalorien" erkannt wurden.
