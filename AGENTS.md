@@ -166,6 +166,20 @@ Gruppenläufe bei wiederholten Überschriften (9, 41, 45); abgeschnittene
 Marken-Zutaten mit Klammerzusatz („Daily Blend" → „Daily", 34).
 
 **Zwei gemessene Sackgassen – nicht erneut einbauen** (Werte dokumentiert in der
+
+**Dritte gemessene Sackgasse (25):** Zutatenzeilen mit mehreren Mengen in einer
+Zeile („250g chicken breast, diced 20g tikka paste 1 tsp purée 40g yoghurt") über
+einen Trennpunkt vor jeder Zahl aufzuspalten. Der Ausdruck trifft auch normale
+Zeilen: „1 1/2 EL" zerfiel in „1" und „1/2 EL". Gemessen: Nutzer-Corpus F1 0.971
+→ 0.951, Mengen 99 % → 89 %. Rückgängig gemacht. Wer das erneut versucht, muss
+zuerst Unicode-Brüche und gemischte Zahlen schützen (Tests:
+`parseIngredientLine > behält Dezimalkommas und gemischte Unicode-Brüche`,
+`parseRecipe – Deutsch > erkennt alle Zutaten mit Mengen`).
+
+Ebenfalls versucht und verworfen: eine Titelprüfung gegen Begrüßungen und
+Anleitungssätze direkt nach der Titelwahl – sie griff nicht, weil der
+Marketing-Headline-Block danach den Titel erneut setzt; der Fall „Hallo meine
+Lieben" blieb Titel. Vor einem neuen Versuch dort ansetzen, nicht am Ende.
 Commit-Nachricht von `08b33b2`): Zutaten aus Komma-Listen im Anweisungstext
 retten (nur Fehlzusätze, F1 −0.008) und lange Prosa-Zeilen satzweise zerlegen
 (Über-Segmentierung, Schritte 81 % → 67 %).
