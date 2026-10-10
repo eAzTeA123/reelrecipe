@@ -135,35 +135,37 @@ node node_modules/esbuild/bin/esbuild tmp/tools/run-user-corpus.ts \
 node tmp/tools/run-user-corpus.cjs     # beide Corpora + Fall-Details
 ```
 
-Stand nach `PARSER_VERSION` 23: Nutzer-Corpus F1 0.978 (Precision 0.993, Recall
-0.966), Titel 95 %, Schritte ±1 86 %; Referenz-Corpus 0.976 (Schwelle 0.97 hält).
-Neu in 23: typografische Apostrophe werden vereinheitlicht (Captions schreiben
-„SO GEHT’S", der Wortschatz kennt nur „so geht's" – deshalb wurden Anleitungen
-nicht erkannt und die Rezepte hatten **keine Schritte**), Gruppenwörter werden
-ohne Bindestrich/Leerzeichen verglichen („FRISCHKÄSE-GUSS" stand als Zutat in der
-Liste) und die Gruppenzuordnung ignoriert Listenzeichen (`groupKey`), damit
-„• 500 g Mehl" seine Gruppe „TEIG" findet.
+Stand nach `PARSER_VERSION` 24: Nutzer-Corpus F1 0.971 (Precision 0.995, Recall
+0.950), Titel 95 %, Schritte ±1 86 %; Referenz-Corpus 0.976 (Schwelle 0.97 hält).
+Der Nutzerwert sinkt gegenüber 23 (0.978), weil der Korpus den **gespeicherten**
+Bestand als Wahrheit führt und dort Artefakte stehen, die jetzt korrekt entfallen
+(„Wasser ausspülen", „Fleischfüllung", „Sonstiges" – redaktionell als Müll belegt).
 
-**Live-Prüfung aller Reels** (Methode, die zum Ziel geführt hat):
+**Redaktionelle Prüfung aller 45 Rezepte** (Methode: `tmp/review.md` stellt die
+live geholte Caption dem Parser-Ergebnis gegenüber; sechs Lektoren haben die
+Rezepte 1–8, 9–16, 17–24, 25–32, 33–40, 41–45 unabhängig gelesen und nur echte
+Abweichungen gemeldet). Behoben in 24:
 
-```bash
-node tmp/tools/compare-captions.mjs <backup.json> --out tmp/caption-compare-<n>.json
-node tmp/tools/analyze-captions.mjs tmp/caption-compare-<n>.json
-node tmp/tools/audit-live.mjs          # Prüfraster über alle gespeicherten Captions
-```
+- Instagram-Resttext („Alle 21Kommentare ansehen", auch ohne Leerzeichen) wurde
+  aus Schritten nicht entfernt.
+- Nackte Überschriftenwörter („Backen", „Anrichten") wurden zu Schritten.
+- Zutaten-Phantome aus Anleitungstext („100 ml Wasser ausspülen", „87.5 g formen",
+  „von den karamellisierten Zwiebeln"): Handlungs- und Einleitungswörter sind
+  jetzt ausgeschlossen.
+- Abschnittsangaben mit englischem/besitzanzeigendem Artikel („For the tikka
+  masala sauce", „Für mein Notella") wurden Zutaten; nackte Abschnittswörter
+  („Sonstiges", „Fleischfüllung", „Burgersoße") ebenso.
+- Backofenangaben mit Handlungsverb gelten als Anweisung, auch wenn das Verb in
+  der Mitte steht („Ofen auf 180 °C vorheizen").
 
-Stand über beide gemeldeten Sicherungen (45 Rezepte, alle Captions live von
-Instagram geholt): 45 von 45 Captions waren abgeschnitten (meist Hashtags; bei
-mehreren fehlten echte Schritte), Abschnitts-Fehler nur 2 von 53 Kandidaten,
-nach den Fixes 3 verdächtige Zutaten von 564 (alles Fehlalarme wie „Ei", „Öl"),
-1 fehlende Anleitungszeile. Werkzeuge für Einzelfälle:
-`tmp/tools/show-source.mjs <backup> <kurzcode>` und
-`tmp/tools/show-recipe.mjs <backup> <titel>`.
-
-**Offen:** Die gespeicherten Captions bleiben abgeschnitten – fehlende Schritte
-kommen nur über einen erneuten Abruf zurück. Genau dafür ist „neu einlesen pro
-Rezept" (unten) gedacht: Es holt die vollständige Caption über die Embed-Seite
-und wendet zugleich die aktuellen Parser-Regeln an.
+**Offen aus der Prüfung** (bewusst nicht in 24, um den Korpus nicht zu brechen):
+Abschnitts-Überschriften und reine Ofenangaben stehen weiterhin als Schritte
+(Schritte ±1 fiel beim Versuch von 86 % auf 81 % – die Prüfung gehört in die
+Strategie, wo der Abschnittskontext bekannt ist, nicht in `makeSteps`);
+Gewürz-Sammelzeilen mit Klammer („Gewürze (Paprika, Knoblauch, Salz & Pfeffer)")
+zerfallen; Komma-Listen verlieren das Komma („Salz, Pfeffer" → „Salz Pfeffer");
+Marken-Zutaten mit Klammerzusatz werden abgeschnitten („Daily Blend" → „Daily");
+Titel stammen teils aus Caption-Fragmenten („Marie", „Handvoll Cherry Tomaten").
 
 **Zwei gemessene Sackgassen – nicht erneut einbauen** (Werte dokumentiert in der
 Commit-Nachricht von `08b33b2`): Zutaten aus Komma-Listen im Anweisungstext

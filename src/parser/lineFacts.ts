@@ -166,6 +166,8 @@ const GROUP_WORDS = new Set([
   "soße", "sosse", "sauce", "creme", "crème", "streusel", "deko", "decor", "frosting",
   "frischkäse-guss", "frischkäse guss", "frischkäse-glasur", "dip", "dressing", "marinade",
   "gewürzmischung", "kräutermischung", "garnitur", "obendrauf", "zum bestreichen",
+  // Redaktionell geprüft (15, 28): nackte Abschnittsüberschriften ohne Doppelpunkt
+  "sonstiges", "fleischfüllung", "burgersoße", "burgersosse", "frischkäsecreme",
 ]);
 
 /*
@@ -180,8 +182,15 @@ const GROUP_WORDS_NORMALIZED = new Set(
 
 /** Sub-Kategorie innerhalb der Zutaten ("Für die Soße:", "Gewürze", "FÜLLUNG") */
 export function isSubIngredientHeader(line: string): boolean {
-  if (line.length > 40) return false;
-  if (/^(?:für|for)\s+(?:den|die|das|diesen|diese|der)/i.test(line)) return true;
+  if (line.length > 60) return false;
+  /*
+   * „Für den Teig", „For the tikka masala sauce", „Für mein Notella" – die
+   * englischen und besitzanzeigenden Artikel fehlten, deshalb standen solche
+   * Überschriften als Zutaten in der Liste (redaktionell geprüft: 6, 7, 16).
+   */
+  if (/^(?:für|fuer|for)\s+(?:den|die|das|diesen|diese|der|the|my|mein|meine|meinen|unser|unsere)\b/i.test(line)) {
+    return !/\d/.test(line);
+  }
   const lower = normalizeHeader(line);
   if (vocab.ingredientMarkers.some((m) => lower.startsWith(m + " "))) {
     if (!lower.endsWith(" english") && !lower.endsWith(" deutsch")) return true;
@@ -308,8 +317,16 @@ export function isTemperatureLine(line: string): boolean {
  * Diese Zeile fiel aus der Anleitung heraus.
  */
 export function isTemperatureInstruction(line: string): boolean {
-  return /^(?:preheat|heat|bake|roast|grill|fry|cook|vorheizen|erhitzen|backen|braten|kochen|grillen)\b/i.test(
-    line.trim(),
+  /*
+   * Das Verb darf **irgendwo** stehen, nicht nur am Anfang: „Ofen auf 180 °C
+   * vorheizen" ist eine Anweisung, „155 Grad Ober-/Unterhitze für 30-35 Minuten"
+   * nicht. Ohne diese Unterscheidung fielen echte Schritte aus der Anleitung
+   * (redaktionell geprüft an Rezept 18 und 27).
+   */
+  const trimmed = line.trim();
+  if (trimmed.length > 120) return false;
+  return /\b(?:preheat|heat|bake|roast|grill|fry|vorheizen|erhitzen|backen|braten|kochen|grillen|überbacken)\b/i.test(
+    trimmed,
   );
 }
 

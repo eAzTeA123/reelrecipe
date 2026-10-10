@@ -98,7 +98,7 @@ async function seedLongContent(page: Page): Promise<void> {
             favorite: true,
             createdAt: now,
             updatedAt: now,
-            parserVersion: 23,
+            parserVersion: 24,
           });
           tx.objectStore("shopping").put({
             id: "sh1",

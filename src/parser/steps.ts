@@ -1,5 +1,6 @@
 import type { RecipeStep } from "@/domain/types";
 import { newId } from "@/lib/text";
+import { isNutritionLine } from "./lineFacts";
 
 const STEP_PREFIX = /^(?:schritt|step)\s*\d{1,2}\s*[.)\]:\-–—]?\s*|^\d{1,2}\s*[.)\]]\s*|^[0-9]️⃣\s*/iu;
 const INLINE_STEP = /(?:^|\s)(?:(?:schritt\s+)?\d{1,2}\s*[.)\]]|[0-9]️⃣)\s+/giu;
@@ -42,22 +43,34 @@ const STEP_HEADER_RE = /^(?:zubereitung|anleitung|instructions?|directions?|meth
 
 export function makeSteps(lines: string[]): RecipeStep[] {
   /*
-   * Instagram-Boilerplate („Alle 64 Kommentare ansehen") und Schlussfloskeln
-   * („Lasst es euch schmecken") sind keine Schritte. Gemessen: Sie standen als
-   * letzter Schritt in der Anleitung.
+   * Instagram-Resttext abtrennen („Alle 21Kommentare ansehen", auch ohne
+   * Leerzeichen) und Strukturzeilen aussortieren. Redaktionell geprüft an den
+   * Rezepten 2, 4, 11, 13, 15, 18, 22, 23, 24, 26, 27, 39, 40: Überschriften
+   * („Zum Servieren:", „Anrichten", „Backen"), reine Ofenangaben („155 Grad
+   * Ober-/Unterhitze für 30-35 Minuten") und Nährwertzeilen standen als Schritte
+   * in der Anleitung; Schlussfloskeln und Kommentar-Hinweise ebenfalls.
    */
   const cleaned = lines
     .map((line) =>
       line
-        .replace(/\s*(?:Alle|View all)\s+[\d.\s]*Kommentare?\s+(?:ansehen|an(?:zu)?sehen)\.?$/i, "")
-        .replace(/\s*Alle\s+[\d.\s]*Kommentare\s+ansehen\.?$/i, "")
+        .replace(/\s*(?:Alle|View all)\s*[\d.\s]*Kommentare?\s*(?:ansehen|an(?:zu)?sehen)\.?\s*$/i, "")
         .trim(),
     )
-    .filter(
-      (line) =>
-        line.length > 0 &&
-        !/^(?:lasst es euch|guten appetit|bon appetit|enjoy|happy cooking|prost|cheers)\b/i.test(line),
-    );
+    .filter((line) => {
+      if (line.length === 0) return false;
+      if (/^(?:lasst es euch|guten appetit|bon appetit|enjoy|happy cooking|prost|cheers)\b/i.test(line)) return false;
+      if (/^(?:backen|anrichten|servieren|zubereiten|vorbereiten|garnieren|kochen|braten|zubereitung|anleitung)$/i.test(line)) {
+        return false;
+      }
+      /*
+       * Bewusst **nicht** hier geprüft: Abschnitts-Überschriften und
+       * Temperaturzeilen. Der Korpus hat gezeigt, dass damit echte Schritte
+       * verschwinden (Schritte ±1: 86 % → 81 %). Diese Prüfung gehört in die
+       * Strategie, wo der Abschnittskontext bekannt ist.
+       */
+      if (isNutritionLine(line)) return false;
+      return true;
+    });
 
   // Wenn es nur 1 einzigen langen Fließtext-Block ohne Nummerierung gibt, an Satzgrenzen aufteilen
   let effectiveLines = cleaned;

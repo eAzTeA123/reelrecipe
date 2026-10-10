@@ -35,6 +35,13 @@ export {
  * über den schützenden Merge, eigene Änderungen bleiben also erhalten
  * (Rückmeldung als Toast in `MigrationRunner`).
  *
+ * Version 24: Befunde der redaktionellen Pruefung aller 45 Rezepte: Instagram-
+ * Resttext wird aus Schritten entfernt (auch 'Alle 21Kommentare ansehen'), nackte
+ * Ueberschriftenwoerter sind keine Schritte, Zutaten-Phantome aus Anleitungstext
+ * (Handlungs-/Einleitungsworte) entfallen, Abschnittsangaben mit englischem oder
+ * besitzanzeigendem Artikel sind Ueberschriften, und Backofenangaben mit Verb in
+ * der Mitte gelten als Anweisung.
+ *
  * Version 23: Typografische Apostrophe werden vereinheitlicht (SO GEHT'S wurde
  * sonst nicht als Anleitung erkannt - das Rezept hatte KEINE Schritte).
  * Gruppenwoerter werden ohne Bindestrich/Leerzeichen verglichen (FRISCHKAESE-GUSS
@@ -72,7 +79,7 @@ export {
  * („Teig", „Belag") – Überschriften sind keine Zutaten, und die Anleitung steht
  * in den Listen, nicht in den Absätzen.
  */
-export const PARSER_VERSION = 23;
+export const PARSER_VERSION = 24;
 
 import {
   isSectionHeader as isSectionHeaderLine,

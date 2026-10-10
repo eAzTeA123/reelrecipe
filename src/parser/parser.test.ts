@@ -482,5 +482,34 @@ describe("Zutaten-Qualität: nichts verschmelzen, nichts Fremdes aufnehmen", () 
     const parsed = parseRecipe("Zutaten\n45 g Wrap\n24 oz Bowl size - 720ml / 24oz")!;
     expect(parsed.ingredients.map((ingredient) => ingredient.name)).toEqual(["Wrap"]);
   });
+
+  /*
+   * Befunde der sechs Lektoren über alle 45 Rezepte (tmp/review.md).
+   */
+  it("entfernt Instagram-Resttext aus Schritten", () => {
+    const parsed = parseRecipe("Zutaten\n200 g Mehl\nZubereitung\nMehl sieben. Alle 21Kommentare ansehen")!;
+    expect(parsed.steps.map((step) => step.instruction)).toEqual(["Mehl sieben."]);
+  });
+
+  it("nimmt nackte Überschriftenwörter nicht als Schritt", () => {
+    const parsed = parseRecipe("Zutaten\n200 g Mehl\nZubereitung\nBacken\nTeig kneten.")!;
+    expect(parsed.steps.map((step) => step.instruction)).toEqual(["Teig kneten."]);
+  });
+
+  it("erkennt Abschnittsangaben mit englischem oder besitzanzeigendem Artikel", () => {
+    const parsed = parseRecipe(
+      "Zutaten\nFor the tikka masala sauce\n200 g Joghurt\nFür mein Notella\n50 g Haselnüsse",
+    )!;
+    expect(parsed.ingredients.map((ingredient) => ingredient.name)).toEqual(["Joghurt", "Haselnüsse"]);
+  });
+
+  it("erfindet keine Zutaten aus Handlungswörtern der Anleitung", () => {
+    const parsed = parseRecipe(
+      "Zutaten\n400 g Tomaten\nZubereitung\n100 ml Wasser ausspülen. 87.5 g formen. Von den Zwiebeln etwas abnehmen.",
+    )!;
+    const names = parsed.ingredients.map((ingredient) => ingredient.name);
+    expect(names).toContain("Tomaten");
+    expect(names.every((name) => !/(?:formen|ausspülen|abnehmen|von den)/i.test(name))).toBe(true);
+  });
 });
 

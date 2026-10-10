@@ -54,6 +54,13 @@ function isAlreadyPresent(name: string, existing: Ingredient[]): boolean {
   });
 }
 
+/** Handlungs-/Partizipwörter: solche „Zutaten" stammen aus Anleitungstext. */
+const VERB_LIKE =
+  /\b(?:formen|ausspülen|abspülen|anschwitzen|würfeln|schneiden|mischen|verrühren|anbraten|braten|kochen|backen|abtropfen|abkühlen|servieren|bestreichen|bestreuen|verteilen|vermengen|gießen|kneten|rühren|waschen|schälen|hacken)\b/i;
+/** Einleitungswörter: „von den karamellisierten Zwiebeln" ist keine Zutat. */
+const LEADING_FUNCTION_WORD =
+  /^(?:von|vom|aus|mit|in|im|auf|zu|zum|zur|für|fuer|den|dem|der|die|das|ein|eine|einen|the|of|from|with)\b/i;
+
 function cleanName(raw: string): string | undefined {
   const cut = raw.split(NAME_STOP)[0]?.trim() ?? "";
   const name = cut.replace(/[\s\-]+$/, "").trim();
@@ -61,6 +68,13 @@ function cleanName(raw: string): string | undefined {
   if (name.split(/\s+/).filter(Boolean).length > 4) return undefined;
   // Zeit-/Temperaturwörter und Nährwerte sind keine Zutaten
   if (/^(?:minuten?|stunden?|grad|°c|kcal|kalorien|gramm|milliliter)\b/i.test(name)) return undefined;
+  /*
+   * Redaktionell geprüft (Rezepte 12 und 15): Aus der Anleitung entstanden
+   * „100 ml Wasser ausspülen", „87.5 g formen" und „von den karamellisierten
+   * Zwiebeln" – Handlungs- und Einleitungswörter, keine Zutaten.
+   */
+  if (VERB_LIKE.test(name)) return undefined;
+  if (LEADING_FUNCTION_WORD.test(name)) return undefined;
   return name;
 }
 
