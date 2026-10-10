@@ -150,16 +150,103 @@ export function isSubIngredientHeader(line: string): boolean {
 }
 
 /**
- * **Reine** Gruppen-Überschrift: keine Zahlen und keine Kommas.
+ * Wörter, die auch mit Doppelpunkt eine **Zutat** bleiben („Salz:", „Milch:").
+ * Alles andere mit Doppelpunkt ist ein Etikett („Chicken:", „Other:", „Icing:").
+ */
+/**
+ * Wörter, mit denen eine **Fortsetzung** der Zeile darüber beginnt: „fein
+ * gehackt", „in Streifen geschnitten", „und", „oder". Alles andere ist eine
+ * eigene Zutat („Salz & Pfeffer", „frische Petersilie") oder ein Abschnitt.
  *
- * Nötig, weil manche Captions Überschrift und Zutaten in eine Zeile schreiben
- * („Gewürze: Salz, Pfeffer, Paprikapulver, Oregano"). Eine solche Zeile ist keine
- * Gruppe, sondern eine Zutatenzeile – sie wird weiter zerlegt. Gemessen: Ohne
- * diese Unterscheidung verschwanden alle Gewürze dieses Rezepts (Korpus-Recall
- * 0,966 → 0,957).
+ * Diese Liste ist die **einzige** Wahrheit dafür – Zustandsmaschine und
+ * Assemblierung nutzen sie gemeinsam.
+ */
+export const CONTINUATION_START_RE =
+  /^(?:und|oder|sowie|in|im|mit|zum|zur|nach|ca|etwa|je|davon|hiervon|plus|dazu|optional|alternativ|evtl|eventuell|fein|grob|klein|gross|groß|mittel|dünn|duenn|dicke|weich|hart|kalt|warm|lauwarm|zimmerwarm|gehackt|gehackte|gehackter|gewürfelt|gewuerfelt|gerieben|geriebene|geriebener|geschnitten|gesiebte?|gewaschen|abgetropft|zerlassen|geschmolzen|gekocht|gebraten|geräuchert|geraeuchert|getrocknet|gemahlen|geröstet|geroestet|nach Belieben|zum Servieren|zum Bestreichen|zum Garnieren|für den|fuer den|für die|fuer die)\b/i;
+const INGREDIENT_LABEL_WORDS = new Set([
+  "salz", "pfeffer", "zucker", "mehl", "milch", "wasser", "öl", "oel", "butter", "ei", "eier",
+  "sahne", "quark", "honig", "reis", "nudeln", "kartoffeln", "zwiebel", "knoblauch",
+]);
+
+/**
+ * **Reine** Gruppen-Überschrift: keine Zahlen, keine Kommas, keine Zutatenzeile.
+ *
+ * Zwei Formen:
+ *  1. Erkannte Abschnitte („Für die Soße", „FÜLLUNG", „Teig") – siehe
+ *     `isSubIngredientHeader`.
+ *  2. Kurze Etiketten mit Doppelpunkt („Chicken:", „Other:", „Icing:", „Ofen:"),
+ *     die vorher als Zutaten in der Liste standen (gemeldet und gemessen).
+ *
+ * Zeilen mit Zahlen oder Kommas sind **Zutatenzeilen**: „Gewürze: Salz, Pfeffer,
+ * Paprikapulver" enthält drei Zutaten und darf nicht als Überschrift verschwinden
+ * (gemessen: sonst fehlen sie alle).
  */
 export function isPureGroupHeader(line: string): boolean {
-  return isSubIngredientHeader(line) && !/\d/.test(line) && !line.includes(",");
+  const trimmed = line.trim();
+  if (/^\d/.test(trimmed) || trimmed.includes(",")) return false;
+  // Fortsetzungen sind keine Ueberschrift (sonst entsteht eine Gruppe 'fein gehackt')
+  // Fortsetzungen sind keine Ueberschrift - ausser sie enden auf Doppelpunkt
+  // ('Fuer die Soesse:'). Sonst entstand eine Gruppe namens 'fein gehackt'.
+  if (!/:$/.test(trimmed) && CONTINUATION_START_RE.test(trimmed)) return false;
+  if (/:$/.test(trimmed)) {
+    const withoutColon = trimmed.replace(/:+$/, "").trim();
+    // „Für das Grilled Cheese:" ist ein Abschnitt, kein Etikett
+    if (!/\d/.test(withoutColon) && isSubIngredientHeader(withoutColon)) return true;
+    const words = withoutColon.split(/\s+/).filter(Boolean);
+    if (words.length >= 1 && words.length <= 3 && !/\d/.test(trimmed)) {
+      return !INGREDIENT_LABEL_WORDS.has(words[0].toLowerCase());
+    }
+    return false;
+  }
+  return isSubIngredientHeader(line) && !/\d/.test(line);
+}
+
+/**
+ * Etikett, das **keine Zutat** ist: endet auf Doppelpunkt, enthält keine Zahl.
+ * Kurze Etiketten werden zur Gruppe (`isPureGroupHeader`), lange fallen ganz aus
+ * der Zutatenliste – gemessen: „The Best Buff Chicken Subs :" stand als Zutat drin.
+ * Ein einzelnes Zutatwort mit Doppelpunkt („Salz:") bleibt Zutat.
+ */
+export function isLabelLine(line: string): boolean {
+  const trimmed = line.trim();
+  if (!/:$/.test(trimmed) || /\d/.test(trimmed)) return false;
+  const words = trimmed.replace(/:+$/, "").split(/\s+/).filter(Boolean);
+  return !(words.length === 1 && INGREDIENT_LABEL_WORDS.has(words[0].toLowerCase()));
+}
+
+/**
+ * Ganzer Satz mit Kochverb („Die Tacos heiß mit dem Minzjoghurt servieren") – das
+ * ist ein **Schritt**, keine Zutat. Gemessen: Solche Zeilen standen mitten in der
+ * Zutatenliste, weil eine Abschnitts-Überschrift die Zubereitung wieder auf
+ * Zutaten umgestellt hatte. Eine Zutatenzeile hat keine finite Verbform und ist
+ * kurz („gehackte Tomaten").
+ */
+const SENTENCE_VERB_RE =
+  /\b(servieren|anbraten|abschmecken|vermengen|verteilen|bestreuen|erhitzen|hinzugeben|dazugeben|würzen|mischen|verrühren|kochen|backen|braten|garen|ablöschen|anrösten|schneiden|hacken|abtropfen|ziehen lassen|genießen)\b/i;
+
+export function isStepSentence(line: string): boolean {
+  /*
+   * Emojis und Ziffern-Emojis („1️⃣") vor der Mengenprüfung entfernen: Sonst galt
+   * „1️⃣ Die Tacos heiß mit dem Minzjoghurt servieren" wegen der Ziffer als Zutat
+   * und blieb in der Zutatenliste stehen (gemessen).
+   */
+  const trimmed = line
+    .replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{FE0F}\u{200D}\u{20E3}\u{203C}\u{2049}]/gu, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+  if (/\d/.test(trimmed)) return false;
+  return trimmed.split(/\s+/).length >= 5 && SENTENCE_VERB_RE.test(trimmed);
+}
+
+/**
+ * Backofen-/Herdangabe („180 °C Ober-/Unterhitze", „200 Grad") – eine Einstellung,
+ * keine Zutat. Gemessen: „Ofen:" mit der Temperaturzeile darunter landete beides
+ * in den Zutaten.
+ */
+export function isTemperatureLine(line: string): boolean {
+  const trimmed = line.trim();
+  if (/°/.test(trimmed)) return true;
+  return /^\s*(?:ca\.?\s*)?\d{2,3}\s*(?:grad|celsius)\b/i.test(trimmed);
 }
 
 /**

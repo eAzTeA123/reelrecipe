@@ -353,6 +353,13 @@ export function stripMultiplierHeaders(lines: string[]): string[] {
 }
 
 const ITEM_GUARD = /^(?:in|im|mit|zum|zur|nach|frisch|fein|gut|dann|danach|nun|ca|etwa|oder|und|sowie)\b/i;
+/**
+ * Beginnt ein Teilstück mit einem Notizwort, ist es kein eigener Eintrag.
+ * Gemessen: „150–200 g geriebener Käse, z. B. Gouda oder Emmentaler" erzeugte
+ * sonst die Phantom-Zutat „Emmentaler".
+ */
+const NOTE_START_RE =
+  /^(?:z\.\s?b\.?|zum beispiel|bspw\.?|beispielsweise|etwa|ca\.|circa|alternativ|optional|nach belieben|oder|plus)\b/i;
 /** Prozentangaben sind Qualifier, keine eigene Zutat ("Milch, 1,5 % Fett"). */
 const PERCENT_ONLY = /^\d+[.,]?\d*\s*%/;
 
@@ -391,6 +398,12 @@ function splitIngredientList(line: string): string[] | null {
 
   const items: string[] = [];
   for (const atom of atoms) {
+    // Notiz statt Zutat: „geriebener Käse, z. B. Gouda oder Emmentaler" – der
+    // Zusatz beschreibt die Zutat darüber und wurde vorher zu „Emmentaler".
+    if (items.length > 0 && NOTE_START_RE.test(atom)) {
+      items[items.length - 1] += `, ${atom}`;
+      continue;
+    }
     if (items.length === 0) {
       items.push(atom);
       continue;
@@ -399,9 +412,24 @@ function splitIngredientList(line: string): string[] | null {
     else items[items.length - 1] += `, ${atom}`; // Qualifier/Notiz bleibt am Eintrag
   }
 
-  // Eine Liste ist es nur, wenn mindestens zwei Einträge eine eigene Menge haben
-  if (items.length < 2 || items.filter(isQuantity).length < 2) return null;
-  return items;
+  /*
+   * Eine Liste ist es, wenn mindestens zwei Einträge eine eigene Menge haben.
+   * Zusätzlich: eine **reine Aufzählung ohne jede Menge** („Salz Pfeffer,
+   * Knoblauchpulver, Paprika edelsüß") – sonst blieb eine ganze Gewürzzeile als
+   * eine Zutat stehen (gemeldet).
+   *
+   * Bewusst **nicht** geteilt wird eine Zeile, die eine Menge enthält: „1 TL Salz,
+   * Pfeffer, Paprika edelsüß" ist eine Zutat mit Würzliste. Im Referenz-Korpus
+   * gemessen: ohne diese Bremse entstanden Phantom-Zutaten (F1 0,983 → 0,976).
+   */
+  if (items.length < 2) return null;
+  const withQuantity = items.filter(isQuantity).length;
+  if (withQuantity >= 2) return items;
+  // Reine Aufzählung ohne jede Menge erst ab **drei** Teilen: „Salz Pfeffer,
+  // Knoblauchpulver, Paprika edelsüß" ist eine Gewürzzeile (gemeldet), „A, B"
+  // bleibt dagegen zusammen (Referenz-Korpus: sonst Phantom-Zutaten).
+  if (withQuantity === 0 && items.length >= 3 && items.every((item) => isPlainItem(item))) return items;
+  return null;
 }
 
 /**
@@ -409,10 +437,20 @@ function splitIngredientList(line: string): string[] | null {
  * Zusätzlich: Aufzählungen mit "und"/"oder"/"sowie" ("Salz und 1 Prise Zucker").
  */
 export function expandIngredientLine(line: string): string[] {
-  const parts = line
-    .split(CONJUNCTION_SPLIT)
-    .map((s) => s.trim())
-    .filter(Boolean);
+  /*
+   * Enthält die Zeile eine Alternativ-Angabe („, z. B. Gouda oder Emmentaler"),
+   * wird **nicht** an „oder"/„und" getrennt: Der Zusatz beschreibt die Zutat
+   * darüber. Sonst entstand die Phantom-Zutat „Emmentaler" (gemessen).
+   */
+  const hasNoteMarker = /,\s*(?:z\.\s?b\.?|zum beispiel|bspw\.?|beispielsweise|etwa|ca\.|circa|alternativ|optional|nach belieben)/i.test(
+    line,
+  );
+  const parts = hasNoteMarker
+    ? [line]
+    : line
+        .split(CONJUNCTION_SPLIT)
+        .map((s) => s.trim())
+        .filter(Boolean);
 
   if (
     parts.length >= 2 &&

@@ -19,7 +19,10 @@ import {
   isStepMarkerHeading,
   isSubIngredientHeader,
   cleanGroupTitle,
+  CONTINUATION_START_RE,
   isPureGroupHeader,
+  isLabelLine,
+  isStepSentence,
   looksLikeHeading,
   normalizeHeader,
   startsNewItem,
@@ -44,6 +47,7 @@ function hasSentenceStructure(line: string): boolean {
  * damit alle Strategien identisch behandelt werden.
  */
 const MULTIPLIER_HEADER_RE = /^[-•*+~›»]?\s*(\d{1,2})\s*[x×]\s*:?\s*$/i;
+
 
 export const lineStateMachineStrategy: ParserStrategy = {
   name: "line_state_machine",
@@ -181,8 +185,20 @@ export const lineStateMachineStrategy: ParserStrategy = {
         // Sub-Abschnitt (z.B. "Für die Soße:") – wird zur Gruppe, nicht zur Zutat.
         // Nur **reine** Überschriften: „Gewürze: Salz, Pfeffer" enthält Zutaten
         // und bleibt deshalb eine Zutatenzeile (gemessen: sonst fehlen die Gewürze).
-        if (isSubIngredientHeader(line) && isPureGroupHeader(line)) {
+        if (isSubIngredientHeader(line) && isPureGroupHeader(line) && !CONTINUATION_START_RE.test(line)) {
           currentGroup = cleanGroupTitle(line);
+          continue;
+        }
+
+        // Etikett ohne Zutatwort („Chicken:", „Icing:") bzw. ganzer Kochsatz
+        if (isLabelLine(line)) {
+          if (isPureGroupHeader(line)) currentGroup = cleanGroupTitle(line);
+          else result.other.push(line);
+          continue;
+        }
+        if (isStepSentence(line)) {
+          result.steps.push(line);
+          state = "ZUBEREITUNG";
           continue;
         }
 
@@ -226,36 +242,27 @@ export const lineStateMachineStrategy: ParserStrategy = {
         // („200 g" unter „Mehl"), gehört weiterhin zur Zeile darüber.
         const hasOwnAmount = startsWithOwnQuantity(line);
 
-        // Check if it's a continuation line (short, no bullet or number at start)
+        /*
+         * Fortsetzungszeile? Nur wenn die Zeile für sich **keine** Zutat sein kann:
+         * Sie beginnt mit einem Fortsetzungswort („fein gehackt", „in Streifen
+         * geschnitten", „und", „oder") oder die Zeile darüber endet auf Komma oder
+         * Bindestrich.
+         *
+         * Vorher wurde **jede** kurze Zeile angehängt – dadurch verschmolzen echte
+         * Zutaten zu einer einzigen: „1 TL italienische Kräuter" + „Salz & Pfeffer"
+         * + „frische Petersilie" wurden eine Zeile (gemeldet und gemessen).
+         */
+        const previous = result.ingredients[result.ingredients.length - 1]?.trim() ?? "";
+        const isContinuation = CONTINUATION_START_RE.test(line) || /[,-]$/.test(previous);
         if (
+          isContinuation &&
           !startsNewItem(line) &&
           !hasOwnAmount &&
-          !line.endsWith(":") &&
-          !hasStepEmoji(line) &&
-          line.length < 40 &&
-          result.ingredients.length > 0 &&
-          !isSubIngredientHeader(line)
-        ) {
-          const lastIdx = result.ingredients.length - 1;
-          const lastStr = result.ingredients[lastIdx].trim();
-          if (lastStr.endsWith("-")) {
-            result.ingredients[lastIdx] = lastStr + line.trim();
-          } else {
-            result.ingredients[lastIdx] += " " + line.trim();
-          }
-          continue;
-        }
-
-        // Check if it's a continuation line (starts with lowercase, no bullet)
-        if (
-          !startsNewItem(line) &&
-          !hasOwnAmount &&
-          /^[a-zäöü]/.test(line) &&
           !line.endsWith(":") &&
           !hasStepEmoji(line) &&
           line.length < 50 &&
           result.ingredients.length > 0 &&
-          !isSubIngredientHeader(line)
+          !isPureGroupHeader(line)
         ) {
           const lastIdx = result.ingredients.length - 1;
           const lastStr = result.ingredients[lastIdx].trim();
@@ -287,8 +294,15 @@ export const lineStateMachineStrategy: ParserStrategy = {
 
         // Falls wir eine Sub-Überschrift finden (z.B. Zubereitung Füllung), geht's wieder in die Zutaten!
         if (isSubIngredientHeader(line)) {
-          state = "ZUTATEN";
-          if (isPureGroupHeader(line)) {
+          /*
+           * Zurück zu den Zutaten nur, wenn darunter wirklich Zutaten stehen.
+           * Gemessen: Ein Servierhinweis („Zitronen-Minz-Joghurt") galt als
+           * Überschrift und zog den folgenden **Schritt** in die Zutatenliste.
+           */
+          const next = lines[i + 1]?.trim() ?? "";
+          const nextIsIngredient = looksLikeIngredient(next) >= 2 || startsWithOwnQuantity(next);
+          if (isPureGroupHeader(line) && nextIsIngredient) {
+            state = "ZUTATEN";
             currentGroup = cleanGroupTitle(line);
             continue;
           }
@@ -383,6 +397,5 @@ export const lineStateMachineStrategy: ParserStrategy = {
     return result;
   },
 };
-
 
 

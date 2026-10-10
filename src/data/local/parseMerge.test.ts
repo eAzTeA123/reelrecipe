@@ -36,6 +36,23 @@ describe("parseMerge: Dubletten-Regel mit Zutatengruppen", () => {
     );
     expect(result.ingredients.filter((entry) => entry.name === "Butter")).toHaveLength(1);
   });
+
+  /*
+   * Gemessen: Wechselt eine Zutat durch eine Parser-Verbesserung die Gruppe
+   * („Olivenöl [Suppe]" → „Olivenöl [Zum Servieren]"), stand sie im Bestand
+   * zweimal – einmal aus dem Merge, einmal aus dem alten Stand.
+   */
+  it("legt eine Zutat nach Gruppenwechsel nicht doppelt an", () => {
+    const oldEntry: Ingredient = { ...ing("Olivenöl"), name: "Olivenöl", group: "Suppe" };
+    const newEntry: Ingredient = { ...ing("Olivenöl"), name: "Olivenöl", group: "Zum Servieren" };
+    const result = mergeParsedRecipe(
+      // Leerer Snapshot → der Bestand zählt als „vom Nutzer", nicht als Parser-Eintrag
+      { title: "Parser-Titel", ingredients: [oldEntry], steps: [], parseSnapshot: snapshot([]) },
+      { title: "Parser-Titel", ingredients: [newEntry], steps: [] },
+    );
+    expect(result.ingredients).toHaveLength(1);
+    expect(result.ingredients[0].group).toBe("Zum Servieren");
+  });
 });
 
 function step(order: number, instruction: string): RecipeStep {

@@ -135,6 +135,19 @@ function entryKeyWithGroup(ingredient: Ingredient): string {
   return `${group}|${normalizeEntry(ingredient.name)}`;
 }
 
+/**
+ * Schlüssel **ohne** Gruppe: dieselbe Zutat mit gleicher Menge, unabhängig davon,
+ * welcher Gruppe sie zugeordnet wurde. Fängt Einträge ab, die durch eine
+ * Gruppen-Verbesserung sonst doppelt in der Liste stünden.
+ */
+function keyWithoutGroup(ingredient: Ingredient): string {
+  return [
+    ingredient.amount ?? "",
+    (ingredient.unit ?? "").toLowerCase().trim(),
+    normalizeEntry(ingredient.name),
+  ].join("|");
+}
+
 function mergeIngredients(
   stored: Ingredient[],
   parsed: Ingredient[],
@@ -213,14 +226,28 @@ function mergeIngredients(
     }
   }
 
-  // 4) Zutaten, die der Nutzer selbst ergänzt hat, bleiben am Ende erhalten
+  /*
+   * 4) Zutaten, die der Nutzer selbst ergänzt hat, bleiben am Ende erhalten.
+   *
+   * Hier wird zusätzlich **ohne Gruppe** verglichen: Wechselt eine Zutat durch
+   * eine Parser-Verbesserung die Gruppe (gemessen: „Olivenöl [Suppe]" wurde zu
+   * „Olivenöl [Zum Servieren]"), stünde sie sonst zweimal in der Liste – einmal
+   * aus dem Merge, einmal aus dem Bestand. Dieselbe Zutat mit gleicher Menge in
+   * *einer* Gruppe bleibt davon unberührt, weil solche Einträge über den Snapshot
+   * laufen (oben) und nicht bis hierher kommen.
+   */
+  const seenByNameAndAmount = new Set(
+    result.map((ingredient) => keyWithoutGroup(ingredient)),
+  );
   for (const storedIndex of stored.map((_, i) => i)) {
     const user = stored[storedIndex];
     const key = entryKeyWithGroup(user);
     if (!key || seen.has(key)) continue;
     const isSnapshotEntry = matches.some((m) => m.storedIndex === storedIndex);
     if (isSnapshotEntry) continue; // wurde oben schon behandelt
+    if (seenByNameAndAmount.has(keyWithoutGroup(user))) continue;
     seen.add(key);
+    seenByNameAndAmount.add(keyWithoutGroup(user));
     result.push({ ...user });
   }
 

@@ -35,6 +35,15 @@ export {
  * über den schützenden Merge, eigene Änderungen bleiben also erhalten
  * (Rückmeldung als Toast in `MigrationRunner`).
  *
+ * Version 21: Zutaten bleiben getrennt. Kurze Zeilen ohne eigenes Mengenwort
+ * wurden vorher **jede** an die Zeile darueber gehaengt - dadurch verschmolzen echte
+ * Zutaten (gemeldet: italienische Kraeuter + Salz & Pfeffer + frische Petersilie).
+ * Ausserdem: Etiketten (Chicken:, Icing:, Ofen:) und Backofenangaben sind keine
+ * Zutaten mehr, ganze Kochsaetze wandern in die Schritte, Alternativ-Angaben
+ * (z. B. Gouda) werden Notiz statt Zutat, und eine reine Aufzaehlung ohne Mengen
+ * (Salz Pfeffer, Knoblauchpulver, Paprika) wird geteilt. Der Merge legt eine Zutat
+ * nach einem Gruppenwechsel nicht mehr doppelt an.
+ *
  * Version 20: Abschnitts-Ueberschriften in Zutatenlisten (Teig, Belag, FUELLUNG)
  * sind keine Zutaten mehr, sondern landen im neuen Feld Ingredient.group - Namen
  * wie 'Salz FUELLUNG' entstehen damit nicht mehr. Zeilen, die Ueberschrift und
@@ -52,11 +61,13 @@ export {
  * („Teig", „Belag") – Überschriften sind keine Zutaten, und die Anleitung steht
  * in den Listen, nicht in den Absätzen.
  */
-export const PARSER_VERSION = 20;
+export const PARSER_VERSION = 21;
 
 import {
   isSectionHeader as isSectionHeaderLine,
   isPureGroupHeader,
+  isTemperatureLine,
+  isLabelLine,
   cleanGroupTitle,
 } from "./lineFacts";
 
@@ -118,6 +129,10 @@ export function parseRecipe(caption: string): ParsedRecipe | null {
      * bleiben Zutatenzeilen – sonst gingen diese Zutaten verloren.
      */
     if (isPureGroupHeader(entry.line)) continue;
+    // Backofen-/Herdangabe ist eine Einstellung, keine Zutat
+    if (isTemperatureLine(entry.line)) continue;
+    // Etikett ohne Zutatwort (z.B. The Best Buff Chicken Subs) gehoert nicht in die Liste
+    if (isLabelLine(entry.line)) continue;
     for (const variant of expandIngredientLine(entry.line)) {
       const parsed = parseIngredientLine(variant);
       if (!parsed) continue;

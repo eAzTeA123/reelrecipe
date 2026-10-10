@@ -1,6 +1,7 @@
 import { getAllVocab } from "../vocabulary";
 import { splitLines } from "../normalize";
-import { looksLikeIngredient } from "../ingredient";
+import { looksLikeIngredient, startsWithOwnQuantity } from "../ingredient";
+import { CONTINUATION_START_RE, isPureGroupHeader } from "../lineFacts";
 import {
   INGREDIENT_EMOJIS,
   STEP_EMOJIS,
@@ -105,6 +106,23 @@ export const markerBasedStrategy: ParserStrategy = {
         if (looksLikeIngredient(line) < 0) {
           result.steps.push(line);
         } else {
+          /*
+           * Fortsetzung der Zeile darüber („1 Zwiebel" + „fein gehackt") – dieselbe
+           * Regel wie in der Zustandsmaschine, aus derselben Liste. Ohne sie standen
+           * Fragmente wie „fein gehackt" als eigene Zutaten in der Liste. Gemessen:
+           * Diese Strategie gewinnt bei Captions der Form „Zutaten … Zubereitung".
+           */
+          const previous = result.ingredients[result.ingredients.length - 1]?.trim() ?? "";
+          const isContinuation =
+            result.ingredients.length > 0 &&
+            (CONTINUATION_START_RE.test(line) || /[,-]$/.test(previous)) &&
+            !startsWithOwnQuantity(line) &&
+            !isPureGroupHeader(line) &&
+            line.length < 50;
+          if (isContinuation) {
+            result.ingredients[result.ingredients.length - 1] += ` ${withoutBullet}`;
+            continue;
+          }
           result.ingredients.push(line);
         }
       } else if (currentSection === "steps") {

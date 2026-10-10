@@ -135,13 +135,18 @@ node node_modules/esbuild/bin/esbuild tmp/tools/run-user-corpus.ts \
 node tmp/tools/run-user-corpus.cjs     # beide Corpora + Fall-Details
 ```
 
-Stand nach `PARSER_VERSION` 20: Nutzer-Corpus F1 0.982 (Precision 1.000, Recall
-0.966), Titel 95 %, Schritte ±1 86 %; Referenz-Corpus 0.983. Neu in 20:
-**Zutatengruppen** (`Ingredient.group`) – Abschnitts-Überschriften wie „Teig" oder
-„FÜLLUNG" sind keine Zutaten mehr, sondern eine Gruppe; reine Überschriften werden
-von Mischzeilen („Gewürze: Salz, Pfeffer") unterschieden; der Merge fasst Dubletten
-nur noch innerhalb derselben Gruppe zusammen (`entryKeyWithGroup`); die Anzeige
-macht `src/lib/ingredientGroups.ts` in Rezept und Kochmodus.
+Stand nach `PARSER_VERSION` 21: Nutzer-Corpus F1 0.978 (Precision 0.993, Recall
+0.966), Titel 95 %, Schritte ±1 86 %; Referenz-Corpus 0.976 (Precision 0.961,
+Schwelle 0.97 hält). Neu in 21: kurze Zeilen werden nicht mehr **jede** an die
+Zeile darüber gehängt – nur echte Fortsetzungen laut `CONTINUATION_START_RE`
+(gemeinsame Wahrheit in `lineFacts.ts`, auch von `markerBased` genutzt, das bei
+Captions der Form „Zutaten … Zubereitung" gewinnt). Etiketten (`Chicken:`,
+`Icing:`, `Ofen:`) und Backofenangaben sind keine Zutaten mehr, ganze Kochsätze
+wandern in die Schritte, Alternativ-Angaben („z. B. Gouda oder Emmentaler")
+werden Notiz statt Phantom-Zutat, und eine reine Aufzählung ohne Mengen wird
+geteilt. Der Merge legt eine Zutat nach einem Gruppenwechsel nicht mehr doppelt
+an (`keyWithoutGroup`). Messung an den gemeldeten Sicherungen:
+Fremdkörper in den Zutaten 11 → 4 (36 Rezepte), Befund-Rezepte 14 → 9.
 
 **Zwei gemessene Sackgassen – nicht erneut einbauen** (Werte dokumentiert in der
 Commit-Nachricht von `08b33b2`): Zutaten aus Komma-Listen im Anweisungstext

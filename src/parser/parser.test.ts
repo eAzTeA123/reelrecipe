@@ -366,3 +366,63 @@ describe("Zutatengruppen", () => {
   });
 });
 
+/**
+ * Gemeldete Fälle aus den Sicherungen 3 und 4: Zutaten wurden verschmolzen,
+ * Fremdzeilen landeten in der Liste. Jeder Fall ist ein echter Caption-Ausschnitt.
+ */
+describe("Zutaten-Qualität: nichts verschmelzen, nichts Fremdes aufnehmen", () => {
+  it("verschmilzt aufeinanderfolgende Zutaten ohne Menge nicht", () => {
+    const parsed = parseRecipe("Zutaten\n1 TL italienische Kräuter\nSalz & Pfeffer\nfrische Petersilie")!;
+    expect(parsed.ingredients.map((ingredient) => ingredient.name)).toEqual([
+      "italienische Kräuter",
+      "Salz & Pfeffer",
+      "frische Petersilie",
+    ]);
+  });
+
+  it("hängt eine echte Fortsetzung weiterhin an", () => {
+    // Mit Anleitung, damit derselbe Weg wie in echten Captions läuft
+    const parsed = parseRecipe("Zutaten\n1 Zwiebel\nfein gehackt\nZubereitung\nZwiebel anbraten.")!;
+    const onion = parsed.ingredients.find((ingredient) => ingredient.name.startsWith("Zwiebel"));
+    expect(onion?.name).toContain("fein gehackt");
+    expect(parsed.ingredients).toHaveLength(1);
+  });
+
+  it("macht aus einer Alternativ-Angabe keine eigene Zutat", () => {
+    const parsed = parseRecipe("Zutaten\n150 g geriebener Käse, z. B. Gouda oder Emmentaler")!;
+    expect(parsed.ingredients).toHaveLength(1);
+    expect(parsed.ingredients[0].name).toContain("geriebener Käse");
+  });
+
+  it("nimmt kurze Etiketten nicht als Zutaten, sondern als Gruppe", () => {
+    const parsed = parseRecipe("Zutaten\nChicken:\n500 g Hähnchen\nOther:\n2 EL Öl")!;
+    expect(parsed.ingredients.map((ingredient) => ingredient.name)).toEqual(["Hähnchen", "Öl"]);
+    expect(parsed.ingredients[0].group).toBe("Chicken");
+  });
+
+  it("hält Backofenangaben aus den Zutaten", () => {
+    const parsed = parseRecipe("Zutaten\nOfen:\n180 °C Ober-/Unterhitze\n500 g Mehl")!;
+    expect(parsed.ingredients.map((ingredient) => ingredient.name)).toEqual(["Mehl"]);
+  });
+
+  it("zieht einen ganzen Kochsatz aus den Zutaten in die Schritte", () => {
+    const parsed = parseRecipe("Zutaten\n200 g Joghurt\n1️⃣ Die Tacos heiß mit dem Joghurt servieren")!;
+    expect(parsed.ingredients.map((ingredient) => ingredient.name)).toEqual(["Joghurt"]);
+    expect(parsed.steps.some((step) => /servieren/.test(step.instruction))).toBe(true);
+  });
+
+  it("teilt eine reine Aufzählung ohne Mengen", () => {
+    const parsed = parseRecipe("Zutaten\nSalz Pfeffer, Knoblauchpulver, Paprika edelsüß")!;
+    expect(parsed.ingredients.map((ingredient) => ingredient.name)).toEqual([
+      "Salz Pfeffer",
+      "Knoblauchpulver",
+      "Paprika edelsüß",
+    ]);
+  });
+
+  it("lässt eine Zutat mit Menge und Würzliste zusammen", () => {
+    const parsed = parseRecipe("Zutaten\n1 TL Salz, Pfeffer, Paprika edelsüß")!;
+    expect(parsed.ingredients).toHaveLength(1);
+  });
+});
+

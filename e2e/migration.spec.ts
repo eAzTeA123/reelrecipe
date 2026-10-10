@@ -140,7 +140,7 @@ test("Rezepte werden beim Start neu geparst, eigene Änderungen bleiben", async 
       };
     });
   }, ID);
-  expect(version, `Browserfehler: ${browserErrors.join(" | ") || "keine"}`).toBe(20);
+  expect(version, `Browserfehler: ${browserErrors.join(" | ") || "keine"}`).toBe(21);
 
   expect(requests.filter((url) => url.includes("/api/recipe/parse"))).toHaveLength(0);
 });
