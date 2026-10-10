@@ -69,6 +69,19 @@ export function isNutritionLine(line: string): boolean {
   const stripped = stripLeadingBullets(trimmed);
 
   if (NUTRITION_OR_PORTION_HEADER_RE.test(stripped)) return true;
+  /*
+   * Englische Makro-Blöcke aus Meal-Prep-Captions: „481 Calories", „43g Protein",
+   * „39g Carbs", „17g Fat". Gemeldet und gemessen: „481 Calories" stand als Zutat
+   * in der Zutatenliste, weil nur „kcal"/„Kalorien" erkannt wurden.
+   */
+  if (/^\s*\d+[.,]?\d*\s*(?:calories|cal|kcal)\b/i.test(stripped)) return true;
+  if (
+    /^\s*\d+[.,]?\d*\s*g\s*(?:protein|carbs?|carbohydrates?|fat|fats|fibers?|fibres?|sugars?)\b/i.test(
+      stripped,
+    )
+  ) {
+    return true;
+  }
   // kcal nur als Nährwertangabe werten, wenn die Zeile damit beginnt oder ein
   // Makro-Block ist – sonst verschwindet der Titel "OFENPFANNKUCHEN | 115 KCAL".
   if (/^\s*\d+[.,]?\d*\s*(?:kcal|kalorien)\b/i.test(stripped)) return true;
@@ -182,11 +195,15 @@ const INGREDIENT_LABEL_WORDS = new Set([
  * (gemessen: sonst fehlen sie alle).
  */
 export function isPureGroupHeader(line: string): boolean {
-  const trimmed = line.trim();
+  /*
+   * Klammern vor der Zahlenprüfung entfernen: „The Best Buff Chicken Subs
+   * (makes 12):" ist ein Etikett, obwohl eine Zahl darin steht (gemeldet: die
+   * Zeile stand als Zutat in der Zutatenliste).
+   */
+  const trimmed = line.trim().replace(/\([^)]*\)/g, " ").replace(/\s+/g, " ").trim();
   if (/^\d/.test(trimmed) || trimmed.includes(",")) return false;
-  // Fortsetzungen sind keine Ueberschrift (sonst entsteht eine Gruppe 'fein gehackt')
-  // Fortsetzungen sind keine Ueberschrift - ausser sie enden auf Doppelpunkt
-  // ('Fuer die Soesse:'). Sonst entstand eine Gruppe namens 'fein gehackt'.
+  // Fortsetzungen sind keine Überschrift – außer sie enden auf Doppelpunkt
+  // („Für die Soße:"). Sonst entstand eine Gruppe namens „fein gehackt".
   if (!/:$/.test(trimmed) && CONTINUATION_START_RE.test(trimmed)) return false;
   if (/:$/.test(trimmed)) {
     const withoutColon = trimmed.replace(/:+$/, "").trim();
@@ -208,9 +225,14 @@ export function isPureGroupHeader(line: string): boolean {
  * Ein einzelnes Zutatwort mit Doppelpunkt („Salz:") bleibt Zutat.
  */
 export function isLabelLine(line: string): boolean {
-  const trimmed = line.trim();
-  if (!/:$/.test(trimmed) || /\d/.test(trimmed)) return false;
-  const words = trimmed.replace(/:+$/, "").split(/\s+/).filter(Boolean);
+  /*
+   * Klammern vor der Zahlenprüfung entfernen: „The Best Buff Chicken Subs
+   * (makes 12):" ist ein Etikett, obwohl eine Zahl darin steht (gemeldet: die
+   * Zeile stand als Zutat in der Liste).
+   */
+  const withoutParens = line.trim().replace(/\([^)]*\)/g, " ").replace(/\s+/g, " ").trim();
+  if (!/:$/.test(withoutParens) || /\d/.test(withoutParens)) return false;
+  const words = withoutParens.replace(/:+$/, "").split(/\s+/).filter(Boolean);
   return !(words.length === 1 && INGREDIENT_LABEL_WORDS.has(words[0].toLowerCase()));
 }
 

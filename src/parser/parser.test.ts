@@ -424,5 +424,15 @@ describe("Zutaten-Qualität: nichts verschmelzen, nichts Fremdes aufnehmen", () 
     const parsed = parseRecipe("Zutaten\n1 TL Salz, Pfeffer, Paprika edelsüß")!;
     expect(parsed.ingredients).toHaveLength(1);
   });
+
+  it("nimmt Nährwertzeilen im Meal-Prep-Stil nicht als Zutaten", () => {
+    const parsed = parseRecipe("Zutaten\nChicken:\n1.5 kg Hähnchen\n481 Calories\n43g Protein")!;
+    expect(parsed.ingredients.map((ingredient) => ingredient.name)).toEqual(["Hähnchen"]);
+  });
+
+  it("erkennt ein Etikett trotz Klammerzahl", () => {
+    const parsed = parseRecipe("Zutaten\nThe Best Buff Chicken Subs (makes 12):\n4 Baguettes")!;
+    expect(parsed.ingredients.map((ingredient) => ingredient.name)).toEqual(["Baguettes"]);
+  });
 });
 

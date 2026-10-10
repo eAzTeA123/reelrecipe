@@ -35,6 +35,11 @@ export {
  * über den schützenden Merge, eigene Änderungen bleiben also erhalten
  * (Rückmeldung als Toast in `MigrationRunner`).
  *
+ * Version 22: Naehrwertzeilen im englischen Meal-Prep-Stil (481 Calories,
+ * 43g Protein) sind keine Zutaten mehr, ebenso Etiketten mit Klammerzahl
+ * (The Best Buff Chicken Subs (makes 12):). Dazu holt der Import die Caption aus
+ * der Embed-Seite, weil og:description abgeschnitten ist.
+ *
  * Version 21: Zutaten bleiben getrennt. Kurze Zeilen ohne eigenes Mengenwort
  * wurden vorher **jede** an die Zeile darueber gehaengt - dadurch verschmolzen echte
  * Zutaten (gemeldet: italienische Kraeuter + Salz & Pfeffer + frische Petersilie).
@@ -61,7 +66,7 @@ export {
  * („Teig", „Belag") – Überschriften sind keine Zutaten, und die Anleitung steht
  * in den Listen, nicht in den Absätzen.
  */
-export const PARSER_VERSION = 21;
+export const PARSER_VERSION = 22;
 
 import {
   isSectionHeader as isSectionHeaderLine,

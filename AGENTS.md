@@ -135,18 +135,18 @@ node node_modules/esbuild/bin/esbuild tmp/tools/run-user-corpus.ts \
 node tmp/tools/run-user-corpus.cjs     # beide Corpora + Fall-Details
 ```
 
-Stand nach `PARSER_VERSION` 21: Nutzer-Corpus F1 0.978 (Precision 0.993, Recall
-0.966), Titel 95 %, Schritte ±1 86 %; Referenz-Corpus 0.976 (Precision 0.961,
-Schwelle 0.97 hält). Neu in 21: kurze Zeilen werden nicht mehr **jede** an die
-Zeile darüber gehängt – nur echte Fortsetzungen laut `CONTINUATION_START_RE`
-(gemeinsame Wahrheit in `lineFacts.ts`, auch von `markerBased` genutzt, das bei
-Captions der Form „Zutaten … Zubereitung" gewinnt). Etiketten (`Chicken:`,
-`Icing:`, `Ofen:`) und Backofenangaben sind keine Zutaten mehr, ganze Kochsätze
-wandern in die Schritte, Alternativ-Angaben („z. B. Gouda oder Emmentaler")
-werden Notiz statt Phantom-Zutat, und eine reine Aufzählung ohne Mengen wird
-geteilt. Der Merge legt eine Zutat nach einem Gruppenwechsel nicht mehr doppelt
-an (`keyWithoutGroup`). Messung an den gemeldeten Sicherungen:
-Fremdkörper in den Zutaten 11 → 4 (36 Rezepte), Befund-Rezepte 14 → 9.
+Stand nach `PARSER_VERSION` 22: Nutzer-Corpus F1 0.978 (Precision 0.993, Recall
+0.966), Titel 95 %, Schritte ±1 86 %; Referenz-Corpus 0.976 (Schwelle 0.97 hält).
+Neu in 22: Nährwertzeilen im englischen Meal-Prep-Stil („481 Calories", „43g
+Protein") sind keine Zutaten mehr, ebenso Etiketten mit Klammerzahl („The Best
+Buff Chicken Subs (makes 12):"). Zusätzlich holt der Import die Caption jetzt aus
+der **Embed-Seite** (`/embed/captioned/`, `src/lib/instagramCaption.ts`), weil
+`og:description` abgeschnitten ist – gemessen an Reel `DdtwrLYtOiT` fehlte dort
+die Zeile „43g Protein", die dann in der Bibliothek fehlte. Die längere der beiden
+Fassungen gewinnt. Werkzeuge für die Fehlersuche:
+`tmp/tools/show-source.mjs <backup> <kurzcode|url-teil>` (Caption, gespeicherte
+Zutaten und Parser-Ausgabe nebeneinander) und `tmp/tools/audit-parsed-library.mjs
+<backup>` (Dubletten, Fremdkörper, Gruppen über die ganze Bibliothek).
 
 **Zwei gemessene Sackgassen – nicht erneut einbauen** (Werte dokumentiert in der
 Commit-Nachricht von `08b33b2`): Zutaten aus Komma-Listen im Anweisungstext

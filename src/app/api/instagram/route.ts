@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { extractEmbedCaption, instagramEmbedUrl } from "@/lib/instagramCaption";
 
 const IG_PATH = /^\/(?:[A-Za-z0-9_.-]+\/)?(reel|reels|p|tv)\/([A-Za-z0-9_-]{5,30})\/?/;
 const TIMEOUT_MS = 6000;
@@ -73,7 +74,7 @@ interface Result {
   ok: boolean;
   caption?: string | null;
   image?: string;
-  source: "meta-tags" | "oembed";
+  source: "meta-tags" | "oembed" | "embed";
   error?: string;
 }
 
@@ -113,6 +114,31 @@ async function viaOEmbed(url: URL): Promise<Result> {
   }
 }
 
+/**
+ * Caption ueber die Embed-Seite holen. Vollstaendiger als og:description (gemessen
+ * fehlte dort "43g Protein") und funktioniert auch bei Anmeldewand.
+ */
+async function viaEmbed(url: URL): Promise<Result> {
+  try {
+    const embedUrl = instagramEmbedUrl(url.toString());
+    if (!embedUrl) return { ok: false, source: "embed" };
+    const res = await fetchWithTimeout(embedUrl, {
+      headers: {
+        "user-agent":
+          "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1",
+        accept: "text/html,application/xhtml+xml",
+        "accept-language": "de-DE,de;q=0.9,en;q=0.8",
+      },
+      redirect: "follow",
+    });
+    if (!res.ok) return { ok: false, source: "embed" };
+    const caption = extractEmbedCaption(await res.text());
+    if (!caption) return { ok: false, source: "embed" };
+    return { ok: true, caption, source: "embed" };
+  } catch {
+    return { ok: false, source: "embed" };
+  }
+}
 async function viaMetaTags(url: URL): Promise<Result> {
   try {
     const res = await fetchWithTimeout(url.toString(), {
@@ -153,5 +179,14 @@ export async function GET(req: NextRequest) {
   if (oembed.ok) return NextResponse.json(oembed);
 
   const meta = await viaMetaTags(url);
-  return NextResponse.json(meta);
+  const embed = await viaEmbed(url);
+  /*
+   * Die laengere Fassung gewinnt: og:description ist gemessen abgeschnitten,
+   * die Embed-Seite liefert die vollstaendige Caption.
+   */
+  const best = [meta, embed]
+    .filter((entry) => entry.ok)
+    .sort((a, b) => (b.caption?.length ?? 0) - (a.caption?.length ?? 0))[0];
+  const chosen = best ?? meta;
+  return NextResponse.json({ ...chosen, image: chosen.image ?? meta.image });
 }
