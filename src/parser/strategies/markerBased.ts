@@ -133,6 +133,24 @@ export const markerBasedStrategy: ParserStrategy = {
          * Anleitung verlor mehrere Schritte (redaktionell geprüft an Rezept 12).
          */
         const numberedStep = /^(?:[0-9]\uFE0F?\u20E3|\d{1,2}\s*[.)\]])\s*\S/u.test(line);
+        /*
+         * Ausnahme: nummerierte **Zwischen\u00FCberschrift** ohne Verb, unter der der
+         * Anweisungssatz erst folgt (\u201E1. Haselnuss-Creme \uD83E\uDD0D" + \u201ESkyr \u2026 verr\u00FChren.").
+         * Sonst verdoppelte sich die Schrittzahl (medusas-ddb7e3ets9c: 11 statt 6).
+         */
+        const numberedHeading =
+          numberedStep &&
+          looksLikeHeading(
+            line
+              .replace(/^(?:[0-9]\uFE0F?\u20E3|\d{1,2}\s*[.)\]])\s*/u, "")
+              .replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{FE0F}\u{200D}]/gu, "")
+              .trim(),
+            lines[i + 1],
+          );
+        if (numberedHeading) {
+          result.other.push(line);
+          continue;
+        }
         // Fortsetzungszeile mit Pfeil gehört zum Schritt darüber („➡️ 45 Min abgedeckt")
         const arrowStripped = line.replace(/^[\u27A1\u2192\uFE0F\s]+/u, "").trim();
         const isShortTimingNote =

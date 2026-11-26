@@ -1,7 +1,7 @@
 "use client";
 import { useI18n } from "@/lib/i18n/context";
 
-import { use, useEffect, useMemo, useState } from "react";
+import { use, useEffect, useMemo, useState, ViewTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRecipe } from "@/hooks/useRecipe";
@@ -293,13 +293,26 @@ export default function RecipeDetailPage({ params }: { params: Promise<{ id: str
       </div>
 
       {recipe.image && (
-        <div className="mb-7 aspect-[4/3] w-full overflow-hidden rounded-frame border border-line bg-surface-2 shadow-card md:aspect-[21/9]">
-          <RecipeImage imageRef={cachedImageUrl ?? recipe.image} alt={recipe.title} className="h-full w-full" />
-        </div>
+        <ViewTransition name={`cover-${recipe.id}`} share="morph" default="none">
+          <div className="mb-7 aspect-[4/3] w-full overflow-hidden rounded-frame border border-line bg-surface-2 shadow-card md:aspect-[21/9]">
+            <RecipeImage imageRef={cachedImageUrl ?? recipe.image} alt={recipe.title} className="h-full w-full" />
+          </div>
+        </ViewTransition>
       )}
 
       <div className="max-w-3xl">
-        <h1 className="font-display text-title">{recipe.title}</h1>
+        <h1 className="font-display text-title">
+          {recipe.title.split(" ").map((word, i, all) => (
+            <span
+              key={i}
+              className="word-in"
+              style={{ "--word-i": Math.min(i, 6) } as React.CSSProperties}
+            >
+              {word}
+              {i < all.length - 1 ? " " : ""}
+            </span>
+          ))}
+        </h1>
       {recipe.description && (
         <p className="mt-2 text-[16px] leading-relaxed text-ink-2">{recipe.description}</p>
       )}
@@ -343,8 +356,10 @@ export default function RecipeDetailPage({ params }: { params: Promise<{ id: str
           >
             <IconMinus size={16} />
           </button>
-          <span className="w-6 text-center text-h3 font-bold" aria-live="polite">
-            {targetServings}
+          <span className="w-6 overflow-hidden text-center text-h3 font-bold nums" aria-live="polite">
+            <span key={targetServings} className="num-roll block">
+              {targetServings}
+            </span>
           </span>
           <button
             aria-label="Portionen erhöhen"

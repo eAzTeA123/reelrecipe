@@ -244,6 +244,64 @@ p, li { text-wrap: pretty; }
   animation: page-in 0.32s var(--ease-out) both;
 }
 
+/* Titel: Wort für Wort (Stagger 40 ms, max. 6 Stufen) */
+@keyframes word-in {
+  from { opacity: 0; transform: translateY(0.4em); }
+  to { opacity: 1; transform: none; }
+}
+.word-in {
+  display: inline-block;
+  animation: word-in 0.42s var(--ease-out) calc(var(--word-i, 0) * 40ms) both;
+}
+
+/* Zähler: neue Ziffer rollt von unten ein */
+@keyframes num-roll {
+  from { opacity: 0; transform: translateY(60%); }
+  to { opacity: 1; transform: none; }
+}
+.num-roll { animation: num-roll 0.2s var(--ease-out) both; }
+
+/* Seitenübergang: Kartenbild morpht ins Detailbild (React <ViewTransition>) */
+::view-transition-group(.morph) {
+  animation-duration: 0.32s;
+  animation-timing-function: var(--ease-out);
+}
+
+/* Kochmodus: Fortschrittslinie zeichnet sich weiter, Schritttext gleitet ein */
+.step-line { transition: stroke-dashoffset 0.32s var(--ease-out); }
+@keyframes step-in {
+  from { opacity: 0; transform: translateX(12px); }
+  to { opacity: 1; transform: none; }
+}
+.step-in { animation: step-in 0.32s var(--ease-out) both; }
+
+/* Abhaken: Durchstreichung blendet ein statt zu springen */
+.strike-soft {
+  text-decoration-color: transparent;
+  transition: color 0.2s ease, text-decoration-color 0.2s ease;
+}
+.strike-soft.line-through { text-decoration-color: currentColor; }
+
+/* Tab-Leiste: Pill gleitet zum aktiven Eintrag */
+.tab-pill {
+  transition:
+    transform 0.32s var(--ease-spring),
+    opacity 0.2s ease;
+}
+
+/* Timer-Ring: gleitet im Sekundentakt weiter */
+.timer-ring { transition: stroke-dashoffset 1s linear; }
+
+/* Extraktion: Phasenliste */
+.phase-item { transition: opacity 0.2s ease, color 0.2s ease; }
+.phase-item[data-state="todo"] { opacity: 0.45; }
+.phase-check path {
+  stroke-dasharray: 24;
+  stroke-dashoffset: 24;
+  transition: stroke-dashoffset 0.34s var(--ease-out);
+}
+.phase-item[data-state="done"] .phase-check path { stroke-dashoffset: 0; }
+
 /* Scroll-Reveal: einmalig, dezent, gestaffelt über --reveal-delay */
 .reveal {
   opacity: 0;
@@ -417,10 +475,11 @@ input:checked ~ .tick-box {
 @media (prefers-reduced-motion: reduce) {
   .page-enter, .sheet-up, .sheet-down, .overlay-in, .overlay-out,
   .toast-in, .check-pop, .pulse-soft, .spin, .check-draw, .skeleton-shimmer,
-  .tick-pop {
+  .tick-pop, .word-in, .num-roll, .step-in {
     animation: none !important;
   }
-  .pressable, .card-hover, .skip-link {
+  .tab-pill, .timer-ring, .phase-item, .phase-check path, .step-line, .strike-soft { transition: none !important; }
+  .pressable, .card-hover, .skip-link, [role="progressbar"] > div {
     transition: none !important;
   }
   .pressable:active { transform: none; }
@@ -430,6 +489,11 @@ input:checked ~ .tick-box {
     transition: none !important;
   }
   * { scroll-behavior: auto !important; }
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
 }
 
 .scrollbar-none {

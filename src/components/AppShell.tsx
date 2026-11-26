@@ -22,6 +22,8 @@ function isActive(pathname: string, href: string): boolean {
 function BottomNav() {
   const { t } = useI18n();
   const pathname = usePathname();
+  const items = getNavItems(t);
+  const activeIndex = items.findIndex((it) => isActive(pathname, it.href));
   return (
     /*
      * Schwebende Kapsel wie in Apples Tab Bars – bewusst so aufgebaut, dass
@@ -44,7 +46,17 @@ function BottomNav() {
       className="fixed bottom-1.5 left-3 right-3 z-40 flex items-stretch gap-1 rounded-pill border border-line bg-surface p-1.5 shadow-lift md:hidden"
       style={{ marginBottom: "calc(env(safe-area-inset-bottom) / 2)" }}
     >
-      {getNavItems(t).map(({ href, label, icon: Icon }) => {
+      {/* Gleitende Pill: nur transform/opacity, liegt INNERHALB der Kapsel. */}
+      <span
+        aria-hidden
+        className="tab-pill pointer-events-none absolute inset-y-1.5 left-1.5 rounded-pill bg-accent-soft"
+        style={{
+          width: `calc((100% - 0.75rem - ${(items.length - 1) * 0.25}rem) / ${items.length})`,
+          transform: `translateX(calc(${Math.max(activeIndex, 0)} * (100% + 0.25rem)))`,
+          opacity: activeIndex < 0 ? 0 : 1,
+        }}
+      />
+      {items.map(({ href, label, icon: Icon }) => {
         const active = isActive(pathname, href);
         return (
           <Link
@@ -52,9 +64,9 @@ function BottomNav() {
             href={href}
             data-tour={href.replace("/", "") || "home"}
             aria-current={active ? "page" : undefined}
-            className={`pressable flex min-h-12 flex-1 flex-col items-center justify-center gap-0.5 rounded-pill px-1 py-1.5 text-[11px] transition-colors ${
+            className={`pressable relative flex min-h-12 flex-1 flex-col items-center justify-center gap-0.5 rounded-pill px-1 py-1.5 text-[11px] transition-colors ${
               active
-                ? "bg-accent-soft font-semibold text-accent-text"
+                ? "font-semibold text-accent-text"
                 : "font-medium text-ink-3 hover:text-ink-2"
             }`}
           >

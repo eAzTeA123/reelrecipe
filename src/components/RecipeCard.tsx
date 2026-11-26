@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { memo } from "react";
+import { memo, ViewTransition } from "react";
 import type { Recipe } from "@/domain/types";
 import { getRecipeRepository } from "@/data";
+import { burstParticles } from "@/lib/motion";
 import { RecipeImage } from "./RecipeImage";
 import { IconClock, IconHeart, IconHeartFill, IconUsers } from "./Icons";
 
@@ -79,12 +80,15 @@ export const RecipeCard = memo(function RecipeCard({
   return (
     <article className="card-lazy group relative flex flex-col">
       <Link href={`/recipes/${recipe.id}`} className="block pressable" aria-label={recipe.title}>
-        <RecipeCover
-          recipe={recipe}
-          className={`aspect-[4/3] w-full shadow-card sm:aspect-[4/5] ${
-            matchPercentage === undefined ? "card-hover" : ""
-          }`}
-        />
+        {/* Gemeinsamer Name mit dem Detail-Bild → Bild gleitet beim Öffnen an seinen Platz */}
+        <ViewTransition name={`cover-${recipe.id}`} share="morph" default="none">
+          <RecipeCover
+            recipe={recipe}
+            className={`aspect-[4/3] w-full shadow-card sm:aspect-[4/5] ${
+              matchPercentage === undefined ? "card-hover" : ""
+            }`}
+          />
+        </ViewTransition>
 
         <div className="mt-3.5 flex flex-col gap-1.5">
           {recipe.category && (
@@ -154,7 +158,10 @@ export const RecipeCard = memo(function RecipeCard({
 
       <button
         type="button"
-        onClick={() => void getRecipeRepository().toggleFavorite(recipe.id)}
+        onClick={(e) => {
+          if (!recipe.favorite) void burstParticles(e.currentTarget);
+          void getRecipeRepository().toggleFavorite(recipe.id);
+        }}
         aria-label={recipe.favorite ? "Aus Favoriten entfernen" : "Zu Favoriten hinzufügen"}
         aria-pressed={recipe.favorite}
         className={`pressable absolute right-3 top-3 flex h-11 w-11 items-center justify-center rounded-pill backdrop-blur transition-colors ${
@@ -163,7 +170,13 @@ export const RecipeCard = memo(function RecipeCard({
             : "bg-surface/80 text-ink/70 hover:bg-surface hover:text-ink"
         }`}
       >
-        {recipe.favorite ? <IconHeartFill size={20} /> : <IconHeart size={20} />}
+        {recipe.favorite ? (
+          <span key="on" className="check-pop flex">
+            <IconHeartFill size={20} />
+          </span>
+        ) : (
+          <IconHeart size={20} />
+        )}
       </button>
     </article>
   );

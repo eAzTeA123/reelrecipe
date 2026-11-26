@@ -327,7 +327,7 @@ function RecipesContent() {
       ) : (
         <div className="grid grid-cols-1 gap-x-5 gap-y-9 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {shown.map((r, i) => (
-            <Reveal key={r.recipe.id} delay={(i % 4) * 45}>
+            <Reveal key={r.recipe.id} delay={i < 6 ? i * 40 : 0}>
               <RecipeCard
                 recipe={r.recipe}
                 matchPercentage={r.matchPercentage}

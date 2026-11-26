@@ -53,6 +53,7 @@ export function StepTextWithTimers({
               id: Math.random().toString(),
               label: original,
               endTime: Date.now() + seconds * 1000,
+              duration: seconds,
               recipeId
             });
           }}

@@ -535,3 +535,43 @@ describe("Zutaten-Qualität: nichts verschmelzen, nichts Fremdes aufnehmen", () 
   });
 });
 
+
+describe("Parser-Runde 26", () => {
+  it("behält eine Ofenangabe mit allgemeinem Kochverb als Schritt", () => {
+    const r = parseRecipe(
+      "Zutaten\n200 g Reis\nZubereitung\nReis waschen.\n🔥 45 Minuten bei 190 °C in den vorgeheizten Ofen geben.\nServieren.",
+    )!;
+    expect(r.steps.some((s) => /45 Minuten bei 190/.test(s.instruction))).toBe(true);
+  });
+
+  it("zählt nummerierte Zwischenüberschriften nicht als eigenen Schritt", () => {
+    const r = parseRecipe(
+      "Zutaten:\n• 250 g Skyr\n• 10 g Kakao\nZubereitung:\n1. Creme 🤍\nSkyr und Kakao miteinander verrühren und kalt stellen.\n2. Topping 🍫\nMit Kakao bestreuen und sofort servieren.",
+    )!;
+    expect(r.steps.map((s) => s.instruction)).toEqual([
+      "Skyr und Kakao miteinander verrühren und kalt stellen.",
+      "Mit Kakao bestreuen und sofort servieren.",
+    ]);
+  });
+
+  it("holt den Titel hinter einem Nährwert-Aufhänger heraus", () => {
+    const r = parseRecipe("228g Eiweiß - FAJITA PASTA ONEPOT 🍝⬇️\n\nZutaten:\n200 g Pasta\n650 g Hähnchenbrust\nZubereitung:\n1️⃣ Ofen auf 190 °C vorheizen")!;
+    expect(r.title).toBe("FAJITA PASTA ONEPOT");
+  });
+
+  it("zerlegt mengenlose Gewürzlisten mit „&“ am Ende in einzelne Zutaten", () => {
+    const r = parseRecipe(
+      "Zutaten:\n200 g Nudeln\nSalz, Pfeffer, Paprikapulver, Tomatengewürz & ein paar Chiliflocken\nZubereitung:\nNudeln kochen.",
+    )!;
+    expect(r.ingredients.map((i) => i.name)).toEqual([
+      "Nudeln",
+      "Salz",
+      "Pfeffer",
+      "Paprikapulver",
+      "Tomatengewürz",
+      "Chiliflocken",
+    ]);
+    expect(r.steps).toHaveLength(1);
+    expect(parseIngredientLine("Hähnchen, in Streifen & mariniert")).toBeTruthy();
+  });
+});

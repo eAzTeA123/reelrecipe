@@ -7,6 +7,8 @@ export type Timer = {
   id: string;
   label: string;
   endTime: number;
+  /** Gesamtdauer in Sekunden (für den Fortschrittsring); fehlt bei Altbestand. */
+  duration?: number;
   recipeId?: string;
 };
 
@@ -118,7 +120,10 @@ function ActiveTimersOverlay({ timers, removeTimer }: { timers: Timer[], removeT
         const s = remaining % 60;
         
         return (
-          <div key={timer.id} className="bg-surface/90 backdrop-blur shadow-pop rounded-ctl p-3 flex items-center gap-3 border border-line pointer-events-auto">
+          <div key={timer.id} className="bg-surface shadow-pop rounded-ctl p-3 flex items-center gap-3 border border-line pointer-events-auto">
+            {timer.duration ? (
+              <TimerRing fraction={remaining / timer.duration} />
+            ) : null}
             <div className="flex flex-col">
               <span className="max-w-[120px] truncate text-label font-medium text-ink-3">{timer.label}</span>
               <span className="nums text-h3 font-bold text-ink">
@@ -135,5 +140,29 @@ function ActiveTimersOverlay({ timers, removeTimer }: { timers: Timer[], removeT
         );
       })}
     </div>
+  );
+}
+
+const RING_R = 16;
+const RING_C = 2 * Math.PI * RING_R;
+
+/** Fortschrittsring: Strich schrumpft mit der Restzeit (nur stroke-dashoffset). */
+function TimerRing({ fraction }: { fraction: number }) {
+  const f = Math.min(1, Math.max(0, fraction));
+  return (
+    <svg width="40" height="40" viewBox="0 0 40 40" aria-hidden className="shrink-0 -rotate-90">
+      <circle cx="20" cy="20" r={RING_R} fill="none" strokeWidth="4" className="stroke-surface-3" />
+      <circle
+        cx="20"
+        cy="20"
+        r={RING_R}
+        fill="none"
+        strokeWidth="4"
+        strokeLinecap="round"
+        className="timer-ring stroke-accent"
+        strokeDasharray={RING_C}
+        strokeDashoffset={RING_C * (1 - f)}
+      />
+    </svg>
   );
 }

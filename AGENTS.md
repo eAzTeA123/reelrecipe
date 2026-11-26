@@ -141,6 +141,28 @@ Der Nutzerwert liegt unter 23 (0.978), weil der Korpus den **gespeicherten**
 Bestand als Wahrheit führt und dort Artefakte stehen, die jetzt korrekt entfallen
 („Wasser ausspülen", „Fleischfüllung", „Sonstiges").
 
+Neu in 26 (Fehler aus 25 behoben, beide Corpora gemessen):
+
+- **Ofenangabe mit allgemeinem Kochverb bleibt Schritt** (`isTemperatureLine`):
+  „🔥 45 Minuten bei 190 °C in den vorgeheizten Ofen geben." fiel als reine
+  Ofenangabe aus der Anleitung (Test „Hautton-Emoji" war rot).
+- **Nummerierte Zwischenüberschriften sind keine Schritte** (`markerBased`):
+  „1. Haselnuss-Creme 🤍" + Anweisungssatz darunter zählte doppelt
+  (medusas-ddb7e3ets9c 11 statt 6). Referenz-Corpus Schritte ±1: 95 % → 100 %,
+  Schwelle hält wieder.
+- **Titel hinter Nährwert-Aufhänger** (`cleanLine`): „228g Eiweiß - FAJITA PASTA
+  ONEPOT" wurde komplett verworfen, Titel war die Zutat „Pasta nach Wahl".
+- **Mengenlose Gewürzlisten** („Salz, Pfeffer, Paprikapulver, Tomatengewürz & ein
+  paar Chiliflocken") sind Zutaten statt Schritt 1 und werden einzeln gelistet.
+  Nutzer-Corpus F1 0.971 → 0.969 (Precision 0.995 → 0.990), weil die gespeicherte
+  Fassung von lib-dbd7eldrupt diese Gewürze nicht führt – der Parser liegt hier
+  richtig, die Vergleichsfassung nicht.
+
+Stand 26: Referenz-Corpus F1 0.976, Schritte ±1 100 %, Titel 100 %; Nutzer-Corpus
+F1 0.969, Titel 95 %, Schritte ±1 86 %. Messen ohne esbuild:
+`tmp/tools/user-corpus.test.ts` nach `src/parser/` kopieren (Imports `./…`), mit
+`npx vitest run` starten, danach wieder löschen.
+
 Neu in 25 (zweite Runde der redaktionellen Prüfung, offene Punkte aus 24):
 
 - **Nummerierte Anweisungen sind unantastbar**: In `markerBased` fielen „1️⃣ Ofen
@@ -159,9 +181,9 @@ Neu in 25 (zweite Runde der redaktionellen Prüfung, offene Punkte aus 24):
   Notiz (`toIngredient`).
 
 **Weiter offen** (aus den sechs Lektoratsberichten, noch nicht gebaut): Titel aus
-Caption-Fragmenten („Marie", „Handvoll Cherry Tomaten", „Pasta nach Wahl");
+Caption-Fragmenten („Marie", „Handvoll Cherry Tomaten"; „Pasta nach Wahl" behoben in 26);
 Zutaten, die nur im Anleitungstext stehen (Nutella in 1, 40 g Joghurt in 6, 28 g
-Pudding Mix in 38); eine Zutatenzeile, die als Schritt 1 landet (12); doppelte
+Pudding Mix in 38); eine Zutatenzeile, die als Schritt 1 landet (12; Gewürzlisten behoben in 26); doppelte
 Gruppenläufe bei wiederholten Überschriften (9, 41, 45); abgeschnittene
 Marken-Zutaten mit Klammerzusatz („Daily Blend" → „Daily", 34).
 
@@ -238,7 +260,7 @@ erneut laufen lassen und vergleichen – nicht schätzen.
 
 <!-- BEGIN:nextjs-agent-rules -->
 
-# This is NOT the Next.js you know
+## This is NOT the Next.js you know
 
 This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
 

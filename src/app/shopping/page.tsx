@@ -14,6 +14,7 @@ import { ErrorState } from "@/components/ErrorState";
 import { Button } from "@/components/Button";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { Sheet } from "@/components/Sheet";
+import { SwipeRow } from "@/components/SwipeRow";
 import { Field, Input } from "@/components/Input";
 import { IconCart, IconCheck, IconPencil, IconPlus, IconTrash } from "@/components/Icons";
 import { getAisle, sortAisles } from "@/lib/shoppingAisles";
@@ -83,6 +84,20 @@ export default function ShoppingPage() {
     setNewItemName("");
   }
 
+  function removeItem(item: ShoppingItem) {
+    void getShoppingListRepository().remove(item.id);
+    toast(t("toast.itemRemoved").replace("{name}", item.name), "success", {
+      actionLabel: t("toast.undo"),
+      action: () =>
+        void getShoppingListRepository().addItem({
+          name: item.name,
+          amount: item.amount,
+          unit: item.unit,
+        }),
+      duration: 5000,
+    });
+  }
+
   async function saveEdit() {
     if (!editing || !editName.trim()) return;
     await getShoppingListRepository().updateItem(editing.id, {
@@ -138,6 +153,22 @@ export default function ShoppingPage() {
         }
       />
 
+      {items.length > 0 && (
+        <div
+          className="mb-4 h-1.5 overflow-hidden rounded-pill bg-surface-3"
+          role="progressbar"
+          aria-label="Fortschritt"
+          aria-valuemin={0}
+          aria-valuemax={items.length}
+          aria-valuenow={checkedCount}
+        >
+          <div
+            className="h-full w-full origin-left rounded-pill bg-accent transition-transform duration-500 ease-spring"
+            style={{ transform: `scaleX(${checkedCount / items.length})` }}
+          />
+        </div>
+      )}
+
       <form
         className="mb-4 flex gap-2"
         onSubmit={(e) => {
@@ -180,7 +211,7 @@ export default function ShoppingPage() {
                 <h2 className="mb-2.5 px-1 font-display text-h3 text-ink-2">{aisle}</h2>
                 <ul className="divide-y divide-line overflow-hidden rounded-card border border-line bg-surface shadow-card">
                   {groupedItems[aisle].map((item) => (
-                    <li key={item.id} className="flex items-center gap-3 px-4 py-1">
+                    <SwipeRow key={item.id} onSwipeDelete={() => removeItem(item)}>
                       <label className="flex min-h-[44px] min-w-0 flex-1 cursor-pointer items-center gap-3">
                         <input
                           type="checkbox"
@@ -206,7 +237,7 @@ export default function ShoppingPage() {
                         >
                           <IconCheck size={16} />
                         </span>
-                        <span className={`min-w-0 flex-1 break-words hyphens-auto text-body ${item.checked ? "text-ink-3 line-through" : ""}`}>
+                        <span className={`min-w-0 flex-1 break-words hyphens-auto strike-soft text-body ${item.checked ? "text-ink-3 line-through" : ""}`}>
                           {formatAmount(item.amount, item.unit) && (
                             <span className="mr-1.5 whitespace-nowrap font-semibold tabular-nums text-ink-2">
                               {formatAmount(item.amount, item.unit)}
@@ -231,27 +262,12 @@ export default function ShoppingPage() {
                       </button>
                       <button
                         aria-label={`${item.name} löschen`}
-                        onClick={() => {
-                          void getShoppingListRepository().remove(item.id);
-                          toast(
-                            t("toast.itemRemoved").replace("{name}", item.name),
-                            "success",
-                            {
-                              actionLabel: t("toast.undo"),
-                              action: () => void getShoppingListRepository().addItem({
-                                name: item.name,
-                                amount: item.amount,
-                                unit: item.unit,
-                              }),
-                              duration: 5000,
-                            },
-                          );
-                        }}
+                        onClick={() => removeItem(item)}
                         className="pressable flex h-11 w-11 shrink-0 items-center justify-center rounded-ctl text-ink-3 hover:text-danger"
                       >
                         <IconTrash size={17} />
                       </button>
-                    </li>
+                    </SwipeRow>
                   ))}
                 </ul>
               </div>

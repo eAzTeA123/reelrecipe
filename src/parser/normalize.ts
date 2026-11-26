@@ -130,8 +130,16 @@ export function cleanLine(line: string): string {
   if (/^\d+\s*kcal/i.test(noBullet)) return "";
   if (/\|\s*(?<![\p{L}])(?:kh|f|e|eiweiß|protein|fett|kohlenhydrate|kcal)(?![\p{L}])\s*[:=]?/iu.test(noBullet)) return "";
   if (/^(?<![\p{L}])(?:kh|f|e|eiweiß|protein|fett|kohlenhydrate|kcal)(?![\p{L}])\s*[:=]\s*\d/iu.test(noBullet)) return "";
-  if (/^\d+[.,]?\d*\s*(?:g|ml|kcal)\s*\|?\s*(?<![\p{L}])(?:kh|f|e|eiweiß|protein|fett|kohlenhydrate|kcal)(?![\p{L}])/iu.test(noBullet)) return "";
   if (/(?<![\p{L}])(?:kh|f|e|eiweiß|protein|fett|kohlenhydrate|kcal)(?![\p{L}])\s*[:=]\s*\d+\s*(?:g|ml)/iu.test(noBullet)) return "";
+  /*
+   * „228g Eiweiß - FAJITA PASTA ONEPOT 🍝" – Nährwert als Aufhänger **vor**
+   * dem Titel. Den Präfix abschneiden statt die Zeile zu verwerfen, sonst ging
+   * der Titel verloren und eine Zutat („Pasta nach Wahl") rückte nach.
+   */
+  const nutritionPrefix =
+    /^\d+[.,]?\d*\s*(?:g|kcal)\s*(?:eiweiß|protein|kohlenhydrate|fett|kcal)?\s+[-–—|:]\s+(?=.*\p{L}{3})/iu;
+  if (nutritionPrefix.test(noBullet)) return noBullet.replace(nutritionPrefix, "").trim();
+  if (/^\d+[.,]?\d*\s*(?:g|ml|kcal)\s*\|?\s*(?<![\p{L}])(?:kh|f|e|eiweiß|protein|fett|kohlenhydrate|kcal)(?![\p{L}])/iu.test(noBullet)) return "";
   
   return l;
 }

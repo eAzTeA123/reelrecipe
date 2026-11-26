@@ -18,6 +18,7 @@
     "golden:build": "node scripts/build-golden-set.mjs"
   },
   "dependencies": {
+    "animejs": "^4.5.0",
     "canvas-confetti": "^1.9.4",
     "cheerio": "^1.2.0",
     "dexie": "^4.2.1",
@@ -32,14 +33,14 @@
     "@playwright/test": "^1.50.0",
     "@tailwindcss/postcss": "^4.1.0",
     "@types/canvas-confetti": "^1.9.0",
-    "@types/node": "^24.0.0",
-    "@types/react": "^19.2.0",
+    "@types/node": "24.19.4",
+    "@types/react": "19.3.3",
     "@types/react-dom": "^19.2.0",
     "esbuild": "^0.28.0",
     "eslint": "^9.39.0",
     "eslint-config-next": "^16.0.0",
     "tailwindcss": "^4.1.0",
-    "typescript": "^5.9.0",
+    "typescript": "5.9.3",
     "vitest": "^3.2.0"
   }
 }

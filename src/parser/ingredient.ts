@@ -329,7 +329,17 @@ export function looksLikeIngredient(line: string): number {
   
   const wordCount = l.split(" ").length;
   if (wordCount > 10 && !UNIT_REGEX.test(l)) score -= 2;
-  if (wordCount > 6 && !AMOUNT_REGEX.test(l)) score -= 3;
+  /*
+   * Gewürz-Aufzählung ohne Mengen („Salz, Pfeffer, Paprikapulver, Tomatengewürz
+   * & ein paar Chiliflocken"): mehrere Kommas, kein Verb, kein Satzende → Zutat.
+   * Sonst rutschte sie als Schritt 1 in die Anleitung (lib-dbd7eldrupt).
+   */
+  const isSpiceList =
+    (l.match(/,/g)?.length ?? 0) >= 2 &&
+    !/[.!?]$/.test(l) &&
+    !STEP_VERB_HINTS.test(l) &&
+    l.split(",").every((part) => part.trim().split(/\s+/).length <= 5);
+  if (wordCount > 6 && !AMOUNT_REGEX.test(l) && !isSpiceList) score -= 3;
   
   return score;
 }
@@ -365,8 +375,10 @@ const PERCENT_ONLY = /^\d+[.,]?\d*\s*%/;
 
 /** Kurzer, "nackter" Listeneintrag mit großgeschriebenem Nomen ("Salz"). */
 function isPlainItem(segment: string): boolean {
-  const words = segment.split(/\s+/).filter(Boolean);
-  return words.length <= 3 && /^[\p{Lu}„"(]/u.test(segment) && !ITEM_GUARD.test(segment);
+  // Unbestimmte Menge vorne („ein paar Chiliflocken", „etwas Zitronensaft")
+  const s = segment.replace(/^(?:ein paar|eine prise|etwas|wenig|viel)\s+(?=\p{Lu})/iu, "");
+  const words = s.split(/\s+/).filter(Boolean);
+  return words.length <= 3 && /^[\p{Lu}„"(]/u.test(s) && !ITEM_GUARD.test(s);
 }
 
 const isQuantity = (segment: string): boolean => SEGMENT_START.test(segment) && !PERCENT_ONLY.test(segment);
@@ -412,9 +424,23 @@ function splitIngredientList(line: string): string[] | null {
   }
 
   const atoms: string[] = [];
-  for (const part of commaParts) {
+  const noQuantityAtAll = !commaParts.some(isQuantity);
+  for (const [index, part] of commaParts.entries()) {
     const amp = part.split(/\s*[&;]\s*/).map((s) => s.trim()).filter(Boolean);
     if (amp.length > 1 && amp.slice(1).every(isQuantity)) atoms.push(...amp);
+    /*
+     * Letzter Eintrag einer mengenlosen Aufzählung mit „&" („…, Tomatengewürz
+     * & ein paar Chiliflocken") → zwei Einträge. Nur bei ≥ 3 Komma-Teilen.
+     */
+    else if (
+      noQuantityAtAll &&
+      commaParts.length >= 3 &&
+      index === commaParts.length - 1 &&
+      amp.length === 2 &&
+      isPlainItem(amp[0])
+    ) {
+      atoms.push(...amp);
+    }
     else atoms.push(part);
   }
 

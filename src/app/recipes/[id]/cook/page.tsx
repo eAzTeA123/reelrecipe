@@ -192,12 +192,22 @@ export default function CookModePage({ params }: { params: Promise<{ id: string 
           <span className="text-[14px] font-semibold text-ink-2">
             {t("cook.step")} {Math.min(currentIndex + 1, steps.length)} {t("cook.of")} {steps.length}
           </span>
-          <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-black/[0.06]">
-            <div
-              className="h-full rounded-full bg-accent transition-[width] duration-200"
-              style={{ width: `${steps.length ? ((currentIndex + 1) / steps.length) * 100 : 0}%` }}
+          {/* Fortschritt als gezeichnete Linie (stroke-dashoffset, pathLength = 1) */}
+          <svg className="h-1.5 flex-1" viewBox="0 0 100 6" preserveAspectRatio="none" aria-hidden>
+            <line x1="3" y1="3" x2="97" y2="3" strokeWidth="6" strokeLinecap="round" className="stroke-surface-3" />
+            <line
+              x1="3"
+              y1="3"
+              x2="97"
+              y2="3"
+              strokeWidth="6"
+              strokeLinecap="round"
+              pathLength={1}
+              strokeDasharray="1"
+              strokeDashoffset={1 - (steps.length ? (currentIndex + 1) / steps.length : 0)}
+              className="step-line stroke-accent"
             />
-          </div>
+          </svg>
         </div>
         {step ? (
           <div 
@@ -216,12 +226,12 @@ export default function CookModePage({ params }: { params: Promise<{ id: string 
                 return next;
               });
             }}
-            className={`flex-1 flex items-start gap-4 text-[24px] font-semibold leading-snug tracking-[-0.01em] md:text-[32px] cursor-pointer transition-opacity ${checkedSteps.has(step.id) ? 'line-through opacity-50' : ''}`}
+            className={`flex-1 flex items-start gap-4 text-[24px] font-semibold leading-snug tracking-[-0.01em] md:text-[32px] cursor-pointer transition-opacity strike-soft ${checkedSteps.has(step.id) ? 'line-through opacity-50' : ''}`}
           >
             <div className={`mt-1.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 transition-colors ${checkedSteps.has(step.id) ? 'border-accent bg-accent text-accent-ink' : 'border-ink-3'}`}>
               {checkedSteps.has(step.id) && <IconCheck size={18} />}
             </div>
-            <div className="flex-1">
+            <div key={step.id} className="step-in flex-1">
               <StepTextWithTimers 
                 text={step.instruction} 
                 recipeId={recipe.id}

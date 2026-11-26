@@ -275,7 +275,10 @@ export default function HomePage() {
             )}
             {importing && (
               <div className="mt-5">
-                <ExtractionLoader label={t("home.importing")} />
+                <ExtractionLoader
+                  label={t("home.importing")}
+                  phases={["Link lesen", "Zutaten erkennen", "Schritte ordnen"]}
+                />
               </div>
             )}
           </div>
@@ -347,7 +350,7 @@ export default function HomePage() {
         ) : (
           <div className="grid grid-cols-1 gap-x-5 gap-y-9 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {recipes.slice(0, 6).map((r, i) => (
-              <Reveal key={r.id} delay={(i % 4) * 45}>
+              <Reveal key={r.id} delay={i < 6 ? i * 40 : 0}>
                 <RecipeCard recipe={r} />
               </Reveal>
             ))}

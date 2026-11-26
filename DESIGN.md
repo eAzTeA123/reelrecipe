@@ -112,6 +112,18 @@ Rückmeldungen: `.pressable` (aktiv `scale(0.97)`), `.card-hover` (Desktop-Hover
 `.tick-pop`, `input:checked ~ .tick-box` (Abhaken in der Einkaufsliste),
 `.check-draw` (Häkchen zeichnet sich), Haptik über `useHaptic` beim Abhaken.
 
+Detailseite: `.word-in` (Titel Wort für Wort, `--word-i` × 40 ms, max. 6),
+`.num-roll` (Portionszahl rollt ein; `key` auf dem Wert). Favoriten-Herz:
+`burstParticles` in `src/lib/motion.ts` (anime.js, lazy).
+Navigation: `.tab-pill` (gleitende Fläche **innerhalb** der fixierten Kapsel –
+die Kapsel selbst bleibt ohne `transform`). Seitenwechsel Karte → Detail:
+React `<ViewTransition name="cover-<id>" share="morph" default="none">`,
+Dauer über `::view-transition-group(.morph)`.
+Kochmodus: `.step-line` (Fortschritt als SVG-Strich), `.step-in` (Schritttext
+gleitet ein). Timer: Fortschrittsring `.timer-ring` (`Timer.duration`).
+Abhaken: `.strike-soft` (Durchstreichung blendet ein).
+Import: `ExtractionLoader phases={[…]}` – Phasen haken sich nacheinander ab.
+
 `prefers-reduced-motion` schaltet **jede** Animation ab (Opacity ≤ 120 ms);
 neue Bewegung muss dort ebenfalls aus sein.
 

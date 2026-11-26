@@ -308,7 +308,14 @@ export function isTemperatureLine(line: string): boolean {
   const trimmed = line.trim();
   if (/:$/.test(trimmed)) return false;
   const value = /°/.test(trimmed) || /^\s*(?:ca\.?\s*)?\d{2,3}\s*(?:grad|celsius)\b/i.test(trimmed);
-  return value && !isTemperatureInstruction(line);
+  if (!value || isTemperatureInstruction(line)) return false;
+  /*
+   * Ein allgemeines Kochverb macht die Zeile ebenfalls zur Anweisung:
+   * „🔥 45 Minuten bei 190 °C in den vorgeheizten Ofen geben." fiel sonst als
+   * reine Ofenangabe aus der Anleitung (Test „Hautton-Emoji", real.test.ts).
+   */
+  const words = trimmed.toLowerCase().replace(/[.,!?]/g, " ").split(/\s+/);
+  return !vocab.stepVerbs.some((v) => !v.includes(" ") && words.includes(v));
 }
 
 /**

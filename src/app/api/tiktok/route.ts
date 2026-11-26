@@ -13,6 +13,38 @@ async function fetchWithTimeout(url: string, init: RequestInit): Promise<Respons
   }
 }
 
+const BROWSER_UA =
+  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36";
+
+/** Liest Beschreibung + Cover aus dem eingebetteten Seiten-JSON. */
+async function fetchFromPage(url: string): Promise<{ desc?: string; cover?: string } | null> {
+  const res = await fetchWithTimeout(url, {
+    headers: {
+      "user-agent": BROWSER_UA,
+      "accept-language": "de-DE,de;q=0.9,en;q=0.8",
+      accept: "text/html",
+    },
+    redirect: "follow",
+  });
+  if (!res.ok) return null;
+  const html = await res.text();
+  const m = html.match(
+    /<script id="__UNIVERSAL_DATA_FOR_REHYDRATION__"[^>]*>([\s\S]*?)<\/script>/,
+  );
+  if (!m) return null;
+  try {
+    const scope = JSON.parse(m[1])?.__DEFAULT_SCOPE__;
+    const item = scope?.["webapp.video-detail"]?.itemInfo?.itemStruct;
+    if (!item) return null;
+    return {
+      desc: typeof item.desc === "string" ? item.desc : undefined,
+      cover: item.video?.cover || item.video?.originCover,
+    };
+  } catch {
+    return null;
+  }
+}
+
 /**
  * Löst TikTok-Kurzlinks (vm.tiktok.com, vt.tiktok.com) sicher auf
  * und ermittelt die kanonische Video-URL.
@@ -62,44 +94,44 @@ export async function GET(req: NextRequest) {
       targetUrl = await resolveTikTokUrl(parsed.normalized);
     }
 
-    // TikTok offizielle oEmbed API
-    const oembedUrl = `https://www.tiktok.com/oembed?url=${encodeURIComponent(targetUrl)}`;
-    const res = await fetchWithTimeout(oembedUrl, {
-      headers: { accept: "application/json" },
-    });
+    const { formatTikTokCaption } = await import("@/lib/tiktokFormat");
+    let caption: string | undefined;
+    let image: string | undefined;
 
-    if (!res.ok) {
-      return NextResponse.json({
-        ok: false,
-        source: "tiktok",
-        resolvedUrl: targetUrl,
-      });
+    // 1. Seite: eingebettetes JSON enthält die volle Beschreibung
+    try {
+      const page = await fetchFromPage(targetUrl);
+      if (page?.desc?.trim()) caption = formatTikTokCaption(page.desc.trim());
+      image = page?.cover;
+    } catch (e) {
+      console.error("TikTok page error", e);
     }
 
-    const data = (await res.json()) as {
-      title?: string;
-      thumbnail_url?: string;
-      author_name?: string;
-    };
-
-    let caption = data.title?.trim();
-    if (caption) {
-      const { formatTikTokCaption } = await import("@/lib/tiktokFormat");
-      caption = formatTikTokCaption(caption);
-    }
+    // 2. Fallback: oEmbed (liefert aktuell oft keinen title mehr)
     if (!caption || caption.length < 5) {
-      return NextResponse.json({
-        ok: false,
-        source: "tiktok",
-        resolvedUrl: targetUrl,
-        image: data.thumbnail_url,
-      });
+      try {
+        const res = await fetchWithTimeout(
+          `https://www.tiktok.com/oembed?url=${encodeURIComponent(targetUrl)}`,
+          { headers: { accept: "application/json" } },
+        );
+        if (res.ok) {
+          const data = (await res.json()) as { title?: string; thumbnail_url?: string };
+          if (data.title?.trim()) caption = formatTikTokCaption(data.title.trim());
+          image = image ?? data.thumbnail_url;
+        }
+      } catch (e) {
+        console.error("TikTok oembed error", e);
+      }
+    }
+
+    if (!caption || caption.length < 5) {
+      return NextResponse.json({ ok: false, source: "tiktok", resolvedUrl: targetUrl, image });
     }
 
     return NextResponse.json({
       ok: true,
       caption,
-      image: data.thumbnail_url,
+      image,
       source: "tiktok",
       resolvedUrl: targetUrl,
     });

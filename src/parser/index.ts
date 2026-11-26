@@ -85,7 +85,7 @@ export {
  * („Teig", „Belag") – Überschriften sind keine Zutaten, und die Anleitung steht
  * in den Listen, nicht in den Absätzen.
  */
-export const PARSER_VERSION = 25;
+export const PARSER_VERSION = 26;
 
 import {
   isSectionHeader as isSectionHeaderLine,
